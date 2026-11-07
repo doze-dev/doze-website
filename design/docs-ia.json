@@ -1,0 +1,127 @@
+{
+  "$comment": "The docs' information architecture (plan: ~/.claude/plans/can-you-make-a-hidden-cloud.md, 'Information architecture'). Product → group → pages, in reading order. Slugs are relative to the product's section: 'start/install' is /docs/doze/start/install/. src/sidebars.ts builds the sidebars from this file; scripts/check-links.ts lists the slugs that have no page yet. Titles are the working titles; a page's own title (or its sidebar.label) is what the sidebar shows.",
+  "doze": {
+    "Start here": [
+      { "slug": "start/install", "title": "Install the app" },
+      { "slug": "start/first-stack", "title": "Your first stack" },
+      { "slug": "start/your-repo", "title": "Bring your own repo" },
+      { "slug": "start/how-doze-thinks", "title": "How doze thinks" }
+    ],
+    "The app": [
+      { "slug": "app/library", "title": "Library and stacks" },
+      { "slug": "app/views", "title": "Tiles, List, Map and Grid" },
+      { "slug": "app/inside-a-service", "title": "Inside a service" },
+      { "slug": "app/when-something-breaks", "title": "When something breaks" },
+      { "slug": "app/keys", "title": "⌘K and keys" },
+      { "slug": "app/menu-bar", "title": "Menu bar and notifications" },
+      { "slug": "app/domains", "title": "Domains and HTTPS" },
+      { "slug": "app/settings", "title": "Settings and Doctor" }
+    ],
+    "doze.hcl": [
+      { "slug": "hcl/apps", "title": "Apps" },
+      { "slug": "hcl/shared-services", "title": "Shared services" },
+      { "slug": "hcl/your-own-services", "title": "Your own services" },
+      { "slug": "hcl/tasks", "title": "Tasks" },
+      { "slug": "hcl/start-order", "title": "Start order and readiness" },
+      { "slug": "hcl/sleep", "title": "Sleep and wake" },
+      { "slug": "hcl/names", "title": "Names and addresses" },
+      { "slug": "hcl/references-and-env", "title": "References and env" },
+      { "slug": "hcl/splitting-files", "title": "Splitting files" },
+      { "slug": "hcl/teams-and-ci", "title": "Teams and CI" }
+    ],
+    "Services": [
+      { "slug": "services/postgres", "title": "Postgres" },
+      { "slug": "services/valkey", "title": "Valkey" },
+      { "slug": "services/kvrocks", "title": "Kvrocks" },
+      { "slug": "services/ferretdb", "title": "FerretDB" },
+      { "slug": "services/mariadb", "title": "MariaDB" },
+      { "slug": "services/temporal", "title": "Temporal" },
+      { "slug": "services/kafka", "title": "Kafka" },
+      { "slug": "services/aws", "title": "AWS" }
+    ],
+    "Guides": [
+      { "slug": "guides/microservices", "title": "Microservices" },
+      { "slug": "guides/workflows", "title": "Everyday workflows" },
+      { "slug": "guides/upgrading-from-0-1", "title": "Upgrading from 0.1" },
+      { "slug": "guides/postgres-upgrades", "title": "Postgres major upgrades" },
+      { "slug": "guides/files-and-storage", "title": "Files and storage" },
+      { "slug": "guides/memory", "title": "Memory" },
+      { "slug": "guides/linux", "title": "Linux" },
+      { "slug": "guides/troubleshooting", "title": "Troubleshooting" },
+      { "slug": "guides/faq", "title": "FAQ" }
+    ],
+    "Reference": [
+      { "slug": "reference/cli", "title": "CLI" },
+      { "slug": "reference/doze-hcl", "title": "doze.hcl" },
+      { "slug": "reference/environment", "title": "Environment" },
+      { "slug": "reference/lockfile", "title": "doze.lock" },
+      { "slug": "reference/binaries", "title": "Binaries" },
+      { "slug": "reference/extensions", "title": "Postgres extensions" },
+      { "slug": "reference/architecture", "title": "Architecture" }
+    ],
+    "Contribute to the registry": [
+      { "slug": "contribute/registry", "title": "How the registry works" },
+      { "slug": "contribute/propose", "title": "Propose a module" },
+      { "slug": "contribute/write", "title": "Write it in doze-modules" },
+      { "slug": "contribute/test", "title": "Test it" },
+      { "slug": "contribute/submit", "title": "Submit and release" }
+    ],
+    "Why doze": [
+      { "slug": "why/doze", "title": "Why doze" },
+      { "slug": "why/not-containers", "title": "Native processes vs containers" },
+      { "slug": "why/hcl", "title": "Why HCL" },
+      { "slug": "why/alternatives", "title": "Alternatives" },
+      { "slug": "why/trust", "title": "The trust model" }
+    ]
+  },
+  "aws": {
+    "Start here": [
+      { "slug": "getting-started", "title": "Getting started" },
+      { "slug": "endpoints", "title": "Endpoints" }
+    ],
+    "Use it": [
+      { "slug": "console", "title": "The console" },
+      { "slug": "cloudformation", "title": "CloudFormation, SAM, CDK and Serverless" },
+      { "slug": "lambda", "title": "Lambda, locally" },
+      { "slug": "embedding", "title": "Embedding doze-aws" }
+    ],
+    "Reference": [
+      { "slug": "cli", "title": "CLI reference" },
+      { "slug": "support", "title": "API support" },
+      { "slug": "compatibility", "title": "What 1.0.0 promises" }
+    ],
+    "Why": [
+      { "slug": "not-built", "title": "What doze-aws does not build" },
+      { "slug": "performance", "title": "Performance" },
+      { "slug": "storage", "title": "Storage: why bbolt" }
+    ]
+  },
+  "kafka": {
+    "Start here": [
+      { "slug": "getting-started", "title": "Getting started" },
+      { "slug": "endpoints", "title": "Endpoints" }
+    ],
+    "Use it": [
+      { "slug": "console", "title": "The web console" },
+      { "slug": "clients", "title": "Clients" },
+      { "slug": "consumer-groups", "title": "Consumer groups" },
+      { "slug": "transactions", "title": "Transactions" },
+      { "slug": "schema-registry", "title": "Schema Registry" },
+      { "slug": "auth-and-tls", "title": "Auth and TLS" },
+      { "slug": "authorization", "title": "Authorization" },
+      { "slug": "observability", "title": "Observability" },
+      { "slug": "frameworks", "title": "Frameworks" },
+      { "slug": "embedding", "title": "Embedding" },
+      { "slug": "troubleshooting", "title": "Troubleshooting" }
+    ],
+    "Reference": [
+      { "slug": "configuration", "title": "Configuration" },
+      { "slug": "api-support", "title": "API support" },
+      { "slug": "storage-and-durability", "title": "Storage and durability" }
+    ],
+    "Why": [
+      { "slug": "limitations", "title": "Limitations" },
+      { "slug": "architecture", "title": "Architecture" }
+    ]
+  }
+}
