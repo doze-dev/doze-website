@@ -493,6 +493,8 @@ const b = (id: string) => {
 .tn-note.on { transform: rotate(var(--r)); }
 .tn-stage[data-lid="closed"] .tn-note.on { opacity: 0; }
 .tn-note:nth-of-type(odd) { background: #f6c9a8; }
+.tn-note b { font-weight: inherit; }
+.tn-note i { display: none; font-style: normal; }
 
 .tn-moon { position: absolute; right: 4%; top: 8%; width: clamp(40px, 7%, 64px); height: auto; transform: translateY(60px); transition: opacity 1.6s ease, transform 2.4s cubic-bezier(.2, .7, .2, 1) !important; filter: drop-shadow(0 0 22px rgba(240, 162, 75, 0.45)); }
 .tn-moon.on { transform: none; }
@@ -560,7 +562,7 @@ const b = (id: string) => {
 /* ── Phone: the stage pinned on top, the beats beneath ── */
 @media (max-width: 900px) {
   .tn { --rail-h: 52px; --stage-h: 46svh; }
-  .tn-rail { padding: 0 6px; gap: 0; }
+  .tn-rail { padding: 0 6px; gap: 0; background: rgba(12, 8, 16, 0.96); }
   .tn-rail-t { display: none; }
   .tn-rail ol { flex: 1; justify-content: space-between; gap: 0; margin: 0; }
   .tn-rail li { flex: 1 1 0; min-width: 0; }
@@ -596,6 +598,61 @@ const b = (id: string) => {
   .tn-tally dd { font-size: 28px; }
   .tn-tally .now { justify-content: flex-end; flex-wrap: wrap; }
   .tn-tally .now small { flex-basis: 100%; text-align: right; }
+}
+
+/* ── Small phones: zoom into what matters. Each window fills the screen
+   and its text is set in px (11px and up), so the stage reads at 390. ── */
+@media (max-width: 760px) {
+  .tn { --stage-h: 50svh; }
+  .tn-stage { gap: 8px; padding: 8px 12px 10px; margin: 0 -24px; }
+  .tn-laptop { width: 100%; }
+  .tn-glow { width: 100%; }
+  .tn-lid { aspect-ratio: auto; height: calc(var(--stage-h) - 72px); padding: 18px 5px 5px; border-radius: 14px 14px 6px 6px; }
+  .tn-base { width: 104%; margin-left: -2%; height: 7px; border-radius: 0 0 8px 8px; }
+  .tn-base i { height: 3px; }
+  .tn-screen { border-radius: 5px; }
+  .tn-mb { height: 22px; gap: 10px; padding: 0 10px; font-size: 11px; }
+  .tn-mb-moon { width: 12px; height: 12px; }
+  .tn-mb-clock { min-width: 32px; }
+  .tn-stage .tn-win { inset: 26px 5px 5px; width: auto; height: auto; border-radius: 8px; }
+  .tn-stage .tn-ed { bottom: auto; height: auto; }
+  .tn-stage[data-step="d1530"] .tn-chan { inset: auto 5px 5px; height: 42%; width: auto; }
+  .tn-wt { height: 24px; padding: 0 10px 0 48px; font-size: 11px; }
+  .tn-wt::before, .tn-tabs::before { left: 10px; width: 7px; height: 7px; box-shadow: 11px 0 #f6bd3b, 22px 0 #3fc950; }
+  .tn-tabs { height: 26px; padding: 4px 4px 0 44px; gap: 2px; }
+  .tn-tabs span { font-size: 11px; line-height: 22px; border-radius: 5px 5px 0 0; }
+  .tn-tabs span.on { max-width: 160px; padding-inline: 7px; }
+  .tn-tabs span.on:not(.hi) { max-width: 22px; padding-inline: 4px; }
+  .tn-tb { height: calc(100% - 26px); }
+  .tn-pg { padding: 10px 12px; font-size: 11px; line-height: 1.45; white-space: pre-wrap; }
+  .tn-rb { gap: 8px; padding: 14px; font-size: 12px; }
+  .tn-cb { position: absolute; inset: 24px 0 0; justify-content: flex-end; gap: 7px; padding: 10px; overflow: hidden; }
+  .tn-cb p { padding: 7px 10px; border-radius: 12px; font-size: 12px; line-height: 1.35; max-width: 92%; }
+  .tn-cb p[data-in]:not(.on) { display: none; }
+  .tn-cb .tool { font-size: 11px; }
+  .tn-chan .bot b { font-size: 11px; }
+  .tn-db, .tn-eb { padding: 10px 12px; font-size: 11px; white-space: pre-wrap; }
+  .tn-eb { padding: 10px 0 40px; }
+  .tn-eb i { width: 30px; padding-right: 8px; }
+  .tn-paused { padding: 7px 12px; font-size: 11px; }
+  .tn-toast { top: 28px; right: 8px; width: auto; left: 30%; gap: 8px; padding: 8px 10px; border-radius: 10px; }
+  .tn-toast div { font-size: 12px; gap: 2px; }
+  .tn-av { width: 26px; height: 26px; font-size: 12px; }
+  .tn-wait { left: 10px; bottom: 10px; gap: 8px; padding: 7px 12px; font-size: 11px; }
+  .tn-wait span { width: 12px; height: 12px; border-width: 2px; }
+  .tn-menu { top: 24px; right: 8px; width: 80%; padding: 5px; border-radius: 9px; font-size: 12px; }
+  .tn-menu-h { padding: 6px 8px 4px; font-size: 11px; }
+  .tn-menu-r { padding: 6px 8px; }
+  .tn-menu-r i { width: 7px; height: 7px; }
+  .tn-menu-r i.g { box-shadow: inset 0 0 0 1.5px #a796b5; }
+  .tn-menu hr { height: 1px; margin: 4px 3px; }
+  .tn-rw svg { width: 120px; height: 120px; }
+  .tn-rw span { font-size: 14px; }
+  .tn-lid { padding-top: 22px; }
+  .tn-note { left: calc(1% + var(--n) * 12.2%); top: -5px; max-width: none; padding: 3px 5px 4px; font-size: 11px; line-height: 1.1; white-space: nowrap; }
+  .tn-note b { display: none; }
+  .tn-note i { display: inline; }
+  .tn-moon { width: 40px; top: 4%; }
 }
 
 /* ── Reduced motion: no pinning, no spin; each beat carries its own still ── */

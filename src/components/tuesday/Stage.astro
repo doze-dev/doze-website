@@ -6,14 +6,14 @@
 import { on } from "./steps";
 
 const notes = [
-  { t: "3000?", from: "0920a", x: 4, y: -3, r: -6 },
-  { t: "3001 = the other web", from: "0920a", x: 20, y: -4, r: 4 },
-  { t: "8000 or 8001?", from: "0920b", x: 70, y: -3.5, r: -3 },
-  { t: "5432 (theirs!)", from: "0920b", x: 90, y: 13, r: 7 },
-  { t: "5433 = ours??", from: "0920c", x: 91, y: 31, r: -5 },
-  { t: "6379 shared?", from: "0920c", x: -5, y: 22, r: 5 },
-  { t: "5173 vite somewhere", from: "0920d", x: -6, y: 46, r: -4 },
-  { t: "8080 ???", from: "0920d", x: 91, y: 56, r: 3 },
+  { t: "3000?", s: "3000?", from: "0920a", x: 4, y: -3, r: -6 },
+  { t: "3001 = the other web", s: "3001", from: "0920a", x: 20, y: -4, r: 4 },
+  { t: "8000 or 8001?", s: "8001?", from: "0920b", x: 70, y: -3.5, r: -3 },
+  { t: "5432 (theirs!)", s: "5432!", from: "0920b", x: 90, y: 13, r: 7 },
+  { t: "5433 = ours??", s: "5433?", from: "0920c", x: 91, y: 31, r: -5 },
+  { t: "6379 shared?", s: "6379?", from: "0920c", x: -5, y: 22, r: 5 },
+  { t: "5173 vite somewhere", s: "5173?", from: "0920d", x: -6, y: 46, r: -4 },
+  { t: "8080 ???", s: "8080?", from: "0920d", x: 91, y: 56, r: 3 },
 ];
 const mess = (from: string) => on([from, "1840c"]);
 ---
@@ -243,8 +243,8 @@ waiting for debugger on 127.0.0.1:9229 …
           <span>↺ 8:57</span>
         </div>
       </div>
-      {notes.map((n) => (
-        <span class="tn-note" style={`--x:${n.x}%;--y:${n.y}%;--r:${n.r}deg`} data-in={mess(n.from)}>{n.t}</span>
+      {notes.map((n, i) => (
+        <span class="tn-note" style={`--x:${n.x}%;--y:${n.y}%;--r:${n.r}deg;--n:${i}`} data-in={mess(n.from)}><b>{n.t}</b><i>{n.s}</i></span>
       ))}
     </div>
     <div class="tn-base"><i></i></div>
