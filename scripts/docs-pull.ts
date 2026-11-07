@@ -5,6 +5,10 @@
 // exists, so a docs edit shows up on the next reload. In CI, or with
 // DOCS_SOURCE=git, it shallow-clones each repo at its ref instead.
 //
+// DOCS_LOCAL_<NAME>=/abs/path (e.g. DOCS_LOCAL_AWS, DOCS_LOCAL_KAFKA) reads
+// that one source from the given checkout instead, in any mode: use it to
+// preview docs from a worktree or branch before they land on the ref.
+//
 // On the way in it:
 //   - gives pages without frontmatter a title taken from their first "# " line
 //   - turns README.md into the section's index page
@@ -38,6 +42,11 @@ const { sources } = JSON.parse(readFileSync(join(root, "sources.json"), "utf8"))
 const fromGit = process.env.DOCS_SOURCE === "git" || process.env.CI === "true";
 
 async function checkout(s: Source): Promise<{ dir: string; via: string }> {
+  const override = process.env[`DOCS_LOCAL_${s.name.toUpperCase()}`];
+  if (override) {
+    if (!existsSync(join(override, s.path))) throw new Error(`DOCS_LOCAL_${s.name.toUpperCase()}: no ${s.path} in ${override}`);
+    return { dir: resolve(override), via: `override ${override}` };
+  }
   const sibling = resolve(root, "..", s.repo.split("/")[1]);
   if (!fromGit && existsSync(join(sibling, s.path))) return { dir: sibling, via: `local ${relative(root, sibling)}` };
   const dir = join(cache, s.name);
