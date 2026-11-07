@@ -32,7 +32,8 @@ function checkout(repo: string, paths: string[]): string {
     `https://github.com/doze-dev/${repo}.git`,
     dir,
   ]);
-  git(["sparse-checkout", "set", ...paths], dir);
+  // --no-cone: paths may be single files (doze-binaries versions.yaml).
+  git(["sparse-checkout", "set", "--no-cone", ...paths.map((p) => `/${p}`)], dir);
   return dir;
 }
 
