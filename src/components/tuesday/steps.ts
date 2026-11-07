@@ -51,12 +51,17 @@ export const steps: Step[] = [
   { id: "1840c", ch: "1840", clock: "19:30", light: "dark", fan: 3, heat: 1, lid: "closed" },
   { id: "rewind", ch: "rewind", clock: "8:57", light: "rewind", fan: 0, heat: 0 },
   { id: "d0902", ch: "doze", clock: "9:02", light: "calm", fan: 0, heat: 0, doze: true },
-  { id: "d0920", ch: "doze", clock: "9:20", light: "calm", fan: 0, heat: 0, doze: true },
+  { id: "d0903", ch: "doze", clock: "9:03", light: "calm", fan: 0, heat: 0, doze: true },
+  { id: "d0905", ch: "doze", clock: "9:05", light: "calm", fan: 0, heat: 0, doze: true },
   { id: "d1130", ch: "doze", clock: "11:30", light: "calm", fan: 0, heat: 0, doze: true },
+  { id: "d1131", ch: "doze", clock: "11:31", light: "calm", fan: 0, heat: 0, doze: true },
+  { id: "d1133", ch: "doze", clock: "11:33", light: "calm", fan: 0, heat: 0, doze: true },
   { id: "d1400", ch: "doze", clock: "14:00", light: "calm", fan: 0, heat: 0, doze: true },
+  { id: "d1406", ch: "doze", clock: "14:06", light: "calm", fan: 0, heat: 0, doze: true },
   { id: "d1530", ch: "doze", clock: "15:30", light: "calm", fan: 0, heat: 0, doze: true },
   { id: "d1840", ch: "doze", clock: "18:40", light: "calm-evening", fan: 0, heat: 0, doze: true },
-  { id: "d1900", ch: "doze", clock: "18:41", light: "night", fan: 0, heat: 0, lid: "closed", doze: true },
+  { id: "d1842", ch: "doze", clock: "18:42", light: "calm-evening", fan: 0, heat: 0, doze: true },
+  { id: "d1900", ch: "doze", clock: "18:43", light: "night", fan: 0, heat: 0, lid: "closed", doze: true },
 ];
 
 export const step = (id: string): Step => {
@@ -91,5 +96,5 @@ export const chapters = [
   { id: "1530", label: "15:30", name: "Afternoon: how we got here" },
   { id: "1840", label: "18:40", name: "Evening: close the lid" },
   { id: "rewind", label: "↺", name: "Rewind" },
-  { id: "doze", label: "doze", name: "The same day, with doze" },
+  { id: "doze", label: "doze", name: "The same day, in the doze app" },
 ];

@@ -22,7 +22,7 @@ const b = (id: string) => {
   };
 };
 ---
-<Page title="A Tuesday, honestly" theme="dark" current="none" description="One developer, one Tuesday, told twice: the way it goes, and the same day with doze.">
+<Page title="A Tuesday, honestly" theme="dark" current="none" description="One developer, one Tuesday, told twice: the way it goes, and the same day in the doze app.">
 <div class="tn" data-tn data-light="dawn">
 
   <!-- the sky: the light of the day, behind everything -->
@@ -187,34 +187,59 @@ const b = (id: string) => {
         <div class="tn-ch" id="t-rewind" tabindex="-1">
           <article class="tn-beat tn-turn" {...b("rewind")}>
             <h2 class="tn-turn-h" id="tn-rw">Rewind.</h2>
-            <p class="tn-line">Same Tuesday. One file.</p>
+            <p class="tn-line">Same Tuesday. One app.</p>
           </article>
         </div>
       </section>
 
-      <!-- ACT 5 -->
+      <!-- ACT 5: the same day, told in the doze app -->
       <section class="tn-act tn-replay" aria-labelledby="tn-a5">
         <div class="tn-ch" id="t-doze" tabindex="-1">
           <article class="tn-beat" {...b("d0902")}>
             <h2 class="tn-act-h" id="tn-a5"><span>Act five</span>The same day, with doze</h2>
             <p class="tn-time">9:02</p>
             <p>Lid up. The fan is off. It was off all night.</p>
-            <p><code>doze up</code>. The stack is Larder, our made-up grocery example: nine apps, four modules and a mail catcher, from one <code>doze.hcl</code>.</p>
+            <p>You open doze. Every project on this Mac is in one list, each with a switch. Last week's client project is stopped. It holds nothing.</p>
+            <p>You flip Larder on. It starts what ran last time, each service after the ones it needs.</p>
+            <p class="tn-aside">Larder is our made-up grocery example: nine apps, four modules and a mail catcher. Or type <code>doze up</code> in a terminal; the app shows the same stack.</p>
           </article>
-          <article class="tn-beat" {...b("d0920")}>
-            <p class="tn-time">9:20</p>
-            <p>Something holds 8000. You don't hunt for it; doze names it.</p>
-            <p>Stop it, or give every service an address of its own, once, and stop counting ports.</p>
+          <article class="tn-beat" {...b("d0903")}>
+            <p class="tn-time">9:03</p>
+            <p>You open the map. Who calls whom, left to right, the way a request travels.</p>
+            <p>What they share sits underneath. How much memory, how many awake. Nothing to keep in your head.</p>
+            <p>One card is red.</p>
+          </article>
+          <article class="tn-beat" {...b("d0905")}>
+            <p class="tn-time">9:05</p>
+            <p>The gateway can't have port 8000. You don't hunt for who has it. The app says: python3, pid 5387. The file server you started on Friday.</p>
+            <p>Stop it, one click. doze asks first, because it isn't doze's.</p>
+            <p class="tn-line">The first error of the day comes with a name.</p>
           </article>
           <article class="tn-beat" {...b("d1130")}>
             <p class="tn-time">11:30</p>
-            <p>Orders is unhappy. Your agent asks doze what's running instead of guessing from the files.</p>
-            <p>It's right the first time. It can see your machine now.</p>
+            <p>A notification: <em>orders crashed in larder</em>.</p>
+            <p>One, for this crash. Not one per try.</p>
+          </article>
+          <article class="tn-beat" {...b("d1131")}>
+            <p class="tn-time">11:31</p>
+            <p>You click Show. Orders' Logs tab, this run only.</p>
+            <p>Password authentication failed for user “orders”. Not a guess. What orders said, two seconds ago.</p>
+          </article>
+          <article class="tn-beat" {...b("d1133")}>
+            <p class="tn-time">11:33</p>
+            <p>You ask your agent anyway. It reads the same stack through doze instead of guessing from the files.</p>
+            <p>A line in <code>.env.local</code> overrides the address doze gives orders. It's right the first time.</p>
+            <p class="tn-line">It can see your machine now.</p>
           </article>
           <article class="tn-beat" {...b("d1400")}>
             <p class="tn-time">14:00</p>
-            <p><em>can you look at billing?</em> <code>git pull && doze up</code>.</p>
-            <p>The new TypeScript service is just there: whoever added it added it to <code>doze.hcl</code>. If that file were wrong, nothing would start, so it can't go stale.</p>
+            <p><em>can you look at billing?</em></p>
+            <p>Billing is in the list, stopped since spring. You pull the latest code and flip its switch.</p>
+          </article>
+          <article class="tn-beat" {...b("d1406")}>
+            <p class="tn-time">14:06</p>
+            <p>The map shows a TypeScript service you've never seen: notifications, called by invoices.</p>
+            <p>Whoever added it added it to <code>doze.hcl</code>. If that file were wrong, nothing would start. So the map can't go stale.</p>
           </article>
           <article class="tn-beat" {...b("d1530")}>
             <p class="tn-time">15:30</p>
@@ -224,8 +249,12 @@ const b = (id: string) => {
           </article>
           <article class="tn-beat" {...b("d1840")}>
             <p class="tn-time">18:40</p>
-            <p>The menu bar. Billing went to sleep on its own, two minutes after you stopped calling it.</p>
-            <p>Larder's workers read Kafka all day, so they never sleep. You stop the stack: one click.</p>
+            <p>You close the window. doze stays in the menu bar.</p>
+            <p>Billing went to sleep on its own, two minutes after you stopped calling it. Larder's workers read Kafka all day, so they never sleep, and what they use stays up with them.</p>
+          </article>
+          <article class="tn-beat" {...b("d1842")}>
+            <p class="tn-time">18:42</p>
+            <p>So you open doze and flip Larder off. One switch.</p>
           </article>
           <article class="tn-beat tn-home" {...b("d1900")}>
             <p>You close the lid. Nothing is awake.</p>
@@ -237,15 +266,16 @@ const b = (id: string) => {
   </div>
 
   <!-- ending -->
-  <section class="tn-end" id="t-end" data-step="end" data-ch="doze" data-clock="18:41" data-light="night" data-fan="0" data-heat="0" data-lid="closed" aria-labelledby="tn-end-h">
+  <section class="tn-end" id="t-end" data-step="end" data-ch="doze" data-clock="18:43" data-light="night" data-fan="0" data-heat="0" data-lid="closed" aria-labelledby="tn-end-h">
     <img class="tn-end-moon" src="/brand/family-moon.svg" alt="" width="56" height="56" />
     <h2 class="tn-end-h" id="tn-end-h">The same Tuesday, twice.</h2>
     <div class="tn-tally">
       <div class="tn-tally-h" aria-hidden="true"><span></span><b>How it is</b><b>With doze</b></div>
       <dl>
-        <div><dt>Commands to remember</dt><dd class="was">7</dd><dd class="now">1 <small>doze up</small></dd></div>
+        <div><dt>Windows to keep an eye on</dt><dd class="was">6</dd><dd class="now">1 <small>the doze app</small></dd></div>
+        <div><dt>Commands to remember</dt><dd class="was">7</dd><dd class="now">0 <small>a switch per project</small></dd></div>
         <div><dt>Ports in your head</dt><dd class="was">8</dd><dd class="now">0 <small>every service has a name</small></dd></div>
-        <div><dt>Files to read before you start</dt><dd class="was">9</dd><dd class="now">1 <small>doze.hcl</small></dd></div>
+        <div><dt>Files to read before you start</dt><dd class="was">9</dd><dd class="now">0 <small>the map shows what is there</small></dd></div>
         <div><dt>Teams you wait on to run your code</dt><dd class="was">1</dd><dd class="now">0 <small>it runs on your laptop</small></dd></div>
         <div><dt>Still running when you close the lid</dt><dd class="was">23</dd><dd class="now">0 <small>asleep, or stopped</small></dd></div>
       </dl>
@@ -380,6 +410,7 @@ const b = (id: string) => {
 .tn-turn-h { margin: 0 0 18px; font: 800 clamp(64px, 8vw, 120px)/0.9 var(--tn-display); letter-spacing: -0.04em; }
 .tn-replay .tn-act-h span { color: var(--tn-amber); }
 .tn-home { min-height: 90svh; }
+.tn-aside { font-size: 16px !important; color: var(--tn-dim) !important; }
 .tn-home p:last-child { font: 700 30px/1.2 var(--tn-display); color: var(--tn-text); letter-spacing: -0.015em; }
 
 /* ── Stage ── */
@@ -399,7 +430,10 @@ const b = (id: string) => {
 .tn-mb { position: absolute; inset: 0 0 auto; z-index: 6; height: 3.4cqi; display: flex; align-items: center; gap: 1.6cqi; padding: 0 1.6cqi; font: 500 1.35cqi/1 var(--tn-body); color: rgba(255, 255, 255, 0.82); background: rgba(10, 6, 14, 0.5); backdrop-filter: blur(8px); }
 .tn-mb b { font-weight: 700; }
 .tn-mb-sp { flex: 1; }
-.tn-mb-moon { width: 1.8cqi; height: 1.8cqi; }
+.tn-mb [data-in]:not(.on) { display: none; }
+.tn-mb-bat { position: relative; display: inline-flex; }
+.tn-mb-bat img { width: 1.8cqi; height: 1.8cqi; border-radius: 0.3cqi; }
+.tn-mb-bat i { position: absolute; top: -0.3cqi; right: -0.4cqi; width: 0.8cqi; height: 0.8cqi; border-radius: 50%; background: #ff7a93; box-shadow: 0 0 0 0.15cqi #1c1a24; }
 .tn-mb-clock { font-variant-numeric: tabular-nums; min-width: 4cqi; text-align: right; }
 
 /* Stage layers: shown when the step is theirs. Crossfade (opacity) only. */
@@ -431,7 +465,7 @@ const b = (id: string) => {
 .tn-rb s { color: #8a7c94; }
 
 .tn-chat { right: 3%; top: 12%; width: 44%; height: 80%; background: #1b1424; transform: translateY(2cqi); }
-.tn-chat.on, .tn-chan.on, .tn-diff.on, .tn-ed.on { transform: none; }
+.tn-chat.on, .tn-chan.on, .tn-ed.on { transform: none; }
 .tn-cb { display: flex; flex-direction: column; gap: 1.2cqi; padding: 1.8cqi; }
 .tn-cb p { margin: 0; max-width: 88%; padding: 1.1cqi 1.5cqi; border-radius: 1.4cqi; font: 400 1.4cqi/1.4 var(--tn-body); transform: translateY(1cqi); }
 .tn-cb p.on { transform: none; }
@@ -454,13 +488,10 @@ const b = (id: string) => {
 .tn-chan { right: 3%; top: 14%; width: 48%; height: 70%; background: #1b1424; transform: translateY(2cqi); }
 .tn-chan .bot { align-self: flex-start; background: #3a1f28; color: #ffdfe4; }
 .tn-chan .bot b { display: block; margin-bottom: 0.3cqi; font-size: 1.15cqi; color: var(--tn-bad); text-transform: uppercase; letter-spacing: 0.08em; }
-.tn-stage[data-step="d1530"] .tn-chan { opacity: 0.38; filter: saturate(0.4); top: 46%; height: 42%; right: 2%; width: 40%; }
+.tn-stage[data-step="d1530"] .tn-chan { opacity: 0.5; filter: saturate(0.4); top: 53%; height: 40%; right: 2%; width: 40%; }
 .tn-wait { position: absolute; left: 4%; bottom: 6%; z-index: 4; display: flex; align-items: center; gap: 1.2cqi; padding: 1.2cqi 2cqi; border-radius: 99px; background: rgba(0, 0, 0, 0.6); font: 500 1.4cqi/1 var(--tn-body); color: #eee4f3; }
 .tn-wait span { width: 1.8cqi; height: 1.8cqi; border-radius: 50%; border: 0.3cqi solid rgba(255, 255, 255, 0.2); border-top-color: #eee4f3; animation: tn-spin 0.9s linear infinite; }
 
-.tn-diff { right: 3%; top: 40%; width: 50%; height: 44%; transform: translateY(2cqi); }
-.tn-db { margin: 0; padding: 1.6cqi 2cqi; font-size: 1.28cqi; line-height: 1.6; white-space: pre; }
-.tn-db ins { text-decoration: none; color: var(--tn-good); }
 .tn-ed { right: 3%; top: 12%; width: 54%; height: 36%; background: #17111f; transform: translateY(2cqi); z-index: 3; }
 .tn-eb { margin: 0; padding: 1.6cqi 0; font-size: 1.3cqi; line-height: 1.75; white-space: pre; color: #ddd2e6; }
 .tn-eb i { display: inline-block; width: 5cqi; padding-right: 1.4cqi; text-align: right; font-style: normal; color: #7d6d8b; }
@@ -475,8 +506,9 @@ const b = (id: string) => {
 .tn-menu-r:nth-child(2) { background: rgba(255, 255, 255, 0.06); }
 .tn-menu-r span { display: flex; align-items: center; gap: 1cqi; }
 .tn-menu-r i { width: 1cqi; height: 1cqi; border-radius: 50%; background: #6d5d7b; }
+.tn-menu-r i.a { background: #7ee787; }
 .tn-menu-r i.g { background: transparent; box-shadow: inset 0 0 0 0.2cqi #a796b5; }
-.tn-menu-r em { font-style: normal; color: #a796b5; }
+.tn-menu-r em { font-style: normal; color: #a796b5; background: none; padding: 0; }
 .tn-menu hr { border: 0; height: 0.12cqi; background: rgba(255, 255, 255, 0.1); margin: 0.6cqi 0.4cqi; }
 
 .tn-rw { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 2cqi; background: #08060b; }
@@ -615,7 +647,8 @@ const b = (id: string) => {
   .tn-base i { height: 3px; }
   .tn-screen { border-radius: 5px; }
   .tn-mb { height: 22px; gap: 10px; padding: 0 10px; font-size: 11px; }
-  .tn-mb-moon { width: 12px; height: 12px; }
+  .tn-mb-bat img { width: 13px; height: 13px; border-radius: 3px; }
+  .tn-mb-bat i { width: 6px; height: 6px; top: -2px; right: -3px; }
   .tn-mb-clock { min-width: 32px; }
   .tn-stage .tn-win { inset: 26px 5px 5px; width: auto; height: auto; border-radius: 8px; }
   .tn-stage .tn-ed { bottom: auto; height: auto; }
@@ -634,7 +667,7 @@ const b = (id: string) => {
   .tn-cb p[data-in]:not(.on) { display: none; }
   .tn-cb .tool { font-size: 11px; }
   .tn-chan .bot b { font-size: 11px; }
-  .tn-db, .tn-eb { padding: 10px 12px; font-size: 11px; white-space: pre-wrap; }
+  .tn-eb { padding: 10px 12px; font-size: 11px; white-space: pre-wrap; }
   .tn-eb { padding: 10px 0 40px; }
   .tn-eb i { width: 30px; padding-right: 8px; }
   .tn-paused { padding: 7px 12px; font-size: 11px; }

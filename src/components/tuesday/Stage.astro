@@ -3,6 +3,7 @@
 // notes, base) and a status strip (fan, clock, heat). Every layer carries
 // data-in = the steps it shows in, so any step is a complete picture.
 // Decorative: the beats beside it say everything in words (aria-hidden).
+import App from "./App.astro";
 import { on } from "./steps";
 
 const notes = [
@@ -26,14 +27,14 @@ const mess = (from: string) => on([from, "1840c"]);
         <div class="tn-wall"></div>
 
         <div class="tn-mb">
-          <b>Terminal</b><span>File</span><span>Edit</span><span>View</span>
+          <b data-in={on(["cold", "1840c"])}>Terminal</b><b data-in={on(["rewind", "d1900"])}>doze</b><span>File</span><span>Edit</span><span>View</span>
           <i class="tn-mb-sp"></i>
-          <img class="tn-mb-moon" src="/brand/family-moon.svg" alt="" width="14" height="14" data-in={on(["d0902", "d1900"])} />
+          <span class="tn-mb-bat" data-in={on(["d0902", "d1900"])}><img src="/brand/doze.svg" alt="" width="14" height="14" /><i data-in={on(["d0903", "d1133"])}></i></span>
           <span class="tn-mb-day">Tue</span><span class="tn-mb-clock" data-clock>9:02</span>
         </div>
 
         <!-- the terminal -->
-        <div class="tn-win tn-term" data-in={on(["0902a", "1840a"], ["d0902", "d1530"])}>
+        <div class="tn-win tn-term" data-in={on(["0902a", "1840a"])}>
           <div class="tn-tabs">
             <span style="--i:0" data-in={on(["0902a", "1840a"])} data-hi={on("0902a")}>web · pnpm dev</span>
             <span style="--i:1" data-in={on(["0902a", "1840a"])} data-hi="">api · poetry run…</span>
@@ -43,8 +44,6 @@ const mess = (from: string) => on([from, "1840c"]);
             <span style="--i:5" data-in={on(["0902b", "1840a"])} data-hi={on("0902b", ["0920b", "0920d"], "1840a")}>zsh (??)</span>
             <span style="--i:0" data-in={on(["1400b", "1840a"])} data-hi={on(["1400b", "1400c"])}>billing</span>
             <span style="--i:0" data-in={on(["1530a", "1840a"])} data-hi={on(["1530a", "1530d"])}>dev env</span>
-            <span class="tn-tab-calm" data-in={on(["d0902", "d1130"])} data-hi={on(["d0902", "d1130"])}>larder — zsh</span>
-            <span class="tn-tab-calm" data-in={on(["d1400", "d1530"])} data-hi={on(["d1400", "d1530"])}>billing — zsh</span>
           </div>
           <div class="tn-tb">
 <pre class="tn-pg" data-in={on(["0902a", "0902b"])}>Last login: Mon Nov  2 18:52:11 on ttys004
@@ -112,41 +111,9 @@ waiting for debugger on 127.0.0.1:9229 …
  1-02:14:09 node
  1-01:58:40 node</pre>
 
-<pre class="tn-pg" data-in={on("d0902")}><i>$</i> doze up
-<u>✓</u> postgres awake
-<u>✓</u> redis awake
-<u>✓</u> kafka awake
-<u>✓</u> aws awake
-<u>✓</u> mailpit awake
-<u>✓</u> migrate-identity done
-<i>  ⋮</i>
-<u>✓</u> gateway awake
-<u>✓</u> storefront awake
-<i>›</i> up — supervised in the background. <i>doze for the dash · doze down to stop</i></pre>
 
-<pre class="tn-pg" data-in={on("d0920")}><i>$</i> doze doctor
-<i>  ⋮</i>
-  <b>✗</b>  port 8000        held by python3 (pid 5387) on 127.0.0.1:8000
-       stop it:               kill 5387
-       or give gateway its own address: doze doctor --fix
-       or use another port:   port = … in the "gateway" block of doze.hcl</pre>
 
-<pre class="tn-pg" data-in={on("d1130")}><i>$</i> doze status
-      NAME       ENGINE        STATE
-<i>Modules</i>
-  <u>●</u>   postgres   postgres 18   awake
-  <u>●</u>   kafka      kafka 4       awake
-<i>Apps</i>
-  <b>↻</b>   orders     app           crashing 2/5
-<i>$</i> doze logs orders
-<i>orders │</i> password authentication failed for user "orders"</pre>
 
-<pre class="tn-pg" data-in={on(["d1400", "d1530"])}><i>$</i> git pull && doze up
- doze.hcl                      |  9 +++++++++
- services/notifications/...    | 41 ++++++++
-<u>✓</u> install-notifications done
-<u>✓</u> notifications awake
-<i>›</i> up — supervised in the background. <i>doze for the dash · doze down to stop</i></pre>
           </div>
         </div>
 
@@ -174,6 +141,9 @@ waiting for debugger on 127.0.0.1:9229 …
           </div>
         </div>
 
+        <!-- the doze app: every page of the window, and the notification -->
+        <App />
+
         <!-- 14:00: the message -->
         <div class="tn-toast" data-in={on("1400a", "d1400")}>
           <span class="tn-av">P</span>
@@ -193,26 +163,14 @@ waiting for debugger on 127.0.0.1:9229 …
         </div>
         <div class="tn-wait" data-in={on("1530d")}><span></span>Reconnecting to dev-you…</div>
 
-        <!-- doze, 11:30: the agent reads what is running -->
-        <div class="tn-win tn-chat tn-agent" data-in={on("d1130")}>
+        <!-- doze, 11:33: the agent reads the same stack -->
+        <div class="tn-win tn-chat tn-agent" data-in={on("d1133")}>
           <div class="tn-wt">Assistant</div>
           <div class="tn-cb">
             <p class="me">orders can't reach the database. fix it?</p>
-            <p class="tool">ran <code>doze status</code> · <code>doze logs orders</code></p>
+            <p class="tool">read <code>doze status --json</code> · <code>doze logs orders</code></p>
             <p class="ai">orders is crashing (try 2 of 5): password authentication failed. <code>.env.local</code> overrides the <code>DATABASE_URL</code> doze gives it. Remove that line?</p>
           </div>
-        </div>
-
-        <!-- doze, 14:00: the new service, in the file -->
-        <div class="tn-win tn-diff" data-in={on("d1400")}>
-          <div class="tn-wt">doze.hcl</div>
-<pre class="tn-db"><ins>+ app "notifications" &#123;
-+   dir   = "services/notifications"
-+   run   = "bun src/index.ts"
-+   ready = log("consuming")
-+   after = [task.install-notifications]
-+   env   = &#123; KAFKA_BROKERS = module.kafka.address &#125;
-+ &#125;</ins></pre>
         </div>
 
         <!-- doze, 15:30: a breakpoint just hits -->
@@ -225,11 +183,12 @@ waiting for debugger on 127.0.0.1:9229 …
           <div class="tn-paused">Paused on breakpoint · invoices.ts:42</div>
         </div>
 
-        <!-- doze, 18:40: the menu bar -->
+        <!-- doze, 18:40: the menu bar (internal/desk/tray): running stacks first -->
         <div class="tn-menu" data-in={on("d1840")}>
           <div class="tn-menu-h">Stacks</div>
           <div class="tn-menu-r"><span><i class="g"></i>billing</span><em>0 awake</em></div>
-          <div class="tn-menu-r"><span><i></i>larder</span><em>stopped</em></div>
+          <div class="tn-menu-r"><span><i class="a"></i>larder</span><em>9 awake · 316 MB</em></div>
+          <div class="tn-menu-r"><span><i></i>client-site</span><em>up 7 days ago</em></div>
           <hr />
           <div class="tn-menu-r"><span>Open doze</span><em>⇧⌘D</em></div>
           <div class="tn-menu-r"><span>Settings…</span><em>⌘,</em></div>

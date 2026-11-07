@@ -1,0 +1,627 @@
+---
+// The doze app on the Tuesday laptop (Act five), drawn in HTML from the app's
+// own screens, so the second Tuesday is told in the window, not a terminal.
+// Every word is the app's (internal/desk/frontend/src: titlebar.tsx,
+// pages/library.tsx, overview.tsx's strip, instance.tsx's PortClash card,
+// logs.tsx; internal/desk/view/away.go's "crashed in"), laid out as the
+// boards in doze/docs/design/desktop/boards draw them (Library, MapFlow,
+// MapFlowSelected, PortClash, InstanceLogs, MenuBar). The palette is the
+// app's default dark theme, the same as components/doze/appdraw.css.
+// Larder's figures are MapFlow's own; billing's are the story's.
+// Decorative, inside the aria-hidden stage: the beats say it all in words.
+import { on } from "./steps";
+
+// Where each page of the window shows.
+const home = on("d0902", "d1400", "d1842");
+const larderMap = on("d0903", "d1130");
+const billingMap = on("d1406", "d1530");
+const gateway = on("d0905");
+const orders = on("d1131", "d1133");
+const larderTrouble = on(["d0903", "d1133"]);
+
+// Larder, as the MapFlow board draws it: who calls whom, left to right.
+type Node = {
+  n: string;
+  lang: string;
+  mb: string;
+  uses: string[];
+  c: number;
+  r: number;
+  bad?: string;
+  badIn?: string;
+  sel?: string;
+};
+const larderFlow: Node[] = [
+  { n: "storefront", lang: "ts", mb: "61 MB", uses: [], c: 1, r: 2 },
+  { n: "gateway", lang: "go", mb: "46 MB", uses: ["redis"], c: 2, r: 2, bad: "port taken", badIn: on("d0903") },
+  { n: "identity", lang: "go", mb: "42 MB", uses: ["postgres", "kafka"], c: 3, r: 1 },
+  { n: "fulfilment", lang: "py", mb: "52 MB", uses: ["kafka", "aws"], c: 3, r: 2 },
+  { n: "recommendations", lang: "py", mb: "58 MB", uses: ["postgres", "kafka", "redis"], c: 3, r: 3 },
+  {
+    n: "orders",
+    lang: "go",
+    mb: "47 MB",
+    uses: ["postgres", "kafka"],
+    c: 4,
+    r: 2,
+    bad: "crashing",
+    badIn: on("d1130"),
+  },
+  { n: "catalog", lang: "go", mb: "47 MB", uses: ["postgres", "aws"], c: 5, r: 2 },
+];
+const larderNobody: Node[] = [
+  { n: "payments", lang: "go", mb: "47 MB", uses: ["postgres", "kafka", "redis"], c: 0, r: 0 },
+  { n: "notifications", lang: "ts", mb: "45 MB", uses: ["kafka", "mailpit"], c: 0, r: 0 },
+];
+const larderShared = [
+  ["mailpit", "24 MB", "used by 1"],
+  ["redis", "5 MB", "used by 3"],
+  ["postgres", "13 MB", "used by 5"],
+  ["kafka", "24 MB", "used by 6"],
+  ["aws", "25 MB", "used by 2"],
+];
+// x: five columns, 16.6% wide, 4.25% apart; y: three rows of the flow box.
+const larderEdges = [
+  "M16.6 50 L20.85 50",
+  "M37.45 50 C39.6 50 39.6 14.4 41.7 14.4",
+  "M37.45 50 L41.7 50",
+  "M37.45 50 C39.6 50 39.6 85.6 41.7 85.6",
+  "M58.3 50 L62.55 50",
+  "M29.15 35.6 C29.15 28 70.85 28 70.85 35.6",
+  "M29.15 64.4 C29.15 72 91.7 72 91.7 64.4",
+  "M79.15 50 L83.4 50",
+  "M58.3 85.6 C80 85.6 91.7 80 91.7 64.4",
+];
+
+// billing: the repo from spring, with the TypeScript service nobody told you about.
+const billingFlow: Node[] = [
+  { n: "portal", lang: "ts", mb: "58 MB", uses: [], c: 1, r: 1 },
+  { n: "invoices", lang: "ts", mb: "44 MB", uses: ["postgres"], c: 2, r: 1 },
+  { n: "notifications", lang: "ts", mb: "41 MB", uses: ["mailpit"], c: 3, r: 1, sel: on("d1406") },
+];
+const billingShared = [
+  ["postgres", "12 MB", "used by 1"],
+  ["mailpit", "asleep", "used by 1"],
+];
+
+// The sidebar of a Larder service page.
+const side: [string, [string, string, string?][]][] = [
+  [
+    "Apps",
+    [
+      ["storefront", "dozing"],
+      ["gateway", "46 MB", gateway],
+      ["identity", "42 MB"],
+      ["catalog", "47 MB"],
+      ["orders", "47 MB", orders],
+      ["payments", "47 MB"],
+      ["fulfilment", "52 MB"],
+      ["recommendations", "58 MB"],
+      ["notifications", "45 MB"],
+    ],
+  ],
+  [
+    "Modules",
+    [
+      ["postgres", "13 MB"],
+      ["redis", "5 MB"],
+      ["kafka", "24 MB"],
+      ["aws", "25 MB"],
+    ],
+  ],
+  ["Outside", [["mailpit", "24 MB"]]],
+];
+const sideBad: Record<string, [string, string]> = { gateway: ["port taken", gateway], orders: ["crashing", orders] };
+
+// The Library's rows: name, folder, what each says at each step it shows.
+type Cell = { in: string; fig: string; sub: string; when: string; busy?: boolean };
+const rows: { n: string; dir: string; on: string; sel: string; cells: Cell[] }[] = [
+  {
+    n: "larder",
+    dir: "~/code/larder · 14 declared",
+    on: on("d0902", "d1400"),
+    sel: on("d0902", "d1842"),
+    cells: [
+      {
+        in: on("d0902"),
+        fig: "<i class=g>5 awake</i> · <i class=c>7 waking</i> · 2 asleep",
+        sub: "212 MB · 6 connections",
+        when: "starting…",
+        busy: true,
+      },
+      {
+        in: on("d1400"),
+        fig: "<i class=g>13 awake</i> · <i class=y>1 dozing</i>",
+        sub: "536 MB · 21 connections",
+        when: "up 5h",
+      },
+      { in: on("d1842"), fig: "stopped", sub: "last time: everything", when: "up 9h ago" },
+    ],
+  },
+  {
+    n: "billing",
+    dir: "~/code/billing · 5 declared",
+    on: on("d1400", "d1842"),
+    sel: on("d1400"),
+    cells: [
+      { in: on("d0902"), fig: "stopped", sub: "last time: everything", when: "up 7 months ago" },
+      {
+        in: on("d1400"),
+        fig: "<i class=g>2 awake</i> · <i class=c>2 waking</i> · 1 asleep",
+        sub: "70 MB · 1 connection",
+        when: "starting…",
+        busy: true,
+      },
+      { in: on("d1842"), fig: "5 asleep", sub: "no connections", when: "up 4h" },
+    ],
+  },
+  {
+    n: "client-site",
+    dir: "~/work/client-site · 3 declared",
+    on: "",
+    sel: "",
+    cells: [{ in: home, fig: "stopped", sub: "last time: everything", when: "up 7 days ago" }],
+  },
+];
+
+const house =
+  '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 7.2 8 2.5l5.5 4.7" /><path d="M4 6.2v7h3v-3.6h2v3.6h3v-7" /></svg>';
+---
+<div class="tn-win tn-app" data-in={on(["d0902", "d1530"], "d1842")}>
+  <!-- the title bar: Home, a tab per running stack, ⌘K -->
+  <div class="ta-tb">
+    <i></i><i></i><i></i>
+    <span class="ta-tab" data-hi={home}><Fragment set:html={house} />Home</span>
+    <span class="ta-tab ta-tab-x" data-in={on(["d0902", "d1530"])} data-hi={on("d0903", "d0905", ["d1130", "d1133"])}>
+      <b class="ta-d g" data-in={on("d0902", ["d1400", "d1530"])}></b><b class="ta-d r" data-in={larderTrouble}></b>larder<span class="ta-badge" data-in={larderTrouble}>1</span>
+    </span>
+    <span class="ta-tab ta-tab-x" data-in={on(["d1400", "d1530"], "d1842")} data-hi={on("d1406", "d1530")}><b class="ta-d g on"></b>billing</span>
+    <span class="ta-sp"></span>
+    <span class="ta-cmd"><kbd>⌘K</kbd> Search or do</span>
+  </div>
+
+  <!-- Home: every stack on this machine, a switch each -->
+  <div class="ta-pg ta-home" data-in={home}>
+    <div class="ta-hd">
+      <img src="/brand/doze.svg" alt="" width="40" height="40" />
+      <div class="ta-brand"><b>doze</b><span>starts a service when something connects, and puts it to sleep when nothing does · 3 stacks · 1 up</span></div>
+      <span class="ta-sp"></span>
+      <span class="ta-btn">Open folder… <kbd>⌘O</kbd></span>
+    </div>
+    <div class="ta-lib">
+      <div class="ta-lr ta-lh"><span></span><span>Stack</span><span>Running</span><span class="rt">Last</span><span></span></div>
+      {rows.map((r) => (
+        <div class="ta-lr" data-hi={r.sel}>
+          <span class="ta-ldot" data-hi={r.on}></span>
+          <div class="ta-nm"><b>{r.n}</b><span>{r.dir}</span></div>
+          <div class="ta-x">
+            {r.cells.map((c) => (
+              <div class="ta-fig" data-in={c.in}><span set:html={c.fig} /><span class="ta-dim">{c.sub}</span></div>
+            ))}
+          </div>
+          <div class="ta-x r">
+            {r.cells.map((c) => <span class:list={["ta-when", { c: c.busy }]} data-in={c.in}>{c.when}</span>)}
+          </div>
+          <span class="ta-sw" data-hi={r.on}><i></i></span>
+        </div>
+      ))}
+    </div>
+    <div class="ta-model">Drop a project folder anywhere in this window, or press ⌘O, to add it.</div>
+    <div class="ta-machine"><b>Machine</b><span><b class="ta-d g"></b>names</span><span><b class="ta-d g"></b>network daemon</span><span class="ta-sp"></span><span class="ta-dim">Doctor</span></div>
+  </div>
+
+  <!-- larder's overview, as a map -->
+  <div class="ta-pg ta-ov" data-in={larderMap}>
+    <div class="ta-oh">
+      <b>larder</b><span class="ta-path">~/code/larder · up 1m</span>
+      <span class="ta-sp"></span>
+      <span class="ta-seg"><span>Tiles</span><span>List</span><span class="on">Map</span><span>Grid</span></span>
+      <span class="ta-up">Up</span><span class="ta-sw hi"><i></i></span>
+    </div>
+    <div class="ta-strip">
+      <div class="ta-st w"><span class="v"><span class="ta-x"><span data-in={on("d0903")}>490 MB</span><span data-in={on("d1130")}>489 MB</span></span><small>resident</small></span><span class="ta-bar"><i style="width:12%"></i><i style="width:11%"></i><i style="width:10%"></i><i style="width:42%"></i></span><span class="s">storefront 61 · recommendations 58 · fulfilment 52 · +10 more</span></div>
+      <div class="ta-st"><span class="v">0.01<small>cores</small></span><span class="s">notifications 0.9% · the rest quiet</span></div>
+      <div class="ta-st"><span class="v">12<small>awake</small></span><span class="s"><i class="y">1 dozing</i> · <i class="r">1 crashing</i></span></div>
+      <div class="ta-st"><span class="v"><span class="ta-x"><span data-in={on("d0903")}>19</span><span data-in={on("d1130")}>20</span></span><small>connections</small></span><span class="s">tasks ✓ 9 done · 1 not run</span></div>
+    </div>
+    <div class="ta-map">
+      <div class="ta-mh"><b>Who calls whom</b> left to right, the way a request travels</div>
+      <div class="ta-flow">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">{larderEdges.map((d) => <path d={d} />)}</svg>
+        {larderFlow.map((x) => (
+          <div class="ta-n" style={`--c:${x.c};--r:${x.r}`} data-hi={x.badIn ?? ""}>
+            <div class="ta-nt"><b class="ta-d"></b><b>{x.n}</b><span class="ta-sp"></span><span class="mb">{x.mb}</span><span class="bad">{x.bad}</span></div>
+            <div class="ta-chips"><code>{x.lang}</code>{x.uses.length ? x.uses.map((u) => <span>{u}</span>) : <span class="none">no shared services</span>}</div>
+          </div>
+        ))}
+      </div>
+      <div class="ta-mh"><b>Nobody calls these</b> they work from events</div>
+      <div class="ta-row">
+        {larderNobody.map((x) => (
+          <div class="ta-n">
+            <div class="ta-nt"><b class="ta-d"></b><b>{x.n}</b><span class="ta-sp"></span><span class="mb">{x.mb}</span></div>
+            <div class="ta-chips"><code>{x.lang}</code>{x.uses.map((u) => <span>{u}</span>)}</div>
+          </div>
+        ))}
+      </div>
+      <div class="ta-mh ta-band-h"><b>Shared by the stack</b> the chips on each card say who uses what</div>
+      <div class="ta-row ta-band">
+        {larderShared.map(([n, mb, used]) => (
+          <div class="ta-n"><div class="ta-nt"><b class="ta-d"></b><b>{n}</b><span class="ta-sp"></span><span class="mb">{mb}</span></div><span class="ta-used">{used}</span></div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- billing's overview, as a map -->
+  <div class="ta-pg ta-ov" data-in={billingMap}>
+    <div class="ta-oh">
+      <b>billing</b><span class="ta-path"><span class="ta-x"><span data-in={on("d1406")}>~/code/billing · up 6m</span><span data-in={on("d1530")}>~/code/billing · up 1h</span></span></span>
+      <span class="ta-sp"></span>
+      <span class="ta-seg"><span>Tiles</span><span>List</span><span class="on">Map</span><span>Grid</span></span>
+      <span class="ta-up">Up</span><span class="ta-sw hi"><i></i></span>
+    </div>
+    <div class="ta-strip">
+      <div class="ta-st w"><span class="v">155 MB<small>resident</small></span><span class="ta-bar"><i style="width:37%"></i><i style="width:28%"></i><i style="width:27%"></i></span><span class="s">portal 58 · invoices 44 · notifications 41 · postgres 12</span></div>
+      <div class="ta-st"><span class="v">0.01<small>cores</small></span><span class="s">the rest quiet</span></div>
+      <div class="ta-st"><span class="v">4<small>awake</small></span><span class="s">1 asleep</span></div>
+      <div class="ta-st"><span class="v">3<small>connections</small></span><span class="s">tasks ✓ 3 done</span></div>
+    </div>
+    <div class="ta-map">
+      <div class="ta-mh"><b>Who calls whom</b> left to right, the way a request travels</div>
+      <div class="ta-flow one">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M16.6 50 L20.85 50" /><path class="sel" d="M37.45 50 L41.7 50" data-hi={on("d1406")} /></svg>
+        {billingFlow.map((x) => (
+          <div class="ta-n" style={`--c:${x.c};--r:${x.r}`} data-hi={x.sel ?? ""}>
+            <div class="ta-nt"><b class="ta-d"></b><b>{x.n}</b><span class="ta-sp"></span><span class="mb">{x.mb}</span></div>
+            <div class="ta-chips"><code>{x.lang}</code>{x.uses.length ? x.uses.map((u) => <span>{u}</span>) : <span class="none">no shared services</span>}</div>
+          </div>
+        ))}
+      </div>
+      <div class="ta-mh ta-band-h"><b>Shared by the stack</b> the chips on each card say who uses what</div>
+      <div class="ta-row ta-band">
+        {billingShared.map(([n, mb, used]) => (
+          <div class:list={["ta-n", { "ta-asleep": mb === "asleep" }]}><div class="ta-nt"><b class="ta-d"></b><b>{n}</b><span class="ta-sp"></span><span class="mb">{mb}</span></div><span class="ta-used">{used}</span></div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- a Larder service: the sidebar, and the page of the one in trouble -->
+  <div class="ta-pg ta-svc" data-in={on("d0905", "d1131", "d1133")}>
+    <nav class="ta-side">
+      <span class="ta-sh0">Overview</span>
+      {side.map(([h, items]) => (
+        <>
+          <span class="ta-sh">{h}</span>
+          {items.map(([n, v, sel]) => (
+            <span class="ta-si" data-hi={sel ?? ""}>
+              <span class="n">{n}</span>
+              {sideBad[n] ? (
+                <span class="ta-x r"><span data-in={on("d0905", "d1131", "d1133").split(" ").filter((s) => !sideBad[n][1].split(" ").includes(s)).join(" ")}>{v}</span><span class="r" data-in={sideBad[n][1]}>{sideBad[n][0]}</span></span>
+              ) : (
+                <span class:list={["v", { y: v === "dozing" }]}>{v}</span>
+              )}
+            </span>
+          ))}
+        </>
+      ))}
+      <span class="ta-ver">doze 0.2</span>
+    </nav>
+
+    <!-- 9:05: gateway's port, and who holds it -->
+    <div class="ta-main" data-in={gateway}>
+      <div class="ta-ih"><b>gateway</b><span class="ta-path">go run ./apps/gateway · <i class="r">port taken</i></span></div>
+      <div class="ta-tabs2"><span class="on">Overview</span><span>Logs</span></div>
+      <section class="ta-card ta-clash">
+        <h5>Port 8000 is taken <span>· gateway cannot listen while python3, pid 5387 has it</span></h5>
+        <div class="ta-opt">
+          <span class="k">1</span>
+          <div class="t"><b>Stop pid 5387 and start gateway</b><span>doze sends it a polite TERM. It is not one of doze's; doze looks again that it still holds the port first.</span></div>
+          <span class="ta-btn pri">Stop python3</span>
+        </div>
+        <div class="ta-opt">
+          <span class="k">2</span>
+          <div class="t"><b>Use another port</b><span>Change port = 8000 in doze.hcl; gateway's name keeps working on whatever you pick.</span></div>
+          <span class="ta-btn">Edit doze.hcl</span>
+        </div>
+        <div class="ta-dim">doze never stops a process it did not start without asking, which is why this is a question and not a thing that happened.</div>
+      </section>
+    </div>
+
+    <!-- 11:31: orders' Logs tab, this run -->
+    <div class="ta-main" data-in={orders}>
+      <div class="ta-ih"><b>orders</b><span class="ta-path">go run ./services/orders · <i class="r">crashing · try 2 of 5</i> · next in 8 s</span><span class="ta-sp"></span><span class="ta-btn">Stop trying <kbd>s</kbd></span><span class="ta-btn">Try now <kbd>r</kbd></span></div>
+      <div class="ta-tabs2"><span>Overview</span><span class="on">Logs</span></div>
+      <div class="ta-lf">
+        <span class="ta-seg"><span>Debug</span><span class="on">Info+</span><span>Warn+</span><span>Errors</span></span>
+        <span class="ta-seg"><span class="on">This run</span><span>All 2 runs</span></span>
+        <span class="ta-seg"><span class="on">Relative</span><span>Clock</span></span>
+      </div>
+      <div class="ta-logs">
+        <div class="ta-run">run 2 · started 11:31:04 · exit 1 after 0.6 s · 3 lines</div>
+        <div class="ln"><i>-2s</i><span class="lv">INF</span>orders starting · connecting to postgres as orders</div>
+        <div class="ln err"><i>-2s</i><span class="lv">ERR</span>failed to connect to `user=orders database=postgres`: password authentication failed for user "orders" (SQLSTATE 28P01)</div>
+        <div class="ln doze"><i>-2s</i><span class="lv"></span>doze: orders exited 1 after 0.6 s · try 2 of 5 · next in 8 s</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 11:30: the notification, one per episode -->
+<div class="ta-note" data-in={on("d1130")}>
+  <img src="/brand/doze.svg" alt="" width="28" height="28" />
+  <div><small>doze</small><b>orders crashed in larder</b><span>try 2 of 5 · password authentication failed for user "orders"</span></div>
+  <span class="ta-btn">Show</span>
+</div>
+
+<style is:global>
+/* The doze app, drawn: the app's default dark theme (as appdraw.css), sized
+   in cqi of the laptop so it scales with the stage; px on small phones. */
+.tn-win.tn-app {
+  --a-bg: #15131d; --a-side: #110f18; --a-panel: #1b1927; --a-line: #2c2840; --a-line2: #37324b;
+  --a-text: #cfcbe3; --a-dim: #9893b5; --a-bright: #f4f1ff; --a-acc: #bd93f9; --a-good: #7ee787;
+  --a-cool: #82aaff; --a-warn: #f2c879; --a-bad: #ff7a93; --a-track: #262236; --a-sel: #2b2542;
+  left: 3%; top: 8.5%; width: 94%; height: 88%;
+  background: var(--a-bg); color: var(--a-text); font: 400 1.22cqi/1.4 var(--tn-body);
+  box-shadow: 0 0 0 0.12cqi var(--a-line2), 0 2cqi 5cqi rgba(0, 0, 0, 0.5);
+}
+.tn-app *, .ta-note * { box-sizing: border-box; }
+.tn-app i { font-style: normal; }
+.tn-app kbd, .ta-note kbd { font: 0.9em var(--tn-mono); opacity: 0.75; }
+.tn-app .g { color: var(--a-good); }
+.tn-app .c { color: var(--a-cool); }
+.tn-app .y { color: var(--a-warn); }
+.tn-app .r { color: var(--a-bad); }
+.ta-sp { flex: 1; }
+.ta-dim { color: var(--a-dim); }
+.ta-x { display: grid; min-width: 0; }
+.ta-x > * { grid-area: 1 / 1; min-width: 0; }
+.ta-x.r { justify-items: end; }
+
+.ta-tb { height: 3.6cqi; display: flex; align-items: center; gap: 0.5cqi; padding: 0 1.2cqi; background: var(--a-side); border-bottom: 0.12cqi solid var(--a-line); }
+.ta-tb > i { width: 1cqi; height: 1cqi; border-radius: 50%; background: #ff5f57; flex: none; margin-right: 0.3cqi; }
+.ta-tb > i:nth-child(2) { background: #febc2e; }
+.ta-tb > i:nth-child(3) { background: #28c840; margin-right: 1.4cqi; }
+.ta-tab { display: inline-flex; align-items: center; gap: 0.6cqi; height: 2.6cqi; padding: 0 1.2cqi; border-radius: 0.7cqi; font-size: 1.15cqi; color: var(--a-dim); white-space: nowrap; transition: background 0.3s, color 0.3s; }
+.ta-tab svg { width: 1.3cqi; height: 1.3cqi; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.ta-tab.hi { background: var(--a-panel); color: var(--a-bright); font-weight: 600; }
+.tn-stage .ta-tab-x[data-in]:not(.on) { display: none; }
+.ta-d { position: relative; display: inline-block; flex: none; width: 0.8cqi; height: 0.8cqi; border-radius: 50%; background: var(--a-dim); }
+.ta-tab .ta-d { position: absolute; }
+.ta-tab-x { position: relative; padding-left: 2.4cqi; }
+.ta-tab-x .ta-d { left: 1.1cqi; top: calc(50% - 0.4cqi); }
+.ta-d.g { background: var(--a-good); }
+.ta-d.r { background: var(--a-bad); }
+.ta-tab .ta-badge { display: inline-grid; place-items: center; min-width: 1.6cqi; height: 1.6cqi; padding: 0 0.4cqi; border-radius: 0.8cqi; background: var(--a-bad); color: #1b1220; font: 700 1cqi/1 var(--tn-body); }
+.tn-stage .ta-tab .ta-badge:not(.on) { display: none; }
+.ta-cmd { display: inline-flex; align-items: center; gap: 0.6cqi; height: 2.5cqi; padding: 0 1cqi; border-radius: 0.6cqi; border: 0.12cqi solid var(--a-line2); font-size: 1.1cqi; color: var(--a-bright); white-space: nowrap; }
+
+.ta-pg { position: absolute; inset: 3.6cqi 0 0; display: flex; flex-direction: column; gap: 1.4cqi; padding: 1.8cqi 1.8cqi; overflow: hidden; }
+.ta-btn { display: inline-flex; align-items: center; gap: 0.6cqi; height: 2.5cqi; padding: 0 1.1cqi; border-radius: 0.6cqi; border: 0.12cqi solid var(--a-line2); background: var(--a-panel); color: var(--a-bright); font: 600 1.1cqi/1 var(--tn-body); white-space: nowrap; flex: none; }
+.ta-btn.pri { background: var(--a-acc); border-color: var(--a-acc); color: var(--a-bg); }
+.ta-sw { position: relative; flex: none; width: 3.6cqi; height: 2cqi; border-radius: 1cqi; border: 0.12cqi solid var(--a-dim); background: var(--a-track); transition: background 0.4s, border-color 0.4s; }
+.ta-sw i { position: absolute; top: 0.24cqi; left: 0.24cqi; width: 1.3cqi; height: 1.3cqi; border-radius: 50%; background: var(--a-dim); transition: transform 0.45s cubic-bezier(.2, .8, .2, 1), background 0.4s; }
+.ta-sw.hi { background: var(--a-acc); border-color: var(--a-acc); }
+.ta-sw.hi i { transform: translateX(1.6cqi); background: var(--a-bg); }
+.ta-seg { display: inline-flex; border: 0.12cqi solid var(--a-line2); border-radius: 0.6cqi; overflow: hidden; flex: none; }
+.ta-seg span { padding: 0.5cqi 0.9cqi; font-size: 1.05cqi; color: var(--a-dim); border-left: 0.12cqi solid var(--a-line2); white-space: nowrap; }
+.ta-seg span:first-child { border-left: 0; }
+.ta-seg span.on { background: var(--a-sel); color: var(--a-bright); font-weight: 600; }
+.ta-path { font: 1.05cqi var(--tn-mono); color: var(--a-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+/* Home */
+.ta-hd { display: flex; align-items: center; gap: 1.2cqi; }
+.ta-hd img { width: 3.6cqi; height: 3.6cqi; flex: none; }
+.ta-brand { display: flex; flex-direction: column; gap: 0.2cqi; min-width: 0; }
+.ta-brand b { font: 700 2.1cqi/1 var(--tn-display); color: var(--a-bright); letter-spacing: -0.02em; }
+.ta-brand span { font-size: 1.05cqi; color: var(--a-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ta-lib { border: 0.12cqi solid var(--a-line); border-radius: 0.9cqi; overflow: hidden; }
+.ta-lr { display: grid; grid-template-columns: 1.6cqi minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(0, 0.8fr) 3.6cqi; gap: 1.4cqi; align-items: center; padding: 1.2cqi 1.6cqi; border-top: 0.12cqi solid var(--a-line); transition: background 0.4s; }
+.ta-lr:first-child { border-top: 0; }
+.ta-lr.hi { background: #2a2350; }
+.ta-lh { padding: 0.9cqi 1.6cqi; font: 600 0.95cqi/1 var(--tn-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--a-dim); }
+.ta-lh .rt { text-align: right; }
+.ta-ldot { width: 0.8cqi; height: 0.8cqi; border-radius: 50%; background: var(--a-line2); transition: background 0.4s; }
+.ta-ldot.hi { background: var(--a-good); }
+.ta-nm { display: flex; flex-direction: column; gap: 0.3cqi; min-width: 0; }
+.ta-nm b { color: var(--a-bright); font-weight: 650; font-size: 1.3cqi; }
+.ta-nm span { font: 1cqi var(--tn-mono); color: var(--a-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ta-fig { display: flex; flex-direction: column; gap: 0.3cqi; font-size: 1.12cqi; white-space: nowrap; }
+.ta-fig > span:first-child { color: var(--a-bright); overflow: hidden; text-overflow: ellipsis; }
+.ta-fig .ta-dim { font-size: 1.02cqi; }
+.ta-when { font-size: 1.08cqi; color: var(--a-dim); white-space: nowrap; }
+.ta-when.c { color: var(--a-cool); }
+.ta-model { font-size: 1.05cqi; color: var(--a-dim); }
+.ta-machine { margin-top: auto; display: flex; align-items: center; gap: 1.4cqi; padding: 1cqi 1.4cqi; border-radius: 0.9cqi; border: 0.12cqi solid var(--a-line); font-size: 1.05cqi; white-space: nowrap; }
+.ta-machine > b { color: var(--a-bright); font-weight: 650; }
+.ta-machine > span { display: inline-flex; align-items: center; gap: 0.5cqi; }
+
+/* A stack's overview */
+.ta-oh { display: flex; align-items: center; gap: 1cqi; min-width: 0; }
+.ta-oh > b { font: 700 1.9cqi/1 var(--tn-display); color: var(--a-bright); letter-spacing: -0.02em; }
+.ta-up { font-weight: 650; color: var(--a-bright); font-size: 1.15cqi; margin-left: 0.6cqi; }
+.ta-strip { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2cqi; padding-bottom: 1.3cqi; border-bottom: 0.12cqi solid var(--a-line); }
+.ta-st { display: flex; flex-direction: column; gap: 0.5cqi; min-width: 0; }
+.ta-st .v { display: flex; align-items: baseline; gap: 0.6cqi; font: 700 1.9cqi/1 var(--tn-body); color: var(--a-bright); white-space: nowrap; }
+.ta-st small { font: 400 1.05cqi/1 var(--tn-body); color: var(--a-dim); }
+.ta-st .s { font-size: 1cqi; color: var(--a-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ta-bar { display: flex; height: 0.5cqi; border-radius: 0.3cqi; overflow: hidden; background: var(--a-line2); width: 80%; }
+.ta-bar i { display: block; height: 100%; }
+.ta-bar i:nth-child(1) { background: #6b8cff; }
+.ta-bar i:nth-child(2) { background: var(--a-acc); }
+.ta-bar i:nth-child(3) { background: var(--a-good); }
+.ta-bar i:nth-child(4) { background: #4a4462; }
+.ta-map > * { flex-shrink: 0; }
+.ta-map { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0.75cqi; padding: 1.1cqi 1.2cqi; border-radius: 1cqi; border: 0.12cqi solid var(--a-line); background: #17151f; }
+.ta-mh { font-size: 0.95cqi; color: var(--a-dim); white-space: nowrap; overflow: hidden; }
+.ta-mh b { font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-right: 0.6cqi; color: #b4afd0; }
+.ta-band-h { padding-top: 0.7cqi; border-top: 0.12cqi dashed var(--a-line2); }
+.ta-flow { position: relative; height: 14.9cqi; flex: none; }
+.ta-flow.one { height: 4.3cqi; }
+.ta-flow svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ta-flow path { fill: none; stroke: color-mix(in srgb, var(--a-acc) 70%, transparent); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.ta-flow path.sel.hi { stroke: var(--a-acc); stroke-width: 2.4; }
+.ta-flow .ta-n { position: absolute; left: calc((var(--c) - 1) * 20.85%); top: calc((var(--r) - 1) * 5.3cqi); width: 16.6%; height: 4.3cqi; }
+.ta-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 4.25%; }
+.ta-n { display: flex; flex-direction: column; justify-content: center; gap: 0.45cqi; padding: 0.5cqi 0.75cqi; border-radius: 0.8cqi; border: 0.12cqi solid var(--a-line2); background: var(--a-panel); min-width: 0; transition: border-color 0.4s, background 0.4s, box-shadow 0.4s; }
+.ta-nt { display: flex; align-items: center; gap: 0.5cqi; min-width: 0; font-size: 1cqi; }
+.ta-nt b:not(.ta-d) { color: var(--a-bright); font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.ta-nt .ta-d { background: var(--a-good); }
+.ta-chips code { flex: none; padding: 0 0.3cqi; border-radius: 0.3cqi; border: 0.12cqi solid var(--a-line2); font: 0.82cqi/1.45 var(--tn-mono); color: var(--a-dim); }
+.ta-nt .mb { flex: none; font-size: 0.85cqi; color: var(--a-dim); white-space: nowrap; }
+.ta-nt .bad { display: none; flex: none; font-size: 0.95cqi; color: var(--a-bad); white-space: nowrap; }
+.ta-chips { display: flex; gap: 0.3cqi; overflow: hidden; }
+.ta-chips span { flex: none; padding: 0.15cqi 0.5cqi; border-radius: 0.4cqi; background: #2a2540; font-size: 0.88cqi; color: #c4bde0; }
+.ta-chips .none { background: none; border: 0.12cqi solid var(--a-line2); }
+.ta-used { font-size: 0.92cqi; color: var(--a-dim); }
+.ta-n.hi { border-color: var(--a-bad); background: #2a1824; }
+.ta-n.hi .ta-d { background: var(--a-bad); }
+.ta-n.hi .mb { display: none; }
+.ta-n.hi .bad { display: inline; }
+.ta-flow.one .ta-n.hi { border-color: var(--a-acc); background: #241f3a; box-shadow: 0 0 0 0.25cqi color-mix(in srgb, var(--a-acc) 30%, transparent); }
+.ta-flow.one .ta-n.hi .ta-d { background: var(--a-good); }
+.ta-flow.one .ta-n.hi .mb { display: inline; }
+.ta-asleep .ta-d { background: var(--a-line2); }
+
+/* A service page: the sidebar and the main column */
+.ta-svc { flex-direction: row; gap: 0; padding: 0; }
+.ta-side { flex: none; width: 17cqi; display: flex; flex-direction: column; gap: 0.1cqi; padding: 1.4cqi 1cqi; background: var(--a-side); border-right: 0.12cqi solid var(--a-line); font-size: 1.05cqi; }
+.ta-sh0 { padding: 0.5cqi 0.8cqi; color: var(--a-bright); }
+.ta-sh { padding: 0.9cqi 0.8cqi 0.3cqi; font-size: 0.88cqi; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--a-dim); }
+.ta-si { display: flex; justify-content: space-between; gap: 0.6cqi; padding: 0.38cqi 0.8cqi; border-radius: 0.5cqi; white-space: nowrap; }
+.ta-si .n { color: var(--a-text); overflow: hidden; text-overflow: ellipsis; }
+.ta-si .v { color: var(--a-dim); }
+.ta-si .ta-x > span { color: var(--a-dim); }
+.ta-si .ta-x > span.r { color: var(--a-bad); }
+.ta-si.hi { background: var(--a-sel); }
+.ta-si.hi .n { color: var(--a-bright); font-weight: 600; }
+.ta-ver { margin-top: auto; padding: 0.5cqi 0.8cqi; font-size: 0.9cqi; color: var(--a-dim); }
+.ta-main { position: absolute; inset: 0 0 0 17cqi; display: flex; flex-direction: column; gap: 1.2cqi; padding: 1.8cqi 2.2cqi; min-width: 0; }
+.ta-ih { display: flex; align-items: baseline; gap: 1cqi; min-width: 0; }
+.ta-ih > b { font: 700 1.9cqi/1 var(--tn-display); color: var(--a-bright); letter-spacing: -0.02em; flex: none; }
+.ta-ih .ta-btn { align-self: center; }
+.ta-tabs2 { display: flex; gap: 1.6cqi; border-bottom: 0.12cqi solid var(--a-line); font-size: 1.1cqi; color: var(--a-dim); }
+.ta-tabs2 span { padding: 0 0 0.7cqi; }
+.ta-tabs2 .on { color: var(--a-bright); font-weight: 600; box-shadow: inset 0 -0.2cqi var(--a-acc); }
+.ta-card { display: flex; flex-direction: column; gap: 1cqi; padding: 1.4cqi 1.6cqi; border-radius: 1cqi; border: 0.12cqi solid var(--a-line); background: var(--a-panel); }
+.ta-clash { border-color: color-mix(in srgb, var(--a-bad) 55%, var(--a-line)); }
+.ta-card h5 { margin: 0; font: 650 1.35cqi/1.3 var(--tn-body); color: var(--a-bright); }
+.ta-card h5 span { font-weight: 400; color: var(--a-dim); }
+.ta-card > .ta-dim { font-size: 1.02cqi; }
+.ta-opt { display: grid; grid-template-columns: 2.4cqi minmax(0, 1fr) auto; gap: 1.2cqi; align-items: center; padding: 1.1cqi 1.2cqi; border-radius: 0.8cqi; border: 0.12cqi solid var(--a-line); background: var(--a-bg); }
+.ta-opt:first-of-type { border-color: var(--a-acc); }
+.ta-opt .k { display: grid; place-items: center; width: 2.2cqi; height: 2.2cqi; border-radius: 0.6cqi; background: var(--a-sel); color: var(--a-bright); font: 600 1.05cqi var(--tn-mono); }
+.ta-opt .t { display: flex; flex-direction: column; gap: 0.3cqi; min-width: 0; }
+.ta-opt b { color: var(--a-bright); font-weight: 600; font-size: 1.15cqi; }
+.ta-opt .t span { color: var(--a-dim); font-size: 1cqi; line-height: 1.4; }
+.ta-lf { display: flex; gap: 1cqi; flex-wrap: wrap; }
+.ta-logs { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0.5cqi; padding: 1.2cqi 1.4cqi; border-radius: 0.9cqi; background: #100e17; border: 0.12cqi solid var(--a-line); font: 1.08cqi/1.5 var(--tn-mono); color: var(--a-text); }
+.ta-logs .ln { display: grid; grid-template-columns: 3.4cqi 3.2cqi minmax(0, 1fr); }
+.ta-logs .ln i { color: var(--a-dim); }
+.ta-logs .lv { color: var(--a-cool); }
+.ta-logs .err { color: #ffd0d9; background: rgba(255, 122, 147, 0.1); border-radius: 0.4cqi; }
+.ta-logs .err .lv { color: var(--a-bad); }
+.ta-logs .doze { color: var(--a-dim); }
+.ta-logs .ta-run { display: block; padding-bottom: 0.5cqi; margin-bottom: 0.3cqi; border-bottom: 0.12cqi solid var(--a-line); font-family: var(--tn-body); font-size: 1cqi; color: var(--a-dim); }
+
+/* The notification, over the window */
+.ta-note { position: absolute; right: 2.2%; top: 6.4%; z-index: 7; display: flex; align-items: center; gap: 1.2cqi; width: 40%; padding: 1.3cqi 1.4cqi; border-radius: 1.6cqi; background: rgba(52, 44, 64, 0.96); box-shadow: 0 0 0 0.12cqi rgba(255, 255, 255, 0.12), 0 1.6cqi 4cqi rgba(0, 0, 0, 0.55); transform: translateX(4cqi); }
+.ta-note.on { transform: none; }
+.ta-note img { width: 3.2cqi; height: 3.2cqi; flex: none; border-radius: 0.7cqi; }
+.ta-note div { display: flex; flex-direction: column; gap: 0.3cqi; min-width: 0; font: 400 1.2cqi/1.3 var(--tn-body); color: #eee4f3; }
+.ta-note small { font-size: 0.95cqi; color: #b9aec7; text-transform: uppercase; letter-spacing: 0.06em; }
+.ta-note b { font-weight: 700; }
+.ta-note span:not(.ta-btn) { color: #d6cce0; font-size: 1.1cqi; }
+.ta-note .ta-btn { display: inline-flex; align-items: center; height: 2.6cqi; padding: 0 1.2cqi; border-radius: 0.7cqi; background: rgba(255, 255, 255, 0.12); color: #fff; font: 600 1.1cqi/1 var(--tn-body); flex: none; }
+
+/* Small phones: px, and only what the beat is about */
+@media (max-width: 760px) {
+  .tn-app { font-size: 11px; }
+  .ta-tb { height: 26px; gap: 4px; padding: 0 8px; }
+  .ta-tb > i { width: 7px; height: 7px; margin-right: 2px; }
+  .ta-tb > i:nth-child(3) { margin-right: 6px; }
+  .ta-tab { height: 20px; padding: 0 7px; font-size: 11px; gap: 4px; border-radius: 5px; }
+  .ta-tab svg { width: 11px; height: 11px; }
+  .ta-tab-x { padding-left: 16px; }
+  .ta-tab-x .ta-d { left: 6px; top: calc(50% - 3px); }
+  .ta-d { width: 6px; height: 6px; }
+  .ta-tab .ta-badge { min-width: 13px; height: 13px; font-size: 9px; border-radius: 7px; }
+  .ta-cmd { display: none; }
+  .ta-pg { inset: 26px 0 0; gap: 8px; padding: 9px 10px; }
+  .ta-btn { height: 22px; padding: 0 8px; border-radius: 5px; font-size: 11px; gap: 4px; }
+  .ta-sw { width: 30px; height: 17px; border-radius: 9px; border-width: 1px; }
+  .ta-sw i { top: 2px; left: 2px; width: 11px; height: 11px; }
+  .ta-sw.hi i { transform: translateX(13px); }
+  .ta-seg { border-radius: 5px; border-width: 1px; }
+  .ta-seg span { padding: 3px 6px; font-size: 11px; border-left-width: 1px; }
+  .ta-path { font-size: 11px; }
+  .ta-hd { gap: 8px; }
+  .ta-hd img { width: 26px; height: 26px; }
+  .ta-brand b { font-size: 16px; }
+  .ta-brand span, .ta-hd .ta-btn, .ta-model, .ta-lh, .ta-machine { display: none; }
+  .ta-lib { border-width: 1px; border-radius: 7px; }
+  .ta-lr { grid-template-columns: 7px minmax(0, 1fr) auto 30px; gap: 8px; padding: 7px 9px; border-top-width: 1px; }
+  .ta-lr > .ta-x:not(.r) { grid-column: 2; grid-row: 2; }
+  .ta-lr > .ta-x.r { grid-column: 3; grid-row: 1; }
+  .ta-lr > .ta-sw { grid-column: 4; grid-row: 1 / span 2; }
+  .ta-ldot { width: 7px; height: 7px; grid-row: 1 / span 2; }
+  .ta-nm b { font-size: 13px; }
+  .ta-nm span { display: none; }
+  .ta-fig { flex-direction: row; gap: 6px; font-size: 11px; }
+  .ta-fig .ta-dim { font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
+  .ta-when { font-size: 11px; }
+  .ta-oh { gap: 6px; }
+  .ta-oh > b { font-size: 15px; }
+  .ta-oh .ta-path, .ta-oh .ta-seg span:not(.on), .ta-up { display: none; }
+  .ta-strip { grid-template-columns: 1fr 1fr; gap: 4px 10px; padding-bottom: 7px; border-bottom-width: 1px; }
+  .ta-st:nth-child(2), .ta-st:nth-child(4), .ta-st .s, .ta-bar { display: none; }
+  .ta-st .v { font-size: 14px; gap: 4px; }
+  .ta-st small { font-size: 11px; }
+  .ta-map { gap: 6px; padding: 8px; border-radius: 7px; border-width: 1px; }
+  .ta-mh { font-size: 11px; }
+  .ta-mh b { margin-right: 4px; }
+  .ta-mh { display: none; }
+  .ta-band { padding-top: 6px; border-top: 1px dashed var(--a-line2); }
+  .ta-flow, .ta-flow.one { height: auto; display: flex; flex-wrap: wrap; gap: 4px; }
+  .ta-flow svg { display: none; }
+  .ta-flow .ta-n { position: static; width: auto; height: auto; }
+  .ta-row { display: flex; flex-wrap: wrap; gap: 4px; }
+  .ta-n { padding: 3px 7px; border-radius: 6px; border-width: 1px; gap: 0; }
+  .ta-nt { font-size: 11px; gap: 4px; }
+  .ta-nt .mb, .ta-chips, .ta-used { display: none; }
+  .ta-n.hi .bad { font-size: 11px; }
+  .ta-flow.one .ta-n.hi .mb { display: none; }
+  .ta-flow.one .ta-n.hi { box-shadow: 0 0 0 2px color-mix(in srgb, var(--a-acc) 35%, transparent); }
+  .ta-side { display: none; }
+  .ta-main { inset: 0; gap: 7px; padding: 9px 10px; }
+  .ta-ih { gap: 6px; flex-wrap: wrap; }
+  .ta-ih > b { font-size: 15px; }
+  .ta-ih .ta-path { flex: 1 1 60%; white-space: normal; }
+  .ta-ih .ta-btn, .ta-ih .ta-sp { display: none; }
+  .ta-tabs2 { gap: 12px; font-size: 11px; border-bottom-width: 1px; }
+  .ta-tabs2 span { padding-bottom: 4px; }
+  .ta-tabs2 .on { box-shadow: inset 0 -2px var(--a-acc); }
+  .ta-card { gap: 6px; padding: 8px 9px; border-radius: 7px; border-width: 1px; }
+  .ta-card h5 { font-size: 12px; }
+  .ta-card h5 span { display: block; font-size: 11px; }
+  .ta-card > .ta-dim { display: none; }
+  .ta-opt { grid-template-columns: 18px minmax(0, 1fr); gap: 4px 8px; padding: 6px 8px; border-radius: 6px; border-width: 1px; }
+  .ta-opt .k { width: 18px; height: 18px; font-size: 11px; border-radius: 4px; }
+  .ta-opt b { font-size: 11.5px; }
+  .ta-opt .t span { display: none; }
+  .ta-opt .ta-btn { grid-column: 2; justify-self: start; }
+  .ta-opt:last-of-type { display: none; }
+  .ta-lf { display: none; }
+  .ta-logs { gap: 4px; padding: 8px 9px; border-radius: 7px; border-width: 1px; font-size: 11px; line-height: 1.4; }
+  .ta-logs .ln:not(.err):not(.doze) { display: none; }
+  .ta-logs .ln { grid-template-columns: 26px 28px minmax(0, 1fr); }
+  .ta-logs .ta-run { font-size: 11px; padding-bottom: 4px; border-bottom-width: 1px; }
+  .ta-note { top: 28px; right: 8px; left: 8px; width: auto; gap: 8px; padding: 8px 10px; border-radius: 12px; }
+  .ta-note img { width: 26px; height: 26px; border-radius: 6px; }
+  .ta-note div { font-size: 12px; gap: 1px; }
+  .ta-note small { font-size: 10px; }
+  .ta-note span:not(.ta-btn) { font-size: 11px; }
+  .ta-note .ta-btn { height: 24px; padding: 0 10px; font-size: 11px; border-radius: 6px; }
+}
+</style>
