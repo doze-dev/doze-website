@@ -34,9 +34,6 @@ const newest = (m: Module) => m.releases[0];
 const catCount = (id: string) => modules.filter((m) => categoryOf(m) === id).length;
 const platforms = ["aarch64-apple-darwin", "x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu"];
 const platCount = (t: string) => modules.filter((m) => platformKeys(m).includes(t)).length;
-const featured = ["vector", "pg_cron", "timescaledb", "postgis"]
-  .map((n) => extensions.find((e) => e.name === n))
-  .filter((e) => !!e);
 
 // Every release, newest upload first.
 const releases = modules
@@ -85,7 +82,7 @@ const releaseHref = (m: Module, r: Release) =>
   m.name === "postgres" ? `${moduleHref(m)}${r.version}/` : moduleHref(m);
 const shield = '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>';
 ---
-<Page title="Registry" description="Every engine doze can run: signed modules, Postgres extensions and bring-your-own tools." theme="light" current="registry">
+<Page title="Registry" description="Every engine doze can run: signed modules and bring-your-own tools." theme="light" current="registry">
   <script is:inline>
     // Show the right state before first paint: ?doze= or the version kept in this browser.
     (() => {
@@ -127,7 +124,6 @@ const shield = '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m
           <div class="rg-facet" style="border-top: 0; padding-top: 0">
             <h3>Show</h3>
             <label class="rg-opt"><input type="checkbox" checked data-rc-show="mods" /><span>Modules</span><span class="n">{modules.length}</span></label>
-            <label class="rg-opt"><input type="checkbox" checked data-rc-show="exts" /><span>Postgres extensions</span><span class="n">{extensions.length}</span></label>
             <label class="rg-opt"><input type="checkbox" checked data-rc-show="byo" /><span>Bring your own</span><span class="n">{tools.length}</span></label>
           </div>
           <div class="rg-facet">
@@ -175,6 +171,7 @@ const shield = '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m
                     <div class="rc-chips"><span class="rg-chip off">Official</span><span class="rg-chip ok">Signed</span></div>
                     <p class="rg-p">{c.blurb}</p>
                     <dl class="rg-facts"><dt>Runs</dt><dd>{runsLine(m)}</dd><dt>Newest</dt><dd>{r?.version} · {fmtDate(r?.date ?? null)}</dd><dt>Needs</dt><dd>{r ? (r.doze ? needs(r) : "any doze (0.1.0 and up)") : ""}</dd><dt>Platforms</dt><dd>{platformsLine(m)}</dd></dl>
+                    {m.name === "postgres" && <a class="rg-small rc-extline" href="/registry/doze/postgres/extensions/">{extensions.length} extensions by name · coming in postgres 0.3</a>}
                     <div class="rg-snip"><code><i>$</i> doze add {m.name}</code><button class="rg-copy" type="button" aria-label={`Copy doze add ${m.name}`} data-copy={`doze add ${m.name}`}>Copy</button></div>
                   </article>
                 );
@@ -182,23 +179,6 @@ const shield = '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m
             </div>
             <div class="rg-note" data-rc-empty hidden><span>No module matches these filters. <button type="button" class="rc-link" data-rc-reset>Clear the filters</button></span></div>
             <p class="rg-small" style="margin: 0">"Needs" is the oldest doze each release is stamped with. On an older doze? <a href={`/registry/?doze=${OLD}`} data-doze-pick={OLD}>Check the catalog against it</a>: {stuck === 0 ? `every module still has a release that runs on ${OLD}.` : `${stuck} of ${modules.length} modules have nothing that runs on ${OLD}.`}</p>
-          </section>
-
-          <section aria-labelledby="exts" class="rc-col" style="gap: 14px" data-rc-section="exts">
-            <div class="rh-sec">
-              <h2 class="rg-h2" id="exts">Postgres extensions <span class="rc-count">{extensions.length}</span></h2>
-              <a href="/registry/extensions/" class="rc-more">All {extensions.length}, by Postgres version →</a>
-            </div>
-            <p class="rg-p" style="margin-top: -6px">Write a name in doze.hcl; doze fetches the build for your Postgres and your machine. <span class="rg-chip info" style="vertical-align: 1px">Coming in postgres 0.3</span></p>
-            <div class="rh-ext">
-              {featured.map((e) => (
-                <a class="rg-card rc-ext" href={e.name === "vector" ? "/registry/doze/postgres/extensions/vector/" : "/registry/extensions/"}>
-                  <div class="rc-row" style="justify-content: space-between; align-items: baseline; gap: 8px"><b class="rg-mono" style="font-size: 15px">{e.name}</b><span class="rg-small">{e.majors}</span></div>
-                  <span class="rg-small" style="color: #4A3D55">{e.title.toLowerCase() !== e.name ? `${e.title}. ` : ""}{e.what}.</span>
-                  <span class="rg-small">{e.version} · {e.preloads ? "preloads" : "no preload"} · {e.licenceLabel}</span>
-                </a>
-              ))}
-            </div>
           </section>
 
           <section aria-labelledby="byo" class="rc-col" style="gap: 14px" data-rc-section="byo">
@@ -333,8 +313,7 @@ Settings › About); the lock was written by a newer doze</pre></div>
   .rc-count { color: #6e5f79; font-weight: 500; }
   .rc-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .rc-more { font-weight: 600; font-size: 14.5px; }
-  .rc-ext { color: #140c1b !important; gap: 8px; }
-  .rc-ext:hover { text-decoration: none !important; }
+  .rc-extline { color: #a85a0c; font-weight: 600; margin-top: -4px; }
   .rc-aside { position: sticky; top: 16px; }
   .rc-switch-btn { width: 100%; border: 0; background: none; padding: 0; font: inherit; font-size: 14.5px; text-align: left; }
   .rc-switch-btn[aria-pressed="true"] .rg-switch { background: #a85a0c; justify-content: flex-end; }
@@ -375,7 +354,6 @@ Settings › About); the lock was written by a newer doze</pre></div>
   .rh-body { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 40px; align-items: start; padding-bottom: 72px; }
   .rh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; }
   .rh-grid > [hidden] { display: none; }
-  .rh-ext { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr)); gap: 12px; }
   .rh-byo { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 10px; }
   .rh-byo a { display: flex; flex-direction: column; gap: 4px; padding: 13px 14px; background: #fff; border: 1px solid #eadfd3; border-radius: 11px; color: #140c1b; }
   .rh-byo a:hover { border-color: #dccfc2; text-decoration: none; }

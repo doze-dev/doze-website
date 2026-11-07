@@ -1,0 +1,90 @@
+---
+// A vertical carousel with dot navigation, for sections that are a sequence.
+// Slides are children marked <div data-slide data-label="…">. The frame snaps
+// slide by slide as you scroll inside it (scroll-snap; the page's own scroll is
+// never taken over), the dots are real buttons, arrow keys and swipe work, and
+// the page scrolls on when you reach either end. Reduced motion: no smooth
+// snapping, same order. Without script: a scrollable frame of slides.
+interface Props {
+  label: string;
+  /** the frame's height, e.g. "min(640px, 78vh)" */
+  height?: string;
+  class?: string;
+}
+const { label, height = "min(620px, 76vh)", class: cls = "" } = Astro.props;
+---
+<section class={`vc ${cls}`} aria-roledescription="carousel" aria-label={label} data-vc style={`--vc-h:${height}`}>
+  <div class="vc-frame" tabindex="0" data-vc-frame aria-label={`${label}: scroll, or use the arrow keys`}>
+    <slot />
+  </div>
+  <nav class="vc-dots" aria-label={`${label}: slides`} data-vc-dots></nav>
+</section>
+
+<script>
+  const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  for (const root of document.querySelectorAll<HTMLElement>("[data-vc]")) {
+    const frame = root.querySelector<HTMLElement>("[data-vc-frame]");
+    const dots = root.querySelector<HTMLElement>("[data-vc-dots]");
+    if (!frame || !dots) continue;
+    const slides = [...frame.querySelectorAll<HTMLElement>("[data-slide]")];
+    const go = (i: number) => frame.scrollTo({ top: slides[i].offsetTop - frame.offsetTop, behavior: reduced() ? "auto" : "smooth" });
+    const buttons = slides.map((s, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "vc-dot";
+      b.setAttribute("aria-label", `${i + 1} of ${slides.length}: ${s.dataset.label ?? ""}`);
+      const text = document.createElement("span");
+      text.className = "vc-dot-label";
+      text.textContent = s.dataset.label ?? "";
+      b.append(text);
+      b.addEventListener("click", () => go(i));
+      dots.append(b);
+      return b;
+    });
+    const mark = (i: number) => {
+      buttons.forEach((b, j) => b.toggleAttribute("aria-current", j === i));
+      slides.forEach((s, j) => s.classList.toggle("is-current", j === i));
+    };
+    mark(0);
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) mark(slides.indexOf(e.target as HTMLElement));
+      },
+      { root: frame, threshold: 0.6 },
+    );
+    for (const s of slides) io.observe(s);
+    frame.addEventListener("keydown", (e) => {
+      const cur = buttons.findIndex((b) => b.hasAttribute("aria-current"));
+      const step = e.key === "ArrowDown" || e.key === "PageDown" ? 1 : e.key === "ArrowUp" || e.key === "PageUp" ? -1 : 0;
+      const next = cur + step;
+      if (!step || next < 0 || next >= slides.length) return;
+      e.preventDefault();
+      go(next);
+    });
+  }
+</script>
+
+<style>
+  .vc { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 28px; align-items: center; }
+  .vc-frame { height: var(--vc-h); overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; border-radius: 22px; outline: none; }
+  .vc-frame::-webkit-scrollbar { display: none; }
+  .vc-frame:focus-visible { box-shadow: 0 0 0 2px var(--amber); }
+  .vc-frame > :global([data-slide]) { height: var(--vc-h); scroll-snap-align: start; scroll-snap-stop: always; }
+  @media (prefers-reduced-motion: no-preference) {
+    .vc-frame { scroll-behavior: smooth; }
+  }
+  .vc-dots { display: flex; flex-direction: column; gap: 4px; }
+  .vc-dots :global(.vc-dot) { display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-height: 36px; min-width: 44px; padding: 0 4px; border: 0; background: transparent; color: #9c8aab; font: 500 13px var(--font-text); cursor: pointer; }
+  .vc-dots :global(.vc-dot)::after { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: 0.45; transition: transform var(--t-mid) var(--ease-out), opacity var(--t-mid); }
+  .vc-dots :global(.vc-dot[aria-current])::after { opacity: 1; transform: scale(1.5); background: var(--amber); }
+  .vc-dots :global(.vc-dot-label) { opacity: 0; transition: opacity var(--t-mid); white-space: nowrap; }
+  .vc-dots :global(.vc-dot[aria-current] .vc-dot-label),
+  .vc-dots:hover :global(.vc-dot-label) { opacity: 1; color: #f4ece4; }
+  .vc-dots :global(.vc-dot):focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 6px; }
+  @media (max-width: 760px) {
+    .vc { grid-template-columns: 1fr; }
+    .vc-dots { flex-direction: row; justify-content: center; order: 2; }
+    .vc-dots :global(.vc-dot-label) { display: none; }
+    .vc-dots :global(.vc-dot) { justify-content: center; min-height: 44px; }
+  }
+</style>

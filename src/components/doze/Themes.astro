@@ -1,0 +1,61 @@
+---
+// The app's five colour themes, each dark and light (and "system" follows the
+// Mac), drawn from the app's own tokens (internal/desk/frontend/src/tokens.css).
+// Shown only until a capture of the app in light exists.
+const themes = [
+  {
+    name: "violet",
+    dark: ["#15131d", "#1b1927", "#BD93F9", "#cfcbe3"],
+    light: ["#fbfaff", "#ffffff", "#7a4fe0", "#3a3550"],
+  },
+  {
+    name: "teal",
+    dark: ["#0e1816", "#14201e", "#4FD6C4", "#c6dcd8"],
+    light: ["#f6fbfa", "#ffffff", "#0f7f73", "#2d4744"],
+  },
+  {
+    name: "burgundy",
+    dark: ["#1a0f13", "#22151a", "#F08FA6", "#e0cdd2"],
+    light: ["#fdf8f9", "#ffffff", "#b5345a", "#4a3038"],
+  },
+  {
+    name: "amber",
+    dark: ["#16140b", "#1d1a0f", "#F2E04A", "#e0dcc2"],
+    light: ["#fcfbf3", "#ffffff", "#836700", "#444026"],
+  },
+  {
+    name: "slate",
+    dark: ["#12161b", "#181d23", "#9DB7D5", "#c9d1da"],
+    light: ["#f8fafc", "#ffffff", "#3d6a99", "#33404d"],
+  },
+];
+---
+<div class="th" role="img" aria-label="The app's five colour themes, violet, teal, burgundy, amber and slate, each in dark and light">
+  {themes.map((t) => (
+    <div class="th-col" aria-hidden="true">
+      {[t.dark, t.light].map(([bg, panel, acc, text]) => (
+        <div class="th-sw" style={`background:${bg};border-color:${panel === "#ffffff" ? "#e6e1ea" : "rgba(255,255,255,.08)"}`}>
+          <div class="th-card" style={`background:${panel}`}>
+            <i style={`background:${acc};width:44%`}></i>
+            <i style={`background:${text};opacity:.55;width:78%`}></i>
+            <i style={`background:${text};opacity:.3;width:60%`}></i>
+            <b style={`background:${acc}`}><span style={`background:${bg}`}></span></b>
+          </div>
+        </div>
+      ))}
+      <span class="th-n">{t.name}</span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .th { height: 100%; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; align-content: center; padding: 8px; }
+  .th-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .th-sw { border-radius: 12px; border: 1px solid; padding: 14px 12px; aspect-ratio: 4 / 3.4; display: flex; align-items: center; }
+  .th-card { position: relative; width: 100%; border-radius: 8px; padding: 12px 10px; display: flex; flex-direction: column; gap: 7px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18); }
+  .th-card i { display: block; height: 6px; border-radius: 3px; }
+  .th-card b { position: absolute; right: 9px; top: 9px; width: 22px; height: 12px; border-radius: 6px; }
+  .th-card b span { position: absolute; right: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; }
+  .th-n { font: 500 12.5px var(--font-mono); color: var(--t2); text-align: center; }
+  @media (max-width: 760px) { .th { gap: 6px; padding: 0; } .th-sw { padding: 8px 6px; } .th-card { padding: 8px 6px; gap: 5px; } .th-card i { height: 4px; } .th-card b { display: none; } .th-n { font-size: 10.5px; } }
+</style>

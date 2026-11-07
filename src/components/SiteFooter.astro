@@ -1,5 +1,5 @@
 ---
-// The site's footer (design: SiteFooter).
+// The family footer: the moon, the family line, and the three products as equals.
 import type { Theme } from "./SiteHeader.astro";
 
 interface Props {
@@ -13,14 +13,14 @@ const cols = [
       ["doze", "/doze/"],
       ["doze AWS", "/aws/"],
       ["doze Kafka", "/kafka/"],
-      ["Download", "/download/"],
+      ["Get doze", "/download/"],
     ],
   ],
   [
     "Registry",
     [
       ["Modules", "/registry/"],
-      ["Postgres extensions", "/registry/extensions/"],
+      ["Bring your own", "/registry/tools/"],
       ["How signing works", "/registry/trust/"],
       ["Publish a module", "/registry/publish/"],
     ],
@@ -28,10 +28,11 @@ const cols = [
   [
     "Learn",
     [
+      ["A Tuesday, honestly", "/tuesday/"],
+      ["On rest", "/on-rest/"],
       ["Docs", "/docs/"],
       ["Examples", "/examples/"],
       ["Changelog", "/changelog/"],
-      ["Coming from Docker Compose", "/docs/doze/start/from-docker-compose/"],
     ],
   ],
   [
@@ -44,13 +45,14 @@ const cols = [
     ],
   ],
 ] as const;
+const moon = theme === "light" ? "/brand/family-moon-ink.svg" : "/brand/family-moon.svg";
 ---
 <footer class={`sf sf-${theme}`}>
   <div class="sf-cols">
     <div class="sf-brand">
-      <a class="sf-mark" href="/"><img src="/brand/doze.svg" alt="" width="30" height="30" /><span>doze</span></a>
-      <p class="sf-tag">Run your whole stack. Feel none of it.</p>
-      <span class="sf-dim">Open source, Apache-2.0. No account, no telemetry.</span>
+      <a class="sf-mark" href="/"><img src={moon} alt="" width="30" height="30" /><span>doze</span></a>
+      <p class="sf-tag">Work hard. Then close the lid.</p>
+      <span class="sf-dim">doze, doze AWS and doze Kafka. Open source, Apache-2.0. No account, no telemetry.</span>
     </div>
     {cols.map(([title, links]) => (
       <nav aria-label={title}>
@@ -75,9 +77,9 @@ const cols = [
   .sf a { text-decoration: none; font-size: 14px; color: var(--i2); }
   .sf a:hover { color: var(--i); }
   .sf a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
-  .sf-mark { display: flex; align-items: center; gap: 10px; color: var(--i) !important; font: 700 19px var(--font-display) !important; }
-  .sf-tag { margin: 0; font: 800 22px/1.15 var(--font-display); letter-spacing: -0.02em; max-width: 17ch; text-wrap: balance; }
-  .sf-dim { font-size: 13px; color: var(--d); }
+  .sf-mark { display: flex; align-items: center; gap: 10px; color: var(--i) !important; font: 800 21px var(--font-display) !important; letter-spacing: -0.02em; }
+  .sf-tag { margin: 0; font: 800 26px/1.1 var(--font-display); letter-spacing: -0.02em; max-width: 16ch; text-wrap: balance; }
+  .sf-dim { font-size: 13px; color: var(--d); max-width: 34ch; }
   .sf nav { display: flex; flex-direction: column; gap: 10px; }
   .sf h2 { margin: 0 0 4px; font: 600 12px var(--font-text); letter-spacing: 0.12em; text-transform: uppercase; color: var(--d); }
   .sf-bottom { width: min(1240px, calc(100% - 64px)); margin: 0 auto; padding: 18px 0 36px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; font-size: 13px; color: var(--d); border-top: 1px solid var(--l); }

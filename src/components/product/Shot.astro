@@ -1,0 +1,53 @@
+---
+// A window with a real capture inside: an image, or a recording that plays
+// only while it is on screen (and never by itself when motion is unwelcome:
+// then it shows its controls). `glow` puts the page's lamp under it.
+interface Props {
+  src: string;
+  alt: string;
+  title?: string;
+  glow?: boolean;
+  eager?: boolean;
+  class?: string;
+}
+const { src, alt, title = "", glow = false, eager = false, class: cls = "" } = Astro.props;
+const isVideo = src.endsWith(".webm") || src.endsWith(".mp4");
+---
+<div class={`pp-shot ${cls}`}>
+  {glow && <div class="pp-shot-glow" aria-hidden="true"></div>}
+  <div class="pp-win">
+    <div class="pp-bar" aria-hidden="true"><i></i><i></i><i></i><span>{title}</span></div>
+    {isVideo ? (
+      <video src={src} aria-label={alt} muted loop playsinline preload="none" data-pp-video width="1440" height="900"></video>
+    ) : (
+      <img src={src} alt={alt} width="1440" height="900" loading={eager ? "eager" : "lazy"} decoding="async" fetchpriority={eager ? "high" : "auto"} />
+    )}
+  </div>
+</div>
+
+<script>
+  // Recordings play while at least a third is on screen, and pause otherwise
+  // (a slide scrolled out of its carousel counts as off screen).
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const vids = document.querySelectorAll<HTMLVideoElement>("[data-pp-video]");
+  if (still) {
+    for (const v of vids) {
+      v.controls = true;
+      v.preload = "metadata";
+    }
+  } else if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) {
+            v.preload = "auto";
+            v.play().catch(() => (v.controls = true));
+          } else v.pause();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    for (const v of vids) io.observe(v);
+  }
+</script>

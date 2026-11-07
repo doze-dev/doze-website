@@ -86,7 +86,7 @@ import Page from "../layouts/Page.astro";
     <div class="sec-grid sec-s19">
       <div class="sec-card sec-does">
         <div class="sec-top"><span class="sec-ico"><svg class="sec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><h3 class="sec-h3">One admin prompt, for .doze names</h3></div>
-        <p class="sec-p">So <code class="sec-i">gateway.larder.doze</code> resolves, and on macOS two stacks can both use port 5432. Shared by doze, doze AWS and doze Kafka: whichever runs first sets it up for all three.</p>
+        <p class="sec-p">So a name like <code class="sec-i">gateway.larder.doze</code> (from our example project, Larder) resolves, and on macOS two stacks can both use port 5432. Only doze sets this up: doze AWS and doze Kafka, run on their own, listen on 127.0.0.1 and need no names.</p>
         <ul class="sec-files" aria-label="Files written on macOS">
           <li><span>macOS</span><span>/etc/resolver/doze</span></li>
           <li><span></span><span>/Library/LaunchDaemons/dev.doze.netd.plist</span></li>

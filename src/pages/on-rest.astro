@@ -1,0 +1,134 @@
+---
+// On rest: the doze manifesto. Six short, numbered chapters, each with its
+// own anchor so a line can be cited. Night ground, long-read type, the moon.
+import Page from "../layouts/Page.astro";
+
+const chapters = [
+  { id: "sleep", title: "A stack should sleep." },
+  { id: "native", title: "Native processes, not a VM." },
+  { id: "your-machine", title: "Your machine is where development belongs." },
+  { id: "no-account", title: "No account, no telemetry." },
+  { id: "one-file", title: "One file." },
+  { id: "people", title: "Rest is for people too." },
+];
+const n = (i: number) => String(i + 1).padStart(2, "0");
+---
+<Page title="On rest" description="Why doze is built the way it is: a stack should sleep, native processes not a VM, your machine is where development belongs, no account, one file, and rest for the people too.">
+<article class="or">
+  <div class="or-grain" aria-hidden="true"></div>
+
+  <header class="or-head">
+    <svg class="or-moon" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><path d="M40 8.6 A24 24 0 1 0 55.4 42 A20 20 0 0 1 40 8.6 Z" fill="#F0A24B" /><circle cx="50" cy="16" r="2.4" fill="#F0A24B" opacity=".55" /><circle cx="57" cy="27" r="1.6" fill="#F0A24B" opacity=".4" /></svg>
+    <p class="or-kicker">The doze family · a short manifesto</p>
+    <h1 class="or-title">On rest</h1>
+    <p class="or-dek">Why doze is built the way it is, in six short chapters. Quote any of it.</p>
+    <nav class="or-toc" aria-label="Chapters">
+      <ol>
+        {chapters.map((c, i) => (
+          <li><a href={`#${c.id}`}><span>{n(i)}</span>{c.title}</a></li>
+        ))}
+      </ol>
+    </nav>
+  </header>
+
+  <section class="or-ch" id={chapters[0].id} aria-labelledby="or-h-1">
+    <a class="or-n" href={`#${chapters[0].id}`} aria-label="Link to chapter 1">01</a>
+    <h2 id="or-h-1">{chapters[0].title}</h2>
+    <p>Most of the day your stack does nothing. The database waits for a query that comes every few minutes. The queue holds three messages. The search index was last asked something before lunch. Everything is ready all the time, and you pay for that readiness in memory, battery and fan noise, from the moment you log in until you close the lid.</p>
+    <p>A service that sleeps when nobody calls and wakes when someone does isn’t a trick. It’s what you’d ask of any good colleague. doze keeps the rule short:</p>
+    <blockquote><p>Asleep means no process.</p></blockquote>
+    <p>Not paused, not throttled, not “idle”. Gone, with its data kept on disk, and back when your code calls. Rest is a feature. It’s the one we built everything else around.</p>
+  </section>
+
+  <section class="or-ch" id={chapters[1].id} aria-labelledby="or-h-2">
+    <a class="or-n" href={`#${chapters[1].id}`} aria-label="Link to chapter 2">02</a>
+    <h2 id="or-h-2">{chapters[1].title}</h2>
+    <p>The usual way to run a database you’d rather not install is to run a computer inside your computer, and run the database in that. It works. It also means a second operating system, a second filesystem, a network between you and your own code, and the fan.</p>
+    <p>doze runs the real engines as ordinary processes on your machine. Postgres is <code>postgres</code> in your process list. A debugger attaches because nothing is in the way. The file you save is the file the service reads. And when something is asleep, <code>pgrep</code> finds nothing. You can check; that’s the point.</p>
+    <p>Your laptop is fast enough to run your stack. It always was. It just never got to rest.</p>
+  </section>
+
+  <section class="or-ch" id={chapters[2].id} aria-labelledby="or-h-3">
+    <a class="or-n" href={`#${chapters[2].id}`} aria-label="Link to chapter 3">03</a>
+    <h2 id="or-h-3">{chapters[2].title}</h2>
+    <p>When local development got painful, a lot of teams stopped fixing it and moved it: remote dev boxes, run by a platform team. For a while it felt like progress.</p>
+    <p>Then the debugger wouldn’t attach through the tunnel. The ports needed forwarding, again. The logs lived in another tool. And on the day the dev environment was down, no ETA, the platform team in another timezone or busy with production, nobody wrote any code. You needed a platform team just to write code.</p>
+    <blockquote><p>Local development didn’t get fixed. It got moved.</p></blockquote>
+    <p>We think it can be fixed where it lives. Your code, your services and your debugger on one machine. A breakpoint that just hits. Nobody’s pager involved. Platform teams have a platform to build, and babysitting dev boxes shouldn’t be it.</p>
+  </section>
+
+  <section class="or-ch" id={chapters[3].id} aria-labelledby="or-h-4">
+    <a class="or-n" href={`#${chapters[3].id}`} aria-label="Link to chapter 4">04</a>
+    <h2 id="or-h-4">{chapters[3].title}</h2>
+    <p>A tool that runs on your laptop has no business knowing who you are. doze has no account to make and nothing to sign in to, and it sends nothing home. Neither does this website: no cookies, no analytics.</p>
+    <p>That isn’t a setting you have to find. It’s how doze is built, and it’s open source under Apache-2.0, so you can read it and check. Your data stays on your disk, kept while it sleeps, and goes nowhere unless you move it.</p>
+  </section>
+
+  <section class="or-ch" id={chapters[4].id} aria-labelledby="or-h-5">
+    <a class="or-n" href={`#${chapters[4].id}`} aria-label="Link to chapter 5">05</a>
+    <h2 id="or-h-5">{chapters[4].title}</h2>
+    <p>A stack is a list of things and how they start: this database at that version, this app on this port, that one after the migration. The list belongs in the repo, in one file a person can read. Ours is <code>doze.hcl</code>.</p>
+    <p>Because the file is what runs, it can’t drift from what runs. A new teammate clones the repo and types <code>doze up</code>. You, back after three months, type <code>doze up</code>. The page called “Getting started (2023)” can finally retire.</p>
+    <p>One file is also one thing to review, one thing your agent can read, and one thing the app can draw as a map.</p>
+  </section>
+
+  <section class="or-ch" id={chapters[5].id} aria-labelledby="or-h-6">
+    <a class="or-n" href={`#${chapters[5].id}`} aria-label="Link to chapter 6">06</a>
+    <h2 id="or-h-6">{chapters[5].title}</h2>
+    <p>We called it doze because the machines were the easy part. The harder part is the person in front of them: the low hum of things left running, the terminal tab you’re scared to close, the stack you’re not sure you can bring back tomorrow.</p>
+    <p>Close the lid with nothing still running and you get back something that isn’t measured in megabytes. You can stop. The work will be there in the morning, and it will start when you do.</p>
+    <blockquote class="or-last"><p>Work hard. Then close the lid.</p></blockquote>
+  </section>
+
+  <footer class="or-end">
+    <p class="or-sign">The doze authors · November 2026</p>
+    <div class="or-actions">
+      <a class="or-btn" href="/download/">Get doze</a>
+      <a class="or-link" href="/tuesday/">Walk through a whole Tuesday <span aria-hidden="true">→</span></a>
+    </div>
+  </footer>
+</article>
+</Page>
+
+<style>
+  .or { position: relative; --measure: 660px; padding: clamp(64px, 10vw, 120px) 24px clamp(96px, 12vw, 160px); color: var(--text); background: radial-gradient(70% 40% at 50% 0%, rgba(122, 76, 160, 0.16), transparent 70%), radial-gradient(40% 24% at 50% 2%, rgba(240, 162, 75, 0.10), transparent 70%); }
+  .or-grain { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.05; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .or > :not(.or-grain) { position: relative; z-index: 1; max-width: var(--measure); margin-left: auto; margin-right: auto; }
+
+  .or-head { text-align: center; padding-bottom: clamp(48px, 7vw, 80px); border-bottom: 1px solid var(--line); }
+  .or-moon { display: block; margin: 0 auto 28px; filter: drop-shadow(0 0 28px rgba(240, 162, 75, 0.4)); }
+  .or-kicker { margin: 0 0 18px; font: 600 13px/1 var(--font-text); letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); }
+  .or-title { margin: 0; font: 800 clamp(64px, 11vw, 132px)/0.9 var(--font-display); letter-spacing: -0.045em; }
+  .or-dek { margin: 24px auto 0; max-width: 460px; font-size: 20px; line-height: 1.5; color: var(--text-2); text-wrap: balance; }
+  .or-toc { margin-top: 44px; text-align: left; }
+  .or-toc ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+  .or-toc a { display: flex; align-items: baseline; gap: 14px; min-height: 44px; padding: 10px 0; border-top: 1px solid var(--line); color: var(--text-2); text-decoration: none; font-size: 15px; line-height: 1.4; transition: color var(--t-fast); }
+  .or-toc a span { font: 500 12px var(--font-mono); color: var(--amber); }
+  .or-toc a:hover { color: var(--text); }
+
+  .or-ch { padding-top: clamp(64px, 9vw, 104px); }
+  .or-n { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; font: 500 15px var(--font-mono); letter-spacing: 0.06em; color: var(--amber); text-decoration: none; }
+  .or-n::before { content: ""; width: 28px; height: 1px; margin-right: 12px; background: var(--amber); opacity: 0.6; }
+  .or-n:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .or-ch h2 { margin: 8px 0 28px; font: 750 clamp(32px, 4.6vw, 48px)/1.05 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+  .or-ch p { margin: 0 0 1.15em; font-size: clamp(18px, 1.5vw, 20px); line-height: 1.72; color: #e3d8e9; text-wrap: pretty; hanging-punctuation: first; }
+  .or-ch code { font-size: 0.86em; padding: 1px 6px; border-radius: 6px; background: rgba(244, 236, 228, 0.07); color: var(--text); }
+  .or blockquote { margin: 40px 0 40px -2px; padding: 4px 0 4px 26px; border-left: 2px solid var(--amber); }
+  .or blockquote p { margin: 0; font: 700 clamp(26px, 3.4vw, 36px)/1.15 var(--font-display); letter-spacing: -0.025em; color: var(--text); text-wrap: balance; }
+  .or blockquote.or-last p { color: var(--amber); }
+  .or a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+
+  .or-end { margin-top: clamp(64px, 9vw, 104px); padding-top: 32px; border-top: 1px solid var(--line); }
+  .or-sign { margin: 0; font-size: 15px; color: var(--text-3); }
+  .or-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; margin-top: 28px; }
+  .or-btn { display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border-radius: 12px; background: var(--amber); color: var(--amber-ink); font-weight: 650; text-decoration: none; }
+  .or-btn:hover { background: #ffb866; }
+  .or-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--amber); font-weight: 600; text-decoration: none; }
+  .or-link span { transition: transform var(--t-mid) var(--ease-out); }
+  .or-link:hover span { transform: translateX(4px); }
+
+  @media (max-width: 600px) {
+    .or-toc ol { grid-template-columns: 1fr; }
+    .or blockquote { padding-left: 18px; }
+  }
+</style>

@@ -7,3 +7,7 @@
 /modules/*    /docs/doze/modules/:splat    301
 /operate/*    /docs/doze/operate/:splat    301
 /cli/*        /docs/doze/cli/:splat        301
+
+# Postgres extensions live in the postgres module (its Extensions tab).
+/registry/extensions   /registry/doze/postgres/extensions/  301
+/registry/extensions/  /registry/doze/postgres/extensions/  301

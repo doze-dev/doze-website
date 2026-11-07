@@ -1,0 +1,272 @@
+---
+// The pinned stage of the Tuesday story: one laptop (lid, screen, bezel
+// notes, base) and a status strip (fan, clock, heat). Every layer carries
+// data-in = the steps it shows in, so any step is a complete picture.
+// Decorative: the beats beside it say everything in words (aria-hidden).
+import { on } from "./steps";
+
+const notes = [
+  { t: "3000?", from: "0920a", x: 4, y: -3, r: -6 },
+  { t: "3001 = the other web", from: "0920a", x: 20, y: -4, r: 4 },
+  { t: "8000 or 8001?", from: "0920b", x: 70, y: -3.5, r: -3 },
+  { t: "5432 (theirs!)", from: "0920b", x: 90, y: 13, r: 7 },
+  { t: "5433 = ours??", from: "0920c", x: 91, y: 31, r: -5 },
+  { t: "6379 shared?", from: "0920c", x: -5, y: 22, r: 5 },
+  { t: "5173 vite somewhere", from: "0920d", x: -6, y: 46, r: -4 },
+  { t: "8080 ???", from: "0920d", x: 91, y: 56, r: 3 },
+];
+const mess = (from: string) => on([from, "1840c"]);
+---
+<div class="tn-stage" aria-hidden="true" data-stage>
+  <div class="tn-glow"></div>
+  <img class="tn-moon" src="/brand/family-moon.svg" alt="" width="64" height="64" data-in={on("d1900")} />
+  <div class="tn-laptop">
+    <div class="tn-lid">
+      <div class="tn-screen">
+        <div class="tn-wall"></div>
+
+        <div class="tn-mb">
+          <b>Terminal</b><span>File</span><span>Edit</span><span>View</span>
+          <i class="tn-mb-sp"></i>
+          <img class="tn-mb-moon" src="/brand/family-moon.svg" alt="" width="14" height="14" data-in={on(["d0902", "d1900"])} />
+          <span class="tn-mb-day">Tue</span><span class="tn-mb-clock" data-clock>9:02</span>
+        </div>
+
+        <!-- the terminal -->
+        <div class="tn-win tn-term" data-in={on(["0902a", "1840a"], ["d0902", "d1530"])}>
+          <div class="tn-tabs">
+            <span style="--i:0" data-in={on(["0902a", "1840a"])} data-hi={on("0902a")}>web · pnpm dev</span>
+            <span style="--i:1" data-in={on(["0902a", "1840a"])} data-hi="">api · poetry run…</span>
+            <span style="--i:2" data-in={on(["0902a", "1840a"])} data-hi={on(["1130a", "1400a"])}>worker · go run</span>
+            <span style="--i:3" data-in={on(["0902b", "1840a"])} data-hi={on("0920a")}>docker compose</span>
+            <span style="--i:4" data-in={on(["0902b", "1840a"])} data-hi="">kafka.sh</span>
+            <span style="--i:5" data-in={on(["0902b", "1840a"])} data-hi={on("0902b", ["0920b", "0920d"], "1840a")}>zsh (??)</span>
+            <span style="--i:0" data-in={on(["1400b", "1840a"])} data-hi={on(["1400b", "1400c"])}>billing</span>
+            <span style="--i:0" data-in={on(["1530a", "1840a"])} data-hi={on(["1530a", "1530d"])}>dev env</span>
+            <span class="tn-tab-calm" data-in={on(["d0902", "d1130"])} data-hi={on(["d0902", "d1130"])}>larder — zsh</span>
+            <span class="tn-tab-calm" data-in={on(["d1400", "d1530"])} data-hi={on(["d1400", "d1530"])}>billing — zsh</span>
+          </div>
+          <div class="tn-tb">
+<pre class="tn-pg" data-in={on(["0902a", "0902b"])}>Last login: Mon Nov  2 18:52:11 on ttys004
+<i>$</i> <span class="tn-cur"></span></pre>
+
+<pre class="tn-pg" data-in={on("0920a")}><i>$</i> docker compose up postgres
+[+] Running 1/0
+ ✔ Container acme-postgres-1  Created
+<b>Error response from daemon: Ports are not available:
+exposing port TCP 0.0.0.0:5432 -> 0.0.0.0:0: listen tcp
+0.0.0.0:5432: bind: address already in use</b></pre>
+
+<pre class="tn-pg" data-in={on(["0920b", "0920d"])}><i>$</i> lsof -i :5432
+COMMAND   PID USER  NAME
+postgres 4121 you   localhost:postgresql (LISTEN)
+<i>$</i> ps -o lstart= -p 4121
+Tue Oct 27 10:14:03 2026
+<i>$ # last week. the client project.</i></pre>
+
+<pre class="tn-pg" data-in={on(["1130a", "1400a"])}><i>$</i> go run ./services/orders
+failed to connect to `user=orders database=orders`:
+  127.0.0.1:5432: <b>FATAL: role "orders" does not
+  exist (SQLSTATE 28000)</b>
+exit status 1</pre>
+
+<pre class="tn-pg" data-in={on("1400b")}><i>$</i> cd ~/code/billing && git pull -q
+<i>$</i> make dev
+<b>make: *** No rule to make target 'dev'.  Stop.</b>
+<i>$</i> cat .env.example | wc -l
+       4</pre>
+
+<pre class="tn-pg" data-in={on("1400c")}><i>$</i> git log --oneline -4 -- services/
+a41c9e0 add notifications service (TypeScript)
+7be20d1 move worker to Python
+3c0aa18 billing runs on the dev cluster now
+19ff3a2 bump node to 22</pre>
+
+<pre class="tn-pg" data-in={on("1530a")}><i>$</i> kubectl port-forward svc/billing-api 8080:80
+Forwarding from 127.0.0.1:8080 -> 80
+<i>$</i> kubectl port-forward svc/postgres 5432:5432
+<b>Unable to listen on port 5432: Listeners failed
+to create with the following errors: [unable to
+create listener: Error listen tcp4 127.0.0.1:5432:
+bind: address already in use]</b>
+<i>$</i> kubectl port-forward svc/postgres 5433:5432
+Forwarding from 127.0.0.1:5433 -> 5432</pre>
+
+<pre class="tn-pg" data-in={on("1530b")}><i>$</i> # save. sync. rebuild. somewhere else.
+syncing 214 files → dev-you … done
+rebuilding billing-api (remote) …… done
+waiting for debugger on 127.0.0.1:9229 …
+<b>timed out</b>
+<i>$ # logs are in the other tool. in the other tab.</i></pre>
+
+<pre class="tn-pg" data-in={on(["1530c", "1530d"])}><i>$</i> kubectl get pods
+<b>Unable to connect to the server: dial tcp
+10.0.12.4:443: i/o timeout</b>
+<i>$</i> kubectl get pods
+<b>Unable to connect to the server: dial tcp
+10.0.12.4:443: i/o timeout</b></pre>
+
+<pre class="tn-pg" data-in={on("1840a")}><i>$</i> docker ps -q | wc -l
+      23
+<i>$</i> ps -eo etime,comm | grep node
+ 1-02:14:09 node
+ 1-01:58:40 node</pre>
+
+<pre class="tn-pg" data-in={on("d0902")}><i>$</i> doze up
+<u>✓</u> postgres awake
+<u>✓</u> redis awake
+<u>✓</u> kafka awake
+<u>✓</u> aws awake
+<u>✓</u> mailpit awake
+<u>✓</u> migrate-identity done
+<i>  ⋮</i>
+<u>✓</u> gateway awake
+<u>✓</u> storefront awake
+<i>›</i> up — supervised in the background. <i>doze for the dash · doze down to stop</i></pre>
+
+<pre class="tn-pg" data-in={on("d0920")}><i>$</i> doze doctor
+<i>  ⋮</i>
+  <b>✗</b>  port 8000        held by python3 (pid 5387) on 127.0.0.1:8000
+       stop it:               kill 5387
+       or give gateway its own address: doze doctor --fix
+       or use another port:   port = … in the "gateway" block of doze.hcl</pre>
+
+<pre class="tn-pg" data-in={on("d1130")}><i>$</i> doze status
+      NAME       ENGINE        STATE
+<i>Modules</i>
+  <u>●</u>   postgres   postgres 18   awake
+  <u>●</u>   kafka      kafka 4       awake
+<i>Apps</i>
+  <b>↻</b>   orders     app           crashing 2/5
+<i>$</i> doze logs orders
+<i>orders │</i> password authentication failed for user "orders"</pre>
+
+<pre class="tn-pg" data-in={on(["d1400", "d1530"])}><i>$</i> git pull && doze up
+ doze.hcl                      |  9 +++++++++
+ services/notifications/...    | 41 ++++++++
+<u>✓</u> install-notifications done
+<u>✓</u> notifications awake
+<i>›</i> up — supervised in the background. <i>doze for the dash · doze down to stop</i></pre>
+          </div>
+        </div>
+
+        <!-- the README -->
+        <div class="tn-win tn-readme" data-in={on(["0920c", "0920d"])}>
+          <div class="tn-wt">README.md</div>
+          <div class="tn-rb">
+            <b>## Getting started (2023)</b>
+            <s>1. make dev</s>
+            <s>2. open localhost:3000</s>
+            <span>3. if that fails, ask Priya</span>
+          </div>
+        </div>
+
+        <!-- noon: the AI -->
+        <div class="tn-win tn-chat" data-in={on(["1130a", "1130d"])}>
+          <div class="tn-wt">Assistant</div>
+          <div class="tn-cb">
+            <p class="me" data-in={on(["1130a", "1130d"])}>orders can't reach the database. fix it?</p>
+            <p class="ai tn-typing" data-in={on("1130a")}><i></i><i></i><i></i></p>
+            <p class="ai" data-in={on(["1130b", "1130d"])}>Make sure Postgres is running on <code>localhost:5432</code> and <code>DATABASE_URL</code> is set in your .env file.</p>
+            <p class="me" data-in={on(["1130c", "1130d"])}>it is. it's a different project's postgres</p>
+            <p class="ai" data-in={on(["1130c", "1130d"])}>Apologies for the confusion! Try port <code>5433</code>.</p>
+            <p class="me" data-in={on("1130d")}>that's the other other one</p>
+          </div>
+        </div>
+
+        <!-- 14:00: the message -->
+        <div class="tn-toast" data-in={on("1400a", "d1400")}>
+          <span class="tn-av">P</span>
+          <div><b>Priya</b><span>can you look at billing?</span></div>
+        </div>
+
+        <!-- 15:30: #platform -->
+        <div class="tn-win tn-chan" data-in={on(["1530c", "1530d"], "d1530")}>
+          <div class="tn-wt"># platform</div>
+          <div class="tn-cb">
+            <p class="bot"><b>status</b> Dev environments degraded. Investigating. No ETA.</p>
+            <p class="me" data-in={on(["1530c", "1530d"])}>is there a workaround? billing is down for us</p>
+            <p class="bot" data-in={on("1530d")}><b>on-call</b> Sorry, we're on a production incident first. Will update.</p>
+            <p class="me" data-in={on("1530d")}>same here, can't run anything</p>
+            <p class="me" data-in={on("1530d")}>+1</p>
+          </div>
+        </div>
+        <div class="tn-wait" data-in={on("1530d")}><span></span>Reconnecting to dev-you…</div>
+
+        <!-- doze, 11:30: the agent reads what is running -->
+        <div class="tn-win tn-chat tn-agent" data-in={on("d1130")}>
+          <div class="tn-wt">Assistant</div>
+          <div class="tn-cb">
+            <p class="me">orders can't reach the database. fix it?</p>
+            <p class="tool">ran <code>doze status</code> · <code>doze logs orders</code></p>
+            <p class="ai">orders is crashing (try 2 of 5): password authentication failed. <code>.env.local</code> overrides the <code>DATABASE_URL</code> doze gives it. Remove that line?</p>
+          </div>
+        </div>
+
+        <!-- doze, 14:00: the new service, in the file -->
+        <div class="tn-win tn-diff" data-in={on("d1400")}>
+          <div class="tn-wt">doze.hcl</div>
+<pre class="tn-db"><ins>+ app "notifications" &#123;
++   dir   = "services/notifications"
++   run   = "bun src/index.ts"
++   ready = log("consuming")
++   after = [task.install-notifications]
++   env   = &#123; KAFKA_BROKERS = module.kafka.address &#125;
++ &#125;</ins></pre>
+        </div>
+
+        <!-- doze, 15:30: a breakpoint just hits -->
+        <div class="tn-win tn-ed" data-in={on("d1530")}>
+          <div class="tn-wt">invoices.ts — billing</div>
+<pre class="tn-eb"><i>40</i>  const total = lines.reduce(sum, 0);
+<i>41</i>  const tax = taxFor(customer, total);
+<em><i>42</i>  return &#123; total, tax, due: total + tax &#125;;</em>
+<i>43</i>&#125;</pre>
+          <div class="tn-paused">Paused on breakpoint · invoices.ts:42</div>
+        </div>
+
+        <!-- doze, 18:40: the menu bar -->
+        <div class="tn-menu" data-in={on("d1840")}>
+          <div class="tn-menu-h">Stacks</div>
+          <div class="tn-menu-r"><span><i class="g"></i>billing</span><em>0 awake</em></div>
+          <div class="tn-menu-r"><span><i></i>larder</span><em>stopped</em></div>
+          <hr />
+          <div class="tn-menu-r"><span>Open doze</span><em>⇧⌘D</em></div>
+          <div class="tn-menu-r"><span>Settings…</span><em>⌘,</em></div>
+          <div class="tn-menu-r"><span>Check for Updates…</span></div>
+          <div class="tn-menu-r"><span>Quit doze &nbsp;·&nbsp; stacks keep running</span></div>
+        </div>
+
+        <!-- the rewind -->
+        <div class="tn-rw" data-in={on("rewind")}>
+          <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" /><line class="h" x1="50" y1="50" x2="50" y2="26" /><line class="m" x1="50" y1="50" x2="50" y2="14" /></svg>
+          <span>↺ 8:57</span>
+        </div>
+      </div>
+      {notes.map((n) => (
+        <span class="tn-note" style={`--x:${n.x}%;--y:${n.y}%;--r:${n.r}deg`} data-in={mess(n.from)}>{n.t}</span>
+      ))}
+    </div>
+    <div class="tn-base"><i></i></div>
+  </div>
+
+  <div class="tn-strip">
+    <div class="tn-st">
+      <svg class="tn-fan" viewBox="0 0 40 40"><g class="a"><g class="b"><g class="c">
+        <path d="M20 20 C 18 12, 20 5, 26 5 C 30 6, 27 14, 20 20Z" />
+        <path d="M20 20 C 28 18, 35 20, 35 26 C 34 30, 26 27, 20 20Z" />
+        <path d="M20 20 C 22 28, 20 35, 14 35 C 10 34, 13 26, 20 20Z" />
+        <path d="M20 20 C 12 22, 5 20, 5 14 C 6 10, 14 13, 20 20Z" />
+      </g></g></g><circle cx="20" cy="20" r="3" /></svg>
+      <span><small>Fan</small><b data-fan-word>off</b></span>
+    </div>
+    <div class="tn-st">
+      <svg class="tn-clk" viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" /><line class="h" x1="20" y1="20" x2="20" y2="11" /><line class="m" x1="20" y1="20" x2="20" y2="7" /></svg>
+      <span><small>Tuesday</small><b data-clock>8:57</b></span>
+    </div>
+    <div class="tn-st">
+      <span class="tn-therm"><i></i></span>
+      <span><small>Laptop</small><b data-heat-word>cool</b></span>
+    </div>
+  </div>
+</div>

@@ -10,9 +10,9 @@ import Page from "../layouts/Page.astro";
     <div class="lx-s2" aria-hidden="true"></div>
     <div class="lx-wrap lx-hero lx-s3">
       <div class="lx-s4">
-        <span class="lx-eyebrow">Example · Larder</span>
-        <h1 class="lx-h1">Larder: a grocery service you can run in one command.</h1>
-        <p class="lx-lede">Nine services in Go, Python and TypeScript, on Postgres, Redis, Kafka, S3, SQS and a mail catcher. The kind of backend that usually comes with a compose file, a wiki page and a lost afternoon. Here it is one <code class="lx-ic-code">doze.hcl</code>, and no Docker.</p>
+        <span class="lx-eyebrow">Example project · Larder</span>
+        <h1 class="lx-h1">Larder: a made-up grocery service you can run in one command.</h1>
+        <p class="lx-lede">We built Larder as an example, to show doze on a realistic monorepo: it sells nothing and delivers nothing. Nine services in Go, Python and TypeScript, on Postgres, Redis, Kafka, S3, SQS and a mail catcher. The kind of backend that usually comes with a compose file, a wiki page and a lost afternoon. Here it is one <code class="lx-ic-code">doze.hcl</code>, and no Docker.</p>
         <div class="lx-stack-sm lx-s5">
           <a class="lx-btn lx-btn-lamp" href="#run">Clone and run</a>
           <a class="lx-btn lx-btn-ghost" href="https://github.com/doze-dev/doze-examples/tree/main/larder">Larder on GitHub</a>
@@ -275,7 +275,7 @@ ERROR:  permission denied for schema identity</pre><button data-copy="psql &quot
         <div class="lx-card lx-try">
           <span class="lx-t">01 · The happy path</span>
           <h3 class="lx-h3">Place an order and watch it travel.</h3>
-          <p class="lx-p">Create an account in the storefront, add a few things, check out with the card that's filled in. The order page follows it through orders, payments and fulfilment, over Kafka and SQS, then links the receipt.</p>
+          <p class="lx-p">Create an account in the storefront, add a few things, check out with the test card that's filled in. Nothing is real: no money moves and nothing ships. The order page follows it through orders, payments and fulfilment, over Kafka and SQS, then links the receipt.</p>
           <div class="lx-states" aria-label="Order states"><span class="lx-s8">placed</span><span aria-hidden="true" class="lx-dim">→</span><span class="lx-s8">paid</span><span aria-hidden="true" class="lx-dim">→</span><span class="lx-s8">packed</span><span aria-hidden="true" class="lx-dim">→</span><span class="lx-s8 lx-s30">out for delivery</span></div>
         </div>
         <div class="lx-card lx-try">
@@ -343,7 +343,7 @@ ERROR:  permission denied for schema identity</pre><button data-copy="psql &quot
       <div class="lx-s21">
         <span class="lx-eyebrow">What it shows about doze</span>
         <h2 class="lx-h2" id="shows-h">Nothing in Larder's code knows doze is there.</h2>
-        <p class="lx-p lx-s14">Every service reads plain environment variables. In doze.hcl they are references like <code class="lx-ic-code">module.kafka.address</code> and <code class="lx-ic-code">app.catalog.url</code>; in production the same variables point at the real thing.</p>
+        <p class="lx-p lx-s14">Every service reads plain environment variables. In doze.hcl they are references like <code class="lx-ic-code">module.kafka.address</code> and <code class="lx-ic-code">app.catalog.url</code>; in a real deployment the same variables would point at the real thing.</p>
       </div>
       <ul class="lx-shows lx-s41">
         <li><svg class="lx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b>Three languages, wired the same way.</b> Go, Python and TypeScript services all get their addresses from one file.</span></li>

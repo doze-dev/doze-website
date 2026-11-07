@@ -1,267 +1,302 @@
 ---
+// doze AWS. Its own identity first (sky on its own night), then the real
+// console, the services one by one, alone or inside doze, honest fidelity,
+// install, and the family it belongs to.
+import "../components/product/product.css";
 import AwsServices from "../components/product/AwsServices.astro";
+import Cmd from "../components/product/Cmd.astro";
+import Endorse from "../components/product/Endorse.astro";
+import Family from "../components/product/Family.astro";
+import Shot from "../components/product/Shot.astro";
+import SubNav from "../components/product/SubNav.astro";
 import Page from "../layouts/Page.astro";
+
+const install = "curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-aws/main/install.sh | sh";
+const services: [string, string][] = [
+  ["S3", "buckets, objects, notifications"],
+  ["SQS", "FIFO, DLQ redrive, long polling"],
+  ["SNS", "fanout, filter policies"],
+  ["DynamoDB", "expressions, GSI/LSI, transactions"],
+  ["Lambda", "host processes, no Docker"],
+  ["Step Functions", "Standard and Express, JSONata"],
+  ["EventBridge", "patterns, schedules, targets"],
+  ["API Gateway", "REST and HTTP APIs into Lambda"],
+  ["IAM", "real policy evaluation"],
+  ["CloudFormation", "sam deploy, cdk deploy"],
+  ["Kinesis", "resharding, no JVM"],
+  ["CloudWatch", "metrics, alarms"],
+  ["CloudWatch Logs", "groups, streams, tail --follow"],
+  ["KMS", "real stdlib crypto"],
+  ["Secrets Manager", "version stages, encrypted"],
+  ["SSM Parameter Store", "versions, labels, SecureString"],
+  ["STS", "identity, assume role"],
+];
 ---
-<Page title="doze AWS" theme="aws" current="aws">
-<div class="aw aw-s1 aw-root">
+<Page title="doze AWS" description="doze AWS wakes AWS on your laptop. No account, no bill. 17 services in one Go binary on 127.0.0.1:4566, speaking the real wire protocols, with a console that opens on your own traffic." theme="aws" current="aws">
+<div class="pp pp-aws aw">
+  <SubNav name="doze AWS" icon="/brand/doze-aws.svg" links={[["The wire", "#console"], ["Services", "#services"], ["Alone or in doze", "#run"], ["Fidelity", "#fidelity"], ["Install", "#install"], ["Docs", "/docs/aws/"], ["Changelog", "/changelog/"]]} />
 
-  <div class="aw-sub aw-s2">
-    <nav class="aw-s3" aria-label="doze AWS">
-      <span class="aw-s4"><span class="aw-s5"></span>doze AWS</span>
-      <a href="#console">The console</a><a href="#services">Services</a><a href="#fidelity">Fidelity</a><a href="#install">Install</a><a href="/docs/aws/">Docs</a><a href="/changelog/">Changelog</a>
-    </nav>
-  </div>
-
-  <section class="aw-s6">
-    <div class="aw-s7">
-      <img class="aw-s8" src="/brand/doze-aws.svg" alt="doze AWS">
-      <h1 class="aw-hero-title aw-s9">All of AWS. None of the account.</h1>
-      <p class="aw-s10">Stop waiting on a deploy to find out if your Lambda works. Stop sharing one dev account with the whole team. doze AWS is 17 services in one Go binary, speaking the real wire protocols, so your SDK, the AWS CLI, SAM and CDK point at it unchanged. No Docker, no JVM.</p>
-      <div class="aw-s11"><span class="aw-s12">waiting for CloudFormation…</span><span class="aw-s12">AccessDenied (the shared dev account)</span><span class="aw-s12">works on my machine, fails in AWS</span></div>
-      <div class="aw-stack-sm aw-s13">
-        <a class="aw-btn aw-btn-sky" href="#install">Install doze AWS</a>
-        <a class="aw-btn aw-btn-ghost" href="/docs/aws/">Getting started</a>
+  <!-- Hero: its own identity -->
+  <section class="pp-hero">
+    <div class="pp-wrap aw-hero">
+      <div class="aw-hero-say">
+        <span class="pp-lockup"><img src="/brand/doze-aws.svg" alt="" width="64" height="64" /><b>doze AWS</b></span>
+        <h1 class="pp-h1 aw-h1">Wakes AWS on your laptop. <span class="pp-soft">No account, no bill.</span></h1>
+        <Endorse />
+        <p class="pp-lede">Stop waiting on a deploy to find out if your Lambda works. Stop sharing one dev account with the whole team. 17 services in one Go binary, speaking the real wire protocols, so your SDK, the AWS CLI, SAM and CDK point at it unchanged. No Docker, no JVM.</p>
+        <div class="pp-chips" aria-label="What it replaces"><span class="pp-chip">waiting for CloudFormation…</span><span class="pp-chip">AccessDenied (the shared dev account)</span><span class="pp-chip">works on my machine, fails in AWS</span></div>
+        <div class="aw-cta">
+          <a class="pp-btn pp-btn-acc" href="#install">Install doze AWS</a>
+          <a class="pp-btn pp-btn-ghost" href="/docs/aws/">Getting started</a>
+        </div>
       </div>
-    </div>
-    <pre class="aw-s14"><span class="aw-s15">$</span> cd ~/code/larder &amp;&amp; doze-aws
+      <div class="aw-hero-term">
+        <div class="pp-term-head"><span>on its own</span><span>loopback only</span></div>
+        <pre class="pp-term"><span class="c">$</span> <span class="w">doze-aws</span>
 
-  <span class="aw-s16">doze-aws is up.</span>
+  <span class="w">doze-aws is up.</span>
 
-    endpoint  <span class="aw-s17">http://aws.larder.doze</span>
-    console   <span class="aw-s17">http://aws.larder.doze/_console/</span>
+    endpoint  <span class="a">http://127.0.0.1:4566</span>
+    console   <span class="a">http://127.0.0.1:4566/_console/</span>
     serving   17 services in us-east-1
 
     eval "$(doze-aws env)"   point this shell at it
     doze-aws doctor          when something looks wrong
 
-<span class="aw-s15">$</span> aws sts get-caller-identity
+<span class="c">$</span> <span class="w">aws sts get-caller-identity</span>
 &#123; "Account": "000000000000", … &#125;</pre>
-  </section>
-
-  <!-- Console -->
-  <section class="aw-s18" id="console">
-    <div class="aw-s19">
-      <span class="aw-s20">The console</span>
-      <h2 class="aw-s21">It opens on your own traffic.</h2>
-      <p class="aw-s22">Every call your app makes, in order, with the work each one caused nested under it, a request id you can quote, and copy as curl on each row. Real AWS cannot show you this, because it is not sitting between your code and the answer.</p>
-    </div>
-    <div class="aw-s23">
-      <div class="aw-s24"></div>
-      <div class="aw-s25">
-        <div class="aw-s26"><span class="aw-s27"></span><span class="aw-s28"></span><span class="aw-s29"></span><span class="aw-s30">doze AWS · /_console</span></div>
-        <img class="aw-s31" src="/media/aws-call.webp" alt="The doze AWS console: every call the app made, with a refused PutItem opened, its request, and the ledger entry for the operation">
-      </div>
-      <div class="aw-float aw-s32"><b>1 call was refused</b><div class="aw-s33">The same request would fail on AWS. You found out on your laptop.</div></div>
-    </div>
-    <p class="aw-s34">The real console, from its demo stack: your traffic, not a diagram. <span class="aw-recap">[re-capture with Larder]</span></p>
-    <div class="aw-s35">
-      <div class="aw-s36">
-        <h3 class="aw-s37">Watch it fill up.</h3>
-        <p class="aw-s38">Real AWS CLI calls (S3 uploads, SQS jobs, DynamoDB writes) land on the wire as they happen. One is refused, exactly as AWS would refuse it. Open it to see what you sent.</p>
-        <span class="aw-s39">Recorded from the real console, from its demo stack.</span>
-      </div>
-      <div class="aw-s40">
-        <video class="aw-s41" src="/media/aws-live.webm" autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline" controls="controls" aria-label="AWS CLI calls streaming into the doze AWS console, then a refused PutItem opened"></video>
       </div>
     </div>
   </section>
 
-  <!-- Every service has its own console -->
-  <section class="aw-s42">
-    <div class="aw-s43">
-      <span class="aw-s20">Not just the wire</span>
-      <h2 class="aw-s44">Every service gets a real console.</h2>
-      <p class="aw-s22">Browse buckets, peek at queues without consuming, query tables, invoke functions and read their logs, follow a state machine, and generate the IAM policy your tests actually needed. All from one binary, with no cloud account.</p>
-    </div>
-    <AwsServices />
-  </section>
+  <!-- The real console: the wire -->
+  <section class="pp-sec aw-wire" id="console">
+    <div class="pp-wrap">
+      <div class="pp-head pp-head-c" data-reveal>
+        <span class="pp-eyebrow">The console</span>
+        <h2 class="pp-h2">It opens on your own traffic.</h2>
+        <p class="pp-lede">Every call your app makes, newest first, with what it was on, how AWS would have answered, and how long it took. Real AWS cannot show you this, because it is not sitting between your code and the answer.</p>
+      </div>
+      <div class="aw-wire-shot" data-reveal>
+        <Shot src="/media/aws-wire.webp" alt="The doze AWS console's wire: every AWS call the app made, newest first, with one PutItem refused" title="doze AWS · /_console" glow />
+        <div class="pp-float aw-float"><b>1 call was refused</b>The same request would fail on AWS. You found out on your laptop.</div>
+      </div>
+      <p class="pp-cap aw-cap">The real console, from its demo stack: your traffic, not a diagram. <span class="pp-pending">re-capture with Larder</span></p>
 
-  <!-- Services -->
-  <section class="aw-s45" id="services">
-    <div class="aw-s46">
-      <h2 class="aw-s21">17 services that talk to each other</h2>
-      <p class="aw-s47">An S3 upload fires EventBridge, which invokes a Lambda, which writes to DynamoDB, with IAM policies evaluated on the way, as on AWS.</p>
-      <div class="aw-svcs">
-        <div class="aw-svcard"><b>S3</b><div>buckets, objects, notifications</div></div>
-        <div class="aw-svcard"><b>SQS</b><div>FIFO, DLQ redrive, long polling</div></div>
-        <div class="aw-svcard"><b>SNS</b><div>fanout, filter policies</div></div>
-        <div class="aw-svcard"><b>DynamoDB</b><div>expressions, GSI/LSI, transactions</div></div>
-        <div class="aw-svcard"><b>Lambda</b><div>host processes, no Docker</div></div>
-        <div class="aw-svcard"><b>Step Functions</b><div>Standard and Express, JSONata</div></div>
-        <div class="aw-svcard"><b>EventBridge</b><div>patterns, schedules, targets</div></div>
-        <div class="aw-svcard"><b>API Gateway</b><div>REST and HTTP APIs into Lambda</div></div>
-        <div class="aw-svcard"><b>IAM</b><div>real policy evaluation</div></div>
-        <div class="aw-svcard"><b>CloudFormation</b><div>sam deploy, cdk deploy</div></div>
-        <div class="aw-svcard"><b>Kinesis</b><div>resharding, no JVM</div></div>
-        <div class="aw-svcard"><b>CloudWatch</b><div>metrics, alarms</div></div>
-        <div class="aw-svcard"><b>CloudWatch Logs</b><div>groups, streams, tail --follow</div></div>
-        <div class="aw-svcard"><b>KMS</b><div>real stdlib crypto</div></div>
-        <div class="aw-svcard"><b>Secrets Manager</b><div>version stages, encrypted</div></div>
-        <div class="aw-svcard"><b>SSM Parameter Store</b><div>versions, labels, SecureString</div></div>
-        <div class="aw-svcard"><b>STS</b><div>identity, assume role</div></div>
-        <a class="aw-svcard aw-more" href="/docs/aws/"><b>All 17, in the docs →</b><div>what each one does, and how faithfully</div></a>
+      <div class="aw-pair">
+        <figure class="aw-fig" data-reveal>
+          <Shot src="/media/aws-live.webm" alt="AWS CLI calls streaming into the doze AWS console, then a refused PutItem opened" title="doze AWS · /_console" />
+          <figcaption><b>Watch it fill up.</b> Real AWS CLI calls (S3 uploads, SQS jobs, DynamoDB writes) land on the wire as they happen.</figcaption>
+        </figure>
+        <figure class="aw-fig" data-reveal>
+          <Shot src="/media/aws-call.webp" alt="A refused PutItem opened: its request, and the ledger entry for the operation" title="doze AWS · /_console" />
+          <figcaption><b>Open the refused one.</b> What you sent, why it was refused, a request id you can quote, and copy as curl.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
-  <!-- In Larder -->
-  <section class="aw-s48">
-    <div class="aw-s49">
-      <span class="aw-s20">Inside a doze stack</span>
-      <h2 class="aw-s21">Buckets and queues, in the same file as the app.</h2>
-      <p class="aw-s22">In Larder, the example grocer, catalog keeps product images in S3 and fulfilment, a Python service on boto3, works through pick lists on SQS. doze AWS stays asleep until one of them calls.</p>
-      <a class="aw-s50" href="/examples/">See Larder →</a>
+  <!-- The services, one by one -->
+  <section class="pp-sec pp-sec-tint" id="services">
+    <div class="pp-wrap aw-svc-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Not just the wire</span>
+        <h2 class="pp-h2">Every service gets a real console.</h2>
+        <p class="pp-lede">Browse buckets, peek at queues, query tables, invoke functions and read their logs, follow a state machine, and generate the IAM policy your tests needed. One binary, no cloud account.</p>
+      </div>
+      <AwsServices />
+
+      <div class="aw-all">
+        <div class="aw-all-say" data-reveal>
+          <h3 class="pp-h3">17 services that talk to each other.</h3>
+          <p>An S3 upload fires EventBridge, which invokes a Lambda, which writes to DynamoDB, with IAM policies evaluated on the way, as on AWS.</p>
+        </div>
+        <ul class="aw-grid">
+          {services.map(([name, what]) => <li><b>{name}</b><span>{what}</span></li>)}
+          <li class="aw-grid-more"><a href="/docs/aws/"><b>All 17, in the docs →</b><span>what each one does, and how faithfully</span></a></li>
+        </ul>
+      </div>
     </div>
-    <pre class="aw-s51"><span class="aw-s15"># doze.hcl, from Larder</span>
-module aws "aws" &#123;
+  </section>
+
+  <!-- Alone, or inside doze -->
+  <section class="pp-sec" id="run">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Works alone</span>
+        <h2 class="pp-h2">On its own, or inside a doze stack.</h2>
+        <p class="pp-lede">The same binary either way. On its own it answers on loopback. Inside doze it gets a name, wakes when your code calls and sleeps when it stops.</p>
+      </div>
+      <div class="aw-two">
+        <div class="aw-way" data-reveal>
+          <span class="aw-way-tag">On its own</span>
+          <h3 class="pp-h3">One command, one address.</h3>
+          <p>Run <code>doze-aws</code> and point your tools at <code class="aw-hi">127.0.0.1:4566</code>; the console is at <code>/_console/</code> on the same address. <code>eval "$(doze-aws env)"</code> sets up the shell you're in.</p>
+          <pre class="pp-term"><span class="c">$</span> <span class="w">doze-aws</span>
+    endpoint  <span class="a">http://127.0.0.1:4566</span>
+
+<span class="c">$</span> <span class="w">eval "$(doze-aws env)"</span>     <span class="c"># in another shell</span>
+<span class="c">$</span> <span class="w">aws s3 mb s3://receipts</span>
+make_bucket: receipts</pre>
+        </div>
+        <div class="aw-way" data-reveal>
+          <span class="aw-way-tag aw-way-doze"><img src="/brand/doze.svg" alt="" width="18" height="18" />Inside doze</span>
+          <h3 class="pp-h3">Buckets and queues, in the same file as the app.</h3>
+          <p><code>doze add aws</code>, and in <a href="/examples/">Larder</a>, our made-up example project, doze names it <code class="aw-hi">aws.larder.doze</code> and hands each service its address. The Python fulfilment service works through pick lists on SQS with boto3; doze AWS stays asleep until one of them calls.</p>
+          <pre class="pp-term"><span class="c"># doze.hcl, from the Larder example</span>
+<span class="a">module</span> aws <span class="w">"aws"</span> &#123;
   port = 4566
 
-  bucket "product-images" &#123;&#125;
-  bucket "receipts" &#123; versioning = true &#125;
+  bucket <span class="w">"product-images"</span> &#123;&#125;
+  bucket <span class="w">"receipts"</span> &#123; versioning = true &#125;
 
-  queue "pick-lists" &#123;
-    dlq          = "auto"
+  queue <span class="w">"pick-lists"</span> &#123;
+    dlq          = <span class="w">"auto"</span>
     max_receives = 5
   &#125;
-&#125;</pre>
+&#125;
+
+<span class="c"># and in the app that uses it</span>
+AWS_ENDPOINT_URL = module.aws.url</pre>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- Fidelity -->
-  <section class="aw-s52" id="fidelity">
-    <div class="aw-s53">
-      <span class="aw-s20">Honest by design</span>
-      <h2 class="aw-s21">A fidelity ledger for every service</h2>
-      <p class="aw-s22">Which operations really work, which are round-trips, and which are stubs, stated per service. Every refusal AWS's own model states is checked in CI.</p>
-    </div>
-    <div class="aw-s54">
-      <div class="aw-fid aw-s55">
-        <table>
-          <thead><tr><th>Service</th><th>Operations</th><th>Constraint cases</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">DynamoDB</th><td data-l="Operations">27 of 27</td><td data-l="Constraint cases">333 / 333</td></tr>
-            <tr><th scope="row">EventBridge</th><td data-l="Operations">40 of 40</td><td data-l="Constraint cases">448 / 448</td></tr>
-            <tr><th scope="row">IAM</th><td data-l="Operations">89 of 93</td><td data-l="Constraint cases">702 / 702</td></tr>
-            <tr><th scope="row">Lambda</th><td data-l="Operations">47 routed</td><td data-l="Constraint cases">612 / 621</td></tr>
-          </tbody>
-        </table>
+  <!-- Fidelity, honestly -->
+  <section class="pp-sec pp-sec-tint" id="fidelity">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Honest by design</span>
+        <h2 class="pp-h2">A fidelity ledger for every service.</h2>
+        <p class="pp-lede">An emulator that is too permissive is the dangerous kind: your code passes here and fails on deploy. So each service states what really works, and every refusal AWS's own service models state is checked in CI.</p>
       </div>
-      <span class="aw-s56">4 of 17 shown · <a class="aw-s57" href="/docs/aws/">full ledger →</a></span>
+      <div class="aw-fid-row">
+        <div class="aw-fid" data-reveal>
+          <table>
+            <thead><tr><th>Service</th><th>Operations</th><th>Constraint cases</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">DynamoDB</th><td data-l="Operations">27 of 27</td><td data-l="Constraint cases">333 / 333</td></tr>
+              <tr><th scope="row">EventBridge</th><td data-l="Operations">40 of 40</td><td data-l="Constraint cases">448 / 448</td></tr>
+              <tr><th scope="row">IAM</th><td data-l="Operations">89 of 93</td><td data-l="Constraint cases">702 / 702</td></tr>
+              <tr><th scope="row">Lambda</th><td data-l="Operations">47 routed</td><td data-l="Constraint cases">612 / 621</td></tr>
+            </tbody>
+          </table>
+          <p class="aw-fid-foot">4 of 17 shown · <a href="/docs/aws/">the full ledger →</a></p>
+        </div>
+        <div class="aw-honest" data-reveal>
+          <h3 class="pp-h3">What it isn't, and what's not yet proven</h3>
+          <ul>
+            <li><b>Not checked against a live account yet.</b> boto3 scenarios are written for every service; their recordings against real AWS are pending, and until they exist nothing here is called verified.</li>
+            <li><b>Not more forgiving than AWS, on purpose.</b> If it accepts something AWS refuses, that is a bug worth reporting.</li>
+            <li><b>Not your cloud.</b> No VPCs, custom domains or TLS termination: the operations that act on cloud infrastructure are declined, each with its reason.</li>
+            <li><b>Nothing sent anywhere.</b> No outbound connections of its own, no account, no telemetry, nothing outside the data directory you name.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Install -->
-  <section class="aw-s58" id="install">
-    <div class="aw-stack-sm aw-inst aw-s59">
-      <div class="aw-s60">
-        <h2 class="aw-s61">Run it inside doze, or alone</h2>
-        <span class="aw-s62">In a doze stack</span>
-        <div class="aw-cmd"><code>doze add aws</code><button data-copy="doze add aws" type="button" class="aw-copy" aria-label="Copy doze add aws">Copy</button></div>
-        <span class="aw-s62">On its own, macOS or Linux</span>
-        <div class="aw-cmd"><code>curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-aws/main/install.sh | sh</code><button data-copy="curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-aws/main/install.sh | sh" type="button" class="aw-copy" aria-label="Copy the install command">Copy</button></div>
-        <span class="aw-s63">More ways, and doze itself: <a class="aw-s64" href="/download/">Download</a></span>
+  <section class="pp-sec" id="install">
+    <div class="pp-wrap">
+      <div class="aw-inst" data-reveal>
+        <div class="aw-inst-say">
+          <h2 class="aw-inst-h">All of AWS. None of the account.</h2>
+          <span class="aw-inst-k">On its own, macOS or Linux</span>
+          <Cmd cmd={install} label="Copy the doze AWS install command" />
+          <span class="aw-inst-k">In a doze stack</span>
+          <Cmd cmd="doze add aws" label="Copy doze add aws" />
+          <span class="aw-inst-more">More ways, and doze itself: <a href="/download/">Download</a> · <a href="/docs/aws/">Docs</a></span>
+        </div>
+        <img class="aw-inst-icon" src="/brand/doze-aws.svg" alt="" width="132" height="132" />
       </div>
-      <img class="aw-s65" src="/brand/doze-aws.svg" alt="">
     </div>
   </section>
 
-  <p class="aw-s66">doze AWS is not affiliated with Amazon Web Services. AWS and the service names are trademarks of Amazon.com, Inc. or its affiliates.</p>
-  </div>
+  <p class="pp-wrap pp-small aw-tm">doze AWS is not affiliated with Amazon Web Services. AWS and the service names are trademarks of Amazon.com, Inc. or its affiliates.</p>
+  <Family current="aws" />
+</div>
 </Page>
 
 <style>
-*{box-sizing:content-box}
-button,select,input[type=button],input[type=submit],input[type=reset],input[type=search]{box-sizing:border-box}
-.aw-root{line-height:normal}
+  .aw-hero { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 56px; align-items: center; }
+  .aw-hero-say { display: flex; flex-direction: column; gap: 22px; align-items: flex-start; }
+  .aw-h1 { font-size: clamp(42px, 5.2vw, 72px); }
+  .aw-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .aw-hero-term .pp-term { font-size: 13.5px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.45); }
 
-body{margin:0;background:#0C1320}
-.aw a{color:#5BB8E8;text-decoration:none}.aw a:hover{color:#8FD2F5}
-.aw .aw-sub a{color:#AFC0D4;font-size:14px;display:inline-flex;align-items:center;min-height:44px}.aw .aw-sub a:hover{color:#EEF4FA}
-.aw-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 22px;border-radius:12px;font-weight:600;font-size:16px}
-.aw .aw-btn-sky{background:#5BB8E8;color:#0C1A2C}.aw .aw-btn-sky:hover{background:#82CCF2;color:#0C1A2C}
-.aw .aw-btn-ghost{border:1px solid #2E4560;color:#EEF4FA}.aw .aw-btn-ghost:hover{border-color:#4F6D8E;color:#FFFFFF}
-.aw-svcard{background:#13203A;border:1px solid #22344B;border-radius:14px;padding:16px 18px}
-.aw-svcard div{font-size:14px;color:#9DB0C6}
-.aw code,.aw pre{font-variant-ligatures:none}
-.aw pre{white-space:pre}
-.aw-svcs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-.aw .aw-more{background:transparent;border-style:dashed;border-color:#3A5675;color:#EEF4FA}.aw .aw-more b{color:#5BB8E8}
-.aw-cmd{display:flex;align-items:center;gap:8px;background:#0C1A2C;border-radius:10px;padding:6px 6px 6px 16px;min-width:0}
-.aw-cmd code{font:15px var(--font-mono);color:#EEF4FA;white-space:pre;overflow-x:auto;flex:1;min-width:0}
-.aw-copy{height:36px;padding:0 12px;border-radius:8px;border:1px solid #2E4560;background:#13203A;color:#EEF4FA;font:600 13px var(--font-text);cursor:pointer;flex:none}
-.aw-fid table{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
-.aw-fid th,.aw-fid td{padding:14px 18px;text-align:left}
-.aw-fid thead th{background:#13203A;color:#9DB0C6;font-weight:600}
-.aw-fid tbody tr{border-top:1px solid #22344B}
-.aw-fid tbody th{font-weight:400}
-@media (max-width:1100px){.aw-svcs{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:600px){.aw-svcs{grid-template-columns:repeat(2,minmax(0,1fr))}.aw-fid thead{display:none}.aw-fid table,.aw-fid tbody,.aw-fid tr,.aw-fid th,.aw-fid td{display:block}.aw-fid tbody tr{padding:12px 16px}.aw-fid tbody tr:first-child{border-top:0}.aw-fid tbody th{padding:0 0 6px;font-weight:600}.aw-fid td{padding:3px 0;display:flex;gap:12px}.aw-fid td::before{content:attr(data-l);flex:0 0 140px;color:#9DB0C6;font-size:14px}}
-.aw-recap{display:inline-block;font-family:var(--font-mono);font-size:11px;color:#AFC0D4;background:#13203A;border:1px dashed #3A5675;border-radius:6px;padding:2px 7px;white-space:nowrap}
-@media (max-width:760px){.aw-hero-title{font-size:44px !important}.aw-stack-sm{flex-direction:column !important;align-items:stretch !important}.aw-float{position:relative !important;right:auto !important;bottom:auto !important;margin-top:14px;max-width:none !important}.aw-inst{padding:28px !important}.aw-inst h2{font-size:30px !important}.aw-inst > div{flex:none !important;width:100%}.aw-inst img{display:none}}
-/* one-off layout from the board's inline styles */
-.aw-s1.aw-s1.aw-s1{font-family:var(--font-text);color:#EEF4FA;background:#0C1320;min-height:100%}
-.aw-s2.aw-s2.aw-s2{border-bottom:1px solid #16233A;background:#0E1728}
-.aw-s3.aw-s3.aw-s3{max-width:1240px;margin:0 auto;padding:6px 32px;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
-.aw-s4.aw-s4.aw-s4{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:#5BB8E8}
-.aw-s5.aw-s5.aw-s5{width:8px;height:8px;border-radius:4px;background:#5BB8E8}
-.aw-s6.aw-s6.aw-s6{max-width:1240px;margin:0 auto;padding:88px 32px 48px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap:56px;align-items:center}
-.aw-s7.aw-s7.aw-s7{display:flex;flex-direction:column;gap:26px}
-.aw-s8.aw-s8.aw-s8{width:96px;height:96px}
-.aw-s9.aw-s9.aw-s9{margin:0;font-family:var(--font-display);font-weight:800;font-size:68px;line-height:1.03;letter-spacing:-0.03em;text-wrap:balance}
-.aw-s10.aw-s10.aw-s10{margin:0;font-size:20px;line-height:1.55;color:#C5D3E3;max-width:34rem}
-.aw-s11.aw-s11.aw-s11{display:flex;flex-wrap:wrap;gap:8px}
-.aw-s12.aw-s12.aw-s12{font-family:var(--font-mono);font-size:13px;color:#FF9AA8;background:#2A1520;border:1px solid #4A2230;border-radius:8px;padding:6px 10px}
-.aw-s13.aw-s13.aw-s13{display:flex;gap:14px;flex-wrap:wrap}
-.aw-s14.aw-s14.aw-s14{margin:0;min-width:0;font-family:var(--font-mono);font-size:14px;line-height:1.8;background:#08101B;border:1px solid #1C2A3D;border-radius:18px;padding:26px;color:#C5D3E3;overflow-x:auto}
-.aw-s15.aw-s15.aw-s15{color:#6F87A3}
-.aw-s16.aw-s16.aw-s16{color:#EEF4FA}
-.aw-s17.aw-s17.aw-s17{color:#5BB8E8}
-.aw-s18.aw-s18.aw-s18{max-width:1240px;margin:0 auto;padding:40px 32px 88px;display:flex;flex-direction:column;gap:28px}
-.aw-s19.aw-s19.aw-s19{display:flex;flex-direction:column;gap:12px;max-width:46rem}
-.aw-s20.aw-s20.aw-s20{font-family:var(--font-mono);font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#5BB8E8}
-.aw-s21.aw-s21.aw-s21{margin:0;font-family:var(--font-display);font-weight:700;font-size:44px;letter-spacing:-0.02em;text-wrap:balance}
-.aw-s22.aw-s22.aw-s22{margin:0;font-size:18px;line-height:1.6;color:#AFC0D4}
-.aw-s23.aw-s23.aw-s23{position:relative}
-.aw-s24.aw-s24.aw-s24{position:absolute;left:10%;right:10%;top:5%;height:80%;border-radius:50%;background:radial-gradient(closest-side, rgba(91,184,232,0.25), rgba(91,184,232,0))}
-.aw-s25.aw-s25.aw-s25{position:relative;border-radius:16px;overflow:hidden;border:1px solid #2E4560;box-shadow:0 50px 120px rgba(0,0,0,0.55)}
-.aw-s26.aw-s26.aw-s26{height:32px;background:#0B0F15;display:flex;align-items:center;gap:7px;padding:0 14px}
-.aw-s27.aw-s27.aw-s27{width:11px;height:11px;border-radius:6px;background:#FF5F57}
-.aw-s28.aw-s28.aw-s28{width:11px;height:11px;border-radius:6px;background:#FEBC2E}
-.aw-s29.aw-s29.aw-s29{width:11px;height:11px;border-radius:6px;background:#28C840}
-.aw-s30.aw-s30.aw-s30{margin:0 auto;font:13px var(--font-mono);color:#8EA3BB}
-.aw-s31.aw-s31.aw-s31{display:block;width:100%;height:auto}
-.aw-s32.aw-s32.aw-s32{position:absolute;right:-10px;bottom:-28px;max-width:360px;background:#EEF4FA;color:#0C1A2C;border-radius:14px;padding:16px 18px;box-shadow:0 30px 70px rgba(0,0,0,0.5)}
-.aw-s33.aw-s33.aw-s33{font-size:14px;margin-top:4px}
-.aw-s34.aw-s34.aw-s34{margin:18px 0 0;font-size:13px;color:#8EA3BB}
-.aw-s35.aw-s35.aw-s35{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(320px, 100%), 1fr));gap:28px;align-items:center;margin-top:56px}
-.aw-s36.aw-s36.aw-s36{display:flex;flex-direction:column;gap:12px}
-.aw-s37.aw-s37.aw-s37{margin:0;font-family:var(--font-display);font-weight:800;font-size:34px;letter-spacing:-0.02em}
-.aw-s38.aw-s38.aw-s38{margin:0;font-size:17px;line-height:1.6;color:#AFC0D4}
-.aw-s39.aw-s39.aw-s39{font-size:13px;color:#8EA3BB}
-.aw-s40.aw-s40.aw-s40{border-radius:14px;overflow:hidden;border:1px solid #2E4560;box-shadow:0 40px 100px rgba(0,0,0,0.5)}
-.aw-s41.aw-s41.aw-s41{display:block;width:100%;height:auto;aspect-ratio:16 / 10;background:#0B0F15}
-.aw-s42.aw-s42.aw-s42{max-width:1240px;margin:0 auto;padding:96px 32px;display:flex;flex-direction:column;gap:32px}
-.aw-s43.aw-s43.aw-s43{display:flex;flex-direction:column;gap:12px;max-width:48rem}
-.aw-s44.aw-s44.aw-s44{margin:0;font-family:var(--font-display);font-weight:800;font-size:52px;line-height:1.02;letter-spacing:-0.03em;text-wrap:balance}
-.aw-s45.aw-s45.aw-s45{background:#0E1728;border-top:1px solid #1C2A3D;border-bottom:1px solid #1C2A3D}
-.aw-s46.aw-s46.aw-s46{max-width:1240px;margin:0 auto;padding:88px 32px;display:flex;flex-direction:column;gap:28px}
-.aw-s47.aw-s47.aw-s47{margin:0;font-size:18px;color:#AFC0D4;max-width:46rem;line-height:1.6}
-.aw-s48.aw-s48.aw-s48{max-width:1240px;margin:0 auto;padding:88px 32px 0;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap:48px;align-items:center}
-.aw-s49.aw-s49.aw-s49{display:flex;flex-direction:column;gap:14px}
-.aw-s50.aw-s50.aw-s50{font-weight:600;align-self:flex-start;padding:10px 0}
-.aw-s51.aw-s51.aw-s51{margin:0;min-width:0;font:14px/1.8 var(--font-mono);background:#08101B;border:1px solid #1C2A3D;border-radius:18px;padding:24px;color:#DCE6F2;overflow-x:auto}
-.aw-s52.aw-s52.aw-s52{max-width:1240px;margin:0 auto;padding:88px 32px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(340px, 100%), 1fr));gap:48px;align-items:center}
-.aw-s53.aw-s53.aw-s53{display:flex;flex-direction:column;gap:16px}
-.aw-s54.aw-s54.aw-s54{display:flex;flex-direction:column;gap:12px;min-width:0}
-.aw-s55.aw-s55.aw-s55{border:1px solid #22344B;border-radius:16px;overflow:hidden}
-.aw-s56.aw-s56.aw-s56{font-size:14px;color:#9DB0C6}
-.aw-s57.aw-s57.aw-s57{font-weight:600;display:inline-block;padding:12px 0}
-.aw-s58.aw-s58.aw-s58{max-width:1240px;margin:0 auto;padding:0 32px 104px}
-.aw-s59.aw-s59.aw-s59{background:#5BB8E8;color:#0C1A2C;border-radius:28px;padding:48px;display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
-.aw-s60.aw-s60.aw-s60{display:flex;flex-direction:column;gap:14px;min-width:0;flex:1 1 520px}
-.aw-s61.aw-s61.aw-s61{margin:0;font-family:var(--font-display);font-weight:800;font-size:40px;letter-spacing:-0.02em}
-.aw-s62.aw-s62.aw-s62{font-size:15px;font-weight:600}
-.aw-s63.aw-s63.aw-s63{font-size:15px}
-.aw-s64.aw-s64.aw-s64{color:#0C1A2C;text-decoration:underline;font-weight:600}
-.aw-s65.aw-s65.aw-s65{width:120px;height:120px;border-radius:28px;box-shadow:0 0 0 3px #0C1A2C}
-.aw-s66.aw-s66.aw-s66{max-width:1240px;margin:0 auto;padding:0 32px 28px;font-size:13px;color:#8EA3BB}
+  .aw-wire-shot { position: relative; max-width: 1180px; margin: 0 auto; }
+  .aw-float { right: -12px; bottom: -28px; }
+  .aw-cap { margin-top: 48px; }
+  .aw-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 80px; }
+  .aw-fig { margin: 0; display: flex; flex-direction: column; gap: 14px; }
+  .aw-fig figcaption { color: var(--t2); line-height: 1.55; }
+  .aw-fig figcaption b { color: var(--t1); }
+
+  .aw-svc-wrap { max-width: 1340px; }
+  .aw-all { margin-top: 72px; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 8fr); gap: 40px; align-items: start; }
+  .aw-all-say { display: flex; flex-direction: column; gap: 10px; }
+  .aw-all-say p { margin: 0; color: var(--t2); line-height: 1.6; }
+  .aw-grid { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .aw-grid li { overflow-wrap: anywhere; background: var(--g); border: 1px solid var(--ln); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .aw-grid b { font-size: 15px; }
+  .aw-grid span { font-size: 13px; color: var(--t3); }
+  .aw-grid .aw-grid-more { padding: 0; border-style: dashed; border-color: var(--ln2); background: transparent; }
+  .aw-grid-more a { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; min-height: 44px; }
+  .aw-grid-more span { color: var(--t2); }
+
+  .aw-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  .aw-way { background: var(--g2); border: 1px solid var(--ln); border-radius: 22px; padding: 30px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .aw-way p { margin: 0; color: var(--t2); line-height: 1.6; }
+  .aw-way code { font: 0.9em var(--font-mono); color: var(--t1); }
+  .aw-way .aw-hi { color: var(--acc); }
+  .aw-way .pp-term { font-size: 13px; }
+  .aw-way-tag { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; font: 500 12px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); border: 1px solid var(--ln2); border-radius: 999px; padding: 6px 12px; }
+  .aw-way-doze { color: #f0a24b; border-color: rgba(240, 162, 75, 0.4); }
+  .aw-way-tag img { border-radius: 5px; }
+
+  .aw-fid-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .aw-fid { border: 1px solid var(--ln); border-radius: 18px; overflow: hidden; background: var(--g); }
+  .aw-fid table { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .aw-fid th, .aw-fid td { padding: 15px 20px; text-align: left; }
+  .aw-fid thead th { background: var(--g3); color: var(--t2); font-weight: 600; }
+  .aw-fid tbody tr { border-top: 1px solid var(--ln); }
+  .aw-fid tbody th { font-weight: 500; }
+  .aw-fid tbody td { color: var(--t2); }
+  .aw-fid-foot { margin: 0; padding: 4px 20px; border-top: 1px solid var(--ln); font-size: 14px; color: var(--t3); }
+  .aw-fid-foot a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+  .aw-honest { display: flex; flex-direction: column; gap: 16px; }
+  .aw-honest ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .aw-honest li { color: var(--t2); line-height: 1.55; padding-left: 18px; border-left: 2px solid var(--ln2); }
+  .aw-honest b { color: var(--t1); }
+
+  .aw-inst { background: var(--acc); color: var(--acc-ink); border-radius: 28px; padding: 48px; display: flex; justify-content: space-between; align-items: center; gap: 32px; }
+  .aw-inst-say { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 0; max-width: 720px; }
+  .aw-inst-h { margin: 0 0 8px; font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 3.6vw, 44px); letter-spacing: -0.025em; line-height: 1.05; }
+  .aw-inst-k { font-weight: 600; font-size: 15px; margin-top: 4px; }
+  .aw-inst :global(.pp-cmd) { background: #0c1a2c; border-color: #0c1a2c; }
+  .aw-inst-more { font-size: 15px; }
+  .pp .aw-inst-more a { color: var(--acc-ink); text-decoration: underline; font-weight: 600; display: inline-flex; min-height: 44px; align-items: center; }
+  .aw-inst-icon { width: 132px; height: 132px; border-radius: 30px; box-shadow: 0 0 0 3px var(--acc-ink); flex: none; }
+  .aw-tm { margin-top: -64px; padding-bottom: 40px; }
+
+  @media (max-width: 1000px) {
+    .aw-hero, .aw-all, .aw-fid-row, .aw-two { grid-template-columns: minmax(0, 1fr); }
+    .aw-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 760px) {
+    .aw-pair { grid-template-columns: minmax(0, 1fr); margin-top: 48px; }
+    .aw-cta { flex-direction: column; align-items: stretch; width: 100%; }
+    .aw-way { padding: 22px; }
+    .aw-inst { padding: 26px; }
+    .aw-inst-icon { display: none; }
+    .aw-fid thead { display: none; }
+    .aw-fid table, .aw-fid tbody, .aw-fid tr, .aw-fid th, .aw-fid td { display: block; }
+    .aw-fid tbody tr { padding: 12px 18px; }
+    .aw-fid tbody tr:first-child { border-top: 0; }
+    .aw-fid tbody th { padding: 0 0 6px; font-weight: 600; }
+    .aw-fid td { padding: 3px 0; display: flex; gap: 12px; }
+    .aw-fid td::before { content: attr(data-l); flex: 0 0 140px; color: var(--t3); font-size: 14px; }
+  }
 </style>

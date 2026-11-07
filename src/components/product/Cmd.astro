@@ -1,0 +1,13 @@
+---
+// One command, copyable. The prompt is decoration and is not copied.
+interface Props {
+  cmd: string;
+  label?: string;
+  prompt?: boolean;
+}
+const { cmd, label = `Copy ${cmd}`, prompt = true } = Astro.props;
+---
+<div class="pp-cmd">
+  <code>{prompt && <span class="pp-p">$ </span>}{cmd}</code>
+  <button type="button" class="pp-copy" data-copy={cmd} aria-label={label}>Copy</button>
+</div>

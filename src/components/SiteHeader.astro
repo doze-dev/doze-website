@@ -1,5 +1,6 @@
 ---
-// The site's header (design: SiteHeader). Themes: each product's own night, or daylight.
+// The family header: the moon (the doze family's mark, never a product's), then
+// the three products as equals under Products, then the family's own pages.
 export type Theme = "dark" | "light" | "aws" | "kafka";
 interface Props {
   theme?: Theme;
@@ -7,53 +8,125 @@ interface Props {
   news?: string;
   newsHref?: string;
 }
-const { theme = "dark", current = "none", news, newsHref = "/registry/extensions/" } = Astro.props;
-const items = [
-  ["doze", "doze", "/doze/"],
-  ["aws", "doze AWS", "/aws/"],
-  ["kafka", "doze Kafka", "/kafka/"],
+const { theme = "dark", current = "none", news, newsHref = "/registry/doze/postgres/extensions/" } = Astro.props;
+const products = [
+  {
+    id: "doze",
+    name: "doze",
+    icon: "/brand/doze.svg",
+    line: "Wakes your stack when you start. Sleeps it when you stop.",
+    href: "/doze/",
+    docs: "/docs/doze/",
+  },
+  {
+    id: "aws",
+    name: "doze AWS",
+    icon: "/brand/doze-aws.svg",
+    line: "Wakes AWS on your laptop. No account, no bill.",
+    href: "/aws/",
+    docs: "/docs/aws/",
+  },
+  {
+    id: "kafka",
+    name: "doze Kafka",
+    icon: "/brand/doze-kafka.svg",
+    line: "Wakes a Kafka broker. No JVM to put to bed.",
+    href: "/kafka/",
+    docs: "/docs/kafka/",
+  },
+];
+const family = [
+  ["story", "Story", "/tuesday/"],
   ["registry", "Registry", "/registry/"],
-  ["examples", "Examples", "/examples/"],
   ["docs", "Docs", "/docs/"],
+  ["changelog", "Changelog", "/changelog/"],
 ] as const;
+const inProduct = products.some((p) => p.id === current);
+const moon = theme === "light" ? "/brand/family-moon-ink.svg" : "/brand/family-moon.svg";
 ---
 <header class={`sh sh-${theme}`}>
   <div class="sh-in">
-    <a class="sh-mark" href="/" aria-label="doze, home">
-      <img src="/brand/doze.svg" alt="" width="34" height="34" />
+    <a class="sh-mark" href="/" aria-label="the doze family, home">
+      <img class="sh-moon" src={moon} alt="" width="30" height="30" />
       <span>doze</span>
     </a>
     <nav class="sh-nav" aria-label="Site">
-      {items.map(([id, label, href]) => <a href={href} aria-current={id === current ? "page" : undefined}>{label}</a>)}
+      <details class="sh-prod" data-sh-menu>
+        <summary aria-current={inProduct ? "page" : undefined}>Products <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></summary>
+        <div class="sh-panel">
+          {products.map((p) => (
+            <div class={`sh-card${p.id === current ? " is-current" : ""}`}>
+              <a class="sh-card-main" href={p.href}>
+                <img src={p.icon} alt="" width="44" height="44" />
+                <span><b>{p.name}</b><span>{p.line}</span></span>
+              </a>
+              <a class="sh-card-docs" href={p.docs}>Docs</a>
+            </div>
+          ))}
+          <p class="sh-panel-foot">Three products. Each works alone; together they're the doze family.</p>
+        </div>
+      </details>
+      {family.map(([id, label, href]) => <a href={href} aria-current={id === current ? "page" : undefined}>{label}</a>)}
     </nav>
     {news && <a class="sh-news" href={newsHref}><span>New</span> · {news} →</a>}
     <a class="sh-gh" href="https://github.com/doze-dev">GitHub</a>
-    <a class="sh-dl" href="/download/">Download</a>
-    <details class="sh-menu">
+    <a class="sh-dl" href="/download/">Get doze</a>
+    <details class="sh-menu" data-sh-menu>
       <summary aria-label="Menu">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </summary>
       <nav aria-label="Site">
-        {items.map(([id, label, href]) => <a href={href} aria-current={id === current ? "page" : undefined}>{label}</a>)}
+        <span class="sh-menu-h">Products</span>
+        {products.map((p) => <a class="sh-menu-prod" href={p.href} aria-current={p.id === current ? "page" : undefined}><img src={p.icon} alt="" width="28" height="28" />{p.name}</a>)}
+        <span class="sh-menu-h">The family</span>
+        {family.map(([id, label, href]) => <a href={href} aria-current={id === current ? "page" : undefined}>{label}</a>)}
         <a class="sh-menu-gh" href="https://github.com/doze-dev">GitHub</a>
       </nav>
     </details>
   </div>
 </header>
+<script>
+  // Menus close on Escape and on a click outside them.
+  const menus = () => document.querySelectorAll<HTMLDetailsElement>("[data-sh-menu][open]");
+  document.addEventListener("click", (e) => {
+    for (const d of menus()) if (!d.contains(e.target as Node)) d.removeAttribute("open");
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    for (const d of menus()) { d.removeAttribute("open"); d.querySelector("summary")?.focus(); }
+  });
+</script>
 
 <style>
-  .sh { --g: #140c1b; --l: #2e1f3a; --l2: #4a3458; --i: #f4ece4; --i2: #c9bad3; --p: #1e1328; font-family: var(--font-text); background: var(--g); border-bottom: 1px solid var(--l); position: relative; z-index: 30; }
-  .sh-aws { --g: #0c1320; --l: #1c2b44; }
-  .sh-kafka { --g: #16150f; --l: #2c2a1c; }
-  .sh-light { --g: #fffaf4; --l: #eadfd3; --l2: #dccfc2; --i: #140c1b; --i2: #5a4b66; --p: #ffffff; }
+  .sh { --g: #140c1b; --l: #2e1f3a; --l2: #4a3458; --i: #f4ece4; --i2: #c9bad3; --p: #1e1328; --p2: #2a1c36; font-family: var(--font-text); background: var(--g); border-bottom: 1px solid var(--l); position: relative; z-index: 30; view-transition-name: site-header; }
+  .sh-aws { --g: #0c1320; --l: #1c2b44; --p: #121c2e; --p2: #1a2740; }
+  .sh-kafka { --g: #16150f; --l: #2c2a1c; --p: #1e1d15; --p2: #29271c; }
+  .sh-light { --g: #fffaf4; --l: #eadfd3; --l2: #dccfc2; --i: #140c1b; --i2: #5a4b66; --p: #ffffff; --p2: #fff4e8; }
   .sh-in { box-sizing: content-box; max-width: 1240px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; gap: 28px; }
   .sh a { text-decoration: none; }
   .sh a:focus-visible, .sh summary:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
-  .sh-mark { display: flex; align-items: center; gap: 11px; min-height: 44px; color: var(--i); font: 700 22px/1 var(--font-display); letter-spacing: -0.01em; }
-  .sh-nav { display: flex; gap: 22px; flex: 1; flex-wrap: wrap; }
-  .sh-nav a { font-size: 15px; padding: 6px 2px; border-bottom: 2px solid transparent; color: var(--i2); }
-  .sh-nav a:hover, .sh-nav a[aria-current="page"] { color: var(--i); }
-  .sh-nav a[aria-current="page"] { border-bottom-color: var(--amber); }
+  .sh-mark { display: flex; align-items: center; gap: 10px; min-height: 44px; color: var(--i); font: 800 23px/1 var(--font-display); letter-spacing: -0.02em; }
+  .sh-moon { transition: transform 600ms var(--ease-settle, ease); }
+  @media (prefers-reduced-motion: no-preference) { .sh-mark:hover .sh-moon { transform: rotate(-18deg) scale(1.06); } }
+  .sh-nav { display: flex; align-items: center; gap: 24px; flex: 1; }
+  .sh-nav > a, .sh-prod summary { font-size: 15px; padding: 6px 2px; border-bottom: 2px solid transparent; color: var(--i2); }
+  .sh-nav > a:hover, .sh-nav > a[aria-current="page"], .sh-prod summary:hover, .sh-prod[open] summary, .sh-prod summary[aria-current="page"] { color: var(--i); }
+  .sh-nav > a[aria-current="page"], .sh-prod summary[aria-current="page"] { border-bottom-color: var(--amber); }
+  .sh-prod { position: relative; }
+  .sh-prod summary { display: inline-flex; align-items: center; gap: 6px; list-style: none; cursor: pointer; }
+  .sh-prod summary::-webkit-details-marker, .sh-menu summary::-webkit-details-marker { display: none; }
+  .sh-prod[open] summary svg { transform: rotate(180deg); }
+  .sh-panel { position: absolute; left: -16px; top: 44px; width: 440px; padding: 10px; border-radius: 16px; background: var(--p); border: 1px solid var(--l2); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 4px; }
+  .sh-card { display: flex; align-items: stretch; border-radius: 12px; }
+  .sh-card:hover, .sh-card.is-current { background: var(--p2); }
+  .sh-card-main { flex: 1; display: flex; gap: 14px; align-items: center; padding: 12px; color: var(--i); }
+  .sh-card-main img { border-radius: 11px; flex: none; }
+  .sh-card-main > span { display: flex; flex-direction: column; gap: 2px; }
+  .sh-card-main b { font: 700 17px var(--font-display); letter-spacing: -0.01em; }
+  .sh-card-main span span { font-size: 13.5px; line-height: 1.4; color: var(--i2); }
+  .sh-card-docs { align-self: center; margin-right: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; color: var(--i2); border: 1px solid var(--l2); }
+  .sh-card-docs:hover { color: var(--i); }
+  .sh-panel-foot { margin: 6px 12px 4px; font-size: 13px; color: var(--i2); }
   .sh-news { font-size: 13px; color: var(--i); border: 1px solid var(--l2); border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
   .sh-news span { color: var(--amber); font-weight: 600; }
   .sh-gh { font-size: 14px; color: var(--i2); white-space: nowrap; }
@@ -61,12 +134,13 @@ const items = [
   .sh-dl:hover { background: #ffb866; }
   .sh-menu { display: none; margin-left: auto; position: relative; }
   .sh-menu summary { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid var(--l2); color: var(--i); list-style: none; cursor: pointer; }
-  .sh-menu summary::-webkit-details-marker { display: none; }
-  .sh-menu nav { position: absolute; right: 0; top: 52px; width: 260px; display: flex; flex-direction: column; padding: 8px; border-radius: 14px; background: var(--p); border: 1px solid var(--l2); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
-  .sh-menu nav a { padding: 12px; border-radius: 8px; font-size: 16px; color: var(--i); }
+  .sh-menu nav { position: absolute; right: 0; top: 52px; width: 280px; display: flex; flex-direction: column; padding: 8px; border-radius: 14px; background: var(--p); border: 1px solid var(--l2); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
+  .sh-menu nav a { padding: 11px 12px; border-radius: 8px; font-size: 16px; color: var(--i); display: flex; align-items: center; gap: 10px; }
   .sh-menu nav a[aria-current="page"] { color: var(--amber); }
+  .sh-menu-prod img { border-radius: 8px; }
+  .sh-menu-h { margin: 8px 12px 2px; font: 600 12px var(--font-text); letter-spacing: 0.12em; text-transform: uppercase; color: var(--i2); }
   .sh-menu-gh { border-top: 1px solid var(--l); margin-top: 4px; color: var(--i2) !important; }
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     .sh-nav, .sh-gh, .sh-news { display: none; }
     .sh-menu { display: block; }
     .sh-in { gap: 14px; }

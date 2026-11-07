@@ -20,7 +20,7 @@ export const routes: Record<string, string> = {
   RegistrySearch: "/registry/search/",
   RegistryNoResults: "/registry/search/",
   RegistryForYourDoze: "/registry/?doze=0.1.1",
-  RegistryExtensions: "/registry/extensions/",
+  RegistryExtensions: "/registry/doze/postgres/extensions/",
   RegistryTool: "/registry/tools/mongo/",
   RegistryModule: "/registry/doze/postgres/",
   RegistryTooOld: "/registry/doze/postgres/?doze=0.1.1",

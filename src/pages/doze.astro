@@ -1,222 +1,409 @@
 ---
-// doze, the product (design: Doze). The app, one file, any language, compared, install.
-import Popular from "../components/home/Popular.astro";
-import Tour from "../components/home/Tour.astro";
+// doze, the product. The app leads (design/BRAND.md): hero and the window,
+// then a guided tour of the app, then "everything is a command too", one
+// file, the pains it fixes, any language, compared, install.
+import "../components/product/product.css";
+import MenuBar from "../components/doze/MenuBar.astro";
+import { maybe, pick } from "../components/doze/media";
+import Themes from "../components/doze/Themes.astro";
+import Views from "../components/doze/Views.astro";
+import VCarousel from "../components/motion/VCarousel.astro";
+import Cmd from "../components/product/Cmd.astro";
+import Endorse from "../components/product/Endorse.astro";
+import Family from "../components/product/Family.astro";
+import Shot from "../components/product/Shot.astro";
+import SubNav from "../components/product/SubNav.astro";
 import Page from "../layouts/Page.astro";
+
+// ── The media map ─────────────────────────────────────────────────────────
+// Each entry: what we want first, then stand-ins, as [file in public/media, alt].
+// The first file that exists is shown, so a new capture replaces its stand-in
+// by being dropped into public/media; reorder or edit a line here to change one.
+const demo = "from the demo stack";
+const media = {
+  hero: pick(
+    [
+      "app-rec-request-wakes.webm",
+      "A request reaches Larder's gateway in the doze app, and the services it needs wake one after another",
+    ],
+    [
+      "app-overview-map.webp",
+      "The doze app's map of the Larder stack: who needs whom, and what is awake, dozing or asleep",
+    ],
+    ["app-map.webp", `The doze app's map of a stack, ${demo}: who needs whom, and what is awake, dozing or asleep`],
+  ),
+  library: pick(
+    ["app-library.webp", "The doze app's Library: every stack on this Mac, each with its switch"],
+    ["app-stack.webp", `The doze app's tiles for one stack, ${demo}`],
+  ),
+  tiles: pick(
+    ["app-overview-tiles.webp", "Larder as tiles: every service with its state, memory and address"],
+    ["app-stack.webp", `A stack as tiles, ${demo}: every service with its state, memory and address`],
+  ),
+  list: pick(
+    ["app-overview-list.webp", "Larder as a list: one row per service"],
+    ["app-rec-views.webm", "Switching a stack between tiles, list and map"],
+    ["tour-views.webm", `Switching a stack between tiles, list and map, ${demo}`],
+  ),
+  map: pick(
+    ["app-overview-map.webp", "Larder as a map: who needs whom"],
+    ["app-map.webp", `A stack as a map, ${demo}: who needs whom`],
+  ),
+  sleep: pick(
+    [
+      "app-rec-cascade.webm",
+      "Switching Postgres off in Larder; doze offers to sleep the services that need it, and memory comes back",
+    ],
+    [
+      "tour-cascade.webm",
+      `Switching a database off; doze offers to sleep the service that needs it, and memory drops, ${demo}`,
+    ],
+  ),
+  inside: pick(
+    ["app-service-gateway.webp", "Inside Larder's gateway: its state, its address and its logs by run"],
+    ["app-logs.webp", "A service's logs in the doze app, grouped by run"],
+    ["app-module-postgres.webp", "Larder's Postgres inside the doze app, with its console"],
+    ["app-stack.webp", `The doze app's tiles for one stack, ${demo}`],
+  ),
+  palette: pick(
+    ["app-rec-palette.webm", "Typing wake and a service name in the doze command palette, then return"],
+    ["app-palette.webp", "The doze command palette with a verb and a name typed"],
+    ["tour-palette.webm", `Typing wake and a service name in the command palette, ${demo}`],
+  ),
+  needs: pick(
+    ["app-needs-you.webp", "Needs you: what went wrong in Larder, each with its fix"],
+    ["tour-needs-you.webm", `The Needs you panel with two items and their fixes, ${demo}`],
+  ),
+  menubar: maybe([
+    "app-menubar.webp",
+    "The doze menu in the macOS menu bar: every stack, and Quit doze, stacks keep running",
+  ]),
+  themes: maybe(["app-light.webp", "The doze app in a light theme"]),
+};
+
+const tour = [
+  {
+    label: "Library",
+    title: "Every stack on this machine. A switch each.",
+    say: "Open doze and every project you've brought up is there, running or not. One switch brings a whole stack up; the same switch puts it to bed.",
+    cli: ["doze", "doze status"],
+    m: media.library,
+  },
+  {
+    label: "Tiles, list, map",
+    title: "One stack, three ways.",
+    say: "Tiles for how each service is doing, a list when there are many, and a map that draws who needs whom. Awake, waking, dozing, asleep: the same four words everywhere.",
+    cli: ["doze status"],
+    views: true,
+  },
+  {
+    label: "Wake and sleep",
+    title: "Turn one off. What needs it follows.",
+    say: "Switch a database off and doze asks whether the services that need it should sleep too; the memory comes back. Switch one on and it wakes with what it depends on.",
+    cli: ["doze sleep postgres", "doze wake catalog"],
+    m: media.sleep,
+  },
+  {
+    label: "Inside a service",
+    title: "Its logs, its address, its console.",
+    say: "Logs grouped by run, so this run isn't buried under yesterday's. The connect line, one click to copy. And for a module like Postgres, its own console in the window.",
+    cli: ["doze logs gateway", "doze url postgres"],
+    m: media.inside,
+  },
+  {
+    label: "⌘K",
+    title: "⌘K. A verb and a name.",
+    say: "Type “wake cat”, press return. Sleep, wake, restart, pin, logs, copy, open, up, down: every action is a few keys away, across every stack.",
+    cli: ["doze wake catalog"],
+    m: media.palette,
+  },
+  {
+    label: "Needs you",
+    title: "What's wrong, with its fix.",
+    say: "A crash, a task that failed, a mistake in doze.hcl: each says what happened and offers the fix. A broken file shows the line and exactly what to write.",
+    cli: [],
+    m: media.needs,
+  },
+  {
+    label: "Menu bar",
+    title: "Every stack, from the menu bar.",
+    say: "The bat stays in the menu bar after the window closes: each stack and how it's doing, a red dot when something needs you. Quit doze and your stacks keep running.",
+    cli: ["doze up", "doze down"],
+    m: media.menubar,
+    drawn: "menubar",
+  },
+  {
+    label: "Themes",
+    title: "Five themes, in light and dark.",
+    say: "Violet, teal, burgundy, amber and slate, each light or dark, or following your Mac. A module's console opens in the same light.",
+    cli: [],
+    m: media.themes,
+    drawn: "themes",
+  },
+];
+const views = [
+  { name: "Tiles", media: media.tiles, alt: media.tiles.alt },
+  { name: "List", media: media.list, alt: media.list.alt },
+  { name: "Map", media: media.map, alt: media.map.alt },
+];
+const viewsPending = views.some((v) => v.media.pending) ? ["app-overview-tiles / list / map"] : [];
+const pad = (n: number) => String(n).padStart(2, "0");
+
+const commands: [string, string][] = [
+  ["Flip a stack on", "doze up"],
+  ["Flip a service on", "doze wake catalog"],
+  ["Switch it off, keep its data", "doze sleep postgres"],
+  ["Keep it awake through a demo", "doze pin postgres"],
+  ["Read what it printed", "doze logs gateway"],
+  ["Copy its connect line", "doze url postgres"],
+  ["Put the stack to bed", "doze down"],
+  ["Hand it to a script, or an agent", "doze status --json"],
+];
+
+const pains = [
+  {
+    old: "npm run dev · make api · ./worker.sh",
+    title: "Which terminal was that?",
+    fix: "Seven things, seven ways to start them. doze.hcl says how each one runs, doze up starts them all, and the app keeps each one's logs.",
+  },
+  {
+    old: "port 5432 is already allocated",
+    title: "Port roulette.",
+    fix: "Every service gets a name of its own, like gateway.larder.doze in our example. Two projects can both have their 5432, and you stop keeping ports in your head.",
+  },
+  {
+    old: "fans: full tilt · battery 31%",
+    title: "The fan.",
+    fix: "No VM holding every database all day. Native processes that sleep when nothing calls (after two minutes, in Larder) and wake on the next connection.",
+  },
+  {
+    old: "“I can't see your running services”",
+    title: "The AI that can't see your machine.",
+    fix: "Every command answers in --json: status, logs, the connect line. The agent in your terminal can read your stack instead of guessing at it.",
+  },
+  {
+    old: "SETUP.md · last updated 2023",
+    title: "Coming back after months.",
+    fix: "The setup doc is doze.hcl, and it runs. Clone, doze up, and the map shows the services you've never met and who needs whom.",
+  },
+  {
+    old: "docker ps -a · 23 exited",
+    title: "Closing the lid with 23 things up.",
+    fix: "Quiet services already went to sleep on their own. The menu bar shows what's still awake, and doze down puts a whole stack to bed.",
+  },
+];
 ---
-<Page title="The app and the CLI" current="doze">
-<div class="dz dz-s1">
-  <div class="dz-sub dz-s2">
-    <nav class="dz-s3" aria-label="On this page">
-      <span class="dz-s4"><span class="dz-s5"></span>doze</span>
-      <a href="#before">Before and after</a><a href="#app">The app</a><a href="#file">One file</a><a href="#polyglot">Any language</a><a href="#compare">Compared</a><a href="#download">Install</a><a href="/docs/doze/">Docs</a>
-    </nav>
-  </div>
+<Page title="doze, the app" description="doze wakes your stack when you start and sleeps it when you stop. A Mac app first, every switch a command too: Postgres, Kafka, a local AWS and your own services, native, no VM." current="doze">
+<div class="pp pp-doze dz">
+  <SubNav name="doze" icon="/brand/doze.svg" links={[["The app", "#app"], ["Commands", "#cli"], ["One file", "#file"], ["Why", "#why"], ["Any language", "#polyglot"], ["Compared", "#compare"], ["Install", "#install"], ["Docs", "/docs/doze/"]]} />
 
-  <!-- Hero -->
-  <section class="dz-s6">
-    <img class="dz-s7" src="/brand/doze.svg" alt="doze">
-    <h1 class="dz-hero-title dz-s8">The local stack that knows when to quit.</h1>
-    <p class="dz-s9">Postgres, MariaDB, Valkey, Kafka, Temporal and a local AWS, running natively, each awake only while your code is using it. No VM. No port clashes. No setup doc.</p>
-    <div class="dz-stack-sm dz-s10">
-      <a class="dz-btn dz-btn-lamp" href="/download/">Download for Mac</a>
-      <a class="dz-btn dz-btn-ghost" href="/docs/doze/">Your first stack</a>
-    </div>
-    <span class="dz-s11">Free and open source · macOS on Apple silicon · Linux x86_64 and arm64</span>
-  </section>
-
-  <!-- The real app -->
-  <section class="dz-s12">
-    <div class="dz-s13"></div>
-    <div class="dz-s14">
-      <div class="dz-s15"><span class="dz-s16"></span><span class="dz-s17"></span><span class="dz-s18"></span><span class="dz-s19">doze</span></div>
-      <img class="dz-s20" src="/media/app-stack.webp" alt="The doze app's tiles for a demo stack, with memory, cores and every service awake, dozing, waking or asleep">
-    </div>
-    <p class="dz-s21">The doze app, from its demo stack. <span class="dz-recap">[re-capture with Larder]</span></p>
-  </section>
-
-  <!-- Before / after -->
-  <section class="dz-s22" id="before">
-    <h2 class="dz-h2 dz-s23">Monday morning, two ways.</h2>
-    <div class="dz-s24">
-      <div class="dz-s25">
-        <span class="dz-s26">The usual</span>
-        <pre class="dz-term dz-s27"><span class="dz-s28">$</span> docker compose up
-Error: Bind for 0.0.0.0:5432 failed:
-  port is already allocated
-<span class="dz-s28">$</span> lsof -i :5432          <span class="dz-s28"># who is it this time</span>
-<span class="dz-s28">$</span> brew services stop postgresql@14
-<span class="dz-s28">$</span> docker compose up
-kafka-1  | waiting for controller quorum…
-<span class="dz-s28">$</span> cp .env.example .env    <span class="dz-s28"># then ask in Slack</span>
-<span class="dz-s28"># 40 minutes later, fans at full tilt</span></pre>
+  <!-- Hero: the product's own identity, then the window, big -->
+  <section class="pp-hero dz-hero">
+    <div class="pp-wrap dz-hero-in">
+      <span class="pp-lockup"><img src="/brand/doze.svg" alt="" width="64" height="64" /><b>doze</b></span>
+      <h1 class="pp-h1 dz-h1"><span>Wakes your stack when you start.</span> <span class="pp-soft">Sleeps it when you stop.</span></h1>
+      <p class="pp-tag">Run your whole stack. Feel none of it.</p>
+      <p class="pp-lede dz-hero-lede">Postgres, Kafka, a whole local AWS and your own services, running natively on your Mac, each awake only while your code is using it. No VM. No port clashes. No setup doc.</p>
+      <div class="dz-cta">
+        <a class="pp-btn pp-btn-acc" href="/download/"><img src="/brand/doze.svg" alt="" width="22" height="22" />Get the doze app</a>
+        <div class="dz-cta-cmd"><Cmd cmd="brew install --cask doze-dev/tap/doze" label="Copy the Homebrew install command" /></div>
       </div>
-      <div class="dz-s25">
-        <span class="dz-s29">With doze, on Larder</span>
-        <pre class="dz-term dz-s30"><span class="dz-s31">$</span> doze up
-<span class="dz-s32">✓</span> migrate-catalog, migrate-orders … ran
-<span class="dz-s32">✓</span> storefront  http://storefront.larder.doze
-<span class="dz-s32">✓</span> gateway     http://gateway.larder.doze
-<span class="dz-s31">○</span> catalog     asleep, wakes on a connection
-<span class="dz-s31">○</span> mailpit     asleep, wakes on a connection
-
-<span class="dz-s31"># that's it. go write code.</span></pre>
-      </div>
+      <span class="pp-small">Free and open source · macOS on Apple silicon · Linux x86_64 and arm64 · no account, no telemetry</span>
+      <Endorse />
+    </div>
+    <div class="dz-hero-win">
+      <Shot src={media.hero.src} alt={media.hero.alt} title="doze" glow eager />
+      <p class="pp-cap"><span class="pp-breathe" aria-hidden="true"></span>&nbsp; The doze app. Close the window and it stays in your menu bar; quit it and your stacks keep running.
+        {media.hero.pending && <> <span class="pp-pending">stand-in {demo} · {media.hero.pending} pending</span></>}</p>
     </div>
   </section>
 
-  <!-- See it move: real recordings -->
-  <section class="dz-s33" id="live">
-    <div class="dz-s34">
-      <span class="dz-eyebrow">See it move</span>
-      <h2 class="dz-h2 dz-s35">Six things you'll do on day one.</h2>
-      <p class="dz-s36">Each one recorded from the real app. Pick one.</p>
-    </div>
-    <Tour set="doze" />
-  </section>
-
-  <!-- The app: product-true fragments -->
-  <section class="dz-s37" id="app">
-    <div class="dz-s38">
-      <div class="dz-s34">
-        <span class="dz-eyebrow">The app</span>
-        <h2 class="dz-h2">See your whole stack. Touch nothing.</h2>
-        <p class="dz-s36">What's awake, what's asleep, what needs you. Wake or sleep a whole stack in one click, from the window or the menu bar.</p>
+  <!-- The app, a guided tour -->
+  <section class="pp-sec dz-tour" id="app">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">The app, a guided tour</span>
+        <h2 class="pp-h2">See your whole stack. Touch nothing.</h2>
+        <p class="pp-lede">doze is an app first. Eight stops, each a real screen. Scroll inside the frame, use the arrow keys, or pick a stop from the dots.</p>
       </div>
-
-      <div class="dz-s39">
-        <!-- Fragment 1: tiles mid-wake -->
-        <figure class="dz-s40">
-          <div class="dz-s41">
-            <div class="dz-s42"><b class="dz-s43">larder</b><span class="dz-s44">~/code/larder · up [41 min]</span></div>
-            <div class="dz-tiles dz-s45">
-              <div class="dz-tile"><b>● gateway</b><span class="dz-s46">awake · [3] connections</span><span class="dz-s47">gateway.<wbr>larder.<wbr>doze</span></div>
-              <div class="dz-tile"><b>◐ catalog</b><span class="dz-s48">waking · gateway asked for it</span><span class="dz-s47">catalog.<wbr>larder.<wbr>doze</span></div>
-              <div class="dz-tile"><b>◐ redis</b><span class="dz-s49">dozing · sleeps in [1:12]</span><span class="dz-s47">redis.<wbr>larder.<wbr>doze:6379</span></div>
-              <div class="dz-tile dz-s50"><b class="dz-s51">○ mailpit</b><span class="dz-s44">asleep · wakes on a connection</span><span class="dz-s47">mailpit.<wbr>larder.<wbr>doze</span></div>
+      <VCarousel label="The doze app, a guided tour" height="min(780px, 86vh)" class="pp-vc">
+        {tour.map((s, i) => {
+          const pending = s.views ? viewsPending.join(", ") : s.m ? s.m.pending : undefined;
+          return (
+            <div data-slide data-label={s.label} class="pp-slide dz-slide">
+              <div class="pp-slide-top">
+                <div>
+                  <span class="pp-step">{pad(i + 1)} / {pad(tour.length)} · {s.label}</span>
+                  <h3>{s.title}</h3>
+                </div>
+                <div class="pp-slide-say">
+                  <p>{s.say}</p>
+                  <span class="pp-also">
+                    {s.cli.length > 0 && <>From a terminal {s.cli.map((c) => <code>{c}</code>)}</>}
+                    {pending && <span class="pp-pending">stand-in {demo} · {pending} pending</span>}
+                    {!s.m && s.drawn && <span class="pp-pending">drawn from the app's own {s.drawn === "menubar" ? "menu" : "theme tokens"} · capture pending</span>}
+                  </span>
+                </div>
+              </div>
+              <div class="pp-slide-media">
+                {s.views ? <Views views={views} />
+                  : s.m ? <Shot src={s.m.src} alt={s.m.alt} title={s.label === "Menu bar" ? "" : "doze"} />
+                  : s.drawn === "menubar" ? <div class="dz-drawn"><MenuBar /></div>
+                  : <div class="pp-slide-panel dz-drawn"><Themes /></div>}
+              </div>
             </div>
-          </div>
-          <figcaption class="dz-s52"><b class="dz-s53">Every service, at a glance.</b> Awake, waking, dozing, asleep: the four words doze uses everywhere.</figcaption>
-        </figure>
+          );
+        })}
+      </VCarousel>
+    </div>
+  </section>
 
-        <!-- Fragment 2: the menu bar -->
-        <figure class="dz-s40">
-          <div class="dz-s54">
-            <div class="dz-s55">
-              <div class="dz-s56">Needs you</div>
-              <div class="dz-mi dz-s57"><span>● acme · postgres crashed</span><span class="dz-s58">Fix…</span></div>
-              <div class="dz-s59"></div>
-              <div class="dz-s60">Stacks</div>
-              <div class="dz-mi"><span>●&#160;&#160;larder</span><span class="dz-s58">›</span></div>
-              <div class="dz-mi"><span>●&#160;&#160;acme</span><span class="dz-s58">›</span></div>
-              <div class="dz-mi"><span>○&#160;&#160;billing</span><span class="dz-s58">›</span></div>
-              <div class="dz-s59"></div>
-              <div class="dz-mi"><span>Open doze</span><span class="dz-s58">⇧⌘D</span></div>
-              <div class="dz-mi"><span>Settings…</span><span class="dz-s58">⌘,</span></div>
-              <div class="dz-mi"><span>Quit doze · stacks keep running</span></div>
-            </div>
-          </div>
-          <figcaption class="dz-s52"><b class="dz-s53">Lives in your menu bar.</b> Every stack one click from awake or asleep. Quit the app and your stacks keep running.</figcaption>
-        </figure>
-
-        <!-- Fragment 3: a mistake, explained -->
-        <figure class="dz-s40">
-          <div class="dz-s61">
-            <b class="dz-s62">doze.hcl has a mistake</b>
-            <div class="dz-s63">
-              <div class="dz-s64">19&#160;&#160;defaults &#123;</div>
-              <div class="dz-s65">20&#160;&#160;&#160;&#160;idle_timeout = "2m"</div>
-              <div class="dz-s64">21&#160;&#160;&#125;</div>
-            </div>
-            <span class="dz-s66">`idle_timeout` is now `sleep`</span>
-            <div class="dz-s67"><span class="dz-s68">To fix it</span>Write: sleep = "2m"</div>
-          </div>
-          <figcaption class="dz-s52"><b class="dz-s53">Mistakes that explain themselves.</b> The file, the line, and exactly what to write.</figcaption>
-        </figure>
+  <!-- Everything is a command too -->
+  <section class="pp-sec pp-sec-tint" id="cli">
+    <div class="pp-wrap dz-cli">
+      <div class="dz-cli-say" data-reveal>
+        <span class="pp-eyebrow">And everything is a command too</span>
+        <h2 class="pp-h2">Every switch is a command.</h2>
+        <p class="pp-lede">So a script, a Makefile or CI can do what you just clicked. Over SSH, with no screen, <code class="dz-c">doze</code> is a dash in your terminal; piped, it prints the status table.</p>
+        <dl class="dz-map">
+          {commands.map(([app, cmd]) => <div><dt>{app}</dt><dd><code>{cmd}</code></dd></div>)}
+        </dl>
       </div>
-      <span class="dz-s44">Drawn from the app's own screens and wording, in its brand theme, with Larder's names.</span>
+      <div class="dz-cli-term" data-reveal>
+        <div class="pp-term-head"><span>~/code/larder</span><span>our example project</span></div>
+        <pre class="pp-term"><span class="c">$</span> <span class="w">doze up</span>
+<span class="k">✓</span> migrate-catalog, migrate-orders … ran
+<span class="k">✓</span> storefront  <span class="a">http://storefront.larder.doze</span>
+<span class="k">✓</span> gateway     <span class="a">http://gateway.larder.doze</span>
+<span class="c">○</span> catalog     asleep, wakes on a connection
+<span class="c">○</span> mailpit     asleep, wakes on a connection
+
+<span class="c">$</span> <span class="w">psql "$(doze url postgres)"</span>
+<span class="c"># its connection string; postgres wakes on the connection</span>
+
+<span class="c">$</span> <span class="w">doze run -- go test ./...</span>
+<span class="c"># the same file runs your tests in CI</span></pre>
+      </div>
     </div>
   </section>
 
   <!-- One file -->
-  <section id="file" class="dz-file-grid dz-s69">
-    <div class="dz-s70">
-      <span class="dz-eyebrow">One file in your repo</span>
-      <h2 class="dz-h2">Onboarding is <code class="dz-s71">doze up</code>.</h2>
-      <p class="dz-s36">doze.hcl says what your app needs. Connection strings wire themselves, and doze.lock pins every engine, byte for byte, so your Postgres is your teammate's Postgres. This is a slice of Larder's.</p>
-      <ul class="dz-s72">
-        <li>One Postgres, a role and a schema per service</li>
-        <li>Your own domain over https, for when OAuth refuses localhost</li>
-        <li>Migrations that run once, before the code that needs them</li>
-        <li>The same file runs your tests in CI: <code class="dz-s73">doze run -- go test ./...</code></li>
-        <li>Postgres extensions by name, <span class="dz-s31">coming in postgres 0.3</span></li>
-      </ul>
-      <a class="dz-s74" href="https://github.com/doze-dev/doze-examples/blob/main/larder/doze.hcl">Read all of Larder's doze.hcl on GitHub →</a>
-    </div>
-    <pre class="dz-term dz-s75"><span class="dz-s31"># doze.hcl</span>
-stack = "larder"
+  <section class="pp-sec" id="file">
+    <div class="pp-wrap dz-file">
+      <div class="dz-file-say" data-reveal>
+        <span class="pp-eyebrow">One file in your repo</span>
+        <h2 class="pp-h2">Onboarding is <code class="dz-c dz-c-big">doze up</code>.</h2>
+        <p class="pp-lede">doze.hcl says what your app needs; doze.lock pins every engine, byte for byte, so your Postgres is your teammate's Postgres. This is a slice of the one in <a href="/examples/">Larder</a>, a made-up grocery service we built as our example: seven services in Go, Python and TypeScript, a gateway and a web shop.</p>
+        <ul class="dz-ticks">
+          <li>One Postgres, a role and a schema per service</li>
+          <li>Connection strings that wire themselves</li>
+          <li>Migrations that run once, before the code that needs them, and again only when a .sql file changes</li>
+          <li>Kafka topics declared as contracts, not created by whoever writes first</li>
+          <li>Your own domain over https, for when OAuth refuses localhost: <code class="dz-c">doze trust</code></li>
+        </ul>
+        <a class="pp-more" href="https://github.com/doze-dev/doze-examples/blob/main/larder/doze.hcl">Read all of Larder's doze.hcl on GitHub →</a>
+      </div>
+      <div data-reveal>
+        <div class="pp-term-head"><span>larder/doze.hcl</span><span>a slice</span></div>
+        <pre class="pp-term dz-hcl"><span class="w">stack</span> = <span class="s">"larder"</span>
 
-module postgres "postgres" &#123;
-  version = 18
-  role   "catalog" &#123; password = "catalog" &#125;
-  schema "catalog" &#123; owner = "catalog" &#125;
+<span class="a">defaults</span> &#123;
+  sleep = <span class="s">"2m"</span>
 &#125;
 
-module valkey "redis" &#123; version = 9 &#125;
-
-task "migrate-catalog" &#123;
-  run    = "go run ./platform/cmd/migrate services/catalog/migrations"
-  inputs = ["services/catalog/migrations/*.sql"]
+<span class="a">module</span> postgres <span class="s">"postgres"</span> &#123;
+  version = <span class="n">18</span>
+  role   <span class="s">"catalog"</span> &#123; password = <span class="s">"catalog"</span> &#125;
+  schema <span class="s">"catalog"</span> &#123; owner = <span class="s">"catalog"</span> &#125;
 &#125;
 
-app "catalog" &#123;
-  run   = "go run ./services/catalog"
-  port  = 8002
+<span class="a">module</span> kafka <span class="s">"kafka"</span> &#123;
+  version            = <span class="n">4</span>
+  auto_create_topics = <span class="n">false</span>
+  topic <span class="s">"orders.placed"</span> &#123; partitions = <span class="n">3</span> &#125;
+&#125;
+
+<span class="a">task</span> <span class="s">"migrate-catalog"</span> &#123;
+  run    = <span class="s">"go run ./platform/cmd/migrate services/catalog/migrations"</span>
+  inputs = [<span class="s">"services/catalog/migrations/*.sql"</span>]
+&#125;
+
+<span class="a">app</span> <span class="s">"catalog"</span> &#123;
+  run   = <span class="s">"go run ./services/catalog"</span>
+  port  = <span class="n">8002</span>
   after = [task.migrate-catalog]
-  env   = &#123;
-    DATABASE_URL = "postgres://catalog:catalog@$&#123;module.postgres.address&#125;/postgres?sslmode=disable"
+  env = &#123;
+    DATABASE_URL = <span class="s">"postgres://catalog:catalog@$&#123;module.postgres.address&#125;/postgres"</span>
   &#125;
 &#125;</pre>
+      </div>
+    </div>
   </section>
 
-  <!-- Polyglot by default -->
-  <section class="dz-s37" id="polyglot">
-    <div class="dz-s76">
-      <div class="dz-s77">
-        <div class="dz-s78">
-          <span class="dz-eyebrow">Polyglot by default</span>
-          <h2 class="dz-h2">doze runs the command you'd run.</h2>
-          <p class="dz-s36">No SDK, no base image, no plugin per language. Each team keeps its toolchain; doze gives every service a name, a port, its connection strings, and sleep.</p>
+  <!-- The pains, and what doze does about each -->
+  <section class="pp-sec pp-sec-tint" id="why">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Sound familiar?</span>
+        <h2 class="pp-h2">Nobody designed your local setup. It grew.</h2>
+        <p class="pp-lede">Containers, brew services, half-remembered ports and a setup doc that worked once. Here is each small embarrassing truth, and what changes.</p>
+      </div>
+      <div class="dz-pains">
+        {pains.map((p) => (
+          <article class="dz-pain" data-reveal>
+            <span class="pp-chip">{p.old}</span>
+            <h3 class="pp-h3">{p.title}</h3>
+            <p>{p.fix}</p>
+          </article>
+        ))}
+      </div>
+      <article class="dz-moved" data-reveal>
+        <div class="dz-moved-say">
+          <span class="pp-eyebrow">And the big one</span>
+          <h3 class="dz-moved-h">Local development didn't get fixed. It got moved.</h3>
+          <p>Teams gave up on local and moved to remote dev environments run by a platform team. Debuggers that won't attach through the tunnel. Port-forwards to juggle. Logs in another tool. And when the dev environment is down, with no ETA and the platform team busy with production, nobody can work. You needed a platform team just to write code.</p>
         </div>
-        <a class="dz-s79" href="/examples/">See all three in Larder →</a>
-      </div>
-      <div class="dz-s80">
-        <div class="dz-poly"><b class="dz-s81"><span class="dz-lang-dot dz-s82"></span>Go</b><span class="dz-s83">gateway, identity, catalog, orders, payments</span><code>run = "go run ./services/orders"</code></div>
-        <div class="dz-poly"><b class="dz-s81"><span class="dz-lang-dot dz-s84"></span>Python</b><span class="dz-s83">fulfilment, recommendations, with uv</span><code>run = "uv run --frozen python -m fulfilment"</code></div>
-        <div class="dz-poly"><b class="dz-s81"><span class="dz-lang-dot dz-s85"></span>TypeScript</b><span class="dz-s83">notifications, storefront, on bun</span><code>run = "bun run dev"</code></div>
-        <div class="dz-poly dz-s86"><b class="dz-s81"><span class="dz-lang-dot dz-s87"></span>Anything else</b><span class="dz-s83">If it starts from your terminal, it starts from doze.hcl.</span><code>run = "[the command you type today]"</code></div>
-      </div>
+        <ul class="dz-moved-fix">
+          <li><b>It all runs on your laptop again,</b> natively, one file per repo.</li>
+          <li><b>A breakpoint just hits.</b> Your debugger attaches to a local process.</li>
+          <li><b>Nobody's pager is involved.</b> Your stack is down when you closed the lid, not when someone else's cluster is.</li>
+          <li><b>Platform teams build the platform</b> instead of babysitting dev boxes.</li>
+        </ul>
+      </article>
     </div>
   </section>
 
-  <!-- Popular tools, one line each -->
-  <section class="dz-s88">
-    <div class="dz-s89">
-      <span class="dz-eyebrow">Add anything</span>
-      <h2 class="dz-h2 dz-s35">Need Kafka? <code class="dz-s90">doze add kafka</code>.</h2>
-      <p class="dz-s36">The newest version, its usual port, a name, wired into your app. The same for every tool below.</p>
+  <!-- Polyglot -->
+  <section class="pp-sec" id="polyglot">
+    <div class="pp-wrap">
+      <div class="dz-poly-head" data-reveal>
+        <div class="pp-head">
+          <span class="pp-eyebrow">Polyglot by default</span>
+          <h2 class="pp-h2">doze runs the command you'd run.</h2>
+          <p class="pp-lede">No SDK, no base image, no plugin per language. Each team keeps its toolchain; doze gives every service a name, a port, its connection strings, and sleep.</p>
+        </div>
+        <a class="pp-more" href="/examples/">See all three in Larder →</a>
+      </div>
+      <div class="dz-langs">
+        <div class="dz-lang" data-reveal><b><i style="background:#5BB8E8"></i>Go</b><span>gateway, identity, catalog, orders, payments</span><code>run = "go run ./services/orders"</code></div>
+        <div class="dz-lang" data-reveal><b><i style="background:#FFD60A"></i>Python</b><span>fulfilment and recommendations, with uv</span><code>run = "uv run --frozen python -m fulfilment"</code></div>
+        <div class="dz-lang" data-reveal><b><i style="background:#F0A24B"></i>TypeScript</b><span>notifications and the storefront, on bun</span><code>run = "bun run dev"</code></div>
+        <div class="dz-lang dz-lang-any" data-reveal><b><i style="background:#8BE39B"></i>Anything else</b><span>If it starts from your terminal, it starts from doze.hcl.</span><code>run = "[the command you type today]"</code></div>
+      </div>
     </div>
-    <Popular />
   </section>
 
   <!-- Compared -->
-  <section class="dz-s37" id="compare">
-    <div class="dz-s91">
-      <h2 class="dz-h2 dz-s92">doze or docker compose?</h2>
-      <p class="dz-s93">Both are good tools. Containers win at shipping. For the code you write all day, here is what changes.</p>
-      <div class="dz-cmp">
+  <section class="pp-sec pp-sec-tint" id="compare">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Compared</span>
+        <h2 class="pp-h2">doze or docker compose?</h2>
+        <p class="pp-lede">Both are good tools. Containers win at shipping. For the code you write all day, here is what changes.</p>
+      </div>
+      <div class="dz-cmp" data-reveal>
         <table>
-          <thead><tr><th><span class="dz-s94">Question</span></th><th class="dz-s95">doze</th><th>docker compose</th></tr></thead>
+          <thead><tr><th><span class="sr-only">Question</span></th><th class="dz-cmp-me">doze</th><th>docker compose</th></tr></thead>
           <tbody>
             <tr><th scope="row">What runs</th><td data-l="doze">Native processes</td><td data-l="docker compose">Containers in a Linux VM</td></tr>
             <tr><th scope="row">While you're in a meeting</th><td data-l="doze">Asleep</td><td data-l="docker compose">Running</td></tr>
@@ -225,166 +412,146 @@ app "catalog" &#123;
             <tr><th scope="row">Two projects on 5432</th><td data-l="doze">Fine: each has its own address</td><td data-l="docker compose">Remap one by hand</td></tr>
             <tr><th scope="row">Three languages in one repo</th><td data-l="doze">Each runs with its own toolchain</td><td data-l="docker compose">A Dockerfile per service</td></tr>
             <tr><th scope="row">https on your own domain</th><td data-l="doze">One line, one password prompt</td><td data-l="docker compose">A proxy and a CA you set up</td></tr>
+            <tr><th scope="row">Shipping to production</th><td data-l="doze">Not its job</td><td data-l="docker compose">Images you can ship</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <!-- Download -->
-  <section class="dz-s96" id="download">
-    <div class="dz-s97">
-      <div class="dz-s98"><h2 class="dz-h2 dz-s35">Fans off. Stack on.</h2><p class="dz-s99">doze 0.2 · [0.2 release date] · <a href="/changelog/">what's new</a></p></div>
-      <a class="dz-s79" href="/download/">Every way to install →</a>
+  <!-- Install -->
+  <section class="pp-sec" id="install">
+    <div class="pp-wrap">
+      <div class="dz-inst-head" data-reveal>
+        <div class="pp-head">
+          <span class="pp-eyebrow">Install</span>
+          <h2 class="pp-h2">Fans off. Stack on.</h2>
+          <p class="pp-lede">doze 0.2 · [0.2 release date] · <a href="/changelog/">what's new</a></p>
+        </div>
+        <a class="pp-more" href="/download/">Every way to install →</a>
+      </div>
+      <div class="dz-inst">
+        <div class="dz-inst-app" data-reveal>
+          <img src="/brand/doze.svg" alt="" width="56" height="56" />
+          <h3 class="pp-h3">The Mac app</h3>
+          <p>The menu bar app with the CLI inside, for Apple silicon. One password prompt sets up .doze names.</p>
+          <a class="pp-btn dz-btn-ink" href="/download/">Get the doze app</a>
+        </div>
+        <div class="dz-inst-card" data-reveal>
+          <h3 class="pp-h3">Homebrew</h3>
+          <Cmd cmd="brew install --cask doze-dev/tap/doze" label="Copy the app install command" />
+          <Cmd cmd="brew install doze-dev/tap/doze" label="Copy the CLI install command" />
+          <span class="pp-small">The first installs the app; the second, the CLI alone.</span>
+        </div>
+        <div class="dz-inst-card" data-reveal>
+          <h3 class="pp-h3">Linux</h3>
+          <p>x86_64 and arm64: Homebrew, mise or a tarball. On Windows, WSL2 works.</p>
+          <a class="pp-btn pp-btn-ghost dz-inst-go" href="/download/">Linux install options</a>
+        </div>
+      </div>
     </div>
-    <div class="dz-s100"><h3 class="dz-s101">Mac app</h3><p class="dz-s102">The menu bar app with the CLI inside, for Apple silicon. One password prompt sets up .doze names.</p><a class="dz-btn dz-s103" href="/download/">Download for Mac</a></div>
-    <div class="dz-s104"><h3 class="dz-s101">Homebrew</h3>
-      <div class="dz-cmd"><code>brew install --cask doze-dev/tap/doze</code><button type="button" class="dz-copy" data-copy="brew install --cask doze-dev/tap/doze" aria-label="Copy the app install command">Copy</button></div>
-      <div class="dz-cmd"><code>brew install doze-dev/tap/doze</code><button type="button" class="dz-copy" data-copy="brew install doze-dev/tap/doze" aria-label="Copy the CLI install command">Copy</button></div>
-      <span class="dz-s105">The first installs the app; the second, the CLI alone.</span></div>
-    <div class="dz-s104"><h3 class="dz-s101">Linux</h3><span class="dz-s106">x86_64 and arm64: Homebrew, mise or a tarball. On Windows, WSL2 works.</span><a class="dz-btn dz-btn-ghost dz-s107" href="/download/">Linux install options</a></div>
   </section>
+
+  <Family current="doze" />
 </div>
 </Page>
 
 <style>
-.dz a{color:#F0A24B;text-decoration:none}.dz a:hover{color:#FFC27A}
-.dz .dz-sub a{color:#C9BAD3;font-size:14px;display:inline-flex;align-items:center;min-height:44px}.dz .dz-sub a:hover{color:#F4ECE4}
-.dz-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px}
-.dz .dz-btn-lamp{background:#F0A24B;color:#2A1534}.dz .dz-btn-lamp:hover{background:#FFB866;color:#2A1534}
-.dz .dz-btn-ghost{border:1px solid #4A3458;color:#F4ECE4}.dz .dz-btn-ghost:hover{border-color:#7A5E8C;color:#FFFFFF}
-.dz-eyebrow{font-family:var(--font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
-.dz-h2{margin:0;font-family:var(--font-display);font-weight:800;font-size:48px;line-height:1.04;letter-spacing:-0.025em;text-wrap:balance}
-.dz-tile{background:#221630;border:1px solid #3A2A47;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.dz-tile span{overflow-wrap:normal}
-.dz-mi{display:flex;justify-content:space-between;gap:16px;padding:6px 12px;border-radius:6px;font-size:14px;color:#2B2232}
-.dz-term{margin:0;font:14px/1.75 var(--font-mono);border-radius:16px;padding:22px;overflow-x:auto}
-.dz-recap{display:inline-block;font-family:var(--font-mono);font-size:11px;color:#C9BAD3;background:#2A1C36;border:1px dashed #5A4168;border-radius:6px;padding:2px 7px;white-space:nowrap}
-.dz-poly{background:#1E1328;border:1px solid #34233F;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.dz-poly code{margin-top:auto;font:13px var(--font-mono);background:#120A18;border:1px solid #2E1F3A;border-radius:10px;padding:10px 12px;color:#E9DEEF;overflow-x:auto;white-space:nowrap}
-.dz-file-grid pre{font-size:13px !important}
-@media (max-width:1000px){.dz-file-grid{grid-template-columns:minmax(0,1fr) !important}}
-.dz code,.dz pre{font-variant-ligatures:none}
-.dz pre{white-space:pre;overflow-x:auto;max-width:100%}
-.dz-cmp{overflow:hidden;border:1px solid #34233F;border-radius:16px}
-.dz-cmp table{width:100%;border-collapse:collapse;font-size:16px}
-.dz-cmp th,.dz-cmp td{padding:16px 20px;text-align:left;vertical-align:top}
-.dz-cmp thead th{background:#1E1328;color:#B6A6C2;font-weight:600}
-.dz-cmp tbody th{color:#C9BAD3;font-weight:400}
-.dz-cmp tbody td:last-child{color:#C9BAD3}
-.dz-cmp tbody tr{border-top:1px solid #34233F}
-.dz-cmd{display:flex;align-items:center;gap:8px;background:#120A18;border:1px solid #2E1F3A;border-radius:10px;padding:6px 6px 6px 14px;min-width:0}
-.dz-cmd code{font:14px var(--font-mono);white-space:pre;overflow-x:auto;flex:1;min-width:0}
-.dz-copy{height:36px;padding:0 12px;border-radius:8px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px var(--font-text);cursor:pointer;flex:none}
-@media (max-width:600px){.dz-cmp thead{display:none}.dz-cmp table,.dz-cmp tbody,.dz-cmp tr,.dz-cmp th,.dz-cmp td{display:block}.dz-cmp tbody tr{padding:14px 18px}.dz-cmp tbody tr:first-child{border-top:0}.dz-cmp tbody th{padding:0 0 8px;color:#F4ECE4;font-weight:600}.dz-cmp td{padding:4px 0;display:flex;gap:12px}.dz-cmp td::before{content:attr(data-l);flex:0 0 120px;color:#9C8AAB;font-size:14px}.dz-tiles{grid-template-columns:minmax(0,1fr) !important}}
-.dz-lang-dot{width:10px;height:10px;border-radius:3px;flex:none}
-@media (max-width:760px){.dz-hero-title{font-size:46px !important}.dz-h2{font-size:36px !important}.dz-stack-sm{flex-direction:column !important;align-items:stretch !important}.dz .dz-sub nav{gap:4px 18px !important}}
-/* one-off layout from the board's inline styles */
-.dz-s1.dz-s1.dz-s1{font-family: var(--font-text);color: #F4ECE4;background: #140C1B;min-height: 100%}
-.dz-s2.dz-s2.dz-s2{border-bottom: 1px solid #241730;background: #170E1F}
-.dz-s3.dz-s3.dz-s3{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 6px 32px;display: flex;gap: 24px;flex-wrap: wrap;align-items: center}
-.dz-s4.dz-s4.dz-s4{display: inline-flex;align-items: center;gap: 8px;font-weight: 600;font-size: 14px;color: #F0A24B}
-.dz-s5.dz-s5.dz-s5{width: 8px;height: 8px;border-radius: 4px;background: #F0A24B}
-.dz-s6.dz-s6.dz-s6{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px 56px;display: flex;flex-direction: column;align-items: center;gap: 24px;text-align: center}
-.dz-s7.dz-s7.dz-s7{width: 108px;height: 108px}
-.dz-s8.dz-s8.dz-s8{margin: 0;font-family: var(--font-display);font-weight: 800;font-size: 80px;line-height: 0.98;letter-spacing: -0.035em;max-width: 14ch;text-wrap: balance}
-.dz-s9.dz-s9.dz-s9{margin: 0;font-size: 20px;line-height: 1.55;color: #D6C8DF;max-width: 40rem}
-.dz-s10.dz-s10.dz-s10{display: flex;gap: 14px;flex-wrap: wrap;justify-content: center}
-.dz-s11.dz-s11.dz-s11{font-size: 14px;color: #9C8AAB}
-.dz-s12.dz-s12.dz-s12{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 8px 32px 64px;position: relative}
-.dz-s13.dz-s13.dz-s13{position: absolute;left: 15%;right: 15%;top: 5%;height: 75%;border-radius: 50%;background: radial-gradient(closest-side, rgba(240,162,75,0.26), rgba(240,162,75,0))}
-.dz-s14.dz-s14.dz-s14{position: relative;border-radius: 16px;overflow: hidden;border: 1px solid #4A3458;box-shadow: 0 50px 120px rgba(0,0,0,0.55)}
-.dz-s15.dz-s15.dz-s15{height: 32px;background: #110F18;display: flex;align-items: center;gap: 7px;padding: 0 14px}
-.dz-s16.dz-s16.dz-s16{width: 11px;height: 11px;border-radius: 6px;background: #FF5F57}
-.dz-s17.dz-s17.dz-s17{width: 11px;height: 11px;border-radius: 6px;background: #FEBC2E}
-.dz-s18.dz-s18.dz-s18{width: 11px;height: 11px;border-radius: 6px;background: #28C840}
-.dz-s19.dz-s19.dz-s19{margin: 0 auto;font-size: 13px;color: #8A85A8}
-.dz-s20.dz-s20.dz-s20{display: block;width: 100%;height: auto}
-.dz-s21.dz-s21.dz-s21{position: relative;margin: 16px 0 0;text-align: center;font-size: 13px;color: #9C8AAB}
-.dz-s22.dz-s22.dz-s22{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 40px 32px 96px;display: flex;flex-direction: column;gap: 24px}
-.dz-s23.dz-s23.dz-s23{text-align: center}
-.dz-s24.dz-s24.dz-s24{display: grid;grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap: 18px}
-.dz-s25.dz-s25.dz-s25{display: flex;flex-direction: column;gap: 10px;min-width: 0}
-.dz-s26.dz-s26.dz-s26{font-size: 14px;color: #FF9AA8;font-weight: 600}
-.dz-s27.dz-s27.dz-s27{background: #1F1016;border: 1px solid #4A2230;color: #E8C9CF}
-.dz-s28.dz-s28.dz-s28{color: #A07A82}
-.dz-s29.dz-s29.dz-s29{font-size: 14px;color: #8BE39B;font-weight: 600}
-.dz-s30.dz-s30.dz-s30{background: #120A18;border: 1px solid #2E1F3A;color: #D6C8DF}
-.dz-s31.dz-s31.dz-s31{color: #9C8AAB}
-.dz-s32.dz-s32.dz-s32{color: #8BE39B}
-.dz-s33.dz-s33.dz-s33{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px;display: flex;flex-direction: column;gap: 32px}
-.dz-s34.dz-s34.dz-s34{display: flex;flex-direction: column;gap: 12px;max-width: 46rem}
-.dz-s35.dz-s35.dz-s35{font-size: 52px}
-.dz-s36.dz-s36.dz-s36{margin: 0;font-size: 18px;line-height: 1.6;color: #C9BAD3}
-.dz-s37.dz-s37.dz-s37{background: #1A1022;border-top: 1px solid #2E1F3A;border-bottom: 1px solid #2E1F3A}
-.dz-s38.dz-s38.dz-s38{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px;display: flex;flex-direction: column;gap: 48px}
-.dz-s39.dz-s39.dz-s39{display: grid;grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));gap: 24px;align-items: start}
-.dz-s40.dz-s40.dz-s40{margin: 0;display: flex;flex-direction: column;gap: 14px;min-width: 0}
-.dz-s41.dz-s41.dz-s41{background: #15101C;border: 1px solid #3A2A47;border-radius: 20px;padding: 22px;display: flex;flex-direction: column;gap: 14px}
-.dz-s42.dz-s42.dz-s42{display: flex;justify-content: space-between;align-items: baseline;gap: 12px;flex-wrap: wrap}
-.dz-s43.dz-s43.dz-s43{font-size: 20px}
-.dz-s44.dz-s44.dz-s44{font-size: 13px;color: #9C8AAB}
-.dz-s45.dz-s45.dz-s45{display: grid;grid-template-columns: repeat(2, minmax(0, 1fr));gap: 10px}
-.dz-s46.dz-s46.dz-s46{font-size: 13px;color: #8BE39B}
-.dz-s47.dz-s47.dz-s47{font-size: 12px;color: #9C8AAB}
-.dz-s48.dz-s48.dz-s48{font-size: 13px;color: #8FBDFF}
-.dz-s49.dz-s49.dz-s49{font-size: 13px;color: #F2C879}
-.dz-s50.dz-s50.dz-s50{border-style: dashed}
-.dz-s51.dz-s51.dz-s51{color: #C9BAD3}
-.dz-s52.dz-s52.dz-s52{font-size: 15px;color: #C9BAD3;line-height: 1.5}
-.dz-s53.dz-s53.dz-s53{color: #F4ECE4}
-.dz-s54.dz-s54.dz-s54{background: #2A1E33;border: 1px solid #3A2A47;border-radius: 20px;padding: 22px;display: flex;justify-content: center}
-.dz-s55.dz-s55.dz-s55{width: 300px;max-width: 100%;background: #F3EEF6;border-radius: 12px;padding: 6px;box-shadow: 0 20px 50px rgba(0,0,0,0.45);display: flex;flex-direction: column}
-.dz-s56.dz-s56.dz-s56{padding: 6px 12px 2px;font-size: 12px;font-weight: 600;color: #6A5E76}
-.dz-s57.dz-s57.dz-s57{background: #FBE3E7}
-.dz-s58.dz-s58.dz-s58{color: #6A5E76}
-.dz-s59.dz-s59.dz-s59{height: 1px;background: #DDD3E3;margin: 6px 8px}
-.dz-s60.dz-s60.dz-s60{padding: 2px 12px;font-size: 12px;font-weight: 600;color: #6A5E76}
-.dz-s61.dz-s61.dz-s61{background: #15101C;border: 1px solid #3A2A47;border-radius: 20px;padding: 22px;display: flex;flex-direction: column;gap: 12px}
-.dz-s62.dz-s62.dz-s62{font-size: 18px;color: #FF9AA8}
-.dz-s63.dz-s63.dz-s63{font: 13px/1.9 var(--font-mono);background: #0F0A14;border: 1px solid #2E1F3A;border-radius: 12px;padding: 10px 0}
-.dz-s64.dz-s64.dz-s64{padding: 0 14px;color: #9C8AAB}
-.dz-s65.dz-s65.dz-s65{padding: 0 14px;background: #3A1520;color: #FFD3DA}
-.dz-s66.dz-s66.dz-s66{font-size: 14px;color: #D6C8DF}
-.dz-s67.dz-s67.dz-s67{background: #17301F;border-radius: 10px;padding: 10px 12px;font-size: 14px;color: #CFF5D6}
-.dz-s68.dz-s68.dz-s68{color: #8BC79A;margin-right: 6px}
-.dz-s69.dz-s69.dz-s69{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px;display: grid;grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);gap: 48px;align-items: center}
-.dz-s70.dz-s70.dz-s70{display: flex;flex-direction: column;gap: 18px}
-.dz-s71.dz-s71.dz-s71{font-family: var(--font-mono);font-size: 0.8em;color: #F0A24B}
-.dz-s72.dz-s72.dz-s72{margin: 0;padding-left: 18px;color: #C9BAD3;line-height: 1.9}
-.dz-s73.dz-s73.dz-s73{font-family: var(--font-mono);color: #F4ECE4}
-.dz-s74.dz-s74.dz-s74{font-weight: 600;align-self: flex-start;padding: 10px 0}
-.dz-s75.dz-s75.dz-s75{background: #120A18;border: 1px solid #2E1F3A;color: #E9DEEF;min-width: 0}
-.dz-s76.dz-s76.dz-s76{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 80px 32px;display: flex;flex-direction: column;gap: 28px}
-.dz-s77.dz-s77.dz-s77{display: flex;justify-content: space-between;align-items: flex-end;gap: 24px;flex-wrap: wrap}
-.dz-s78.dz-s78.dz-s78{display: flex;flex-direction: column;gap: 12px;max-width: 44rem}
-.dz-s79.dz-s79.dz-s79{font-weight: 600;padding: 10px 0}
-.dz-s80.dz-s80.dz-s80{display: grid;grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));gap: 14px}
-.dz-s81.dz-s81.dz-s81{display: flex;align-items: center;gap: 10px;font-size: 17px}
-.dz-s82.dz-s82.dz-s82{background: #5BB8E8}
-.dz-s83.dz-s83.dz-s83{font-size: 14px;color: #C9BAD3}
-.dz-s84.dz-s84.dz-s84{background: #FFD60A}
-.dz-s85.dz-s85.dz-s85{background: #F0A24B}
-.dz-s86.dz-s86.dz-s86{background: transparent;border-style: dashed}
-.dz-s87.dz-s87.dz-s87{background: #8BE39B}
-.dz-s88.dz-s88.dz-s88{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px;display: flex;flex-direction: column;gap: 28px}
-.dz-s89.dz-s89.dz-s89{display: flex;flex-direction: column;gap: 12px;max-width: 48rem}
-.dz-s90.dz-s90.dz-s90{font-family: var(--font-mono);font-size: 0.75em;color: #F0A24B}
-.dz-s91.dz-s91.dz-s91{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 88px 32px;display: flex;flex-direction: column;gap: 28px}
-.dz-s92.dz-s92.dz-s92{font-size: 44px}
-.dz-s93.dz-s93.dz-s93{margin: 0;font-size: 18px;color: #C9BAD3;max-width: 46rem;line-height: 1.6}
-.dz-s94.dz-s94.dz-s94{position: absolute;left: -9999px}
-.dz-s95.dz-s95.dz-s95{color: #F0A24B}
-.dz-s96.dz-s96.dz-s96{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px 104px;display: grid;grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));gap: 20px}
-.dz-s97.dz-s97.dz-s97{grid-column: 1 / -1;display: flex;justify-content: space-between;align-items: flex-end;gap: 16px;flex-wrap: wrap}
-.dz-s98.dz-s98.dz-s98{display: flex;flex-direction: column;gap: 10px}
-.dz-s99.dz-s99.dz-s99{margin: 0;color: #C9BAD3;font-size: 18px}
-.dz-s100.dz-s100.dz-s100{background: #F0A24B;color: #2A1534;border-radius: 20px;padding: 28px;display: flex;flex-direction: column;gap: 14px}
-.dz-s101.dz-s101.dz-s101{margin: 0;font-size: 22px;font-family: var(--font-display)}
-.dz-s102.dz-s102.dz-s102{margin: 0;line-height: 1.6}
-.dz-s103.dz-s103.dz-s103{background: #2A1534;color: #F4ECE4;align-self: flex-start;margin-top: auto}
-.dz-s104.dz-s104.dz-s104{background: #1E1328;border: 1px solid #34233F;border-radius: 20px;padding: 28px;display: flex;flex-direction: column;gap: 14px;min-width: 0}
-.dz-s105.dz-s105.dz-s105{color: #9C8AAB;font-size: 13px}
-.dz-s106.dz-s106.dz-s106{color: #C9BAD3;font-size: 15px;line-height: 1.6}
-.dz-s107.dz-s107.dz-s107{align-self: flex-start;margin-top: auto}
+  .dz-hero { padding-bottom: 0; }
+  .dz-hero-in { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px; }
+  .dz-h1 { font-size: clamp(40px, 5.4vw, 76px); }
+  .dz-h1 span { display: block; }
+  .dz-hero-lede { max-width: 40rem; }
+  .dz-cta { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; margin-top: 4px; }
+  .dz-cta-cmd { width: min(460px, 100%); }
+  .dz-hero-win { max-width: 1280px; margin: 64px auto 0; padding: 0 32px; }
+
+  .dz-tour { padding-top: 140px; }
+  .dz-tour > .pp-wrap { max-width: 1340px; }
+  .dz-drawn { height: 100%; max-width: 100%; }
+  .dz-c { font-family: var(--font-mono); font-size: 0.9em; color: var(--acc); }
+  .dz-c-big { font-size: 0.8em; }
+
+  .dz-cli { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; align-items: center; }
+  .dz-cli-say { display: flex; flex-direction: column; gap: 16px; }
+  .dz-map { margin: 12px 0 0; display: grid; gap: 0; border-top: 1px solid var(--ln); }
+  .dz-map div { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--ln); }
+  .dz-map dt { color: var(--t2); font-size: 15px; }
+  .dz-map dd { margin: 0; }
+  .dz-map code { font: 13.5px var(--font-mono); color: var(--t1); white-space: nowrap; }
+
+  .dz-file { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: 56px; align-items: center; }
+  .dz-file-say { display: flex; flex-direction: column; gap: 18px; }
+  .dz-ticks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; color: var(--t2); line-height: 1.5; }
+  .dz-ticks li { position: relative; padding-left: 26px; }
+  .dz-ticks li::before { content: "✓"; position: absolute; left: 0; color: var(--ok); font-weight: 700; }
+  .dz-hcl .s { color: #e9deef; }
+  .dz-hcl .n { color: #8fbdff; }
+  .dz-hcl { font-size: 13px; }
+
+  .dz-pains { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .dz-pain { background: var(--g); border: 1px solid var(--ln); border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .dz-pain p { margin: 0; color: var(--t2); line-height: 1.6; font-size: 15.5px; }
+  .dz-moved { margin-top: 16px; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 40px; padding: 40px; border-radius: 22px; background: radial-gradient(120% 140% at 0% 0%, rgba(240, 162, 75, 0.16), transparent 55%), var(--g); border: 1px solid color-mix(in srgb, var(--acc) 40%, var(--ln)); }
+  .dz-moved-say { display: flex; flex-direction: column; gap: 14px; }
+  .dz-moved-h { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.04; letter-spacing: -0.025em; text-wrap: balance; }
+  .dz-moved-say p { margin: 0; color: var(--t2); line-height: 1.65; font-size: 16.5px; }
+  .dz-moved-fix { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; align-self: center; }
+  .dz-moved-fix li { padding: 14px 16px 14px 44px; position: relative; border-radius: 12px; background: var(--g2); border: 1px solid var(--ln); color: var(--t2); line-height: 1.5; }
+  .dz-moved-fix li::before { content: "✓"; position: absolute; left: 16px; top: 14px; color: var(--ok); font-weight: 700; }
+  .dz-moved-fix b { color: var(--t1); }
+
+  .dz-poly-head, .dz-inst-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
+  .dz-poly-head .pp-head, .dz-inst-head .pp-head { margin-bottom: 0; }
+  .dz-langs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .dz-lang { background: var(--g2); border: 1px solid var(--ln); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .dz-lang b { display: flex; align-items: center; gap: 10px; font-size: 17px; }
+  .dz-lang i { width: 10px; height: 10px; border-radius: 3px; }
+  .dz-lang span { font-size: 14px; color: var(--t2); }
+  .dz-lang code { margin-top: auto; font: 13px var(--font-mono); background: var(--well); border: 1px solid var(--ln); border-radius: 10px; padding: 10px 12px; color: var(--t1); overflow-x: auto; white-space: nowrap; }
+  .dz-lang-any { background: transparent; border-style: dashed; }
+
+  .dz-cmp { border: 1px solid var(--ln); border-radius: 18px; overflow: hidden; background: var(--g); }
+  .dz-cmp table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  .dz-cmp th, .dz-cmp td { padding: 16px 22px; text-align: left; vertical-align: top; }
+  .dz-cmp thead th { background: var(--g3); color: var(--t2); font-weight: 600; }
+  .dz-cmp thead .dz-cmp-me { color: var(--acc); }
+  .dz-cmp tbody th { color: var(--t2); font-weight: 400; }
+  .dz-cmp tbody td:nth-of-type(1) { color: var(--t1); }
+  .dz-cmp tbody td:last-child { color: var(--t3); }
+  .dz-cmp tbody tr { border-top: 1px solid var(--ln); }
+
+  .dz-inst { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; }
+  .dz-inst-app { background: var(--acc); color: var(--acc-ink); border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .dz-inst-app img { width: 56px; height: 56px; border-radius: 14px; box-shadow: 0 0 0 2px var(--acc-ink); }
+  .dz-inst-app p { margin: 0; line-height: 1.6; }
+  .pp .dz-btn-ink { background: var(--acc-ink); color: var(--t1); margin-top: auto; }
+  .pp .dz-btn-ink:hover { background: #3a2448; color: #fff; }
+  .dz-inst-card { background: var(--g2); border: 1px solid var(--ln); border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .dz-inst-card p { margin: 0; color: var(--t2); line-height: 1.6; }
+  .dz-inst-go { align-self: flex-start; margin-top: auto; }
+
+  @media (max-width: 1000px) {
+    .dz-cli, .dz-file { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+    .dz-pains { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dz-moved { grid-template-columns: minmax(0, 1fr); }
+    .dz-inst { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .dz-hero-win { padding: 0 12px; margin-top: 44px; }
+    .dz-cta { flex-direction: column; align-items: stretch; width: 100%; }
+    .dz-cta-cmd { width: 100%; }
+    .dz-tour { padding-top: 96px; }
+    .dz-drawn { aspect-ratio: auto; height: auto; }
+    .dz-pains, .dz-langs { grid-template-columns: minmax(0, 1fr); }
+    .dz-moved { padding: 24px; }
+    .dz-map div { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .dz-cmp thead { display: none; }
+    .dz-cmp table, .dz-cmp tbody, .dz-cmp tr, .dz-cmp th, .dz-cmp td { display: block; }
+    .dz-cmp tbody tr { padding: 14px 18px; }
+    .dz-cmp tbody tr:first-child { border-top: 0; }
+    .dz-cmp tbody th { padding: 0 0 8px; color: var(--t1); font-weight: 600; }
+    .dz-cmp td { padding: 4px 0; display: flex; gap: 12px; }
+    .dz-cmp td::before { content: attr(data-l); flex: 0 0 116px; color: var(--t3); font-size: 14px; }
+  }
 </style>

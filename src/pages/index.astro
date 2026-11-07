@@ -1,361 +1,612 @@
 ---
-// Home (design: Main). The claim, the app, the family live, the registry in one line each.
+// Home (direction B, "Rest is a feature": design/BRAND.md). It sells the
+// evening and shows the product: the headline, then the doze app, big and
+// alive; the pains, one at a time; the app's screens; the three products as
+// equals; numbers with their method; the registry; the values; the moon.
+// The sky goes from dusk to night as the page scrolls (scroll-driven CSS where
+// the browser has it, a still dusk over the hero where it doesn't).
+import { existsSync } from "node:fs";
 import Popular from "../components/home/Popular.astro";
-import Tour from "../components/home/Tour.astro";
+import VCarousel from "../components/motion/VCarousel.astro";
 import Page from "../layouts/Page.astro";
+import { products } from "../site";
+
+// The Larder captures replace the demo-stack ones as soon as they land in public/media.
+const has = (f: string) => existsSync(`public${f}`);
+const larder = has("/media/app-overview-map.webp");
+const heroLoop = has("/media/app-rec-cascade.webm") ? "/media/app-rec-cascade.webm" : "/media/tour-cascade.webm";
+const heroPoster = larder ? "/media/app-overview-map.webp" : "/media/app-stack.webp";
+const heroCaption = larder
+  ? "The doze app running Larder, our made-up example project: switch a database off and the services that need it follow it to sleep."
+  : "The doze app on a small demo stack: switch a database off and the services that need it follow it to sleep.";
+
+const brew = "brew install --cask doze-dev/tap/doze";
+
+const pains = [
+  {
+    label: "Seven ways to start",
+    title: "Which terminal was that?",
+    evidence: "npm run dev · uv run api · make worker · ./scripts/start-queue.sh",
+    body: "Seven things, seven ways to start them, each in a tab you have to remember.",
+    answer: "One doze.hcl says how each one starts. One switch starts them all.",
+  },
+  {
+    label: "Port roulette",
+    title: "Last week’s project is still holding 5432.",
+    evidence: "Error: port 5432 is already allocated",
+    body: "And the ports you keep in your head: was the gateway 3000, 3001 or 8080?",
+    answer:
+      "Every service gets a name, like gateway.larder.doze in Larder, our made-up example. Two projects on 5432, no clash.",
+  },
+  {
+    label: "The fan",
+    title: "The fan, all evening.",
+    evidence: "a VM holding every database · used or not",
+    body: "A virtual machine keeps every database awake from login to lid, whether you touched them or not.",
+    answer: "Native processes that sleep when nothing calls them. Asleep means no process.",
+  },
+  {
+    label: "The blind agent",
+    title: "Your AI read every file. It still can’t see your machine.",
+    evidence: "agent: “It looks like the database might not be running?”",
+    body: "Quick, confident and guessing: which stack is up, what’s on which port, what you started yesterday.",
+    answer: "Your agent asks doze instead. doze status --json is the same answer, for machines.",
+  },
+  {
+    label: "Months later",
+    title: "Back after three months. The setup doc rotted.",
+    evidence: "SETUP.md · Getting started (2023)",
+    body: "Two services you’ve never seen, one renamed, and a step that only worked on someone’s old laptop.",
+    answer: "The file that runs the stack is the setup doc, so it can’t drift. Clone, doze up.",
+  },
+  {
+    label: "Lid closed",
+    title: "Closing the lid with 23 containers still up.",
+    evidence: "23 containers · still up · nobody calling",
+    body: "Tomorrow they’ll still be there. So will the ones from the project before.",
+    answer: "Whatever nobody calls falls asleep by itself, data kept. Close the lid: nothing’s still running.",
+  },
+];
+
+const screens = [
+  {
+    video: "/media/tour-views.webm",
+    title: "One stack, three ways.",
+    line: "Tiles to flip, a list to scan, a map that draws who needs whom.",
+    alt: "The doze app switching one stack between the tiles, list and map views",
+    big: true,
+  },
+  {
+    video: "/media/tour-wake.webm",
+    title: "A switch per service.",
+    line: "Flip it: asleep, waking, awake.",
+    alt: "Flipping a service's switch in the doze app: it goes from asleep to waking to awake",
+    focus: "0% 38%",
+  },
+  {
+    video: "/media/tour-palette.webm",
+    title: "⌘K. A verb and a name.",
+    line: "Type “wake”, a name, return.",
+    alt: "Typing wake and a service name into the doze app's command palette",
+    focus: "50% 0%",
+  },
+  {
+    video: "/media/tour-needs-you.webm",
+    title: "Needs you.",
+    line: "What’s broken or worth doing, each with its fix one click away.",
+    alt: "The doze app's Needs you panel listing two items, each with a button that fixes it",
+    focus: "100% 0%",
+  },
+];
+
+const family = [
+  {
+    id: "doze",
+    sentence: "Wakes your stack when you start. Sleeps it when you stop.",
+    shot: larder ? "/media/app-overview-map.webp" : "/media/app-map.webp",
+    alt: "The doze app's map of a stack: which service needs which, and who is awake",
+    tone: "amber",
+  },
+  {
+    id: "aws",
+    sentence: "Wakes AWS on your laptop. No account, no bill.",
+    shot: "/media/aws-wire.webp",
+    alt: "The doze AWS console's wire: every AWS call the app made, as it happened",
+    tone: "sky",
+  },
+  {
+    id: "kafka",
+    sentence: "Wakes a Kafka broker. No JVM to put to bed.",
+    shot: "/media/kafka-orders.webp",
+    alt: "The doze Kafka console: a topic and the messages in it",
+    tone: "kafka",
+  },
+].flatMap((f) => {
+  const p = products.find((x) => x.id === f.id);
+  return p ? [{ ...f, ...p }] : [];
+});
 ---
-<Page current="home" news="Postgres extensions by name" newsHref="/registry/extensions/">
-<div class="mn mn-s1">
+<Page current="home" description="doze runs your whole stack natively on your laptop. It wakes when your code calls and goes to sleep when you stop. No VM humming all evening. Free, open source, no account.">
+<div class="hm">
 
-  <!-- Hero: the claim, the brand line, the install line as the call -->
-  <section class="mn-s2">
-    <h1 class="mn-hero-title mn-s3">Your laptop is a beast. Stop making it run a VM.</h1>
-    <p class="mn-hero-tag mn-s4">Run your whole stack. Feel none of it.</p>
-    <p class="mn-s5">Real Postgres, Kafka and a whole local AWS, running natively on your Mac. Awake the moment your code calls. Asleep the moment it stops.</p>
-    <div class="mn-stack-sm mn-install mn-s6">
-      <a class="mn-btn mn-btn-lamp" href="/download/">Download for Mac</a>
-      <div class="mn-s7">
-        <code class="mn-s8"><span class="mn-s9">$</span> brew install --cask doze-dev/tap/doze</code>
-        <button class="mn-s10" type="button" data-copy="brew install --cask doze-dev/tap/doze" aria-label="Copy the install command">Copy</button>
-      </div>
-    </div>
-    <span class="mn-s11">Free and open source · Apple silicon and Linux · no account, no telemetry · <a href="/download/">other ways to install</a></span>
-  </section>
+  <!-- The sky: dusk over the hero, night below. -->
+  <div class="hm-sky" aria-hidden="true">
+    <div class="hm-dusk"></div>
+    <div class="hm-night"></div>
+    <div class="hm-grain"></div>
+  </div>
 
-  <!-- The real app, staged -->
-  <section class="mn-s12">
-    <div class="mn-s13"></div>
-    <div class="mn-win mn-s14">
-      <div class="mn-bar"><span class="mn-dot mn-s15"></span><span class="mn-dot mn-s16"></span><span class="mn-dot mn-s17"></span><span class="mn-s18">doze</span></div>
-      <img class="mn-s19" src="/media/app-map.webp" alt="The doze app's map of a demo stack: some services awake, some dozing, some asleep">
-    </div>
-    <div class="mn-float mn-s20">
-      <div class="mn-s21">
-        <img class="mn-s22" src="/media/app-stack.webp" alt="A database tile from the demo stack: awake, with its open connections">
-      </div>
-      <div class="mn-s23"><b class="mn-s24">asleep → awake</b> on the first connection</div>
-    </div>
-    <div class="mn-float mn-s25">
-      <div class="mn-s26">Stacks</div>
-      <div class="mn-s27"><span>●&#160;&#160;larder</span><span class="mn-s28">›</span></div>
-      <div class="mn-s29"><span>○&#160;&#160;acme</span><span class="mn-s28">›</span></div>
-      <div class="mn-s30"></div>
-      <div class="mn-s31">Quit doze · stacks keep running</div>
-    </div>
-    <p class="mn-s32">The doze app, from its demo stack. Quit it and your stacks keep running. <span class="mn-recap">[re-capture with Larder]</span></p>
-  </section>
-
-  <!-- The family, live -->
-  <section class="mn-s33">
-    <div class="mn-s34">
-      <span class="mn-eyebrow">Live, not mocked</span>
-      <h2 class="mn-h2">Watch all three work.</h2>
-    </div>
-    <Tour set="family" />
-  </section>
-
-  <!-- Sound familiar? -->
-  <section class="mn-s35" id="familiar">
-    <div class="mn-s36">
-      <span class="mn-eyebrow">Sound familiar?</span>
-      <h2 class="mn-h2 mn-s37">Local development is a mess nobody signed up for.</h2>
-      <p class="mn-s38">Containers, brew services, half-remembered ports and a setup doc that worked once. You didn't choose it. It just grew.</p>
-    </div>
-    <div class="mn-s39">
-      <div class="mn-pain"><span class="mn-old">fans: full tilt · battery: 31%</span><h3 class="mn-s40">Your laptop sounds like it's leaving.</h3><p class="mn-s41">A VM full of databases runs all day, used or not. doze runs nothing until something connects.</p></div>
-      <div class="mn-pain"><span class="mn-old">breakpoint never hit</span><h3 class="mn-s40">Debugging through a wall.</h3><p class="mn-s41">No VM, no volume mounts, no forwarded debug ports. Real processes on your machine. Attach and go.</p></div>
-      <div class="mn-pain"><span class="mn-old">port 5432 is already allocated</span><h3 class="mn-s40">Port roulette.</h3><p class="mn-s41">Every service gets a name and an address of its own. Two projects, both on 5432, no clash.</p></div>
-      <div class="mn-pain"><span class="mn-old">localhost:3000? :3001? :8080?</span><h3 class="mn-s40">Which one was the gateway again?</h3><p class="mn-s41"><code class="mn-s42">gateway.larder.doze</code>. And https on your own domain when OAuth refuses localhost.</p></div>
-      <div class="mn-pain"><span class="mn-old">README.md · last updated 2023</span><h3 class="mn-s40">Onboarding takes a day.</h3><p class="mn-s41">One doze.hcl in the repo. A new teammate clones it and runs <code class="mn-s42">doze up</code>.</p></div>
-      <div class="mn-pain"><span class="mn-old">docker ps -a · 23 exited</span><h3 class="mn-s40">The graveyard of forgotten stacks.</h3><p class="mn-s41">The menu bar shows every stack and what's awake, and cleans up what was left behind.</p></div>
-    </div>
-    <a class="mn-s43" href="/tuesday/">Walk through a Tuesday →</a>
-  </section>
-
-  <!-- Instead of -->
-  <section class="mn-s44">
-    <div class="mn-s45">
-      <h2 class="mn-h2">Three tools. Three things you can uninstall.</h2>
-      <div class="mn-s46">
-        <a class="mn-s47" href="/doze/">
-          <div class="mn-s48"><img class="mn-s49" src="/media/app-stack.webp" alt="The doze app's tiles, from its demo stack"></div>
-          <div class="mn-s50">
-            <div class="mn-s51"><img class="mn-s52" src="/brand/doze.svg" alt=""><b class="mn-s53">doze</b></div>
-            <span class="mn-s54">Instead of <s>Docker Desktop for your databases</s></span>
-            <p class="mn-s55">Your whole stack, on demand.</p>
-          </div>
-        </a>
-        <a class="mn-s47" href="/aws/">
-          <div class="mn-s56"><img class="mn-s49" src="/media/aws-wire.webp" alt="The doze AWS console's wire: every call the app made"></div>
-          <div class="mn-s50">
-            <div class="mn-s51"><img class="mn-s52" src="/brand/doze-aws.svg" alt=""><b class="mn-s53">doze AWS</b></div>
-            <span class="mn-s54">Instead of <s>an emulator in a container, or the shared dev account</s></span>
-            <p class="mn-s57">All of AWS. None of the account.</p>
-          </div>
-        </a>
-        <a class="mn-s47" href="/kafka/">
-          <div class="mn-s58"><img class="mn-s49" src="/media/kafka-orders.webp" alt="The doze Kafka console: a topic and its messages"></div>
-          <div class="mn-s50">
-            <div class="mn-s51"><img class="mn-s52" src="/brand/doze-kafka.svg" alt=""><b class="mn-s53">doze Kafka</b></div>
-            <span class="mn-s54">Instead of <s>a JVM, ZooKeeper and a quorum in containers</s></span>
-            <p class="mn-s59">Kafka. Hold the JVM.</p>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Larder: a real project, not a toy -->
-  <section class="mn-s60">
-    <div class="mn-s61">
-      <span class="mn-eyebrow">Try it on Larder</span>
-      <h2 class="mn-h2">A real project, not a toy.</h2>
-      <p class="mn-s62">Larder is a made-up online grocer: groceries at your door within the hour. It is built the way real backends end up: a monorepo split by domain, each team in the language it knows, held together by Kafka topics and HTTP. Nine services, three languages, five shared backing services, one <code class="mn-s42">doze.hcl</code>. No Docker, no compose file, no scripts.</p>
-      <div class="mn-s14"><button type="button" class="mn-copy mn-s63" data-copy="git clone https://github.com/doze-dev/doze-examples&#10;cd doze-examples/larder &amp;&amp; doze up" aria-label="Copy the two commands">Copy</button><pre class="mn-term mn-s64"><span class="mn-s9">$</span> git clone https://github.com/doze-dev/doze-examples
-<span class="mn-s9">$</span> cd doze-examples/larder &amp;&amp; doze up
-<span class="mn-s9"># postgres, redis, kafka, aws, mailpit, then nine services</span></pre></div>
-      <div class="mn-stack-sm mn-s65">
-        <a class="mn-btn mn-btn-lamp" href="/examples/">Walk through Larder</a>
-        <a class="mn-btn mn-btn-ghost" href="https://github.com/doze-dev/doze-examples/blob/main/larder/doze.hcl">Read the doze.hcl on GitHub</a>
-      </div>
-    </div>
-    <div class="mn-s66">
-      <div class="mn-s67"><b class="mn-s68">larder/</b><span class="mn-s69">services by domain</span></div>
-      <div class="mn-lang"><div class="mn-lang-h"><span class="mn-lang-dot mn-s70"></span>Go<span class="mn-s71">the core and the gateway</span></div><div class="mn-svc"><span>gateway</span><span>identity</span><span>catalog</span><span>orders</span><span>payments</span></div></div>
-      <div class="mn-lang"><div class="mn-lang-h"><span class="mn-lang-dot mn-s72"></span>Python<span class="mn-s71">uv, boto3</span></div><div class="mn-svc"><span>fulfilment</span><span>recommendations</span></div></div>
-      <div class="mn-lang"><div class="mn-lang-h"><span class="mn-lang-dot mn-s73"></span>TypeScript<span class="mn-s71">bun, Vite + React</span></div><div class="mn-svc"><span>notifications</span><span>storefront</span></div></div>
-      <div class="mn-lang mn-s74"><div class="mn-lang-h"><span class="mn-lang-dot mn-s75"></span>Shared<span class="mn-s71">one each, for every service</span></div><div class="mn-svc"><span>postgres</span><span>redis</span><span>kafka</span><span>aws</span><span>mailpit</span></div></div>
-      <span class="mn-s76">Each service owns its own Postgres schema and connects as its own role. Every one gets a name: <code class="mn-s77">gateway.larder.doze</code>, <code class="mn-s77">catalog.larder.doze</code>.</span>
-    </div>
-  </section>
-
-  <!-- Popular tools, one line each -->
-  <section class="mn-s78">
-    <div class="mn-s36">
-      <span class="mn-eyebrow">The registry</span>
-      <h2 class="mn-h2 mn-s37">Everything your stack uses. One line each.</h2>
-      <p class="mn-s62">Postgres with pgvector. Kafka. MongoDB. Mailpit. A whole AWS. No Dockerfiles, no compose YAML, no setup doc: <code class="mn-s42">doze add</code> writes the block, and it sleeps until you need it.</p>
-    </div>
-    <Popular />
-    <a class="mn-s79" href="/registry/">Browse the registry →</a>
-  </section>
-
-  <!-- Check it yourself (benchmark with its method; numbers pending) -->
-  <section class="mn-s80">
-    <div class="mn-s81">
-      <span class="mn-eyebrow">Don't take our word for it</span>
-      <h2 class="mn-h2">Check it on your own machine.</h2>
-      <p class="mn-s62">Every number we publish says the machine, the versions and the date, with the command to run it yourself. Asleep means asleep: go look.</p>
-      <pre class="mn-term"><span class="mn-s9">$</span> doze status
-  <span class="mn-s9">○</span> postgres  asleep · wakes on a connection
-  <span class="mn-s9">○</span> redis     asleep · wakes on a connection
-<span class="mn-s9">$</span> pgrep -l postgres
-<span class="mn-s9"># nothing. it's asleep.</span></pre>
-    </div>
-    <figure class="mn-s82">
-      <div class="mn-s83"><b class="mn-s84">Memory: Postgres, Valkey and Kafka, after 10 minutes untouched</b><span class="mn-s69">lower is better</span></div>
-      <div class="mn-s85">
-        <div class="mn-s86"><span class="mn-s87">doze</span><span class="mn-s88"></span><span class="mn-s89">[MB]</span></div>
-        <div class="mn-s86"><span class="mn-s90">Docker Desktop</span><span class="mn-s91"></span><span class="mn-s92">[MB]</span></div>
-        <div class="mn-s86"><span class="mn-s90">OrbStack</span><span class="mn-s91"></span><span class="mn-s92">[MB]</span></div>
-      </div>
-      <figcaption class="mn-s93">Bars are drawn equal until measured; none of these numbers exist yet. Method to publish with them: [Mac model, macOS version], [each tool's version], same three engines, median of 5 runs, [date], and the script to reproduce it.</figcaption>
-    </figure>
-  </section>
-
-  <!-- Everything it does: a long, real checklist -->
-  <section class="mn-s44">
-    <div class="mn-s45">
-      <h2 class="mn-h2 mn-s94">The small things, all done.</h2>
-      <div class="mn-s95">
-        <div class="mn-chk"><span>✓</span><span>Wakes on the first connection</span></div>
-        <div class="mn-chk"><span>✓</span><span>Sleeps after 2 idle minutes, data kept</span></div>
-        <div class="mn-chk"><span>✓</span><span>A .doze name for every service</span></div>
-        <div class="mn-chk"><span>✓</span><span>Your own domain over https</span></div>
-        <div class="mn-chk"><span>✓</span><span>Postgres 14 to 18, built from source</span></div>
-        <div class="mn-chk"><span>✓</span><span>pgvector, PostGIS, pg_cron by name <em class="mn-s96">(coming in postgres 0.3)</em></span></div>
-        <div class="mn-chk"><span>✓</span><span>doze migrate between Postgres majors</span></div>
-        <div class="mn-chk"><span>✓</span><span>doze.lock pins every byte</span></div>
-        <div class="mn-chk"><span>✓</span><span>Signed modules, checked on fetch</span></div>
-        <div class="mn-chk"><span>✓</span><span>Migrations run once, before the app</span></div>
-        <div class="mn-chk"><span>✓</span><span>Connection strings wire themselves</span></div>
-        <div class="mn-chk"><span>✓</span><span>Restarts your app when files change</span></div>
-        <div class="mn-chk"><span>✓</span><span>Names whoever is holding your port</span></div>
-        <div class="mn-chk"><span>✓</span><span>Config mistakes show the line and the fix</span></div>
-        <div class="mn-chk"><span>✓</span><span>Spots an app ignoring $PORT</span></div>
-        <div class="mn-chk"><span>✓</span><span>Crash loops stop and tell you</span></div>
-        <div class="mn-chk"><span>✓</span><span>Logs per run, searchable</span></div>
-        <div class="mn-chk"><span>✓</span><span>⌘K: type a verb and a name</span></div>
-        <div class="mn-chk"><span>✓</span><span>Menu bar: every stack, one click</span></div>
-        <div class="mn-chk"><span>✓</span><span>Quit the app, stacks keep running</span></div>
-        <div class="mn-chk"><span>✓</span><span>Per-developer overrides, gitignored</span></div>
-        <div class="mn-chk"><span>✓</span><span>doze run for CI, same file</span></div>
-        <div class="mn-chk"><span>✓</span><span>One admin prompt, then never again</span></div>
-        <div class="mn-chk"><span>✓</span><span>Sends nothing home</span></div>
-      </div>
-      <a class="mn-s79" href="/changelog/">What changed in each release →</a>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="mn-s97">
-    <h2 class="mn-h2 mn-s98">Straight answers</h2>
-    <details open><summary>Do I have to give up Docker?</summary><p class="mn-s99">No. Keep containers for building and shipping. doze is for the databases and services you run while you write code.</p></details>
-    <details><summary>Is it for production?</summary><p class="mn-s99">No. It is built for your laptop and your CI. That's why it can sleep everything.</p></details>
-    <details><summary>What does "asleep" cost me?</summary><p class="mn-s99">The engine's process is stopped and its data stays on disk. One small doze daemon keeps listening and wakes it on the next connection.</p></details>
-    <details><summary>Windows?</summary><p class="mn-s99">Not yet. macOS on Apple silicon and Linux today; WSL2 works.</p></details>
-    <details><summary>Does it phone home?</summary><p class="mn-s99">No telemetry, no account. It talks to the internet to fetch the engines you declare, and checks their signatures. <a href="/security/">How we handle security</a>.</p></details>
-    <details><summary>What does it cost?</summary><p class="mn-s99">Nothing. Apache-2.0, on GitHub.</p></details>
-  </section>
-
-  <!-- Closing call -->
-  <section class="mn-s100">
-    <div class="mn-stack-sm mn-cta mn-s101">
-      <div class="mn-stack-sm mn-s102">
-        <img class="mn-s103" src="/brand/doze.svg" alt="">
-        <div>
-          <h2 class="mn-s104">Put your stack to bed.</h2>
-          <p class="mn-s105">One file in your repo. One command: doze up.</p>
+  <!-- 1. Hero: the evening, then the app -->
+  <section class="hm-hero" aria-labelledby="hm-title">
+    <div class="hm-wrap hm-hero-copy">
+      <p class="hm-eyebrow"><span class="hm-breath" aria-hidden="true"></span>doze · local development, rested</p>
+      <h1 class="hm-title" id="hm-title">Work hard.<br /><span>Then close the lid.</span></h1>
+      <p class="hm-lede">Your whole stack runs natively on your laptop, wakes when your code calls and goes to sleep when you stop. No VM humming all evening.</p>
+      <div class="hm-cta">
+        <a class="hm-btn" href="/download/">Get doze</a>
+        <div class="hm-brew">
+          <code><span class="hm-dim">$</span> {brew}</code>
+          <button type="button" data-copy={brew} aria-label="Copy the install command">Copy</button>
         </div>
       </div>
-      <a class="mn-btn mn-s106" href="/download/">Download for Mac</a>
+      <p class="hm-fine">Free and open source · macOS on Apple silicon, and Linux · no account</p>
+    </div>
+
+    <div class="hm-stage">
+      <figure class="hm-win-wrap">
+        <div class="hm-win">
+          <div class="hm-bar" aria-hidden="true"><i></i><i></i><i></i><span>doze</span></div>
+          <video class="hm-win-media" data-home-play src={heroLoop} poster={heroPoster} muted loop playsinline autoplay preload="auto" width="1440" height="900" aria-label={heroCaption}></video>
+        </div>
+        <div class="hm-float hm-float-a" aria-hidden="true">
+          <div class="hm-crop hm-crop-wake"></div>
+          <span><b class="hm-waking">waking</b> on the first call</span>
+        </div>
+        <div class="hm-float hm-float-b" aria-hidden="true">
+          <div class="hm-crop hm-crop-count"></div>
+          <span>the whole stack, at a glance</span>
+        </div>
+        <figcaption class="hm-cap">{heroCaption}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 3. Sound familiar? -->
+  <section class="hm-sec hm-pains" aria-labelledby="hm-pains-h">
+    <div class="hm-wrap">
+      <div class="hm-head" data-reveal>
+        <p class="hm-kicker">Sound familiar?</p>
+        <h2 class="hm-h2" id="hm-pains-h">Nobody chose this. It grew.</h2>
+      </div>
+      <div data-reveal data-reveal-delay="1">
+        <VCarousel label="Seven small embarrassing truths" height="min(520px, 74vh)" class="hm-vc">
+          {pains.map((p, i) => (
+            <div class="hm-pain" data-slide data-label={p.label}>
+              <span class="hm-pain-n">{String(i + 1).padStart(2, "0")} / 07</span>
+              <code class="hm-ev"><span aria-hidden="true">›</span> {p.evidence}</code>
+              <h3 class="hm-pain-h">{p.title}</h3>
+              <p class="hm-pain-p">{p.body}</p>
+              <p class="hm-ans"><b>With doze</b>{p.answer}</p>
+            </div>
+          ))}
+          <div class="hm-pain hm-pain-last" data-slide data-label="It got moved">
+            <span class="hm-pain-n">07 / 07</span>
+            <code class="hm-ev"><span aria-hidden="true">›</span> #dev-env · “dev box is down, platform team looking into it, no ETA”</code>
+            <h3 class="hm-pain-h">Local development didn’t get fixed. It got moved.</h3>
+            <p class="hm-pain-p">Onto remote dev boxes run by a platform team. Debuggers that won’t attach through the tunnel, port-forwards, logs in another tool. When the dev box is down, nobody writes code. You needed a platform team just to write code.</p>
+            <p class="hm-ans"><b>With doze</b>It all runs on your laptop again, natively. A breakpoint just hits, and nobody’s pager is involved.</p>
+            <a class="hm-link" href="/tuesday/">Walk through a whole Tuesday <span class="hm-arr" aria-hidden="true">→</span></a>
+          </div>
+        </VCarousel>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. The doze app -->
+  <section class="hm-sec" aria-labelledby="hm-app-h">
+    <div class="hm-wrap">
+      <div class="hm-head hm-head-split" data-reveal>
+        <div>
+          <p class="hm-kicker">doze, the app</p>
+          <h2 class="hm-h2" id="hm-app-h">Your stack, where you can see it.</h2>
+        </div>
+        <p class="hm-sub">Every service with a switch, a name and its memory. What’s awake, what’s dozing, what’s asleep, and who woke whom. Quit the app and your stacks keep running.</p>
+      </div>
+      <div class="hm-bento">
+        {screens.map((s, i) => (
+          <figure class:list={["hm-tile", { "hm-tile-big": s.big }]} data-reveal data-reveal-delay={String(Math.min(i, 3))}>
+            <div class="hm-tile-media" style={s.focus ? `--o:${s.focus}` : undefined}>
+              <video data-home-play src={s.video} muted loop playsinline preload="none" width="1440" height="900" aria-label={s.alt}></video>
+            </div>
+            <figcaption><b>{s.title}</b> {s.line}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <div class="hm-cli" data-reveal>
+        <div class="hm-cli-copy">
+          <h3 class="hm-h3">And everything is a command too.</h3>
+          <p>The app and the CLI drive the same stack. Scripts, CI and your agent get the same answers you see.</p>
+          <a class="hm-link" href="/doze/">Take the tour of the app <span class="hm-arr" aria-hidden="true">→</span></a>
+        </div>
+        <pre class="hm-term" aria-label="Three doze commands"><span class="hm-dim">$</span> doze add postgres     <span class="hm-dim"># writes the block into doze.hcl</span>
+<span class="hm-dim">$</span> doze up               <span class="hm-dim"># the whole stack, asleep until called</span>
+<span class="hm-dim">$</span> doze status --json    <span class="hm-dim"># the same answer, for machines</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Three products, one family -->
+  <section class="hm-sec" aria-labelledby="hm-fam-h">
+    <div class="hm-wrap">
+      <div class="hm-head" data-reveal>
+        <p class="hm-kicker">The doze family</p>
+        <h2 class="hm-h2" id="hm-fam-h">Three products. One bedtime.</h2>
+        <p class="hm-sub">Each one wakes when called and sleeps when you stop. Use one, or all three together.</p>
+      </div>
+      <div class="hm-fam">
+        {family.map((f, i) => (
+          <article class={`hm-prod hm-tone-${f.tone}`} data-reveal data-reveal-delay={String(i + 1)}>
+            <div class="hm-prod-top">
+              <img src={f.logo} alt="" width="48" height="48" />
+              <h3><a href={f.href}>{f.name}</a></h3>
+            </div>
+            <p class="hm-prod-line">{f.sentence}</p>
+            <div class="hm-prod-shot"><img src={f.shot} alt={f.alt} loading="lazy" width="2880" height="1800" /></div>
+            <p class="hm-endorse">Part of the doze family. Works alone.</p>
+            <div class="hm-prod-links">
+              <a href={f.href}>Meet {f.name} <span class="hm-arr" aria-hidden="true">→</span></a>
+              <a href={f.docs}>Docs</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Numbers, with the method -->
+  <section class="hm-sec" aria-labelledby="hm-num-h">
+    <div class="hm-wrap hm-nums">
+      <div class="hm-nums-copy" data-reveal>
+        <p class="hm-kicker">Numbers, with the method</p>
+        <h2 class="hm-h2" id="hm-num-h">Rest you can measure.</h2>
+        <p class="hm-sub">Every figure says where it came from. The ones we haven’t measured yet say that instead. Asleep means no process: <code>pgrep</code> finds nothing.</p>
+        <div class="hm-cmd">
+          <code><span class="hm-dim">$</span> make bench</code>
+          <button type="button" data-copy="make bench" aria-label="Copy make bench">Copy</button>
+        </div>
+        <p class="hm-fine">In a clone of <a href="https://github.com/doze-dev/doze">doze-dev/doze</a>. It boots real engines on a fixture stack and measures idle memory and wake time.</p>
+      </div>
+      <dl class="hm-figs">
+        <div class="hm-fig" data-reveal data-reveal-delay="1">
+          <dt>The doze daemon, at rest</dt>
+          <dd class="hm-big">27.1 <small>MB</small></dd>
+          <dd class="hm-src">Measured on the maintainer’s Mac · <code>test/bench</code> TestLogStoreMemory</dd>
+        </div>
+        <div class="hm-fig" data-reveal data-reveal-delay="2">
+          <dt>After a service prints 100,000 log lines</dt>
+          <dd class="hm-big">+1.3 <small>MB</small></dd>
+          <dd class="hm-src">Same test: what a service prints doesn’t pile up in the daemon.</dd>
+        </div>
+        <div class="hm-fig" data-reveal data-reveal-delay="2">
+          <dt>Idle daemon, every service asleep, macOS</dt>
+          <dd class="hm-big"><span class="hm-le">≤</span>34 <small>MB</small></dd>
+          <dd class="hm-src">A budget, enforced in CI on every pull request · <code>test/bench/budget.json</code></dd>
+        </div>
+        <div class="hm-fig" data-reveal data-reveal-delay="3">
+          <dt>Median wake of a sleeping module</dt>
+          <dd class="hm-big"><span class="hm-le">≤</span>250 <small>ms</small></dd>
+          <dd class="hm-src">Each module, median of 5 wakes. A budget, enforced in CI on macOS and Linux · <code>test/bench/budget.json</code></dd>
+        </div>
+        <div class="hm-fig hm-fig-todo" data-reveal data-reveal-delay="3">
+          <dt>Your stack asleep, next to the same engines in a VM</dt>
+          <dd class="hm-big hm-todo">[to measure]</dd>
+          <dd class="hm-src">We’ll publish it with the machine, the versions, the date and the script. Until then, <code>make bench</code> on yours.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- 7. The registry -->
+  <section class="hm-sec" aria-labelledby="hm-reg-h">
+    <div class="hm-wrap">
+      <div class="hm-head hm-head-split" data-reveal>
+        <div>
+          <p class="hm-kicker">The registry</p>
+          <h2 class="hm-h2" id="hm-reg-h">Everything your stack uses. One line each.</h2>
+        </div>
+        <p class="hm-sub"><code>doze add</code> writes the block. It sleeps until something calls it. No Dockerfile, no compose YAML, no setup doc.</p>
+      </div>
+      <Popular />
+      <a class="hm-link" href="/registry/">Browse the registry <span class="hm-arr" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- 8. Values: close the lid -->
+  <section class="hm-sec hm-values" aria-labelledby="hm-val-h">
+    <div class="hm-wrap">
+      <div class="hm-values-in" data-reveal>
+        <div class="hm-values-head">
+          <p class="hm-kicker">Close the lid</p>
+          <h2 class="hm-h2" id="hm-val-h">Your laptop deserves an evening too.</h2>
+          <a class="hm-link" href="/on-rest/"><span>Read <i>On rest</i>, why doze is built this way</span> <span class="hm-arr" aria-hidden="true">→</span></a>
+        </div>
+        <ul class="hm-vals">
+          <li><b>Open source</b><span>Apache-2.0, all of it. Read it, fork it, keep it.</span></li>
+          <li><b>No account</b><span>Nothing to sign up for, nothing to sign in to.</span></li>
+          <li><b>No telemetry</b><span>doze sends nothing home. Neither does this website.</span></li>
+          <li><b>Your disk</b><span>Your data stays on your machine, kept while it sleeps.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Closing: the moon rises -->
+  <section class="hm-close" aria-labelledby="hm-close-h">
+    <div class="hm-moonrise" aria-hidden="true">
+      <svg class="hm-moon" viewBox="0 0 64 64" width="120" height="120"><path d="M40 8.6 A24 24 0 1 0 55.4 42 A20 20 0 0 1 40 8.6 Z" fill="#F0A24B" /><circle cx="50" cy="16" r="2.4" fill="#F0A24B" opacity=".55" /><circle cx="57" cy="27" r="1.6" fill="#F0A24B" opacity=".4" /></svg>
+    </div>
+    <div class="hm-wrap hm-close-in">
+      <h2 class="hm-close-h" id="hm-close-h">Put your stack to bed.</h2>
+      <p class="hm-lede">Everything wakes when called. Everything sleeps when you’re done.</p>
+      <div class="hm-cta hm-cta-c">
+        <a class="hm-btn" href="/download/">Get doze</a>
+        <div class="hm-brew">
+          <code><span class="hm-dim">$</span> {brew}</code>
+          <button type="button" data-copy={brew} aria-label="Copy the install command">Copy</button>
+        </div>
+      </div>
     </div>
   </section>
 </div>
 </Page>
 
+<script>
+  import "../scripts/home-media.ts";
+</script>
+
 <style>
-.mn a{color:#F0A24B;text-decoration:none}.mn a:hover{color:#FFC27A}
-.mn-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px}
-.mn .mn-btn-lamp{background:#F0A24B;color:#2A1534}.mn .mn-btn-lamp:hover{background:#FFB866;color:#2A1534}
-.mn .mn-btn-ghost{border:1px solid #4A3458;color:#F4ECE4}.mn .mn-btn-ghost:hover{border-color:#7A5E8C;color:#FFFFFF}
-.mn-eyebrow{font-family:var(--font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
-.mn-h2{margin:0;font-family:var(--font-display);font-weight:800;font-size:52px;line-height:1.02;letter-spacing:-0.03em;text-wrap:balance}
-.mn-pain{background:#1E1328;border:1px solid #34233F;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px}
-.mn-old{font-family:var(--font-mono);font-size:13px;color:#FF9AA8;background:#2A1520;border:1px solid #4A2230;border-radius:10px;padding:9px 12px;align-self:flex-start}
-.mn-win{border-radius:16px;overflow:hidden;border:1px solid #4A3458;box-shadow:0 50px 120px rgba(0,0,0,0.55)}
-.mn-bar{height:32px;background:#110F18;display:flex;align-items:center;gap:7px;padding:0 14px}
-.mn-dot{width:11px;height:11px;border-radius:6px}
-.mn-chk{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#E9DEEF;line-height:1.45}
-.mn-chk span:first-child{color:#8BE39B;flex:none}
-.mn-recap{display:inline-block;font-family:var(--font-mono);font-size:11px;color:#C9BAD3;background:#2A1C36;border:1px dashed #5A4168;border-radius:6px;padding:2px 7px;white-space:nowrap}
-.mn details{background:#1E1328;border:1px solid #34233F;border-radius:14px;padding:6px 20px}
-.mn details p{margin-bottom:14px !important}
-.mn summary{cursor:pointer;font-weight:600;font-size:17px;padding:10px 0;line-height:28px}
-.mn-lang{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:#1A1022;border:1px solid #34233F}
-.mn-lang-h{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#F4ECE4}
-.mn-lang-dot{width:10px;height:10px;border-radius:3px;flex:none}
-.mn-svc{display:flex;flex-wrap:wrap;gap:6px}
-.mn-svc span{font-family:var(--font-mono);font-size:13px;color:#F4ECE4;background:#241830;border:1px solid #3A2848;border-radius:8px;padding:5px 9px}
-.mn-copy{height:36px;padding:0 12px;border-radius:8px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px var(--font-text);cursor:pointer}
-.mn code,.mn pre{font-variant-ligatures:none}
-.mn-term{margin:0;white-space:pre;font:14px/1.85 var(--font-mono);background:#120A18;border:1px solid #2E1F3A;border-radius:16px;padding:20px 22px;color:#D6C8DF;overflow-x:auto}
-@media (max-width:760px){.mn-hero-title{font-size:46px !important}.mn-hero-tag{font-size:24px !important}.mn-h2{font-size:38px !important}.mn-stack-sm{flex-direction:column !important;align-items:stretch !important}.mn-float{display:none !important}.mn-cta{padding:32px !important}.mn-cta h2{font-size:36px !important}.mn-install code{font-size:12px !important}}
-/* one-off layout from the board's inline styles */
-.mn-s1.mn-s1.mn-s1{font-family: var(--font-text);color: #F4ECE4;background: #140C1B;min-height: 100%}
-.mn-s2.mn-s2.mn-s2{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 88px 32px 0;display: flex;flex-direction: column;align-items: center;gap: 22px;text-align: center}
-.mn-s3.mn-s3.mn-s3{margin: 0;font-family: var(--font-display);font-weight: 800;font-size: 84px;line-height: 0.98;letter-spacing: -0.04em;max-width: 15ch;text-wrap: balance}
-.mn-s4.mn-s4.mn-s4{margin: 0;font-family: var(--font-display);font-weight: 700;font-size: 32px;line-height: 1.15;letter-spacing: -0.02em;color: #F0A24B;text-wrap: balance}
-.mn-s5.mn-s5.mn-s5{margin: 0;font-size: 20px;line-height: 1.55;color: #D6C8DF;max-width: 40rem}
-.mn-s6.mn-s6.mn-s6{display: flex;gap: 12px;flex-wrap: wrap;justify-content: center;align-items: center;margin-top: 6px}
-.mn-s7.mn-s7.mn-s7{display: flex;align-items: center;gap: 8px;background: #1E1328;border: 1px solid #4A3458;border-radius: 12px;height: 52px;padding: 0 8px 0 16px;min-width: 0}
-.mn-s8.mn-s8.mn-s8{font: 15px var(--font-mono);color: #F4ECE4;white-space: pre;overflow-x: auto;min-width: 0}
-.mn-s9.mn-s9.mn-s9{color: #9C8AAB}
-.mn-s10.mn-s10.mn-s10{height: 36px;padding: 0 12px;border-radius: 8px;border: 1px solid #4A3458;background: #2A1C36;color: #F4ECE4;font: 600 13px var(--font-text);flex: none}
-.mn-s11.mn-s11.mn-s11{font-size: 14px;color: #9C8AAB;text-wrap: balance;max-width: 40rem}
-.mn-s12.mn-s12.mn-s12{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 56px 32px 96px;position: relative}
-.mn-s13.mn-s13.mn-s13{position: absolute;left: 15%;right: 15%;top: 10%;height: 70%;border-radius: 50%;background: radial-gradient(closest-side, rgba(240,162,75,0.28), rgba(240,162,75,0))}
-.mn-s14.mn-s14.mn-s14{position: relative}
-.mn-s15.mn-s15.mn-s15{background: #FF5F57}
-.mn-s16.mn-s16.mn-s16{background: #FEBC2E}
-.mn-s17.mn-s17.mn-s17{background: #28C840}
-.mn-s18.mn-s18.mn-s18{margin: 0 auto;font-size: 13px;color: #8A85A8}
-.mn-s19.mn-s19.mn-s19{display: block;width: 100%;height: auto}
-.mn-s20.mn-s20.mn-s20{position: absolute;left: -8px;bottom: 56px;width: 420px;border-radius: 18px;padding: 10px;background: rgba(30,19,40,0.94);border: 1px solid #5A4168;box-shadow: 0 30px 80px rgba(0,0,0,0.55)}
-.mn-s21.mn-s21.mn-s21{position: relative;width: 400px;height: 134px;overflow: hidden;border-radius: 12px}
-.mn-s22.mn-s22.mn-s22{position: absolute;left: -888px;top: -673px;width: 1758px;max-width: none}
-.mn-s23.mn-s23.mn-s23{padding: 10px 8px 4px;font-size: 14px;color: #C9BAD3}
-.mn-s24.mn-s24.mn-s24{color: #8BE39B}
-.mn-s25.mn-s25.mn-s25{position: absolute;right: -8px;top: 24px;width: 268px;background: rgba(243,238,246,0.97);border-radius: 12px;padding: 6px;box-shadow: 0 30px 80px rgba(0,0,0,0.55);color: #2B2232;font-size: 14px}
-.mn-s26.mn-s26.mn-s26{padding: 6px 12px 2px;font-size: 12px;font-weight: 600;color: #6A5E76}
-.mn-s27.mn-s27.mn-s27{display: flex;justify-content: space-between;padding: 6px 12px;border-radius: 6px;background: #E9DFF0}
-.mn-s28.mn-s28.mn-s28{color: #6A5E76}
-.mn-s29.mn-s29.mn-s29{display: flex;justify-content: space-between;padding: 6px 12px}
-.mn-s30.mn-s30.mn-s30{height: 1px;background: #DDD3E3;margin: 6px 8px}
-.mn-s31.mn-s31.mn-s31{padding: 6px 12px}
-.mn-s32.mn-s32.mn-s32{position: relative;margin: 18px 0 0;text-align: center;font-size: 13px;color: #9C8AAB}
-.mn-s33.mn-s33.mn-s33{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 24px 32px 96px;display: flex;flex-direction: column;gap: 28px}
-.mn-s34.mn-s34.mn-s34{display: flex;flex-direction: column;gap: 12px;max-width: 46rem}
-.mn-s35.mn-s35.mn-s35{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 24px 32px 96px;display: flex;flex-direction: column;gap: 32px}
-.mn-s36.mn-s36.mn-s36{display: flex;flex-direction: column;gap: 12px;max-width: 48rem}
-.mn-s37.mn-s37.mn-s37{font-size: 56px}
-.mn-s38.mn-s38.mn-s38{margin: 0;font-size: 19px;line-height: 1.6;color: #C9BAD3}
-.mn-s39.mn-s39.mn-s39{display: grid;grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));gap: 16px}
-.mn-s40.mn-s40.mn-s40{margin: 0;font-size: 21px}
-.mn-s41.mn-s41.mn-s41{margin: 0;color: #C9BAD3;line-height: 1.6}
-.mn-s42.mn-s42.mn-s42{font-family: var(--font-mono);color: #F4ECE4}
-.mn-s43.mn-s43.mn-s43{font-weight: 600;align-self: flex-start;padding: 10px 0;min-height: 24px}
-.mn-s44.mn-s44.mn-s44{background: #1A1022;border-top: 1px solid #2E1F3A;border-bottom: 1px solid #2E1F3A}
-.mn-s45.mn-s45.mn-s45{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px;display: flex;flex-direction: column;gap: 32px}
-.mn-s46.mn-s46.mn-s46{display: grid;grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));gap: 20px}
-.mn-s47.mn-s47.mn-s47{background: #1E1328;border: 1px solid #34233F;border-radius: 22px;overflow: hidden;display: flex;flex-direction: column;color: #F4ECE4}
-.mn-s48.mn-s48.mn-s48{aspect-ratio: 16 / 10;overflow: hidden;background: #15131D}
-.mn-s49.mn-s49.mn-s49{width: 100%;height: 100%;object-fit: cover;object-position: left top}
-.mn-s50.mn-s50.mn-s50{padding: 24px;display: flex;flex-direction: column;gap: 10px}
-.mn-s51.mn-s51.mn-s51{display: flex;align-items: center;gap: 12px}
-.mn-s52.mn-s52.mn-s52{width: 40px;height: 40px}
-.mn-s53.mn-s53.mn-s53{font-family: var(--font-display);font-size: 26px}
-.mn-s54.mn-s54.mn-s54{font-size: 14px;color: #9C8AAB}
-.mn-s55.mn-s55.mn-s55{margin: 0;font-size: 18px;font-weight: 600;color: #F0A24B}
-.mn-s56.mn-s56.mn-s56{aspect-ratio: 16 / 10;overflow: hidden;background: #0B0F15}
-.mn-s57.mn-s57.mn-s57{margin: 0;font-size: 18px;font-weight: 600;color: #5BB8E8}
-.mn-s58.mn-s58.mn-s58{aspect-ratio: 16 / 10;overflow: hidden;background: #0D0C08}
-.mn-s59.mn-s59.mn-s59{margin: 0;font-size: 18px;font-weight: 600;color: #FFD60A}
-.mn-s60.mn-s60.mn-s60{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px;display: grid;grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap: 48px;align-items: center}
-.mn-s61.mn-s61.mn-s61{display: flex;flex-direction: column;gap: 18px}
-.mn-s62.mn-s62.mn-s62{margin: 0;font-size: 18px;line-height: 1.6;color: #C9BAD3}
-.mn-s63.mn-s63.mn-s63{position: absolute;top: 10px;right: 10px}
-.mn-s64.mn-s64.mn-s64{padding-top: 54px}
-.mn-s65.mn-s65.mn-s65{display: flex;gap: 12px;flex-wrap: wrap}
-.mn-s66.mn-s66.mn-s66{background: #1E1328;border: 1px solid #34233F;border-radius: 22px;padding: 24px;display: flex;flex-direction: column;gap: 14px}
-.mn-s67.mn-s67.mn-s67{display: flex;justify-content: space-between;align-items: baseline;gap: 12px;flex-wrap: wrap}
-.mn-s68.mn-s68.mn-s68{font-family: var(--font-mono);font-size: 15px}
-.mn-s69.mn-s69.mn-s69{font-size: 13px;color: #9C8AAB}
-.mn-s70.mn-s70.mn-s70{background: #5BB8E8}
-.mn-s71.mn-s71.mn-s71{font-weight: 400;color: #9C8AAB;font-size: 13px}
-.mn-s72.mn-s72.mn-s72{background: #FFD60A}
-.mn-s73.mn-s73.mn-s73{background: #F0A24B}
-.mn-s74.mn-s74.mn-s74{background: transparent;border-style: dashed}
-.mn-s75.mn-s75.mn-s75{background: #8BE39B}
-.mn-s76.mn-s76.mn-s76{font-size: 13px;color: #9C8AAB;line-height: 1.55}
-.mn-s77.mn-s77.mn-s77{font-family: var(--font-mono);color: #D6C8DF}
-.mn-s78.mn-s78.mn-s78{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 0 32px;display: flex;flex-direction: column;gap: 28px}
-.mn-s79.mn-s79.mn-s79{font-weight: 600;align-self: flex-start;padding: 10px 0}
-.mn-s80.mn-s80.mn-s80{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px;display: grid;grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap: 48px;align-items: start}
-.mn-s81.mn-s81.mn-s81{display: flex;flex-direction: column;gap: 16px}
-.mn-s82.mn-s82.mn-s82{margin: 0;background: #1E1328;border: 1px solid #34233F;border-radius: 22px;padding: 28px;display: flex;flex-direction: column;gap: 18px}
-.mn-s83.mn-s83.mn-s83{display: flex;justify-content: space-between;align-items: baseline;flex-wrap: wrap;gap: 8px}
-.mn-s84.mn-s84.mn-s84{font-size: 18px}
-.mn-s85.mn-s85.mn-s85{display: flex;flex-direction: column;gap: 14px;font-size: 15px}
-.mn-s86.mn-s86.mn-s86{display: grid;grid-template-columns: minmax(90px, 140px) minmax(0, 1fr) 64px;gap: 12px;align-items: center}
-.mn-s87.mn-s87.mn-s87{color: #F0A24B;font-weight: 600}
-.mn-s88.mn-s88.mn-s88{height: 26px;width: 100%;border-radius: 6px;background: repeating-linear-gradient(135deg, #7A5528 0 8px, #5A3F22 8px 16px)}
-.mn-s89.mn-s89.mn-s89{color: #F4ECE4;font-variant-numeric: tabular-nums}
-.mn-s90.mn-s90.mn-s90{color: #C9BAD3}
-.mn-s91.mn-s91.mn-s91{height: 26px;width: 100%;border-radius: 6px;background: repeating-linear-gradient(135deg, #4A3458 0 8px, #3A2848 8px 16px)}
-.mn-s92.mn-s92.mn-s92{color: #C9BAD3;font-variant-numeric: tabular-nums}
-.mn-s93.mn-s93.mn-s93{font-size: 13px;color: #9C8AAB;line-height: 1.6;border-top: 1px solid #34233F;padding-top: 14px}
-.mn-s94.mn-s94.mn-s94{font-size: 48px}
-.mn-s95.mn-s95.mn-s95{display: grid;grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));gap: 14px 28px}
-.mn-s96.mn-s96.mn-s96{font-style: normal;color: #9C8AAB}
-.mn-s97.mn-s97.mn-s97{max-width: 900px;margin: 0 auto;padding: 96px 32px;display: flex;flex-direction: column;gap: 14px}
-.mn-s98.mn-s98.mn-s98{margin: 0 0 12px;font-size: 48px}
-.mn-s99.mn-s99.mn-s99{margin: 12px 0 0;color: #C9BAD3;line-height: 1.6}
-.mn-s100.mn-s100.mn-s100{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 0 32px 96px}
-.mn-s101.mn-s101.mn-s101{background: #F0A24B;color: #2A1534;border-radius: 28px;padding: 56px;display: flex;align-items: center;justify-content: space-between;gap: 32px;flex-wrap: wrap}
-.mn-s102.mn-s102.mn-s102{display: flex;align-items: center;gap: 24px}
-.mn-s103.mn-s103.mn-s103{width: 96px;height: 96px;border-radius: 24px;box-shadow: 0 0 0 3px #2A1534}
-.mn-s104.mn-s104.mn-s104{margin: 0;font-family: var(--font-display);font-weight: 800;font-size: 48px;letter-spacing: -0.03em}
-.mn-s105.mn-s105.mn-s105{margin: 6px 0 0;font-size: 18px;color: #4A2A3E}
-.mn-s106.mn-s106.mn-s106{background: #2A1534;color: #F4ECE4}
+  .hm { --wrap: 1180px; position: relative; color: var(--text); overflow-x: clip; }
+  .hm-wrap { width: min(var(--wrap), calc(100% - 48px)); margin: 0 auto; }
+  .hm-dim { color: var(--text-3); }
+  .hm code { font-family: var(--font-mono); font-variant-ligatures: none; }
+
+  /* ---- The sky ---- */
+  .hm-sky { position: absolute; inset: 0 0 auto; height: 1500px; z-index: -1; pointer-events: none; }
+  .hm-sky > div { position: absolute; inset: 0; }
+  .hm-dusk {
+    background:
+      radial-gradient(70% 46% at 50% 64%, rgba(240, 162, 75, 0.26), rgba(214, 104, 92, 0.12) 42%, transparent 72%),
+      radial-gradient(120% 60% at 50% 0%, rgba(122, 76, 160, 0.30), transparent 70%),
+      linear-gradient(180deg, #24143a 0%, #2c1840 34%, #3a1d3c 58%, #1f1226 82%, #140c1b 100%);
+  }
+  .hm-night {
+    opacity: 0;
+    background:
+      radial-gradient(1px 1px at 12% 18%, rgba(244, 236, 228, 0.7), transparent 60%),
+      radial-gradient(1px 1px at 27% 62%, rgba(244, 236, 228, 0.45), transparent 60%),
+      radial-gradient(1.4px 1.4px at 41% 9%, rgba(244, 236, 228, 0.6), transparent 60%),
+      radial-gradient(1px 1px at 58% 38%, rgba(244, 236, 228, 0.4), transparent 60%),
+      radial-gradient(1.2px 1.2px at 73% 14%, rgba(244, 236, 228, 0.65), transparent 60%),
+      radial-gradient(1px 1px at 86% 52%, rgba(244, 236, 228, 0.45), transparent 60%),
+      radial-gradient(1px 1px at 93% 24%, rgba(244, 236, 228, 0.55), transparent 60%),
+      radial-gradient(55% 40% at 82% 0%, rgba(150, 132, 210, 0.10), transparent 70%);
+  }
+  .hm-grain {
+    opacity: 0.09;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hm-sky { position: fixed; inset: 0; height: auto; }
+      .hm-dusk { animation: hm-fade-out linear both; animation-timeline: scroll(root); animation-range: 0 1500px; }
+      .hm-night { animation: hm-fade-in linear both; animation-timeline: scroll(root); animation-range: 500px 2200px; }
+    }
+  }
+  @keyframes hm-fade-out { to { opacity: 0; } }
+  @keyframes hm-fade-in { to { opacity: 1; } }
+
+  /* ---- Shared type ---- */
+  .hm-kicker { margin: 0 0 14px; font: 600 13px/1 var(--font-text); letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); }
+  .hm-h2 { margin: 0; font: 700 clamp(34px, 4.6vw, 60px)/1.02 var(--font-display); letter-spacing: -0.035em; text-wrap: balance; }
+  .hm-h3 { margin: 0 0 10px; font: 700 clamp(24px, 2.4vw, 32px)/1.1 var(--font-display); letter-spacing: -0.025em; }
+  .hm-sub { margin: 18px 0 0; max-width: 560px; font-size: 18px; line-height: 1.55; color: var(--text-2); text-wrap: pretty; }
+  .hm-sub code { font-size: 0.88em; color: var(--text); }
+  .hm-fine { margin: 18px 0 0; font-size: 14px; color: var(--text-3); }
+  .hm-fine a { color: var(--text-2); text-underline-offset: 3px; }
+  .hm-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 18px; font-weight: 600; color: var(--amber); text-decoration: none; }
+  .hm-link .hm-arr { transition: transform var(--t-mid) var(--ease-out); }
+  .hm-link:hover .hm-arr { transform: translateX(4px); }
+  .hm-link:focus-visible, .hm-btn:focus-visible, .hm-brew button:focus-visible, .hm-cmd button:focus-visible, .hm-prod a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 8px; }
+  .hm-sec { padding: clamp(88px, 12vw, 160px) 0 0; }
+  .hm-head { margin-bottom: clamp(36px, 5vw, 56px); }
+  .hm-head-split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px 64px; align-items: end; }
+  .hm-head-split .hm-sub { margin: 0; }
+
+  /* ---- Hero ---- */
+  .hm-hero { padding-top: clamp(40px, 5.5vw, 80px); }
+  .hm-hero-copy { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .hm-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 24px; padding: 7px 14px 7px 12px; border: 1px solid rgba(244, 236, 228, 0.14); border-radius: 999px; background: rgba(20, 12, 27, 0.35); font-size: 14px; color: var(--text-2); }
+  .hm-breath { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+  @media (prefers-reduced-motion: no-preference) {
+    .hm-breath { animation: hm-breathe 4s var(--ease-settle) infinite; }
+  }
+  @keyframes hm-breathe { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.8); } }
+  .hm-title { margin: 0; font: 800 clamp(40px, 7.8vw, 112px)/0.94 var(--font-display); letter-spacing: -0.042em; text-wrap: balance; }
+  .hm-title span { color: var(--amber); }
+  .hm-lede { margin: 24px 0 0; max-width: 680px; font-size: clamp(18px, 1.6vw, 21px); line-height: 1.5; color: var(--text-2); text-wrap: pretty; }
+  .hm-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin-top: 32px; }
+  .hm-btn { display: inline-flex; align-items: center; height: 52px; padding: 0 26px; border-radius: 12px; background: var(--amber); color: var(--amber-ink); font-weight: 650; font-size: 16px; text-decoration: none; box-shadow: 0 10px 40px -10px rgba(240, 162, 75, 0.6); transition: background var(--t-fast); }
+  .hm-btn:hover { background: #ffb866; }
+  .hm-brew, .hm-cmd { display: inline-flex; align-items: center; gap: 4px; height: 52px; padding: 0 4px 0 16px; border: 1px solid rgba(244, 236, 228, 0.14); border-radius: 12px; background: rgba(14, 8, 20, 0.55); max-width: 100%; }
+  .hm-brew code, .hm-cmd code { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .hm-brew button, .hm-cmd button { flex: none; height: 44px; min-width: 64px; margin-left: 8px; border: 0; border-radius: 9px; background: rgba(244, 236, 228, 0.08); color: var(--text); font: 600 13px var(--font-text); cursor: pointer; }
+  .hm-brew button:hover, .hm-cmd button:hover { background: rgba(244, 236, 228, 0.16); }
+
+  .hm-stage { width: min(1240px, calc(100% - 48px)); margin: 40px auto 0; perspective: 1800px; }
+  .hm-win-wrap { position: relative; margin: 0; }
+  .hm-win-wrap::before { content: ""; position: absolute; inset: 8% -6% -10%; z-index: -1; background: radial-gradient(50% 50% at 50% 55%, rgba(240, 162, 75, 0.22), transparent 70%); filter: blur(20px); }
+  .hm-win { border-radius: 14px; overflow: hidden; background: #131019; border: 1px solid rgba(244, 236, 228, 0.12); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 40px 120px -20px rgba(0, 0, 0, 0.7), 0 2px 0 rgba(255, 255, 255, 0.04) inset; transform-origin: 50% 100%; }
+  .hm-bar { position: relative; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; background: #1b1722; border-bottom: 1px solid rgba(244, 236, 228, 0.07); }
+  .hm-bar i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+  .hm-bar i:nth-child(2) { background: #febc2e; }
+  .hm-bar i:nth-child(3) { background: #28c840; }
+  .hm-bar span { position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; color: var(--text-3); }
+  .hm-win-media { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; background: #131019; }
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hm-win { animation: hm-settle linear both; animation-timeline: view(); animation-range: entry 0% cover 45%; }
+    }
+  }
+  @keyframes hm-settle { from { transform: rotateX(16deg) scale(0.94); } to { transform: none; } }
+
+  .hm-float { position: absolute; display: flex; flex-direction: column; gap: 10px; padding: 10px 10px 12px; border-radius: 14px; background: rgba(30, 19, 40, 0.86); border: 1px solid rgba(244, 236, 228, 0.14); box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px); font-size: 13px; color: var(--text-2); }
+  .hm-float span { padding: 0 4px; }
+  .hm-waking { color: #7aa7ff; font-weight: 600; }
+  .hm-float-a { left: -36px; bottom: 16%; }
+  .hm-float-b { right: -44px; top: 44%; }
+  .hm-crop { --s: 0.42; width: calc(var(--w) * var(--s) * 1px); height: calc(var(--h) * var(--s) * 1px); border-radius: 9px; background: #131019 url(/media/app-stack.webp) no-repeat; background-size: calc(2880px * var(--s)) auto; background-position: calc(var(--x) * var(--s) * -1px) calc(var(--y) * var(--s) * -1px); }
+  .hm-crop-wake { --x: 1440; --y: 748; --w: 700; --h: 250; }
+  .hm-crop-count { --x: 2090; --y: 372; --w: 760; --h: 136; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hm-float { animation: hm-float-in var(--t-settle) var(--ease-out) both; }
+    .hm-float-a { animation-delay: 500ms; }
+    .hm-float-b { animation-delay: 700ms; }
+  }
+  @keyframes hm-float-in { from { opacity: 0; transform: translateY(12px); } }
+  .hm-cap { margin: 22px auto 0; max-width: 680px; text-align: center; font-size: 14px; color: var(--text-3); }
+
+  /* ---- Pains ---- */
+  .hm-pains .hm-head { text-align: left; }
+  .hm-pain { display: flex; flex-direction: column; justify-content: center; gap: 0; padding: clamp(28px, 5vw, 64px); border-radius: 22px; background: linear-gradient(160deg, rgba(42, 28, 54, 0.85), rgba(24, 15, 32, 0.92)); border: 1px solid var(--line); }
+  .hm-pain-n { font: 500 13px var(--font-mono); color: var(--text-3); letter-spacing: 0.04em; }
+  .hm-ev { align-self: flex-start; max-width: 100%; margin-top: 22px; padding: 8px 12px; border-radius: 8px; background: rgba(10, 6, 14, 0.7); border: 1px solid rgba(244, 236, 228, 0.08); font-size: 14px; color: #ff9f8a; overflow-wrap: anywhere; }
+  .hm-ev span { color: var(--text-3); }
+  .hm-pain-h { margin: 22px 0 0; max-width: 860px; font: 700 clamp(28px, 3.8vw, 50px)/1.04 var(--font-display); letter-spacing: -0.035em; text-wrap: balance; }
+  .hm-pain-p { margin: 16px 0 0; max-width: 640px; font-size: 18px; line-height: 1.55; color: var(--text-2); text-wrap: pretty; }
+  .hm-ans { margin: 26px 0 0; padding-top: 20px; max-width: 680px; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.55; color: var(--text); }
+  .hm-ans b { display: block; margin-bottom: 4px; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); }
+  .hm-pain-last { background: radial-gradient(80% 90% at 100% 100%, rgba(240, 162, 75, 0.14), transparent 60%), linear-gradient(160deg, rgba(48, 30, 60, 0.9), rgba(24, 15, 32, 0.95)); border-color: #4a3458; }
+  .hm-pain-last .hm-pain-h { color: var(--amber); }
+  .hm-pain-last .hm-link { margin-top: 10px; align-self: flex-start; }
+
+  /* ---- The app ---- */
+  .hm-bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .hm-tile { margin: 0; display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--night-2); border: 1px solid var(--line); }
+  .hm-tile-big { grid-column: 1 / -1; }
+  .hm-tile-media { background: #131019; border-bottom: 1px solid var(--line); overflow: hidden; }
+  .hm-tile:not(.hm-tile-big) .hm-tile-media video { transform: scale(1.7); transform-origin: var(--o, 0 0); }
+  .hm-tile-media video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; }
+  .hm-tile-big .hm-tile-media video { aspect-ratio: 16 / 8; }
+  .hm-tile figcaption { padding: 18px 20px 20px; font-size: 15px; line-height: 1.5; color: var(--text-2); }
+  .hm-tile figcaption b { display: block; margin-bottom: 2px; font: 700 19px/1.25 var(--font-display); letter-spacing: -0.015em; color: var(--text); }
+  .hm-tile-big figcaption { display: flex; gap: 6px 14px; align-items: baseline; flex-wrap: wrap; padding: 20px 24px 22px; }
+  .hm-tile-big figcaption b { font-size: 22px; margin: 0; }
+  .hm-cli { display: grid; grid-template-columns: 1fr 1.25fr; gap: 24px 56px; align-items: center; margin-top: 64px; }
+  .hm-cli-copy p { margin: 0; max-width: 420px; color: var(--text-2); font-size: 16px; }
+  .hm-term { margin: 0; padding: 22px 24px; border-radius: 16px; background: #0d0811; border: 1px solid var(--line); font-size: 14px; line-height: 1.9; overflow-x: auto; color: var(--text); }
+
+  /* ---- Family ---- */
+  .hm-fam { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .hm-prod { --c: var(--amber); position: relative; display: flex; flex-direction: column; padding: 26px 24px 20px; border-radius: 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 9%, #1e1328), #1a1023 60%); border: 1px solid var(--line); }
+  .hm-prod::before { content: ""; position: absolute; inset: 0 24px auto; height: 2px; border-radius: 2px; background: var(--c); opacity: 0.8; }
+  .hm-tone-sky { --c: var(--sky); }
+  .hm-tone-kafka { --c: var(--kafka); }
+  .hm-prod-top { display: flex; align-items: center; gap: 14px; }
+  .hm-prod-top img { width: 48px; height: 48px; border-radius: 12px; }
+  .hm-prod h3 { margin: 0; font: 700 26px/1 var(--font-display); letter-spacing: -0.025em; }
+  .hm-prod h3 a { text-decoration: none; }
+  .hm-prod h3 a::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
+  .hm-prod-line { margin: 18px 0 20px; min-height: 3em; font-size: 17px; line-height: 1.45; color: var(--text); text-wrap: balance; }
+  .hm-prod-shot { border-radius: 12px; overflow: hidden; border: 1px solid rgba(244, 236, 228, 0.1); aspect-ratio: 16 / 10; background: #131019; }
+  .hm-prod-shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; transition: transform var(--t-slow) var(--ease-out); }
+  .hm-prod:hover .hm-prod-shot img { transform: scale(1.025); }
+  .hm-prod:hover { border-color: color-mix(in srgb, var(--c) 40%, var(--line)); }
+  .hm-endorse { margin: 18px 0 0; font-size: 13px; color: var(--text-3); }
+  .hm-prod-links { display: flex; gap: 18px; margin-top: 6px; }
+  .hm-prod-links a { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; font-size: 15px; color: var(--c); text-decoration: none; }
+  .hm-prod-links a + a { color: var(--text-2); min-width: 44px; justify-content: center; }
+
+  /* ---- Numbers ---- */
+  .hm-nums { display: grid; grid-template-columns: 0.9fr 1.3fr; gap: 48px 72px; align-items: start; }
+  .hm-nums-copy .hm-cmd { margin-top: 28px; }
+  .hm-figs { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; border-radius: 20px; overflow: hidden; background: var(--line); border: 1px solid var(--line); }
+  .hm-fig { padding: 26px 26px 24px; background: #170e1f; display: flex; flex-direction: column; }
+  .hm-fig dt { font-size: 14px; color: var(--text-2); }
+  .hm-fig dd { margin: 0; }
+  .hm-big { margin-top: 10px !important; font: 700 clamp(44px, 5vw, 64px)/1 var(--font-display); letter-spacing: -0.04em; color: var(--text); font-variant-numeric: tabular-nums; }
+  .hm-big small { font-size: 0.42em; letter-spacing: 0; color: var(--text-2); margin-left: 4px; }
+  .hm-le { color: var(--amber); margin-right: 4px; font-weight: 500; }
+  .hm-src { margin-top: auto !important; padding-top: 14px; font-size: 13px; line-height: 1.5; color: var(--text-3); }
+  .hm-src code { font-size: 12px; color: var(--text-2); }
+  .hm-fig-todo { grid-column: 1 / -1; }
+  .hm-todo { font: 600 clamp(26px, 3vw, 34px)/1.1 var(--font-mono) !important; letter-spacing: 0 !important; color: var(--amber) !important; }
+
+  /* ---- Values ---- */
+  .hm-values-in { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px 72px; align-items: center; padding: clamp(36px, 6vw, 72px); border-radius: 28px; background: radial-gradient(70% 120% at 0% 0%, rgba(240, 162, 75, 0.12), transparent 60%), #1a1023; border: 1px solid var(--line); }
+  .hm-vals { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px; }
+  .hm-vals li { display: flex; flex-direction: column; gap: 6px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .hm-vals b { font: 700 20px/1.2 var(--font-display); letter-spacing: -0.015em; }
+  .hm-vals span { font-size: 15px; line-height: 1.5; color: var(--text-2); }
+
+  /* ---- Closing ---- */
+  .hm-close { position: relative; margin-top: clamp(96px, 12vw, 160px); padding: 0 0 clamp(96px, 12vw, 150px); text-align: center; overflow: hidden; }
+  .hm-close::before { content: ""; position: absolute; left: 50%; top: 40px; width: min(900px, 140%); aspect-ratio: 1; transform: translateX(-50%); background: radial-gradient(closest-side, rgba(240, 162, 75, 0.16), transparent); z-index: -1; }
+  .hm-moonrise { display: flex; justify-content: center; height: 170px; align-items: flex-end; }
+  .hm-moon { filter: drop-shadow(0 0 40px rgba(240, 162, 75, 0.45)); }
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hm-moon { animation: hm-rise linear both; animation-timeline: view(); animation-range: entry 10% cover 50%; }
+    }
+  }
+  @keyframes hm-rise { from { transform: translateY(70px); opacity: 0.2; } to { transform: none; opacity: 1; } }
+  .hm-close-in { display: flex; flex-direction: column; align-items: center; }
+  .hm-close-h { margin: 36px 0 0; font: 800 clamp(48px, 8vw, 104px)/0.95 var(--font-display); letter-spacing: -0.042em; text-wrap: balance; }
+  .hm-cta-c { margin-top: 36px; }
+
+  /* ---- Narrower ---- */
+  @media (max-width: 1100px) {
+    .hm-float-a { left: -12px; }
+    .hm-float-b { right: -12px; }
+    .hm-crop { --s: 0.34; }
+  }
+  @media (max-width: 900px) {
+    .hm-head-split, .hm-cli, .hm-nums, .hm-values-in { grid-template-columns: 1fr; }
+    .hm-fam { grid-template-columns: 1fr; max-width: 560px; }
+    .hm-bento { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 700px) {
+    .hm-wrap, .hm-stage { width: calc(100% - 32px); }
+    .hm-win-wrap { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+    .hm-win { flex: 1 1 100%; }
+    .hm-bar { height: 26px; padding: 0 10px; gap: 6px; }
+    .hm-bar i { width: 9px; height: 9px; }
+    .hm-bar span { font-size: 11px; }
+    .hm-float { position: static; flex: 1 1 100%; flex-direction: row; align-items: center; margin-top: 4px; }
+    .hm-float-b { display: none; }
+    .hm-crop { --s: 0.24; flex: none; }
+    .hm-cap { flex: 1 1 100%; margin-top: 10px; }
+    .hm-brew { width: 100%; }
+    .hm-btn { width: 100%; justify-content: center; }
+    .hm-cta { width: 100%; }
+    .hm-bento { grid-template-columns: 1fr; }
+    .hm-tile-big .hm-tile-media video { aspect-ratio: 16 / 10; }
+    .hm-figs { grid-template-columns: 1fr; }
+    .hm-vals { grid-template-columns: 1fr; }
+    .hm-pain { padding: 24px 22px; }
+    .hm-pain-n { display: none; }
+    .hm-ev { margin-top: 0 !important; }
+    .hm-pain-p { font-size: 16px; }
+    .hm-ans { font-size: 15px; margin-top: 18px; padding-top: 14px; }
+    .hm-pain-h { margin-top: 16px; }
+    .hm-ev { font-size: 12px; margin-top: 14px; }
+    .hm-sub { font-size: 17px; }
+    .hm-title { font-size: 10.3vw; }
+    .hm-brew { padding-left: 12px; }
+    .hm-brew code { font-size: 12px; }
+    .hm-brew .hm-dim { display: none; }
+    .hm-brew button { min-width: 56px; }
+    .hm-tile:not(.hm-tile-big) .hm-tile-media video { transform: none; }
+    .hm-vc :global(.vc-dot) { min-height: 44px; }
+  }
 </style>

@@ -108,12 +108,12 @@ import Page from "../layouts/Page.astro";
         <div>
           <div class="dl-does"><span class="dl-n">1</span><div><b class="dl-s26">Copies Doze.app to Applications</b><span class="dl-p dl-s13">The window and the bat in your menu bar.</span></div></div>
           <div class="dl-does"><span class="dl-n">2</span><div><b class="dl-s26">Puts <code class="dl-ic-code">doze</code> on your PATH</b><span class="dl-p dl-s13">A link to the binary inside the app, so the CLI and the app are always the same version.</span></div></div>
-          <div class="dl-does"><span class="dl-n">3</span><div><b class="dl-s26">Asks for your password once, for .doze names</b><span class="dl-p dl-s13">So <code class="dl-ic-code">gateway.larder.doze</code> reaches your gateway, and two projects can both use port 5432. On a Mac it adds two things:</span>
+          <div class="dl-does"><span class="dl-n">3</span><div><b class="dl-s26">Asks for your password once, for .doze names</b><span class="dl-p dl-s13">So a service gets a name like <code class="dl-ic-code">gateway.larder.doze</code> (the gateway in our example project, Larder), and two projects can both use port 5432. On a Mac it adds two things:</span>
             <ul class="dl-s27">
               <li><code class="dl-ic-code">/etc/resolver/doze</code>, which sends the .doze zone to doze's resolver and nothing else.</li>
               <li><code class="dl-ic-code">dev.doze.netd</code>, a small network daemon that gives each service a loopback address of its own.</li>
             </ul>
-            <span class="dl-p dl-s13">On Linux: the <code class="dl-ic-code">doze-netd</code> systemd unit and a drop-in for your DNS manager. doze AWS and doze Kafka share it: whichever you run first sets it up for all three. Skip it and everything runs on 127.0.0.1.</span>
+            <span class="dl-p dl-s13">On Linux: the <code class="dl-ic-code">doze-netd</code> systemd unit and a drop-in for your DNS manager. Only doze uses it: doze AWS and doze Kafka, run on their own, listen on 127.0.0.1 and need none of this. Skip it and everything runs on 127.0.0.1.</span>
           </div></div>
           <div class="dl-does"><span class="dl-n">+</span><div><b class="dl-s26">Only if you declare your own domain</b><span class="dl-p dl-s13"><code class="dl-ic-code">doze trust</code> makes a certificate authority for this machine. Its key stays in <code class="dl-ic-code">~/.doze/ca</code>, readable by you alone.</span></div></div>
         </div>
@@ -168,15 +168,15 @@ Doze-0.2.0.dmg: <span class="s">OK</span></pre><button data-copy="shasum -a 256 
       <div class="dl-steps">
         <div class="dl-step"><span class="dl-num">1</span><h3 class="dl-h3 dl-s34">Install</h3><p class="dl-p dl-s13">The app above, or the CLI on its own.</p><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> brew install --cask \
     doze-dev/tap/doze</pre><button data-copy="brew install --cask \&#10;    doze-dev/tap/doze" class="dl-copy" type="button" aria-label="Copy the install command">Copy</button></div></div>
-        <div class="dl-step"><span class="dl-num">2</span><h3 class="dl-h3 dl-s34">Point it at a project</h3><p class="dl-p dl-s13"><code class="dl-ic-code">doze init</code> reads your repo and writes a doze.hcl. Or borrow Larder, a grocery service in Go, Python and TypeScript.</p><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> cd your-project
+        <div class="dl-step"><span class="dl-num">2</span><h3 class="dl-h3 dl-s34">Point it at a project</h3><p class="dl-p dl-s13"><code class="dl-ic-code">doze init</code> reads your repo and writes a doze.hcl. Or borrow our example project, Larder: a made-up grocery service in Go, Python and TypeScript, built to show doze on a realistic monorepo.</p><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> cd your-project
 <span class="dl-pr">$</span> doze init</pre><button data-copy="cd your-project&#10;doze init" class="dl-copy" type="button" aria-label="Copy the init commands">Copy</button></div><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> git clone \
     https://github.com/doze-dev/doze-examples
 <span class="dl-pr">$</span> cd doze-examples/larder</pre><button data-copy="git clone \&#10;    https://github.com/doze-dev/doze-examples&#10;cd doze-examples/larder" class="dl-copy" type="button" aria-label="Copy the Larder clone commands">Copy</button></div></div>
-        <div class="dl-step"><span class="dl-num">3</span><h3 class="dl-h3 dl-s34">Bring it up</h3><p class="dl-p dl-s13">Everything starts in order, then dozes when nothing is using it. For Larder, stock the shelves once.</p><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> doze up
+        <div class="dl-step"><span class="dl-num">3</span><h3 class="dl-h3 dl-s34">Bring it up</h3><p class="dl-p dl-s13">Everything starts in order, then dozes when nothing is using it. For the Larder example, stock its shelves once.</p><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> doze up
 <span class="dl-pr">$</span> doze task seed-catalog</pre><button data-copy="doze up&#10;doze task seed-catalog" class="dl-copy" type="button" aria-label="Copy the up commands">Copy</button></div></div>
       </div>
       <div class="dl-stack dl-s35">
-        <a class="dl-btn dl-ghost" href="/examples/">Tour Larder</a>
+        <a class="dl-btn dl-ghost" href="/examples/">Tour the Larder example</a>
         <a class="dl-btn dl-ghost" href="/docs/">Read the docs</a>
       </div>
     </div>

@@ -28,3 +28,13 @@
   --radius: 16px;
   --wrap: 1180px;
 }
+
+/* Motion (design/BRAND.md): short and calm; one slow settle for falling asleep. */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-settle: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 120ms;
+  --t-mid: 200ms;
+  --t-slow: 280ms;
+  --t-settle: 800ms;
+}

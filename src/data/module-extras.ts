@@ -136,7 +136,7 @@ conn = psycopg.connect(os.environ[<span class="rm-s">"DATABASE_URL"</span>])`,
       items: [
         {
           title: "A role and a schema per service",
-          aside: { href: "/examples/", text: "From Larder" },
+          aside: { href: "/examples/", text: "From our example project, Larder" },
           body: "Each service connects as itself and can touch only its own tables. The schema shares the role's name, so the default search_path finds it.",
           blocks: [
             {
@@ -236,7 +236,7 @@ conn = psycopg.connect(os.environ[<span class="rm-s">"DATABASE_URL"</span>])`,
       doze: "0.2.0",
       engines: ["14", "15", "16", "17", "18"],
       what: "Extensions by name. Built on a branch, not released.",
-      note: '<code class="rv-mono" style="font-size: 13px">extensions = ["vector", "pg_cron"]</code>, each bundle pinned in doze.lock. <a href="/registry/extensions/">Preview the catalog</a>',
+      note: '<code class="rv-mono" style="font-size: 13px">extensions = ["vector", "pg_cron"]</code>, each bundle pinned in doze.lock. <a href="/registry/doze/postgres/extensions/">Preview the catalog</a>',
     },
     notes: {
       "0.2.4": "A console: an Activity tab (sessions, their queries, Cancel or Terminate) and a databases table.",

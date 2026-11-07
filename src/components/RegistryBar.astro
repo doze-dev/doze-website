@@ -1,13 +1,12 @@
 ---
 // The registry's own bar (design: RegistryBar): search, the doze-version picker, sections.
 interface Props {
-  section?: "modules" | "extensions" | "tools" | "trust" | "publish" | "none";
+  section?: "modules" | "tools" | "trust" | "publish" | "none";
   q?: string;
 }
 const { section = "modules", q = "" } = Astro.props;
 const items = [
   ["modules", "Modules", "/registry/"],
-  ["extensions", "Postgres extensions", "/registry/extensions/"],
   ["tools", "Bring your own", "/registry/tools/"],
   ["trust", "How signing works", "/registry/trust/"],
   ["publish", "Publish a module", "/registry/publish/"],

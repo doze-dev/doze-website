@@ -1,0 +1,16 @@
+---
+// The product's own bar under the family header: its icon and name, then
+// the page's sections, its docs and the changelog.
+interface Props {
+  name: string;
+  icon: string;
+  links: [string, string][];
+}
+const { name, icon, links } = Astro.props;
+---
+<div class="pp-sub">
+  <nav aria-label={`${name}: on this page`}>
+    <span class="pp-sub-me"><img src={icon} alt="" width="22" height="22" />{name}</span>
+    {links.map(([label, href]) => <a href={href}>{label}</a>)}
+  </nav>
+</div>

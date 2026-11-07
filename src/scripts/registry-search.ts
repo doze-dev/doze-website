@@ -43,7 +43,7 @@ type Index = {
   tools: ToolItem[];
   docs: DocItem[];
 };
-type Hit = { kind: "mods" | "exts" | "byo" | "docs"; score: number; el: HTMLElement };
+type Hit = { kind: "mods" | "byo" | "docs"; score: number; el: HTMLElement };
 
 // Things people search for that doze runs only as a hand-written service.
 const byHand: Record<
@@ -230,7 +230,7 @@ function search(ix: Index, raw: string): Hit[] {
     extHits.push(e.name);
     const hcltext = `extensions = ["${e.name}"]`;
     hits.push({
-      kind: "exts",
+      kind: "mods", // extensions are part of the postgres module
       score,
       el: h(
         "article",
@@ -244,8 +244,7 @@ function search(ix: Index, raw: string): Hit[] {
             { class: "rs-crumb" },
             h("a", { href: "/registry/doze/postgres/" }, "postgres"),
             " › ",
-            h("a", { href: "/registry/extensions/" }, "extensions"),
-            ` › ${e.name}`,
+            h("a", { href: "/registry/doze/postgres/extensions/" }, "extensions"),
           ),
           h(
             "div",
@@ -257,7 +256,7 @@ function search(ix: Index, raw: string): Hit[] {
                 href: `/registry/doze/postgres/extensions/${e.name}/`,
                 style: "font-size: 17px",
               },
-              e.name,
+              `postgres › ${e.name}`,
             ),
             chip("info", "Coming in postgres 0.3"),
             chip("line", e.pg.length === 1 ? `Postgres ${e.pg[0]} only` : e.licence),
@@ -422,7 +421,7 @@ function search(ix: Index, raw: string): Hit[] {
 }
 
 // ---- drawing
-const groupName = { mods: "Modules", exts: "Postgres extensions", byo: "Bring your own", docs: "Docs" } as const;
+const groupName = { mods: "Modules", byo: "Bring your own", docs: "Docs" } as const;
 
 function notInCatalog(q: string, n: number): HTMLElement | null {
   const known = byHand[q];
@@ -591,7 +590,7 @@ async function main() {
   }
   for (const el of document.querySelectorAll("[data-rs-q]")) el.textContent = raw;
   const box = document.querySelector<HTMLElement>("[data-rs-groups]")!;
-  const kinds = (["mods", "exts", "byo", "docs"] as const)
+  const kinds = (["mods", "byo", "docs"] as const)
     .map((k) => ({ k, hits: hits.filter((x) => x.kind === k).sort((a, b) => b.score - a.score) }))
     .filter((g) => g.hits.length)
     .sort((a, b) => b.hits[0].score - a.hits[0].score || (a.k === "docs" ? 1 : b.k === "docs" ? -1 : 0));
@@ -609,7 +608,7 @@ async function main() {
   if (nic) box.append(nic);
   const total = document.querySelector("[data-rs-total]");
   if (total) total.textContent = `${hits.length} result${hits.length === 1 ? "" : "s"}`;
-  for (const k of ["mods", "byo", "exts", "docs"] as const) {
+  for (const k of ["mods", "byo", "docs"] as const) {
     const n = hits.filter((x) => x.kind === k).length;
     const opt = document.querySelector<HTMLElement>(`[data-rs-kind-opt="${k}"]`);
     const box2 = document.querySelector<HTMLInputElement>(`[data-rs-kind="${k}"]`);

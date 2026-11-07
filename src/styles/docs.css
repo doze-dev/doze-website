@@ -1082,3 +1082,49 @@ site-search dialog::backdrop {
     display: none;
   }
 }
+
+/* ---------- Moving between sections and pages ----------
+   site.css carries the same block for the rest of the site, so a hop between
+   the two kinds of page fades both ways. Anchors already clear the top through
+   html's scroll-padding-top above; nothing sticky sits over the text. */
+.sh {
+  view-transition-name: site-header;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--t-mid, 200ms);
+    animation-timing-function: var(--ease-out, ease-out);
+  }
+  ::view-transition-group(site-header) {
+    animation: none;
+  }
+  ::view-transition-old(site-header) {
+    animation: none;
+    opacity: 0;
+  }
+  ::view-transition-new(site-header) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+  :is(.sl-markdown-content :is(h2, h3, h4), h1)[id]:target {
+    text-decoration: underline 2px;
+    text-underline-offset: 0.22em;
+    animation: anchor-settle 1200ms ease-out both;
+  }
+}
+@keyframes anchor-settle {
+  0%,
+  50% {
+    text-decoration-color: var(--amber);
+  }
+  100% {
+    text-decoration-color: transparent;
+  }
+}

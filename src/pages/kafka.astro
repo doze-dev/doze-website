@@ -1,247 +1,319 @@
 ---
+// doze Kafka. Its own identity first (yellow on its own night), then the
+// real console's tape, what it does as a sequence, alone or inside doze,
+// what it isn't, install, and the family it belongs to.
+import "../components/product/product.css";
+import VCarousel from "../components/motion/VCarousel.astro";
+import Cmd from "../components/product/Cmd.astro";
+import Endorse from "../components/product/Endorse.astro";
+import Family from "../components/product/Family.astro";
+import Shot from "../components/product/Shot.astro";
+import SubNav from "../components/product/SubNav.astro";
 import Page from "../layouts/Page.astro";
+
+const install = "curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh";
+const clients = [
+  "franz-go",
+  "Sarama",
+  "Java client",
+  "Kafka Streams",
+  "Spring Kafka",
+  "librdkafka",
+  "kcat",
+  "confluent-kafka",
+  "KafkaJS",
+];
+const slides = ["Clients", "The console", "Schema registry", "Transactions", "Durable and small"];
+const pad = (n: number) => String(n).padStart(2, "0");
+const step = (i: number) => `${pad(i + 1)} / ${pad(slides.length)} · ${slides[i]}`;
 ---
-<Page title="doze Kafka" theme="kafka" current="kafka">
-<div class="kf kf-s1 kf-root">
+<Page title="doze Kafka" description="doze Kafka wakes a Kafka broker. No JVM to put to bed. One Go binary on 127.0.0.1:9092, single node, disk-backed, with a console, a schema registry and transactions." theme="kafka" current="kafka">
+<div class="pp pp-kafka kf">
+  <SubNav name="doze Kafka" icon="/brand/doze-kafka.svg" links={[["The tape", "#console"], ["What it does", "#features"], ["Alone or in doze", "#run"], ["What it isn't", "#not"], ["Install", "#install"], ["Docs", "/docs/kafka/"], ["Changelog", "/changelog/"]]} />
 
-  <div class="kf-sub kf-s2">
-    <nav class="kf-s3" aria-label="doze Kafka">
-      <span class="kf-s4"><span class="kf-s5"></span>doze Kafka</span>
-      <a href="#clients">Clients</a><a href="#features">What you get</a><a href="#not">What it isn't</a><a href="#install">Install</a><a href="/docs/kafka/">Docs</a><a href="/changelog/">Changelog</a>
-    </nav>
-  </div>
-
-  <section class="kf-s6">
-    <div class="kf-s7">
-      <img class="kf-s8" src="/brand/doze-kafka.svg" alt="doze Kafka">
-      <span class="kf-s9">One Go binary · single node · disk-backed</span>
-    </div>
-    <h1 class="kf-hero-title kf-s10">Kafka for your laptop. Hold the JVM.</h1>
-    <p class="kf-s11">A native broker that boots in milliseconds, sits quiet until a client connects, keeps your data on disk, and shuts down cleanly. No JVM, no ZooKeeper, no KRaft quorum, no Docker.</p>
-    <div class="kf-s12"><span class="kf-s13">-Xmx1G</span><span class="kf-s13">waiting for controller quorum…</span><span class="kf-s13">all you wanted was one topic</span></div>
-    <div class="kf-stack-sm kf-s14">
-      <a class="kf-btn kf-btn-sun" href="#install">Install doze Kafka</a>
-      <a class="kf-btn kf-btn-ghost" href="/docs/kafka/">Getting started</a>
-    </div>
-  </section>
-
-  <!-- Clients -->
-  <section class="kf-s15" id="clients">
-    <div class="kf-s16">
-      <h2 class="kf-s17">If your client can't tell, it's Kafka.</h2>
-      <p class="kf-s18">Built to behave like Kafka to any client on the socket. These are tested against it in CI on every change:</p>
-      <div class="kf-s19">
-        <span class="kf-pill">franz-go</span><span class="kf-pill">Sarama</span><span class="kf-pill">Java client</span><span class="kf-pill">Kafka Streams</span><span class="kf-pill">Spring Kafka</span><span class="kf-pill">librdkafka · kcat · confluent-kafka</span><span class="kf-pill">KafkaJS</span>
+  <!-- Hero: its own identity -->
+  <section class="pp-hero">
+    <div class="pp-wrap kf-hero">
+      <div class="kf-hero-say">
+        <span class="pp-lockup"><img src="/brand/doze-kafka.svg" alt="" width="64" height="64" /><b>doze Kafka</b></span>
+        <h1 class="pp-h1 kf-h1">Wakes a Kafka broker. <span class="pp-soft">No JVM to put to bed.</span></h1>
+        <Endorse />
+        <p class="pp-lede">A native broker that boots in milliseconds, sits quiet until a client connects, keeps your data on disk, and shuts down cleanly. One Go binary, single node: no JVM, no ZooKeeper, no KRaft quorum, no Docker.</p>
+        <div class="pp-chips" aria-label="What it replaces"><span class="pp-chip">-Xmx1G</span><span class="pp-chip">waiting for controller quorum…</span><span class="pp-chip">all you wanted was one topic</span></div>
+        <div class="kf-cta">
+          <a class="pp-btn pp-btn-acc" href="#install">Install doze Kafka</a>
+          <a class="pp-btn pp-btn-ghost" href="/docs/kafka/">Getting started</a>
+        </div>
       </div>
-    </div>
-  </section>
+      <div class="kf-hero-term">
+        <div class="pp-term-head"><span>on its own</span><span>loopback only</span></div>
+        <pre class="pp-term"><span class="c">$</span> <span class="w">doze-kafka</span>
+  broker   <span class="a">127.0.0.1:9092</span>
+  console  <span class="a">http://127.0.0.1:9093/_console/</span>
 
-  <!-- The real console -->
-  <section class="kf-s20">
-    <div class="kf-s21">
-      <span class="kf-s9">The console</span>
-      <h2 class="kf-s22">See every record. And why it's there.</h2>
-      <p class="kf-s23">Topics, the tape of records on disk, messages decoded, and underneath, the requests that touched them. On by default.</p>
-    </div>
-    <div class="kf-s24">
-      <div class="kf-s25"></div>
-      <div class="kf-s26">
-        <div class="kf-s27"><span class="kf-s28"></span><span class="kf-s29"></span><span class="kf-s30"></span><span class="kf-s31">doze Kafka · console</span></div>
-        <img class="kf-s32" src="/media/kafka-orders.webp" alt="The doze Kafka console: a topic, its tape of 40 records on disk, the messages, and the requests underneath">
-      </div>
-    </div>
-    <p class="kf-s33">The real console, from its demo stack: 40 records produced with kcat. <span class="kf-recap">[re-capture with Larder]</span></p>
-    <div class="kf-s34">
-      <div class="kf-s35">
-        <h3 class="kf-s36">Live, as it lands.</h3>
-        <p class="kf-s37">kcat produces records; each request shows up in the traffic, then on the topic's tape, newest on the right.</p>
-      </div>
-      <div class="kf-s38">
-        <video class="kf-s39" src="/media/kafka-live.webm" autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline" controls="controls" aria-label="Records produced with kcat appear in doze Kafka's traffic and on the topic's tape"></video>
-      </div>
-    </div>
-  </section>
-
-  <!-- Quickstart -->
-  <section class="kf-s40">
-    <div class="kf-s41">
-      <h2 class="kf-s42">It's a name, not a port</h2>
-      <p class="kf-s23">Each broker answers on its own loopback address with a name, so nothing on your network can reach it and two projects can both use 9092. Stop it with Ctrl-C: topics, messages and committed offsets are all there next time.</p>
-    </div>
-    <pre class="kf-s43"><span class="kf-s44">$</span> cd ~/code/larder &amp;&amp; doze-kafka
-  broker   <span class="kf-s45">kafka.larder.doze:9092</span>
-  console  <span class="kf-s45">http://kafka.larder.doze</span>
-
-<span class="kf-s44">$</span> kcat -b kafka.larder.doze:9092 -t orders.placed -P
-<span class="kf-s44">$</span> kcat -b kafka.larder.doze:9092 -t orders.placed -C -e
+<span class="c">$</span> <span class="w">kcat -b 127.0.0.1:9092 -t orders.placed -P</span>
+<span class="c">$</span> <span class="w">kcat -b 127.0.0.1:9092 -t orders.placed -C -e</span>
 &#123;"order_id": "[id]", "total": "[amount]"&#125;</pre>
+      </div>
+    </div>
   </section>
 
-  <!-- In Larder -->
-  <section class="kf-s46">
-    <div class="kf-s47">
-      <div class="kf-s48">
-        <span class="kf-s9">Inside a doze stack</span>
-        <h2 class="kf-s49">The topics are the contracts.</h2>
-        <p class="kf-s37">In Larder, the example grocer, services in Go, Python and TypeScript talk through four topics, declared in doze.hcl rather than created by whichever client writes first. franz-go, confluent-kafka and KafkaJS, all on one broker.</p>
-        <div class="kf-s12"><span class="kf-topic">users.signed-up</span><span class="kf-topic">orders.placed</span><span class="kf-topic">payments.settled</span><span class="kf-topic">payments.failed</span></div>
-        <a class="kf-s50" href="/examples/">See Larder →</a>
+  <!-- The real console: the tape -->
+  <section class="pp-sec" id="console">
+    <div class="pp-wrap">
+      <div class="pp-head pp-head-c" data-reveal>
+        <span class="pp-eyebrow">The console</span>
+        <h2 class="pp-h2">See every record. And why it's there.</h2>
+        <p class="pp-lede">Topics, the tape of records on disk, messages decoded, and underneath, the requests that touched them. On by default.</p>
       </div>
-      <pre class="kf-s51"><span class="kf-s44"># doze.hcl, from Larder</span>
-module kafka "kafka" &#123;
+      <div class="kf-shot" data-reveal>
+        <Shot src="/media/kafka-orders.webp" alt="The doze Kafka console: the orders topic, its tape of 40 records on disk, the messages, and the requests underneath" title="doze Kafka · /_console" glow />
+        <div class="pp-float kf-float"><b>The tape</b>Each mark is one record on disk, taller is bigger, newest on the right.</div>
+      </div>
+      <p class="pp-cap kf-cap">The real console, from its demo stack: 40 records produced with kcat. <span class="pp-pending">re-capture with Larder</span></p>
+    </div>
+  </section>
+
+  <!-- What it does, as a sequence -->
+  <section class="pp-sec pp-sec-tint" id="features">
+    <div class="pp-wrap kf-wide">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">What it does</span>
+        <h2 class="pp-h2">If your client can't tell, it's Kafka.</h2>
+        <p class="pp-lede">Built to behave like Kafka to any client on the socket, and to leave out what no client can observe. Five things, one at a time.</p>
+      </div>
+      <VCarousel label="What doze Kafka does" height="min(720px, 84vh)" class="pp-vc">
+        <div data-slide data-label={slides[0]} class="pp-slide">
+          <div class="pp-slide-top">
+            <div><span class="pp-step">{step(0)}</span><h3>Tested against your client, in CI, on every change.</h3></div>
+            <div class="pp-slide-say"><p>One binary speaks the Kafka wire protocol 1 to 4; pick which with <code class="kf-c">--kafka-version</code> (default 4). Consumer groups use the classic protocol or KIP-848, chosen by the client.</p></div>
+          </div>
+          <div class="pp-slide-media"><div class="pp-slide-panel kf-panel">
+            <span class="kf-k">Clients in CI</span>
+            <ul class="kf-pills">{clients.map((c) => <li>{c}</li>)}</ul>
+            <div class="kf-rows">
+              <div><span>Wire protocol</span><b>Kafka 1 – 4</b></div>
+              <div><span>Consumer groups</span><b>classic · KIP-848</b></div>
+              <div class="kf-opt"><span>Default</span><b class="kf-mono">--kafka-version 4</b></div>
+            </div>
+          </div></div>
+        </div>
+
+        <div data-slide data-label={slides[1]} class="pp-slide">
+          <div class="pp-slide-top">
+            <div><span class="pp-step">{step(1)}</span><h3>A console that explains.</h3></div>
+            <div class="pp-slide-say"><p>Topics, messages, lag, and why a group keeps rebalancing, with the Kafka error names. Here kcat produces records: each request shows up in the traffic, then on the topic's tape.</p>
+              <span class="pp-also"><span class="pp-pending">the real console, from its demo stack · re-capture with Larder</span></span></div>
+          </div>
+          <div class="pp-slide-media"><Shot src="/media/kafka-live.webm" alt="Records produced with kcat appear in doze Kafka's traffic and on the topic's tape" title="doze Kafka · /_console" /></div>
+        </div>
+
+        <div data-slide data-label={slides[2]} class="pp-slide">
+          <div class="pp-slide-top">
+            <div><span class="pp-step">{step(2)}</span><h3>A schema registry, built in.</h3></div>
+            <div class="pp-slide-say"><p>Confluent-compatible, for Avro, JSON Schema and Protobuf. Stock serializers need only <code class="kf-c">schema.registry.url</code>, and <code class="kf-c">doze-kafka env</code> prints it for you.</p></div>
+          </div>
+          <div class="pp-slide-media"><div class="pp-slide-panel kf-panel">
+            <ul class="kf-pills kf-pills-on"><li>Avro</li><li>JSON Schema</li><li>Protobuf</li></ul>
+            <pre class="pp-term kf-term"><span class="c">$</span> <span class="w">eval "$(doze-kafka env)"</span>
+<span class="c">$</span> <span class="w">env | grep -E 'KAFKA|SCHEMA'</span>
+KAFKA_BOOTSTRAP_SERVERS=<span class="a">127.0.0.1:9092</span>
+KAFKA_BROKERS=<span class="a">127.0.0.1:9092</span>
+SCHEMA_REGISTRY_URL=<span class="a">[the registry's address]</span>
+
+<span class="c"># your serializer's config, and nothing else</span>
+schema.registry.url = $SCHEMA_REGISTRY_URL</pre>
+          </div></div>
+        </div>
+
+        <div data-slide data-label={slides[3]} class="pp-slide">
+          <div class="pp-slide-top">
+            <div><span class="pp-step">{step(3)}</span><h3>Transactions, SASL and TLS.</h3></div>
+            <div class="pp-slide-say"><p>Transactional producers and read-committed consumers, so the exactly-once code you ship runs here first. SASL and TLS when you want to test them, off when you don't.</p></div>
+          </div>
+          <div class="pp-slide-media"><div class="pp-slide-panel kf-panel">
+            <div class="kf-rows kf-rows-big">
+              <div><span>Producers</span><b>transactional</b></div>
+              <div><span>Consumers</span><b class="kf-mono">read_committed</b></div>
+              <div><span>SASL</span><b>PLAIN · SCRAM-256 · SCRAM-512</b></div>
+              <div><span>TLS</span><b>when you want it</b></div>
+              <div><span>Under SASL</span><b class="kf-mono">doze-kafka env</b><em>prints KAFKA_SASL_MECHANISM, never a password</em></div>
+            </div>
+          </div></div>
+        </div>
+
+        <div data-slide data-label={slides[4]} class="pp-slide">
+          <div class="pp-slide-top">
+            <div><span class="pp-step">{step(4)}</span><h3>Durable, flat, embeddable.</h3></div>
+            <div class="pp-slide-say"><p>Stop it with Ctrl-C: topics, messages and committed offsets are all there next time. And in Go tests it is a library.</p></div>
+          </div>
+          <div class="pp-slide-media"><div class="pp-slide-panel kf-panel kf-trio">
+            <div class="kf-fact"><span class="kf-k">Durable</span><b>acks=all</b><p>An acknowledged write is fsynced before the ack.</p></div>
+            <div class="kf-fact"><span class="kf-k">Flat memory</span><b>tens of MB</b><p>Idle memory stays there however much data sits on disk.</p></div>
+            <div class="kf-fact"><span class="kf-k">In Go tests</span><b class="kf-mono">server.New(...)</b><p>Starts a broker on a free port, with nothing to clean up.</p></div>
+          </div></div>
+        </div>
+      </VCarousel>
+    </div>
+  </section>
+
+  <!-- Alone, or inside doze -->
+  <section class="pp-sec" id="run">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Works alone</span>
+        <h2 class="pp-h2">On its own, or inside a doze stack.</h2>
+        <p class="pp-lede">The same broker either way. On its own it answers on loopback, so nothing on your network can reach it. Inside doze it gets a name, so two projects can both have their 9092.</p>
+      </div>
+      <div class="kf-two">
+        <div class="kf-way" data-reveal>
+          <span class="kf-way-tag">On its own</span>
+          <h3 class="pp-h3">One command, on loopback.</h3>
+          <p>Run <code>doze-kafka</code>: the broker listens on <code class="kf-hi">127.0.0.1:9092</code> and its console on <code class="kf-hi">127.0.0.1:9093/_console/</code>. Linux and macOS, amd64 and arm64, Intel Macs included.</p>
+          <pre class="pp-term"><span class="c">$</span> <span class="w">doze-kafka</span>
+  broker   <span class="a">127.0.0.1:9092</span>
+  console  <span class="a">http://127.0.0.1:9093/_console/</span>
+<span class="c">^C</span>
+<span class="c"># topics, messages and offsets are there next time</span></pre>
+        </div>
+        <div class="kf-way" data-reveal>
+          <span class="kf-way-tag kf-way-doze"><img src="/brand/doze.svg" alt="" width="18" height="18" />Inside doze</span>
+          <h3 class="pp-h3">The topics are the contracts.</h3>
+          <p><code>doze add kafka</code>, and in <a href="/examples/">Larder</a>, our made-up example project, doze names it <code class="kf-hi">kafka.larder.doze</code>. Services in Go, Python and TypeScript (franz-go, confluent-kafka, KafkaJS) talk through four topics declared in doze.hcl, not created by whichever client writes first. doze itself needs Apple silicon on a Mac.</p>
+          <pre class="pp-term"><span class="c"># doze.hcl, from the Larder example</span>
+<span class="a">module</span> kafka <span class="w">"kafka"</span> &#123;
   version            = 4
   port               = 9092
   auto_create_topics = false
 
-  topic "users.signed-up"  &#123; partitions = 3 &#125;
-  topic "orders.placed"    &#123; partitions = 3 &#125;
-  topic "payments.settled" &#123; partitions = 3 &#125;
-  topic "payments.failed"  &#123; partitions = 3 &#125;
-&#125;</pre>
-    </div>
-  </section>
+  topic <span class="w">"users.signed-up"</span>  &#123; partitions = 3 &#125;
+  topic <span class="w">"orders.placed"</span>    &#123; partitions = 3 &#125;
+  topic <span class="w">"payments.settled"</span> &#123; partitions = 3 &#125;
+  topic <span class="w">"payments.failed"</span>  &#123; partitions = 3 &#125;
+&#125;
 
-  <!-- Features -->
-  <section class="kf-s52" id="features">
-    <div class="kf-s53">
-      <h2 class="kf-s54">What you get</h2>
-      <div class="kf-s55">
-        <div class="kf-feat"><h3 class="kf-s56">Wire protocol Kafka 1–4</h3><p>One binary speaks Kafka 1 to 4; pick which with <code class="kf-s57">--kafka-version</code> (default 4).</p></div>
-        <div class="kf-feat"><h3 class="kf-s56">Consumer groups</h3><p>The classic protocol and KIP-848, chosen by the client.</p></div>
-        <div class="kf-feat"><h3 class="kf-s56">A schema registry, built in</h3><p>Confluent-compatible: Avro, JSON Schema and Protobuf. Stock serializers need only schema.registry.url.</p></div>
-        <div class="kf-feat"><h3 class="kf-s56">A console that explains</h3><p>Topics, messages, lag, and why a group keeps rebalancing, with the Kafka error names.</p></div>
-        <div class="kf-feat"><h3 class="kf-s56">Transactions, SASL and TLS</h3><p>Transactional producers and read-committed consumers. SASL/PLAIN, SCRAM-256/512 and TLS when you want them.</p></div>
-        <div class="kf-feat"><h3 class="kf-s56">Durable</h3><p>With acks=all an acknowledged write is fsynced before the ack.</p></div>
-        <div class="kf-feat"><h3 class="kf-s56">Flat memory</h3><p>Idle memory stays in the tens of MB however much data sits on disk.</p></div>
-        <div class="kf-feat"><h3 class="kf-s56">Embeddable in Go tests</h3><p><code class="kf-s57">server.New(...)</code> starts a broker on a free port, nothing to clean up.</p></div>
+<span class="c"># and in each app that uses it</span>
+KAFKA_BROKERS = module.kafka.address</pre>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- What it isn't -->
-  <section class="kf-s58" id="not">
-    <div class="kf-s48">
-      <h2 class="kf-s59">What it isn't, on purpose</h2>
-      <p class="kf-s37">A single node for development, not production. Anything a client can't observe through the socket is left out.</p>
+  <section class="pp-sec pp-sec-tint" id="not">
+    <div class="pp-wrap kf-not">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Honest by design</span>
+        <h2 class="pp-h2">What it isn't, on purpose.</h2>
+        <p class="pp-lede">A single node for development, not production. Anything a client can't observe through the socket is left out.</p>
+      </div>
+      <ul class="kf-not-list" data-reveal>
+        <li><b>No replication,</b> ISR or controller quorum</li>
+        <li><b>No byte-for-byte</b> on-disk segment compatibility</li>
+        <li><b>No tiered storage</b> or quotas</li>
+      </ul>
     </div>
-    <ul class="kf-s60">
-      <li>No replication, ISR or controller quorum</li>
-      <li>No byte-for-byte on-disk segment compatibility</li>
-      <li>No tiered storage or quotas</li>
-    </ul>
   </section>
 
   <!-- Install -->
-  <section class="kf-s61" id="install">
-    <div class="kf-stack-sm kf-inst kf-s62">
-      <div class="kf-s63">
-        <h2 class="kf-s64">Run it inside doze, or alone</h2>
-        <span class="kf-s65">In a doze stack</span>
-        <div class="kf-cmd"><code>doze add kafka</code><button data-copy="doze add kafka" type="button" class="kf-copy" aria-label="Copy doze add kafka">Copy</button></div>
-        <span class="kf-s65">On its own: Linux and macOS, amd64 and arm64</span>
-        <span class="kf-s66">The standalone broker runs on Intel Macs too. doze itself, and so <code class="kf-s57">doze add kafka</code>, needs Apple silicon on a Mac.</span>
-        <div class="kf-cmd"><code>curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh</code><button data-copy="curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh" type="button" class="kf-copy" aria-label="Copy the install command">Copy</button></div>
-        <span class="kf-s67">More ways, and doze itself: <a class="kf-s68" href="/download/">Download</a></span>
+  <section class="pp-sec" id="install">
+    <div class="pp-wrap">
+      <div class="kf-inst" data-reveal>
+        <div class="kf-inst-say">
+          <h2 class="kf-inst-h">Kafka for your laptop. Hold the JVM.</h2>
+          <span class="kf-inst-k">On its own: Linux and macOS, amd64 and arm64</span>
+          <Cmd cmd={install} label="Copy the doze Kafka install command" />
+          <span class="kf-inst-k">In a doze stack (Apple silicon on a Mac)</span>
+          <Cmd cmd="doze add kafka" label="Copy doze add kafka" />
+          <span class="kf-inst-more">More ways, and doze itself: <a href="/download/">Download</a> · <a href="/docs/kafka/">Docs</a></span>
+        </div>
+        <img class="kf-inst-icon" src="/brand/doze-kafka.svg" alt="" width="132" height="132" />
       </div>
-      <img class="kf-s69" src="/brand/doze-kafka.svg" alt="">
     </div>
   </section>
 
-  <p class="kf-s70">Apache Kafka is a trademark of the Apache Software Foundation. doze Kafka is not affiliated with it.</p>
-  </div>
+  <p class="pp-wrap pp-small kf-tm">Apache Kafka is a trademark of the Apache Software Foundation. doze Kafka is not affiliated with it.</p>
+  <Family current="kafka" />
+</div>
 </Page>
 
 <style>
-*{box-sizing:content-box}
-button,select,input[type=button],input[type=submit],input[type=reset],input[type=search]{box-sizing:border-box}
-.kf-root{line-height:normal}
+  .kf-hero { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 56px; align-items: center; }
+  .kf-hero-say { display: flex; flex-direction: column; gap: 22px; align-items: flex-start; }
+  .kf-h1 { font-size: clamp(42px, 5.2vw, 72px); }
+  .kf-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .kf-hero-term .pp-term { box-shadow: 0 40px 100px rgba(0, 0, 0, 0.45); }
 
-body{margin:0;background:#12110C}
-.kf a{color:#FFD60A;text-decoration:none}.kf a:hover{color:#FFE65C}
-.kf .kf-sub a{color:#BDB8A0;font-size:14px;display:inline-flex;align-items:center;min-height:44px}.kf .kf-sub a:hover{color:#F7F3E3}
-.kf-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 22px;border-radius:12px;font-weight:600;font-size:16px}
-.kf .kf-btn-sun{background:#FFD60A;color:#16150F}.kf .kf-btn-sun:hover{background:#FFE34D;color:#16150F}
-.kf .kf-btn-ghost{border:1px solid #3D3A26;color:#F7F3E3}.kf .kf-btn-ghost:hover{border-color:#6A6440;color:#FFFFFF}
-.kf-pill{background:#16150F;color:#FFD60A;border-radius:999px;padding:10px 18px;font-weight:600}
-.kf-feat{background:#1D1B12;border:1px solid #332F1E;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px}
-.kf-feat p{margin:0;color:#BDB8A0;line-height:1.6}
-.kf-topic{font-family:var(--font-mono);font-size:13px;color:#F7F3E3;background:#1D1B12;border:1px solid #3D3A26;border-radius:8px;padding:6px 10px}
-.kf code,.kf pre{font-variant-ligatures:none}
-.kf pre{white-space:pre}
-.kf-cmd{display:flex;align-items:center;gap:8px;background:#0C0B07;border-radius:10px;padding:6px 6px 6px 16px;min-width:0}
-.kf-cmd code{font:15px var(--font-mono);color:#F7F3E3;white-space:pre;overflow-x:auto;flex:1;min-width:0}
-.kf-copy{height:36px;padding:0 12px;border-radius:8px;border:1px solid #3D3A26;background:#1D1B12;color:#F7F3E3;font:600 13px var(--font-text);cursor:pointer;flex:none}
-.kf-recap{display:inline-block;font-family:var(--font-mono);font-size:11px;color:#BDB8A0;background:#1D1B12;border:1px dashed #5A5536;border-radius:6px;padding:2px 7px;white-space:nowrap}
-@media (max-width:760px){.kf-hero-title{font-size:44px !important}.kf-stack-sm{flex-direction:column !important;align-items:stretch !important}.kf-inst{padding:28px !important}.kf-inst h2{font-size:30px !important}.kf-inst > div{flex:none !important;width:100%}.kf-inst img{display:none}}
-/* one-off layout from the board's inline styles */
-.kf-s1.kf-s1.kf-s1{font-family:var(--font-text);color:#F7F3E3;background:#12110C;min-height:100%}
-.kf-s2.kf-s2.kf-s2{border-bottom:1px solid #22201A;background:#15140E}
-.kf-s3.kf-s3.kf-s3{max-width:1240px;margin:0 auto;padding:6px 32px;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
-.kf-s4.kf-s4.kf-s4{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:#FFD60A}
-.kf-s5.kf-s5.kf-s5{width:8px;height:8px;border-radius:4px;background:#FFD60A}
-.kf-s6.kf-s6.kf-s6{max-width:1240px;margin:0 auto;padding:96px 32px 56px;display:flex;flex-direction:column;gap:28px}
-.kf-s7.kf-s7.kf-s7{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
-.kf-s8.kf-s8.kf-s8{width:96px;height:96px}
-.kf-s9.kf-s9.kf-s9{font-family:var(--font-mono);font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#FFD60A}
-.kf-s10.kf-s10.kf-s10{margin:0;font-family:var(--font-display);font-weight:800;font-size:84px;line-height:0.98;letter-spacing:-0.035em;max-width:16ch;text-wrap:balance}
-.kf-s11.kf-s11.kf-s11{margin:0;font-size:20px;line-height:1.55;color:#D8D2B8;max-width:42rem}
-.kf-s12.kf-s12.kf-s12{display:flex;flex-wrap:wrap;gap:8px}
-.kf-s13.kf-s13.kf-s13{font-family:var(--font-mono);font-size:13px;color:#FF9AA8;background:#2A1520;border:1px solid #4A2230;border-radius:8px;padding:6px 10px}
-.kf-s14.kf-s14.kf-s14{display:flex;gap:14px;flex-wrap:wrap}
-.kf-s15.kf-s15.kf-s15{background:#FFD60A;color:#16150F}
-.kf-s16.kf-s16.kf-s16{max-width:1240px;margin:0 auto;padding:56px 32px;display:flex;flex-direction:column;gap:22px}
-.kf-s17.kf-s17.kf-s17{margin:0;font-family:var(--font-display);font-weight:800;font-size:36px;letter-spacing:-0.02em}
-.kf-s18.kf-s18.kf-s18{margin:0;font-size:17px;max-width:46rem;line-height:1.6}
-.kf-s19.kf-s19.kf-s19{display:flex;flex-wrap:wrap;gap:10px}
-.kf-s20.kf-s20.kf-s20{max-width:1240px;margin:0 auto;padding:96px 32px 24px;display:flex;flex-direction:column;gap:28px}
-.kf-s21.kf-s21.kf-s21{display:flex;flex-direction:column;gap:12px;max-width:46rem}
-.kf-s22.kf-s22.kf-s22{margin:0;font-family:var(--font-display);font-weight:800;font-size:48px;letter-spacing:-0.025em;text-wrap:balance}
-.kf-s23.kf-s23.kf-s23{margin:0;font-size:18px;line-height:1.6;color:#BDB8A0}
-.kf-s24.kf-s24.kf-s24{position:relative}
-.kf-s25.kf-s25.kf-s25{position:absolute;left:10%;right:10%;top:5%;height:80%;border-radius:50%;background:radial-gradient(closest-side, rgba(255,214,10,0.18), rgba(255,214,10,0))}
-.kf-s26.kf-s26.kf-s26{position:relative;border-radius:16px;overflow:hidden;border:1px solid #4A4426;box-shadow:0 50px 120px rgba(0,0,0,0.55)}
-.kf-s27.kf-s27.kf-s27{height:32px;background:#0D0C08;display:flex;align-items:center;gap:7px;padding:0 14px}
-.kf-s28.kf-s28.kf-s28{width:11px;height:11px;border-radius:6px;background:#FF5F57}
-.kf-s29.kf-s29.kf-s29{width:11px;height:11px;border-radius:6px;background:#FEBC2E}
-.kf-s30.kf-s30.kf-s30{width:11px;height:11px;border-radius:6px;background:#28C840}
-.kf-s31.kf-s31.kf-s31{margin:0 auto;font:13px var(--font-mono);color:#A39E7E}
-.kf-s32.kf-s32.kf-s32{display:block;width:100%;height:auto}
-.kf-s33.kf-s33.kf-s33{margin:0;font-size:13px;color:#8F8A70}
-.kf-s34.kf-s34.kf-s34{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(320px, 100%), 1fr));gap:28px;align-items:center;margin-top:32px}
-.kf-s35.kf-s35.kf-s35{display:flex;flex-direction:column;gap:12px}
-.kf-s36.kf-s36.kf-s36{margin:0;font-family:var(--font-display);font-weight:800;font-size:34px;letter-spacing:-0.02em}
-.kf-s37.kf-s37.kf-s37{margin:0;font-size:17px;line-height:1.6;color:#BDB8A0}
-.kf-s38.kf-s38.kf-s38{border-radius:14px;overflow:hidden;border:1px solid #4A4426;box-shadow:0 40px 100px rgba(0,0,0,0.5)}
-.kf-s39.kf-s39.kf-s39{display:block;width:100%;height:auto;aspect-ratio:16 / 10;background:#0D0C08}
-.kf-s40.kf-s40.kf-s40{max-width:1240px;margin:0 auto;padding:88px 32px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap:48px;align-items:center}
-.kf-s41.kf-s41.kf-s41{display:flex;flex-direction:column;gap:16px}
-.kf-s42.kf-s42.kf-s42{margin:0;font-family:var(--font-display);font-weight:700;font-size:44px;letter-spacing:-0.02em;text-wrap:balance}
-.kf-s43.kf-s43.kf-s43{margin:0;min-width:0;font-family:var(--font-mono);font-size:14px;line-height:1.8;background:#0C0B07;border:1px solid #2A281B;border-radius:18px;padding:26px;color:#D8D2B8;overflow-x:auto}
-.kf-s44.kf-s44.kf-s44{color:#8A8466}
-.kf-s45.kf-s45.kf-s45{color:#FFD60A}
-.kf-s46.kf-s46.kf-s46{background:#17160F;border-top:1px solid #2A281B}
-.kf-s47.kf-s47.kf-s47{max-width:1240px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap:48px;align-items:center}
-.kf-s48.kf-s48.kf-s48{display:flex;flex-direction:column;gap:14px}
-.kf-s49.kf-s49.kf-s49{margin:0;font-family:var(--font-display);font-weight:700;font-size:40px;letter-spacing:-0.02em;text-wrap:balance}
-.kf-s50.kf-s50.kf-s50{font-weight:600;align-self:flex-start;padding:10px 0}
-.kf-s51.kf-s51.kf-s51{margin:0;min-width:0;font:14px/1.8 var(--font-mono);background:#0C0B07;border:1px solid #2A281B;border-radius:18px;padding:24px;color:#E8E4D2;overflow-x:auto}
-.kf-s52.kf-s52.kf-s52{background:#17160F;border-top:1px solid #2A281B;border-bottom:1px solid #2A281B}
-.kf-s53.kf-s53.kf-s53{max-width:1240px;margin:0 auto;padding:88px 32px;display:flex;flex-direction:column;gap:28px}
-.kf-s54.kf-s54.kf-s54{margin:0;font-family:var(--font-display);font-weight:700;font-size:44px;letter-spacing:-0.02em}
-.kf-s55.kf-s55.kf-s55{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(260px, 100%), 1fr));gap:16px}
-.kf-s56.kf-s56.kf-s56{margin:0;font-size:19px}
-.kf-s57.kf-s57.kf-s57{font-family:var(--font-mono)}
-.kf-s58.kf-s58.kf-s58{max-width:1240px;margin:0 auto;padding:88px 32px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(340px, 100%), 1fr));gap:40px}
-.kf-s59.kf-s59.kf-s59{margin:0;font-family:var(--font-display);font-weight:700;font-size:36px;letter-spacing:-0.02em;text-wrap:balance}
-.kf-s60.kf-s60.kf-s60{margin:0;padding-left:20px;color:#D8D2B8;line-height:2;font-size:17px}
-.kf-s61.kf-s61.kf-s61{max-width:1240px;margin:0 auto;padding:0 32px 104px}
-.kf-s62.kf-s62.kf-s62{background:#1D1B12;border:1px solid #FFD60A;border-radius:28px;padding:48px;display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
-.kf-s63.kf-s63.kf-s63{display:flex;flex-direction:column;gap:14px;min-width:0;flex:1 1 520px}
-.kf-s64.kf-s64.kf-s64{margin:0;font-family:var(--font-display);font-weight:800;font-size:40px;letter-spacing:-0.02em}
-.kf-s65.kf-s65.kf-s65{font-size:15px;font-weight:600;color:#E8E4D2}
-.kf-s66.kf-s66.kf-s66{font-size:14px;color:#BDB8A0;margin-top:-6px}
-.kf-s67.kf-s67.kf-s67{font-size:15px;color:#BDB8A0}
-.kf-s68.kf-s68.kf-s68{font-weight:600}
-.kf-s69.kf-s69.kf-s69{width:120px;height:120px}
-.kf-s70.kf-s70.kf-s70{max-width:1240px;margin:0 auto;padding:0 32px 28px;font-size:13px;color:#8F8A70}
+  .kf-shot { position: relative; max-width: 1180px; margin: 0 auto; }
+  .kf-float { left: -12px; bottom: -28px; }
+  .kf-cap { margin-top: 48px; }
+
+  .kf-wide { max-width: 1340px; }
+  .kf-c { font: 0.92em var(--font-mono); color: var(--t1); white-space: nowrap; }
+  .kf-panel { display: flex; flex-direction: column; gap: 20px; justify-content: center; background: radial-gradient(120% 120% at 100% 0%, rgba(255, 214, 10, 0.07), transparent 60%), var(--well); }
+  .kf-k { font: 500 12px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--t3); }
+  .kf-pills { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
+  .kf-pills li { padding: 10px 16px; border-radius: 999px; background: var(--g3); border: 1px solid var(--ln2); font-weight: 600; font-size: 15px; }
+  .kf-pills-on li { background: var(--acc); color: var(--acc-ink); border-color: var(--acc); }
+  .kf-rows { display: flex; flex-direction: column; border-top: 1px solid var(--ln); }
+  .kf-rows div { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; padding: 14px 0; border-bottom: 1px solid var(--ln); }
+  .kf-rows span { color: var(--t3); }
+  .kf-rows b { font-size: 17px; }
+  .kf-rows em { flex-basis: 100%; font-style: normal; font-size: 13.5px; color: var(--t3); text-align: right; }
+  .kf-rows-big b { font-size: 19px; }
+  .kf-mono { font-family: var(--font-mono); font-weight: 500; }
+  .kf-term { font-size: 14px; }
+  .kf-trio { flex-direction: row; align-items: stretch; gap: 14px; }
+  .kf-fact { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; justify-content: center; padding: 24px; border-radius: 14px; background: var(--g2); border: 1px solid var(--ln); }
+  .kf-fact b { font-family: var(--font-display); font-weight: 800; font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; color: var(--acc); }
+  .kf-fact b.kf-mono { font-family: var(--font-mono); font-size: clamp(16px, 1.6vw, 21px); letter-spacing: 0; }
+  .kf-fact p { margin: 0; color: var(--t2); line-height: 1.5; }
+
+  .kf-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  .kf-way { background: var(--g2); border: 1px solid var(--ln); border-radius: 22px; padding: 30px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .kf-way p { margin: 0; color: var(--t2); line-height: 1.6; }
+  .kf-way code { font: 0.9em var(--font-mono); color: var(--t1); }
+  .kf-way .kf-hi { color: var(--acc); }
+  .kf-way .pp-term { font-size: 13px; }
+  .kf-way-tag { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; font: 500 12px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); border: 1px solid var(--ln2); border-radius: 999px; padding: 6px 12px; }
+  .kf-way-doze { color: #f0a24b; border-color: rgba(240, 162, 75, 0.4); }
+  .kf-way-tag img { border-radius: 5px; }
+
+  .kf-not { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+  .kf-not .pp-head { margin-bottom: 0; }
+  .kf-not-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .kf-not-list li { padding: 18px 20px 18px 50px; position: relative; border-radius: 14px; background: var(--g); border: 1px solid var(--ln); color: var(--t2); font-size: 17px; }
+  .kf-not-list li::before { content: "—"; position: absolute; left: 20px; color: var(--t3); }
+  .kf-not-list b { color: var(--t1); font-weight: 600; }
+
+  .kf-inst { background: var(--acc); color: var(--acc-ink); border-radius: 28px; padding: 48px; display: flex; justify-content: space-between; align-items: center; gap: 32px; }
+  .kf-inst-say { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 0; max-width: 720px; }
+  .kf-inst-h { margin: 0 0 8px; font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 3.6vw, 44px); letter-spacing: -0.025em; line-height: 1.05; }
+  .kf-inst-k { font-weight: 600; font-size: 15px; margin-top: 4px; }
+  .kf-inst :global(.pp-cmd) { background: #16150f; border-color: #16150f; }
+  .kf-inst-more { font-size: 15px; }
+  .pp .kf-inst-more a { color: var(--acc-ink); text-decoration: underline; font-weight: 600; display: inline-flex; min-height: 44px; align-items: center; }
+  .kf-inst-icon { width: 132px; height: 132px; border-radius: 30px; box-shadow: 0 0 0 3px var(--acc-ink); flex: none; }
+  .kf-tm { margin-top: -64px; padding-bottom: 40px; }
+
+  @media (max-width: 1000px) {
+    .kf-hero, .kf-two, .kf-not { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .kf-cta { flex-direction: column; align-items: stretch; width: 100%; }
+    .kf-way { padding: 22px; }
+    .kf-inst { padding: 26px; }
+    .kf-inst-icon { display: none; }
+    .kf-trio { flex-direction: column; }
+    .kf-fact { padding: 16px; gap: 6px; }
+    .kf-pills li { padding: 8px 12px; font-size: 13.5px; }
+    .kf-rows div { padding: 10px 0; }
+    .kf-rows b, .kf-rows-big b { font-size: 15px; }
+    .kf-rows em { text-align: left; }
+    .kf-term { font-size: 12px; }
+    .kf-opt { display: none !important; }
+    .kf-fact p { font-size: 14px; }
+    .kf-panel { gap: 14px; }
+    .kf-wide :global(.pp-vc .vc-frame), .kf-wide :global(.pp-vc .vc-frame > [data-slide]) { height: min(700px, 88vh); }
+  }
 </style>
