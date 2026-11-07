@@ -6,7 +6,9 @@ don't, and so can you. We sell the evening: the laptop closed, nothing still
 running, the fan silent, you gone home. Every claim about rest is paid off with
 a number or a thing you can check (OrbStack's rule): asleep means no process.
 
-Family line: **Work hard. Then close the lid.**
+Headline (home): **Local development that just works.** Chosen 2026-11-07 by the owner: the old headline read as work-life-balance advice, not a reason to use a dev tool.
+
+Sign-off, not the pitch: **Work hard. Then close the lid.** Used only as a closing line (footer, the end of On rest and Tuesday), after the product has been explained.
 Product line (doze): Run your whole stack. Feel none of it.
 
 ## Architecture: a family of three independent products
