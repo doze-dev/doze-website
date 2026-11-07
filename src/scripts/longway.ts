@@ -26,7 +26,7 @@ function init(lw: HTMLElement) {
     on: "awake",
     sleep: "asleep| · wakes when called",
     pause: "paused| on your breakpoint",
-    down: "down",
+    down: "crashing| on start",
   };
   let current: HTMLElement | null = null;
 
@@ -46,6 +46,7 @@ function init(lw: HTMLElement) {
     const id = d.step ?? "";
     const was = st.dataset.d;
     st.dataset.step = id;
+    st.dataset.ch = d.ch ?? "";
     st.dataset.fan = d.fan ?? "0";
     st.dataset.lid = d.lid ?? "open";
     st.dataset.light = d.light ?? "";

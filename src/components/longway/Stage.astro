@@ -45,13 +45,13 @@ const fan = [
 
     {things.map((t, i) => (
       <div class={`lw-chip${i === 0 ? " lw-ed" : ""}`} data-t={t.id} style={`--i:${i};--d:0`}>
-        <i class="lw-dot"></i><span>{t.name}</span>
+        <i class="lw-dot"></i><span class="g">{t.name}</span><span class="lx">{t.home}</span>
       </div>
     ))}
 
     {things.map((t, i) => (
       <div class="lw-addr" style={`--i:${i}`} data-in={on(["h-a", "h-d"])} data-addr={t.id}>
-        <b>{t.id === "ed" ? "your editor" : `${t.id}.shop.doze`}</b><em data-word></em>
+        <b>{t.id === "ed" ? "your editor" : `${t.home}.larder.doze`}</b><em data-word></em>
       </div>
     ))}
 
@@ -267,24 +267,27 @@ memory=2Gi, used: memory=7Gi, limited: memory=8Gi</b></pre>
 
     <!-- home -->
     <div class="lw-card lw-l" data-in={on("h-a")}>
-      <div class="lw-ct">doze.hcl</div>
-<pre class="lw-cb">stack = "shop"
-module db "postgres" &#123; version = 18 &#125;
-module queue "redis" &#123; version = 9 &#125;
-app "api" &#123;
-  run  = "go run ./api"
-  port = 8080
-  env  = &#123; DATABASE_URL = module.db.url &#125;
+      <div class="lw-ct">doze.hcl · Larder, our made-up example</div>
+<pre class="lw-cb">stack = "larder"
+module postgres "postgres" &#123;
+  version = 18   <i>…</i>
+&#125;
+app "catalog" &#123;
+  run   = "go run ./services/catalog"
+  port  = 8002
+  ready = http("/healthz")   <i>…</i>
 &#125;</pre>
     </div>
     <div class="lw-card lw-r lw-sec" data-in={on("h-a")}>
       <div class="lw-ct">Terminal</div>
 <pre class="lw-cb"><i>$</i> doze up
-<u>✓</u> db awake
-<u>✓</u> queue awake
-<u>✓</u> api awake
-<u>✓</u> worker awake
-<u>✓</u> web awake
+<u>✓</u> postgres awake
+<u>✓</u> valkey awake
+<u>✓</u> kafka awake
+<u>✓</u> migrate-catalog done
+<i>  ⋮</i>
+<u>✓</u> gateway awake
+<u>✓</u> storefront awake
 <i>›</i> up — supervised in the background.</pre>
     </div>
     <div class="lw-card lw-w lw-shot" data-in={on("h-b")}>
@@ -292,15 +295,15 @@ app "api" &#123;
       <img src="/media/app-map.webp" alt="" width="1440" height="900" loading="lazy" decoding="async" />
     </div>
     <div class="lw-card lw-l" data-in={on("h-c")}>
-      <div class="lw-ct">orders.go — api</div>
-<pre class="lw-cb lw-ed2"><i>40</i>  total := sum(lines)
-<i>41</i>  tax := taxFor(customer, total)
-<em><i>42</i>  return Invoice&#123;total, tax, total + tax&#125;</em></pre>
-      <div class="lw-paused">Paused on breakpoint · orders.go:42</div>
+      <div class="lw-ct">services/catalog/main.go — larder</div>
+<pre class="lw-cb lw-ed2"><i>159</i>  if tag.RowsAffected() == 0 &#123;
+<em><i>160</i>    short = l.SKU</em><i>161</i>    return errors.New("out of stock")</pre>
+      <div class="lw-paused">Paused on breakpoint · main.go:160</div>
     </div>
     <div class="lw-card lw-r lw-sec lw-browser" data-in={on("h-c")}>
       <div class="lw-ct"><span class="lw-url lw-lock">https://dev.acme.com</span></div>
-<pre class="lw-cb">app "web" &#123;
+<pre class="lw-cb"><i># the one line you'd add to Larder's storefront</i>
+app "storefront" &#123;
   domains = ["dev.acme.com"]
 &#125;
 <i>$</i> doze trust   <i># once, one admin prompt</i></pre>
@@ -308,16 +311,16 @@ app "api" &#123;
     <div class="lw-card lw-l lw-chat" data-in={on("h-d")}>
       <div class="lw-ct">Assistant</div>
       <div class="lw-msgs">
-        <p class="me">why is the api returning 502?</p>
-        <p class="tool">ran <code>doze status</code> · <code>doze logs api</code></p>
-        <p class="ai">api is crashing on start: DATABASE_URL in .env.local points at a cluster that isn't there any more. Remove that line?</p>
+        <p class="me">why is the gateway returning 502?</p>
+        <p class="tool">ran <code>doze status</code> · <code>doze logs gateway</code></p>
+        <p class="ai">gateway crashes on start: CATALOG_URL in .env.local points at the old cluster. Remove that line?</p>
       </div>
     </div>
     <div class="lw-card lw-r lw-sec lw-chat" data-in={on("h-d")}>
       <div class="lw-ct"># platform</div>
       <div class="lw-msgs">
         <p class="o"><b>platform</b> shipped: the new deploy pipeline 🚀</p>
-        <p class="o"><b>platform</b> next up: preview builds in half the time</p>
+        <p class="o"><b>platform</b> next up: faster preview builds</p>
       </div>
     </div>
   </div>

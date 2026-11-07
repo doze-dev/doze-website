@@ -199,10 +199,11 @@ const end = { ...b("h-e", false), "data-step": "end" };
           <article class="lw-beat" {...b("h-a")}>
             <h2 class="lw-era-h" id="lw-hh"><span>The way home · doze</span>Bring it home.</h2>
             <p>doze runs the whole stack on your machine as native processes. Postgres is a process. Your API is a process. One file in the repo, <code>doze.hcl</code>, says what runs and what it needs, and <code>doze.lock</code> pins the versions for everyone.</p>
+            <p>Here that's Larder, our made-up grocery example: real code, seven services in Go, Python and TypeScript, a gateway and a web shop, on Postgres, Valkey, Kafka and AWS.</p>
             <p><code>doze up</code>. Everything comes back. Between you and your running code: nothing, again.</p>
           </article>
           <article class="lw-beat" {...b("h-b")}>
-            <p>Everything sleeps until it's called. Two minutes with no connections and a service goes to sleep; the next connection wakes it. At rest, doze is one daemon of about 15 MB, <a href="/docs/doze/guides/resource-footprint/">measured here</a>.</p>
+            <p>Everything sleeps until it's called. Two minutes with no connections and a service goes to sleep; the next connection wakes it. At rest it's one daemon: it held 27.1 MB on our Mac, and 1.3 MB more after 100,000 log lines (<code>make bench</code>).</p>
             <p>And the app shows all of it: what's awake, what's asleep, and what woke what.</p>
           </article>
           <article class="lw-beat" {...b("h-c")}>
@@ -439,6 +440,8 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-addr em { font-style: normal; color: var(--lw-dim); }
 .lw-addr em::after { content: attr(data-more); }
 .lw-addr[data-addr="ed"] b { color: var(--lw-amber); }
+.lw-chip .lx, .lw-stage[data-ch="home"] .lw-chip .g { display: none; }
+.lw-stage[data-ch="home"] .lw-chip .lx { display: inline; }
 
 /* ── Stage: the cards ── */
 .lw-cards { flex: 0 0 auto; height: clamp(150px, 27%, 220px); position: relative; }
@@ -568,7 +571,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
 
 /* ── Phone: the stage pinned on top, the beats beneath ── */
 @media (max-width: 900px) {
-  .lw { --rail-h: 52px; --stage-h: 58svh; --b0: 22; --bw: 13; --r0: 11; --rs: 15; }
+  .lw { --rail-h: 52px; --stage-h: 58svh; --b0: 26; --bw: 12.333; --r0: 11; --rs: 15; }
   .lw-rail { padding: 0 6px; gap: 0; background: rgba(12, 8, 16, 0.96); }
   .lw-rail-t { display: none; }
   .lw-rail ol { flex: 1; justify-content: space-between; gap: 0; margin: 0; }
@@ -599,7 +602,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
   .lw-lt-h { left: 0; right: 0; top: auto; bottom: 3px; text-align: center; font-size: 11px; letter-spacing: 0.02em; text-transform: none; }
   .lw-lid .lw-fan { display: none; }
   .lw-lt-idle { display: none; }
-  .lw-chip { gap: 4px; padding: 3px 5px; font-size: 11px; letter-spacing: -0.03em; }
+  .lw-chip { gap: 3px; padding: 3px 4px; font-size: 11px; letter-spacing: -0.04em; }
   .lw-dot { width: 6px; height: 6px; }
   .lw-ed .lw-dot { height: 10px; }
   .lw-person { top: 37%; }

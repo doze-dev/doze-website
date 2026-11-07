@@ -385,6 +385,7 @@ const pains = [
           <li><b>Nobody's pager is involved.</b> Your stack is down when you closed the lid, not when someone else's cluster is.</li>
           <li><b>Platform teams build the platform</b> instead of babysitting dev boxes.</li>
         </ul>
+        <a class="dz-moved-link" href="/the-long-way-round/">Take the long way round <span aria-hidden="true">→</span></a>
       </article>
     </div>
   </section>
@@ -524,6 +525,9 @@ const pains = [
   .dz-moved-fix li { padding: 14px 16px 14px 44px; position: relative; border-radius: 12px; background: var(--g2); border: 1px solid var(--ln); color: var(--t2); line-height: 1.5; }
   .dz-moved-fix li::before { content: "✓"; position: absolute; left: 16px; top: 14px; color: var(--ok); font-weight: 700; }
   .dz-moved-fix b { color: var(--t1); }
+  .dz-moved-link { grid-column: 1 / -1; justify-self: start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--acc); font-weight: 600; text-decoration: none; }
+  .dz-moved-link:hover span { transform: translateX(4px); }
+  .dz-moved-link span { transition: transform var(--t-mid) var(--ease-out); }
 
   .dz-poly-head, .dz-inst-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
   .dz-poly-head .pp-head, .dz-inst-head .pp-head { margin-bottom: 0; }

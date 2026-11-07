@@ -9,14 +9,16 @@
 export type Light = "warm" | "pale" | "steel" | "cold" | "frost" | "ice" | "dusk" | "home" | "night";
 export type State = "on" | "sleep" | "pause" | "down";
 
-/** The things on the map, in row order: the editor, then the stack. */
+/** The things on the map, in row order: the editor, then the stack. Before
+ *  doze it's "your app" in generic names; at home it's Larder, the made-up
+ *  example the whole site uses (doze-examples/larder), with its real names. */
 export const things = [
-  { id: "ed", name: "editor" },
-  { id: "web", name: "web" },
-  { id: "api", name: "api" },
-  { id: "worker", name: "worker" },
-  { id: "db", name: "db" },
-  { id: "queue", name: "queue" },
+  { id: "ed", name: "editor", home: "editor" },
+  { id: "web", name: "web", home: "storefront" },
+  { id: "api", name: "api", home: "gateway" },
+  { id: "worker", name: "worker", home: "catalog" },
+  { id: "db", name: "db", home: "postgres" },
+  { id: "queue", name: "queue", home: "valkey" },
 ] as const;
 
 export interface Step {
@@ -179,7 +181,7 @@ export const steps: Step[] = [
     light: "home",
     fan: 0,
     d: local,
-    s: ["sleep", "on", "sleep", "on", "sleep"],
+    s: ["sleep", "sleep", "on", "on", "sleep"],
     chain: [],
     wait: "nobody",
     bill: 0,
@@ -190,7 +192,7 @@ export const steps: Step[] = [
     light: "home",
     fan: 0,
     d: local,
-    s: ["sleep", "pause", "sleep", "on", "sleep"],
+    s: ["sleep", "sleep", "pause", "on", "sleep"],
     chain: [],
     wait: "nobody",
     bill: 0,
@@ -201,7 +203,7 @@ export const steps: Step[] = [
     light: "home",
     fan: 0,
     d: local,
-    s: ["on", "on", "sleep", "on", "sleep"],
+    s: ["sleep", "down", "sleep", "on", "sleep"],
     chain: [],
     wait: "nobody",
     bill: 0,
