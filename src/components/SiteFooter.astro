@@ -1,5 +1,5 @@
 ---
-// The family footer: the moon, the family line, and the three products as equals.
+// The family footer: the family mark (the bat across the moon), the family line, and the three products as equals.
 import type { Theme } from "./SiteHeader.astro";
 
 interface Props {
@@ -47,7 +47,7 @@ const cols = [
     ],
   ],
 ] as const;
-const moon = theme === "light" ? "/brand/family-moon-ink.svg" : "/brand/family-moon.svg";
+const moon = theme === "light" ? "/brand/family-ink.svg" : "/brand/family.svg";
 ---
 <footer class={`sf sf-${theme}`}>
   <div class="sf-cols">

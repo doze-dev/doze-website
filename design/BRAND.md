@@ -12,9 +12,15 @@ Sign-off, not the pitch: **Work hard. Then close the lid.** Used only as a closi
 Product line (doze): Run your whole stack. Feel none of it.
 
 ## Architecture: a family of three independent products
-- The family is **doze** (doze-dev.com). Its mark is the **moon** (public/brand/family-moon.svg:
-  amber on night; family-moon-ink.svg: plum on daylight). The moon appears only
-  for the family: site header, footer, brand page, the manifesto. Never inside a product.
+- The family is **doze** (doze-dev.com). Its mark is **the bat across the moon**: the
+  products' sleeping bat, with no tile and no prop, in front of a full moon
+  (public/brand/family.svg: plum bat on an amber moon, for night; family-ink.svg: amber
+  bat on a plum moon, for daylight). Chosen 2026-11-07 by the owner over the crescent
+  moon it replaces. The round moon keeps it apart from the products' rounded-square
+  tiles, so the doze app's icon is never read as the family's. It appears only for the
+  family: site header, footer, favicon, the manifesto, the ends of the stories. Never
+  inside a product. A moon in a night-sky illustration (Tuesday, the long way round) is
+  scenery, not the mark: family-moon.svg stays for that.
 - The products are equals, each with its own icon and colour, and each works alone:
   **doze** (the bat on amber, /brand/doze.svg), **doze AWS** (sky, /brand/doze-aws.svg),
   **doze Kafka** (yellow, /brand/doze-kafka.svg). When the product doze and the family
@@ -24,7 +30,7 @@ Product line (doze): Run your whole stack. Feel none of it.
   - doze AWS: Wakes AWS on your laptop. No account, no bill.
   - doze Kafka: Wakes a Kafka broker. No JVM to put to bed.
 - Every product page carries the endorsement: "Part of the doze family. Works alone."
-- Navigation: the moon + "doze" wordmark, then Products ▾ (three product cards with
+- Navigation: the family mark + "doze" wordmark, then Products ▾ (three product cards with
   icon, line and links to page and docs), Story, Registry, Docs, Changelog; GitHub; "Get doze".
 - Postgres extensions are part of the postgres module, not a registry section.
 
@@ -40,7 +46,7 @@ reuse: "Your laptop deserves an evening too." · "Rest is a feature." ·
 Night palette (plum #140C1B ground, amber #F0A24B lamp) with warm paper daylight
 for docs and the registry. Time of day is a design material: dusk→night as the
 home page scrolls, the Tuesday story told by light. A fine grain on night
-grounds (CSS). Real product UI as proof; illustration only for the moon and the
+grounds (CSS). Real product UI as proof; illustration only for the bats, the night-sky moon and the
 product mascots. Bricolage Grotesque / Geist / JetBrains Mono.
 
 ## Motion
@@ -48,7 +54,7 @@ product mascots. Bricolage Grotesque / Geist / JetBrains Mono.
   durations 120 / 200 / 280 ms; one slow 800 ms "settle" reserved for things falling asleep.
 - Only transform and opacity. Never animate keyboard-initiated actions or copy buttons.
 - Signature: things that sleep breathe (a slow 4 s pulse of a status dot), wake with a snap
-  on interaction; the moon waxes on hover of the family mark.
+  on interaction; the bat swings on its perch on hover of the family mark.
 - Sections reveal once as they enter (fade + 12px rise, 280 ms), never re-animate.
 - Sequences (a tour, the services, the "small things") use a vertical carousel with dot
   navigation: scroll-snap inside a pinned frame, dots as real buttons, keyboard and swipe.

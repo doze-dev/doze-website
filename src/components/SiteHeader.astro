@@ -1,5 +1,5 @@
 ---
-// The family header: the moon (the doze family's mark, never a product's), then
+// The family header: the bat across the moon (the doze family's mark, never a product's), then
 // the three products as equals under Products, then the family's own pages.
 export type Theme = "dark" | "light" | "aws" | "kafka";
 interface Props {
@@ -42,7 +42,7 @@ const family = [
   ["changelog", "Changelog", "/changelog/"],
 ] as const;
 const inProduct = products.some((p) => p.id === current);
-const moon = theme === "light" ? "/brand/family-moon-ink.svg" : "/brand/family-moon.svg";
+const moon = theme === "light" ? "/brand/family-ink.svg" : "/brand/family.svg";
 ---
 <header class={`sh sh-${theme}`}>
   <div class="sh-in">
@@ -107,7 +107,8 @@ const moon = theme === "light" ? "/brand/family-moon-ink.svg" : "/brand/family-m
   .sh a:focus-visible, .sh summary:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
   .sh-mark { display: flex; align-items: center; gap: 10px; min-height: 44px; color: var(--i); font: 800 23px/1 var(--font-display); letter-spacing: -0.02em; }
   .sh-moon { transition: transform 600ms var(--ease-settle, ease); }
-  @media (prefers-reduced-motion: no-preference) { .sh-mark:hover .sh-moon { transform: rotate(-18deg) scale(1.06); } }
+  /* The bat swings on its perch. */
+  @media (prefers-reduced-motion: no-preference) { .sh-mark:hover .sh-moon { transform: rotate(-12deg) scale(1.06); } }
   .sh-nav { display: flex; align-items: center; gap: 24px; flex: 1; }
   .sh-nav > a, .sh-prod summary { font-size: 15px; padding: 6px 2px; border-bottom: 2px solid transparent; color: var(--i2); }
   .sh-nav > a:hover, .sh-nav > a[aria-current="page"], .sh-prod summary:hover, .sh-prod[open] summary, .sh-prod summary[aria-current="page"] { color: var(--i); }
