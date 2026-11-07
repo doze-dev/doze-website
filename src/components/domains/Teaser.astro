@@ -1,0 +1,74 @@
+---
+// "Your own domain, over https. One line." A teaser for /doze/domains/, on
+// the home page and the doze page. Facts: docs/cli/domains.md (the block,
+// doze trust, the wildcard) and doze-names/ingress.go (the front door on 443).
+interface Props {
+  id?: string;
+  class?: string;
+}
+const { id = "domains", class: cls = "" } = Astro.props;
+const hosts = ["dev.acme.com", "larder.dev.acme.com", "corner.dev.acme.com"];
+---
+<section class:list={["dt", cls]} id={id} aria-labelledby={`${id}-h`}>
+  <div class="dt-in" data-reveal>
+    <div class="dt-say">
+      <p class="dt-kicker">Your own domain</p>
+      <h2 class="dt-h2" id={`${id}-h`}>Your own domain, over https. One line.</h2>
+      <p class="dt-p">Sign-in providers won’t send you back to <code>localhost</code> subdomains or <code>.test</code>. Cookies, CORS and HSTS care which host they’re on. So put your real dev domain in doze.hcl, run <code>doze trust</code> once, and <b>https://dev.acme.com</b> is your laptop, padlock and every tenant subdomain included. No proxy to configure, no hosts file, no port in the URL.</p>
+      <a class="dt-link" href="/doze/domains/">How your own domain works <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="dt-show">
+      <pre class="dt-code" aria-label="An app block in doze.hcl with two domains, then doze trust"><span class="k">app</span> <span class="s">"web"</span> &#123;
+  run     = <span class="s">"pnpm dev"</span>
+  port    = <span class="n">3000</span>
+  <mark>domains = [<span class="s">"dev.acme.com"</span>, <span class="s">"*.dev.acme.com"</span>]</mark>
+&#125;
+
+<span class="d">$</span> doze trust   <span class="d"># once: one password prompt</span></pre>
+      <ul class="dt-bars" aria-label="Names it serves over https">
+        {hosts.map((h, i) => (
+          <li style={`--i:${i}`}>
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.8" fill="currentColor" /><path d="M5.3 7V5.2a2.7 2.7 0 0 1 5.4 0V7" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
+            <span><span class="d">https://</span>{h}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .dt-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 40px 64px; align-items: center; padding: clamp(28px, 5vw, 60px); border-radius: 28px; background: radial-gradient(80% 120% at 100% 0%, rgba(139, 227, 155, 0.09), transparent 60%), radial-gradient(70% 120% at 0% 100%, rgba(240, 162, 75, 0.12), transparent 60%), #1a1023; border: 1px solid var(--line); }
+  .dt-kicker { margin: 0 0 14px; font: 600 13px/1 var(--font-text); letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); }
+  .dt-h2 { margin: 0; font: 700 clamp(30px, 3.8vw, 50px)/1.04 var(--font-display); letter-spacing: -0.035em; text-wrap: balance; color: var(--text); }
+  .dt-p { margin: 18px 0 0; font-size: 17px; line-height: 1.6; color: var(--text-2); text-wrap: pretty; }
+  .dt-p b { color: var(--text); font-weight: 600; }
+  .dt-p code { font: 0.88em var(--font-mono); color: var(--text); font-variant-ligatures: none; }
+  .dt-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 14px; font-weight: 600; color: var(--amber); text-decoration: none; }
+  .dt-link span { transition: transform var(--t-mid) var(--ease-out); }
+  .dt-link:hover span { transform: translateX(4px); }
+  .dt-link:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 8px; }
+  .dt-show { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .dt-code { margin: 0; padding: 20px 22px; border-radius: 16px; background: #0d0811; border: 1px solid var(--line); font: 14px/1.75 var(--font-mono); color: var(--text); overflow-x: auto; font-variant-ligatures: none; }
+  .dt-code .k { color: var(--amber); }
+  .dt-code .s { color: #e9deef; }
+  .dt-code .n { color: #8fbdff; }
+  .dt-code .d, .dt-bars .d { color: var(--text-3); }
+  .dt-code mark { background: rgba(139, 227, 155, 0.12); color: inherit; border-radius: 4px; padding: 1px 3px; margin: 0 -3px; }
+  .dt-bars { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .dt-bars li { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 16px; border-radius: 999px; background: #f1eef3; color: #1f2420; font: 14px var(--font-text); white-space: nowrap; overflow: hidden; }
+  .dt-bars li svg { color: #2a6a3a; flex: none; }
+  .dt-bars li .d { color: #8b8592; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.rv.is-in) .dt-bars li { animation: dt-in var(--t-slow) var(--ease-out) calc(300ms + var(--i) * 140ms) both; }
+  }
+  @keyframes dt-in { from { opacity: 0; transform: translateY(8px); } }
+  @media (max-width: 900px) {
+    .dt-in { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .dt-in { padding: 24px 18px; border-radius: 22px; }
+    .dt-code { font-size: 12px; padding: 16px; }
+    .dt-bars li { font-size: 13px; }
+  }
+</style>

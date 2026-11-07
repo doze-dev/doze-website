@@ -1,0 +1,338 @@
+---
+// The pinned stage of "The long way round": a map of distance. Band 0 is
+// your laptop; each band to the right (below, on a phone) is one more wall
+// between you and your running code. The editor and five services sit in a
+// band per step; tethers run from you to them; the meter on top counts the
+// walls; the cards underneath are the evidence for each step. Every layer is
+// painted from the beat in view (see steps.ts), so any step is a complete
+// picture. Decorative: the beats beside it say everything in words.
+import { on, things } from "./steps";
+
+const fan = [
+  "M20 20 C 18 12, 20 5, 26 5 C 30 6, 27 14, 20 20Z",
+  "M20 20 C 28 18, 35 20, 35 26 C 34 30, 26 27, 20 20Z",
+  "M20 20 C 22 28, 20 35, 14 35 C 10 34, 13 26, 20 20Z",
+  "M20 20 C 12 22, 5 20, 5 14 C 6 10, 14 13, 20 20Z",
+];
+---
+<div class="lw-stage" aria-hidden="true" data-stage>
+  <div class="lw-meter">
+    <div class="lw-meter-n">
+      <small>Between you and your running code</small>
+      <span><b data-hops>0</b> <em data-hops-word>walls</em></span>
+    </div>
+    <ol class="lw-chain" data-chain></ol>
+  </div>
+
+  <div class="lw-map">
+    {[1, 2, 3, 4, 5, 6].map((k) => (
+      <div class="lw-band" style={`--k:${k}`} data-band={k}><span data-band-label></span></div>
+    ))}
+
+    <div class="lw-laptop">
+      <div class="lw-lid">
+        <span class="lw-lt-h">your laptop</span>
+        <svg class="lw-fan" viewBox="0 0 40 40"><g class="a"><g class="b"><g class="c">{fan.map((d) => <path d={d} />)}</g></g></g><circle cx="20" cy="20" r="3" /></svg>
+        <span class="lw-lt-idle" data-in={on(["t-a", "t-b"])}>mostly idle</span>
+      </div>
+      <img class="lw-moon" src="/brand/family-moon.svg" alt="" width="48" height="48" data-in={on("h-e")} />
+    </div>
+
+    <svg class="lw-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <line data-line="you" />
+      {things.slice(1).map((t) => <line data-line={t.id} />)}
+    </svg>
+
+    {things.map((t, i) => (
+      <div class={`lw-chip${i === 0 ? " lw-ed" : ""}`} data-t={t.id} style={`--i:${i};--d:0`}>
+        <i class="lw-dot"></i><span>{t.name}</span>
+      </div>
+    ))}
+
+    {things.map((t, i) => (
+      <div class="lw-addr" style={`--i:${i}`} data-in={on(["h-a", "h-d"])} data-addr={t.id}>
+        <b>{t.id === "ed" ? "your editor" : `${t.id}.shop.doze`}</b><em data-word></em>
+      </div>
+    ))}
+
+    <div class="lw-person" data-person>
+      <svg viewBox="0 0 40 40"><circle class="h" cx="20" cy="13" r="7" /><path class="b" d="M6 38c1-9 7-14 14-14s13 5 14 14z" /><circle class="ring" cx="20" cy="20" r="18" /></svg>
+      <span>platform team</span>
+      <b class="lw-page">paged</b>
+    </div>
+  </div>
+
+  <div class="lw-cards">
+    <!-- 01 the README -->
+    <div class="lw-card lw-paper lw-l" data-in={on(["cold", "r1b"])}>
+      <div class="lw-ct">README.md</div>
+<pre class="lw-cb"><b>## Getting started</b>
+brew install postgres redis node
+brew services start postgres
+createdb shop
+npm run dev   <i># → localhost:3000</i></pre>
+    </div>
+    <div class="lw-card lw-r lw-sec" data-in={on("cold", "r1a")}>
+      <div class="lw-ct">Terminal</div>
+<pre class="lw-cb"><i>$</i> npm run dev
+ready on <u>http://localhost:3000</u>
+<i>›</i> saved api/orders.ts · reloaded</pre>
+    </div>
+    <div class="lw-card lw-r" data-in={on("r1b")}>
+      <div class="lw-ct">Terminal · the new hire's laptop</div>
+<pre class="lw-cb"><i>$</i> createdb shop
+<b>createdb: error: connection to server on socket
+"/tmp/.s.PGSQL.5432" failed: No such file or directory</b>
+<i>$ # “works on my machine” — the README's author</i></pre>
+    </div>
+
+    <!-- 02 the VM -->
+    <div class="lw-card lw-l" data-in={on(["vm-a", "vm-b"])}>
+      <div class="lw-ct">Terminal</div>
+<pre class="lw-cb"><i>$</i> vm up
+==&gt; Booting the VM…
+==&gt; Provisioning: postgres, redis, node…
+<i>    (go and make a coffee)</i>
+<u>==&gt; Machine ready.</u></pre>
+    </div>
+    <div class="lw-card lw-r lw-sec" data-in={on("vm-b")}>
+      <div class="lw-ct">Activity · memory</div>
+      <div class="lw-mem">
+        <p><span>shop VM</span><i style="--w:.62"></i><em>reserved</em></p>
+        <p><span>billing VM</span><i style="--w:.62"></i><em>reserved</em></p>
+        <p><span>client VM</span><i style="--w:.62"></i><em>reserved</em></p>
+        <p><span>you</span><i style="--w:.14"></i><em>what's left</em></p>
+      </div>
+    </div>
+
+    <!-- 03 compose -->
+    <div class="lw-card lw-l" data-in={on("c-a")}>
+      <div class="lw-ct">compose.yaml</div>
+<pre class="lw-cb"><b>services:</b>
+  db:     &#123; image: postgres:16 &#125;
+  queue:  &#123; image: redis:7 &#125;
+  api:    &#123; build: ./api, ports: ["8080:8080"] &#125;
+  worker: &#123; build: ./worker &#125;
+  web:    &#123; build: ./web, volumes: ["./web:/app"] &#125;</pre>
+    </div>
+    <div class="lw-card lw-r lw-sec" data-in={on("c-a")}>
+      <div class="lw-ct">Terminal</div>
+<pre class="lw-cb"><i>$</i> docker compose up -d
+<u> ✔</u> Container shop-db-1      Started
+<u> ✔</u> Container shop-queue-1   Started
+<u> ✔</u> Container shop-api-1     Started
+<u> ✔</u> Container shop-worker-1  Started
+<u> ✔</u> Container shop-web-1     Started</pre>
+    </div>
+    <div class="lw-card lw-l" data-in={on("c-b")}>
+      <div class="lw-ct">Terminal · web</div>
+<pre class="lw-cb"><i>$</i> # reload waits on the file mount, so:
+<i>$</i> docker compose stop web
+<i>$</i> cd web && npm run dev   <i># back outside</i>
+<u>ready on http://localhost:3000</u></pre>
+    </div>
+    <div class="lw-card lw-r lw-sec" data-in={on("c-b")}>
+      <div class="lw-ct">Activity · the VM</div>
+      <div class="lw-mem">
+        <p><span>the VM</span><i style="--w:.7"></i><em>always on</em></p>
+        <p><span>used today</span><i style="--w:.2"></i><em>by you</em></p>
+      </div>
+    </div>
+    <div class="lw-card lw-w" data-in={on("c-c")}>
+      <div class="lw-ct">Debug · attach to api (in a container)</div>
+<pre class="lw-cb">host: 0.0.0.0   port: 9229
+pathMap: <i>/app</i> → <i>~/code/shop/api</i>
+<b>● Breakpoint set but not yet bound</b>   orders.ts:42
+<i>— is the debug port published? is the path right? —</i></pre>
+    </div>
+
+    <!-- 04 the cluster -->
+    <div class="lw-card lw-l" data-in={on("k-a")}>
+      <div class="lw-ct">chart/ · to say hello world</div>
+<pre class="lw-cb">Chart.yaml        values.yaml      values-dev.yaml
+templates/
+  deployment.yaml   service.yaml     ingress.yaml
+  configmap.yaml    secret.yaml      hpa.yaml
+  _helpers.tpl      NOTES.txt</pre>
+    </div>
+    <div class="lw-card lw-r lw-sec" data-in={on("k-a")}>
+      <div class="lw-ct">Terminal</div>
+<pre class="lw-cb"><i>$</i> kubectl get pods
+NAME          READY   STATUS
+api-7c9d…     0/1     <b>ContainerCreating</b>
+db-0          0/1     <b>Pending</b></pre>
+    </div>
+    <div class="lw-card lw-w" data-in={on("k-b")}>
+      <div class="lw-ct">Terminal · four tabs of these</div>
+<pre class="lw-cb"><i>$</i> kubectl -n dev-you port-forward svc/api 8080:80
+Forwarding from 127.0.0.1:8080 -&gt; 80
+<i>$</i> kubectl -n dev-you port-forward svc/postgres 5432:5432
+<b>Unable to listen on port 5432: bind: address already in use</b>
+<i>$</i> # save → sync → rebuild, somewhere else
+syncing 214 files → dev-you … done · rebuilding api (remote) …</pre>
+    </div>
+    <div class="lw-card lw-l" data-in={on("k-c")}>
+      <div class="lw-ct">Debug · attach to api (in the cluster)</div>
+<pre class="lw-cb">waiting for debugger on 127.0.0.1:9229 …
+<b>timed out</b>
+<i>$</i> kubectl port-forward pod/api-7c9d… 9229
+<i># and the debugger again</i></pre>
+    </div>
+    <div class="lw-card lw-r lw-sec" data-in={on("k-c")}>
+      <div class="lw-ct">Logs · in the other tool</div>
+<pre class="lw-cb"><i>query:</i> namespace="dev-you" app="api"
+<i>  ⋮</i> loading…</pre>
+    </div>
+
+    <!-- 05 the cloud -->
+    <div class="lw-card lw-w lw-browser" data-in={on("cl-a")}>
+      <div class="lw-ct"><span class="lw-url">dev-you.devbox.example.com — editor</span></div>
+<pre class="lw-cb"><i>41</i>  const tax = taxFor(customer, total);
+<i>42</i>  return &#123; total, tax, due: total + ta<span class="lw-cur"></span>
+<span class="lw-recon"><span></span>Reconnecting… your last keystrokes are on their way</span></pre>
+    </div>
+    <div class="lw-card lw-l" data-in={on("cl-b")}>
+      <div class="lw-ct">Environments</div>
+      <div class="lw-envs">
+        <p><i class="g"></i>pr-1482 · preview<em>up · by the hour</em></p>
+        <p><i class="g"></i>pr-1490 · preview<em>up · by the hour</em></p>
+        <p><i class="g"></i>pr-1501 · preview<em>up · by the hour</em></p>
+        <p><i class="r"></i>staging · shared<em>broken</em></p>
+      </div>
+    </div>
+    <div class="lw-card lw-r lw-sec lw-chat" data-in={on("cl-b")}>
+      <div class="lw-ct"># dev</div>
+      <div class="lw-msgs">
+        <p class="o"><b>Sam</b> who broke staging?</p>
+        <p class="o"><b>Ana</b> not me, my migration ran yesterday</p>
+        <p class="o"><b>Ana</b> …oh</p>
+      </div>
+    </div>
+
+    <!-- 06 the platform -->
+    <div class="lw-card lw-l lw-ticket" data-in={on("pl-a")}>
+      <div class="lw-ct">PLAT-2214</div>
+      <div class="lw-tk">
+        <b>Need a Postgres database for billing-v2</b>
+        <p><span>Status</span><em>Waiting for platform</em></p>
+        <p><span>Assignee</span><em>Unassigned</em></p>
+        <p><span>Requested</span><em>Monday</em></p>
+      </div>
+    </div>
+    <div class="lw-card lw-r lw-sec lw-chat" data-in={on("pl-a")}>
+      <div class="lw-ct"># platform</div>
+      <div class="lw-msgs">
+        <p class="o"><b>you</b> any update on PLAT-2214?</p>
+        <p class="o"><b>platform</b> it's in the queue 🙏</p>
+      </div>
+    </div>
+    <div class="lw-card lw-l" data-in={on("pl-b")}>
+      <div class="lw-ct">Terminal</div>
+<pre class="lw-cb"><i>$</i> kubectl -n dev-you rollout restart deploy/api
+<b>exceeded quota: dev-you-quota, requested:
+memory=2Gi, used: memory=7Gi, limited: memory=8Gi</b></pre>
+    </div>
+    <div class="lw-card lw-r lw-sec" data-in={on("pl-b")}>
+      <div class="lw-ct">This week</div>
+      <div class="lw-envs">
+        <p><i></i>Thu · Dev environment cost review<em>all teams</em></p>
+        <p><i></i>New hire, day 4<em>access: 3 of 7</em></p>
+        <p><i></i>VPN, cluster, dev box, secrets<em>pending</em></p>
+      </div>
+    </div>
+    <div class="lw-card lw-l lw-chat lw-down" data-in={on(["pl-c", "t-b"])}>
+      <div class="lw-ct"># platform</div>
+      <div class="lw-msgs">
+        <p class="bot"><b>status</b> Dev environments degraded. Investigating. No ETA.</p>
+        <p class="bot"><b>on-call</b> Production incident first. Will update.</p>
+      </div>
+    </div>
+    <div class="lw-card lw-r lw-sec lw-chat" data-in={on("pl-c")}>
+      <div class="lw-ct">Assistant</div>
+      <div class="lw-msgs">
+        <p class="me">why is the api returning 502?</p>
+        <p class="ai">I can read the repo, but I can't reach the cluster from here. Can you paste the pod logs?</p>
+      </div>
+    </div>
+
+    <!-- meanwhile -->
+    <div class="lw-card lw-r lw-sec" data-in={on(["t-a", "t-b"])}>
+      <div class="lw-ct">Activity · your laptop</div>
+      <div class="lw-mem">
+        <p><span>browser</span><i style="--w:.16"></i><em>a tab of a dev box</em></p>
+        <p><span>video call</span><i style="--w:.22"></i><em>“any ETA?”</em></p>
+        <p><span>everything else</span><i style="--w:.03"></i><em>idle</em></p>
+      </div>
+    </div>
+
+    <!-- home -->
+    <div class="lw-card lw-l" data-in={on("h-a")}>
+      <div class="lw-ct">doze.hcl</div>
+<pre class="lw-cb">stack = "shop"
+module db "postgres" &#123; version = 18 &#125;
+module queue "redis" &#123; version = 9 &#125;
+app "api" &#123;
+  run  = "go run ./api"
+  port = 8080
+  env  = &#123; DATABASE_URL = module.db.url &#125;
+&#125;</pre>
+    </div>
+    <div class="lw-card lw-r lw-sec" data-in={on("h-a")}>
+      <div class="lw-ct">Terminal</div>
+<pre class="lw-cb"><i>$</i> doze up
+<u>✓</u> db awake
+<u>✓</u> queue awake
+<u>✓</u> api awake
+<u>✓</u> worker awake
+<u>✓</u> web awake
+<i>›</i> up — supervised in the background.</pre>
+    </div>
+    <div class="lw-card lw-w lw-shot" data-in={on("h-b")}>
+      <div class="lw-ct">doze · the map</div>
+      <img src="/media/app-map.webp" alt="" width="1440" height="900" loading="lazy" decoding="async" />
+    </div>
+    <div class="lw-card lw-l" data-in={on("h-c")}>
+      <div class="lw-ct">orders.go — api</div>
+<pre class="lw-cb lw-ed2"><i>40</i>  total := sum(lines)
+<i>41</i>  tax := taxFor(customer, total)
+<em><i>42</i>  return Invoice&#123;total, tax, total + tax&#125;</em></pre>
+      <div class="lw-paused">Paused on breakpoint · orders.go:42</div>
+    </div>
+    <div class="lw-card lw-r lw-sec lw-browser" data-in={on("h-c")}>
+      <div class="lw-ct"><span class="lw-url lw-lock">https://dev.acme.com</span></div>
+<pre class="lw-cb">app "web" &#123;
+  domains = ["dev.acme.com"]
+&#125;
+<i>$</i> doze trust   <i># once, one admin prompt</i></pre>
+    </div>
+    <div class="lw-card lw-l lw-chat" data-in={on("h-d")}>
+      <div class="lw-ct">Assistant</div>
+      <div class="lw-msgs">
+        <p class="me">why is the api returning 502?</p>
+        <p class="tool">ran <code>doze status</code> · <code>doze logs api</code></p>
+        <p class="ai">api is crashing on start: DATABASE_URL in .env.local points at a cluster that isn't there any more. Remove that line?</p>
+      </div>
+    </div>
+    <div class="lw-card lw-r lw-sec lw-chat" data-in={on("h-d")}>
+      <div class="lw-ct"># platform</div>
+      <div class="lw-msgs">
+        <p class="o"><b>platform</b> shipped: the new deploy pipeline 🚀</p>
+        <p class="o"><b>platform</b> next up: preview builds in half the time</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lw-strip">
+    <div class="lw-st">
+      <svg class="lw-fan" viewBox="0 0 40 40"><g class="a"><g class="b"><g class="c">{fan.map((d) => <path d={d} />)}</g></g></g><circle cx="20" cy="20" r="3" /></svg>
+      <span><small>Fan</small><b data-fan-word>off</b></span>
+    </div>
+    <div class="lw-st lw-st-wait">
+      <span><small>Waiting on</small><b data-wait>nobody</b></span>
+    </div>
+    <div class="lw-st">
+      <span class="lw-bill"><i></i><i></i><i></i></span>
+      <span><small>Extra bill</small><b data-bill-word>none</b></span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,323 @@
+---
+// The domains page's hero: a browser, drawn, that types https://dev.acme.com,
+// gets a padlock, loads the app, then goes to a tenant under the wildcard.
+// dev.acme.com is the example name doze's own docs and app use
+// (docs/cli/domains.md, internal/desk/view/home.go). The certificate line is
+// doze-names/ca.go: the root is "doze local CA", a leaf lives 30 days and is
+// renewed a week before it ends. The tenant shop is drawn from Larder's
+// storefront (doze-examples/larder/apps/storefront) and its seed catalogue.
+//
+// Without script the last state shows. The sequence runs once, when the
+// window is on screen; the buttons below switch names at once (a crossfade
+// for a pointer, nothing for a key), and Replay runs it again. With reduced
+// motion there is no typing, only the buttons.
+interface Props {
+  class?: string;
+}
+const { class: cls = "" } = Astro.props;
+const names = [
+  { url: "https://dev.acme.com", host: "dev.acme.com", title: "Acme · Sign in", say: "the app itself" },
+  {
+    url: "https://larder.dev.acme.com",
+    host: "larder.dev.acme.com",
+    title: "Larder",
+    say: "a tenant, under *.dev.acme.com",
+  },
+];
+const products = [
+  ["Fairtrade bananas", "6 pack", "£0.95", "ban"],
+  ["Braeburn apples", "4 pack", "£1.60", "apl"],
+  ["Ripe & ready avocados", "2 pack", "£1.99", "avo"],
+  ["Vine cherry tomatoes", "250g", "£1.85", "tom"],
+  ["Baby spinach", "200g", "£1.50", "spn"],
+  ["Maris Piper potatoes", "2kg", "£1.75", "pot"],
+  ["Carrots", "1kg", "£0.70", "car"],
+  ["Unwaxed lemons", "4 pack", "£1.30", "lem"],
+];
+const last = names.length - 1;
+---
+<figure class:list={["db", cls]} data-db>
+  <div class="db-win" aria-hidden="true">
+    <div class="db-tabs">
+      <i></i><i></i><i></i>
+      <span class="db-tab"><span class="db-fav" data-db-fav></span><span data-db-title>{names[last].title}</span></span>
+    </div>
+    <div class="db-tool">
+      <span class="db-nav">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M13 8a5 5 0 1 1-1.6-3.7M13 2.5v3h-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </span>
+      <div class="db-addr">
+        <span class="db-lock" data-db-lock><svg viewBox="0 0 16 16" width="14" height="14"><rect x="3" y="7" width="10" height="7.5" rx="1.8" fill="currentColor" /><path d="M5.3 7V5.2a2.7 2.7 0 0 1 5.4 0V7" fill="none" stroke="currentColor" stroke-width="1.6" /></svg></span>
+        <span class="db-url"><span data-db-url>{names[last].url}</span><span class="db-caret" data-db-caret></span></span>
+      </div>
+    </div>
+    <div class="db-prog" data-db-prog></div>
+    <div class="db-view">
+      <div class="db-blank" data-db-blank></div>
+
+      <!-- dev.acme.com: the app, asking you to sign in -->
+      <div class="db-page db-acme" data-db-page="0" hidden>
+        <div class="db-acme-bar"><b>acme</b><span>dev</span></div>
+        <div class="db-acme-card">
+          <b>Sign in to Acme</b>
+          <span class="db-acme-btn">Continue with Google</span>
+          <span class="db-acme-btn db-acme-btn-2">Continue with email</span>
+          <code>redirect URI · https://dev.acme.com/auth/callback</code>
+        </div>
+      </div>
+
+      <!-- larder.dev.acme.com: a tenant's shop -->
+      <div class="db-page db-larder" data-db-page="1">
+        <div class="db-l-bar"><b>Larder</b><span class="db-l-tag">groceries at your door within the hour</span><span class="db-l-nav"><span>Orders</span><span>Basket</span><span>Sign in</span></span></div>
+        <div class="db-l-main">
+          <div class="db-l-chips"><span class="on">Fruit &amp; veg</span><span>Bakery</span><span>Dairy &amp; eggs</span><span>Pantry</span><span>Drinks</span></div>
+          <div class="db-l-grid">
+            {products.map(([n, u, p, k]) => (
+              <div class="db-l-card">
+                <div class={`db-l-img db-l-${k}`}></div>
+                <b>{n}</b>
+                <span class="db-l-row"><span>{u}</span><span class="db-l-p">{p}</span></span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="db-cert" data-db-cert hidden>
+        <b><svg viewBox="0 0 16 16" width="12" height="12"><rect x="3" y="7" width="10" height="7.5" rx="1.8" fill="currentColor" /><path d="M5.3 7V5.2a2.7 2.7 0 0 1 5.4 0V7" fill="none" stroke="currentColor" stroke-width="1.6" /></svg> Connection is secure</b>
+        <span>Issued by <code>doze local CA</code>, trusted on this Mac</span>
+        <span>Valid 30 days; doze renews it a week before</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="db-ctl">
+    <div class="db-names" role="group" aria-label="Show the browser at">
+      {names.map((n, i) => <button type="button" data-db-go={i} aria-pressed={i === last ? "true" : "false"}><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.8" fill="currentColor" /><path d="M5.3 7V5.2a2.7 2.7 0 0 1 5.4 0V7" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>{n.host}</button>)}
+    </div>
+    <button type="button" class="db-replay" data-db-replay hidden>Replay</button>
+  </div>
+  <figcaption class="db-cap"><span data-db-say aria-live="polite">{names[last].url}: {names[last].say}.</span> <span class="db-cap-dim">A drawing of what you see, on your laptop, with the stack up.</span></figcaption>
+</figure>
+
+<script define:vars={{ names }}>
+  for (const root of document.querySelectorAll("[data-db]")) {
+    const $ = (s) => root.querySelector(s);
+    const url = $("[data-db-url]");
+    const caret = $("[data-db-caret]");
+    const lock = $("[data-db-lock]");
+    const prog = $("[data-db-prog]");
+    const blank = $("[data-db-blank]");
+    const title = $("[data-db-title]");
+    const fav = $("[data-db-fav]");
+    const cert = $("[data-db-cert]");
+    const say = $("[data-db-say]");
+    const replay = $("[data-db-replay]");
+    const pages = [...root.querySelectorAll("[data-db-page]")];
+    const btns = [...root.querySelectorAll("[data-db-go]")];
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let run = 0;
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+    const show = (i, fade) => {
+      pages.forEach((p, j) => {
+        p.hidden = j !== i;
+        p.classList.toggle("db-in", fade && j === i);
+      });
+      blank.hidden = i >= 0;
+      fav.dataset.on = String(i);
+      if (i < 0) return;
+      url.textContent = names[i].url;
+      title.textContent = names[i].title;
+      lock.classList.add("on");
+      say.textContent = `${names[i].url}: ${names[i].say}.`;
+      btns.forEach((b, j) => b.setAttribute("aria-pressed", String(j === i)));
+    };
+    const type = async (text, me) => {
+      caret.classList.add("on");
+      for (let k = 1; k <= text.length; k++) {
+        if (me !== run) return false;
+        url.textContent = text.slice(0, k);
+        await wait(k < 9 ? 38 : 62);
+      }
+      await wait(260);
+      caret.classList.remove("on");
+      return me === run;
+    };
+    const load = async (i, me) => {
+      prog.classList.remove("go");
+      void prog.offsetWidth;
+      prog.classList.add("go");
+      await wait(420);
+      if (me !== run) return false;
+      show(i, true);
+      return true;
+    };
+    const sequence = async () => {
+      const me = ++run;
+      replay.hidden = true;
+      cert.hidden = true;
+      show(-1, false);
+      url.textContent = "";
+      lock.classList.remove("on");
+      title.textContent = "New tab";
+      await wait(500);
+      if (!(await type(names[0].url, me))) return;
+      if (!(await load(0, me))) return;
+      await wait(900);
+      if (me !== run) return;
+      cert.hidden = false;
+      cert.classList.add("db-in");
+      await wait(2400);
+      if (me !== run) return;
+      cert.hidden = true;
+      await wait(500);
+      lock.classList.remove("on");
+      if (!(await type(names[1].url, me))) return;
+      if (!(await load(1, me))) return;
+      replay.hidden = false;
+    };
+
+    btns.forEach((b, i) =>
+      b.addEventListener("click", (e) => {
+        run++;
+        caret.classList.remove("on");
+        cert.hidden = true;
+        show(i, !still && e.detail > 0);
+        replay.hidden = still;
+      }),
+    );
+    replay.addEventListener("click", () => sequence());
+
+    if (!still && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            io.disconnect();
+            sequence();
+          }
+        },
+        { threshold: 0.45 },
+      );
+      io.observe(root);
+    }
+  }
+</script>
+
+<style>
+  .db { margin: 0; }
+  .db-win { position: relative; border-radius: 14px; overflow: hidden; background: #fff; border: 1px solid rgba(244, 236, 228, 0.16); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 40px 120px -20px rgba(0, 0, 0, 0.75); color: #1f2420; font-family: var(--font-text); }
+  .db-tabs { display: flex; align-items: flex-end; gap: 8px; height: 38px; padding: 0 12px; background: #dcd8e0; }
+  .db-tabs > i { align-self: center; width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; flex: none; }
+  .db-tabs > i:nth-child(2) { background: #febc2e; }
+  .db-tabs > i:nth-child(3) { background: #28c840; margin-right: 10px; }
+  .db-tab { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 14px; max-width: 240px; border-radius: 9px 9px 0 0; background: #f6f4f7; font-size: 12.5px; color: #3a3540; white-space: nowrap; overflow: hidden; }
+  .db-fav { width: 14px; height: 14px; border-radius: 4px; background: #2f6b3a; flex: none; }
+  .db-fav[data-on="0"] { background: #2b2fa8; }
+  .db-fav[data-on="-1"] { background: #c9c4cf; }
+  .db-tool { display: flex; align-items: center; gap: 12px; height: 46px; padding: 0 14px; background: #f6f4f7; border-bottom: 1px solid #e3dfe6; }
+  .db-nav { display: flex; gap: 10px; color: #8b8592; flex: none; }
+  .db-addr { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 999px; background: #ebe8ee; font: 14px var(--font-text); color: #1f2420; }
+  .db-lock { display: inline-flex; flex: none; color: #8b8592; opacity: 0; transform: scale(0.6); transition: opacity var(--t-mid) var(--ease-out), transform var(--t-mid) var(--ease-out); }
+  .db-lock.on { opacity: 1; transform: none; color: #2a6a3a; }
+  .db-url { display: inline-flex; align-items: center; min-width: 0; white-space: nowrap; overflow: hidden; font-variant-ligatures: none; }
+  .db-caret { width: 1.5px; height: 17px; margin-left: 1px; background: #3a63d8; opacity: 0; }
+  .db-caret.on { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .db-caret.on { animation: db-blink 1s steps(1) infinite; }
+  }
+  @keyframes db-blink { 50% { opacity: 0; } }
+  .db-prog { height: 2px; background: #3a63d8; transform: scaleX(0); transform-origin: 0 50%; opacity: 0; }
+  .db-prog.go { animation: db-prog 520ms var(--ease-out) both; }
+  @keyframes db-prog { 0% { opacity: 1; transform: scaleX(0); } 80% { opacity: 1; transform: scaleX(1); } 100% { opacity: 0; transform: scaleX(1); } }
+  .db-view { position: relative; height: clamp(300px, 36vw, 470px); background: #faf7f0; overflow: hidden; }
+  .db-blank { position: absolute; inset: 0; background: #fbfafc; }
+  .db-page { position: absolute; inset: 0; }
+  .db-page[hidden], .db-blank[hidden], .db-cert[hidden] { display: none; }
+  .db-in { animation: db-in var(--t-slow) var(--ease-out) both; }
+  @keyframes db-in { from { opacity: 0; } }
+
+  /* the app itself: a sign-in page */
+  .db-acme { background: radial-gradient(70% 70% at 50% 0%, #eef0ff, #f8f8fb 70%); display: flex; flex-direction: column; }
+  .db-acme-bar { display: flex; align-items: baseline; gap: 8px; padding: 16px 28px; border-bottom: 1px solid #e6e6ee; }
+  .db-acme-bar b { font: 800 20px var(--font-display); letter-spacing: -0.03em; color: #2b2fa8; }
+  .db-acme-bar span { font: 600 11px var(--font-mono); color: #6b6f86; padding: 2px 6px; border-radius: 5px; background: #e9eaf5; }
+  .db-acme-card { margin: auto; width: min(340px, 86%); display: flex; flex-direction: column; gap: 10px; padding: 26px; border-radius: 14px; background: #fff; border: 1px solid #e3e3ec; box-shadow: 0 18px 40px -18px rgba(30, 30, 80, 0.25); }
+  .db-acme-card > b { font: 700 20px var(--font-display); letter-spacing: -0.02em; color: #15172e; margin-bottom: 4px; }
+  .db-acme-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 40px; border-radius: 9px; border: 1px solid #d4d5e2; font-size: 14px; font-weight: 600; color: #15172e; }
+  .db-acme-btn-2 { color: #4a4d66; font-weight: 500; }
+  .db-acme-card code { margin-top: 6px; font: 11px var(--font-mono); color: #6b6f86; overflow-wrap: anywhere; }
+
+  /* the tenant: Larder's shop window */
+  .db-larder { background: #faf7f0; color: #1f2420; }
+  .db-l-bar { display: flex; align-items: baseline; gap: 14px; padding: 14px 28px; background: #2f6b3a; color: #fff; white-space: nowrap; }
+  .db-l-bar b { font: 700 22px system-ui, sans-serif; }
+  .db-l-tag { font-size: 13px; opacity: 0.85; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .db-l-nav { margin-left: auto; display: flex; gap: 16px; font-size: 13px; }
+  .db-l-main { padding: 18px 28px; }
+  .db-l-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .db-l-chips span { padding: 5px 12px; border-radius: 999px; border: 1px solid #e4dfd3; background: #fff; font-size: 12px; }
+  .db-l-chips .on { background: #2f6b3a; border-color: #2f6b3a; color: #fff; }
+  .db-l-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .db-l-card { display: flex; flex-direction: column; gap: 4px; padding: 9px; border-radius: 8px; background: #fff; border: 1px solid #e4dfd3; min-width: 0; }
+  .db-l-card b { font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .db-l-row { display: flex; justify-content: space-between; font-size: 11.5px; color: #6b716c; }
+  .db-l-p { color: #1f2420; font-weight: 600; }
+  .db-l-img { aspect-ratio: 16 / 7; border-radius: 6px; background: #f1ece0; position: relative; overflow: hidden; }
+  .db-l-img::after { content: ""; position: absolute; left: 50%; top: 50%; width: 24%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); }
+  .db-l-ban { background: #fbf2cf; } .db-l-ban::after { width: 32%; aspect-ratio: 2.2; border-radius: 0 0 999px 999px; background: #f2c94c; }
+  .db-l-apl::after { background: #c9403a; }
+  .db-l-avo { background: #e7eedc; } .db-l-avo::after { aspect-ratio: 0.75; border-radius: 50% 50% 46% 46%; background: #4f7a2e; }
+  .db-l-tom { background: #f8e1dc; } .db-l-tom::after { width: 14%; background: #d9412f; box-shadow: 20px 4px 0 0 #e0503c, -18px 6px 0 0 #c93a2a; }
+  .db-l-spn { background: #e4efdc; } .db-l-spn::after { width: 14%; aspect-ratio: 0.6; background: #3f7d32; transform: translate(-50%, -50%) rotate(35deg); }
+  .db-l-pot { background: #f1e9db; } .db-l-pot::after { width: 22%; aspect-ratio: 1.35; background: #c9a36a; }
+  .db-l-car { background: #fbe8d6; } .db-l-car::after { width: 8%; aspect-ratio: 0.3; border-radius: 999px 999px 40% 40%; background: #ec7f2c; transform: translate(-50%, -50%) rotate(28deg); }
+  .db-l-lem { background: #fbf4d2; } .db-l-lem::after { aspect-ratio: 1.3; background: #f1d23a; }
+
+  /* the padlock's word on it */
+  .db-cert { position: absolute; top: 10px; left: 64px; z-index: 3; display: flex; flex-direction: column; gap: 6px; width: min(320px, calc(100% - 80px)); padding: 14px 16px; border-radius: 12px; background: #fff; border: 1px solid #ddd8e2; box-shadow: 0 18px 40px -12px rgba(20, 10, 30, 0.35); font-size: 12.5px; color: #4a4552; }
+  .db-cert b { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #2a6a3a; }
+  .db-cert code { font: 12px var(--font-mono); color: #1f2420; }
+
+  /* the names, as buttons */
+  .db-ctl { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; }
+  .db-names { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 4px; border-radius: 14px; background: rgba(14, 8, 20, 0.55); border: 1px solid rgba(244, 236, 228, 0.12); }
+  .db-names button, .db-replay { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 10px; background: transparent; color: var(--text-2); font: 500 14px var(--font-mono); cursor: pointer; font-variant-ligatures: none; }
+  .db-names button svg { color: #8be39b; }
+  .db-names button[aria-pressed="true"] { background: rgba(244, 236, 228, 0.1); color: var(--text); }
+  .db-names button:hover, .db-replay:hover { color: var(--text); }
+  .db-replay { font-family: var(--font-text); font-weight: 600; border: 1px solid rgba(244, 236, 228, 0.16); }
+  .db-replay[hidden] { display: none; }
+  .db-names button:focus-visible, .db-replay:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .db-cap { margin: 14px auto 0; max-width: 700px; text-align: center; font-size: 14px; color: var(--text-2); }
+  .db-cap-dim { color: var(--text-3); }
+
+  @media (max-width: 900px) {
+    .db-l-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .db-l-card:nth-child(n + 7) { display: none; }
+    .db-l-tag { display: none; }
+  }
+  @media (max-width: 560px) {
+    .db-tabs { height: 30px; }
+    .db-tabs > i { width: 9px; height: 9px; }
+    .db-tab { height: 24px; font-size: 11px; padding: 0 10px; }
+    .db-tool { height: 40px; gap: 8px; padding: 0 8px; }
+    .db-nav { display: none; }
+    .db-addr { height: 28px; font-size: 12.5px; padding: 0 10px; }
+    .db-view { height: 330px; }
+    .db-l-bar { padding: 10px 14px; }
+    .db-l-bar b { font-size: 18px; }
+    .db-l-nav { gap: 10px; font-size: 11.5px; }
+    .db-l-nav span:nth-child(-n + 2) { display: none; }
+    .db-l-main { padding: 12px 14px; }
+    .db-l-chips span:nth-child(n + 4) { display: none; }
+    .db-l-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .db-l-card:nth-child(n + 5) { display: none; }
+    .db-acme-bar { padding: 12px 16px; }
+    .db-acme-card { padding: 18px; }
+    .db-cert { left: 12px; width: calc(100% - 24px); }
+    .db-names button { font-size: 12.5px; padding: 0 10px; }
+  }
+</style>

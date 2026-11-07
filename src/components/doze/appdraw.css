@@ -1,0 +1,257 @@
+/* Drawn stand-ins for doze app screens that have no capture yet. The colours
+   are the app's own default theme (violet, dark: internal/desk/frontend/src/
+   tokens.css) and the words are the app's own (pages/library.tsx, empty.tsx,
+   overview.tsx), so a drawing reads as the app, and is labelled as drawn.
+   Shared by src/components/doze/FirstStack.astro and the domains page. */
+
+.ad {
+  --a-bg: #15131d;
+  --a-side: #110f18;
+  --a-panel: #1b1927;
+  --a-line: #2c2840;
+  --a-line2: #37324b;
+  --a-text: #cfcbe3;
+  --a-dim: #9893b5;
+  --a-bright: #f4f1ff;
+  --a-acc: #bd93f9;
+  --a-good: #7ee787;
+  --a-cool: #82aaff;
+  --a-warn: #f2c879;
+  --a-track: #262236;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--a-bg);
+  border: 1px solid var(--a-line2);
+  box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.7);
+  color: var(--a-text);
+  font: 400 12px / 1.4 var(--font-text);
+  text-align: left;
+  user-select: none;
+}
+.ad * {
+  box-sizing: border-box;
+}
+.ad-tb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  background: var(--a-side);
+  border-bottom: 1px solid var(--a-line);
+  flex: none;
+}
+.ad-tb > i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff5f57;
+  flex: none;
+}
+.ad-tb > i:nth-child(2) {
+  background: #febc2e;
+}
+.ad-tb > i:nth-child(3) {
+  background: #28c840;
+}
+.ad-tab {
+  margin-left: 10px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--a-dim);
+  white-space: nowrap;
+}
+.ad-tab.on {
+  background: var(--a-panel);
+  color: var(--a-bright);
+}
+.ad-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  flex: 1;
+  min-height: 0;
+}
+.ad-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.ad-head h4 {
+  margin: 0;
+  font: 650 16px / 1.2 var(--font-text);
+  color: var(--a-bright);
+}
+.ad-path {
+  font: 11px var(--font-mono);
+  color: var(--a-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.ad-grow {
+  flex: 1;
+}
+.ad-mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+}
+.ad-dim {
+  color: var(--a-dim);
+}
+.ad-bright {
+  color: var(--a-bright);
+}
+.ad-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--a-dim);
+  flex: none;
+}
+.ad-dot.g {
+  background: var(--a-good);
+}
+.ad-dot.c {
+  background: var(--a-cool);
+}
+.ad-dot.y {
+  background: var(--a-warn);
+}
+.ad-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 7px;
+  border: 1px solid var(--a-line2);
+  background: var(--a-panel);
+  color: var(--a-bright);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ad-btn.pri {
+  background: var(--a-acc);
+  border-color: var(--a-acc);
+  color: var(--a-bg);
+}
+.ad-btn kbd {
+  font: 10px var(--font-mono);
+  opacity: 0.75;
+}
+.ad-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  border: 1px solid color-mix(in srgb, var(--a-cool) 50%, var(--a-panel));
+  background: color-mix(in srgb, var(--a-cool) 10%, var(--a-panel));
+}
+.ad-banner .ad-t {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.ad-banner b {
+  color: var(--a-bright);
+  font-weight: 600;
+}
+.ad-banner span {
+  color: var(--a-dim);
+  font-size: 11px;
+}
+.ad-sw {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--a-dim);
+  background: var(--a-track);
+  flex: none;
+}
+.ad-sw::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--a-dim);
+}
+.ad-sw.on {
+  background: var(--a-acc);
+  border-color: var(--a-acc);
+}
+.ad-sw.on::after {
+  left: 18px;
+  background: var(--a-bg);
+}
+.ad-sw.sm {
+  width: 26px;
+  height: 14px;
+}
+.ad-sw.sm::after {
+  width: 8px;
+  height: 8px;
+}
+.ad-sw.sm.on::after {
+  left: 14px;
+}
+.ad-card {
+  border: 1px solid var(--a-line);
+  border-radius: 10px;
+  background: var(--a-panel);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ad-card h5 {
+  margin: 0;
+  font: 600 10.5px var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--a-dim);
+}
+.ad-kv {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 0;
+  border-top: 1px solid var(--a-line);
+}
+.ad-kv:first-of-type {
+  border-top: 0;
+}
+.ad-kv > span:first-child {
+  color: var(--a-dim);
+}
+.ad-kv code {
+  font: 11px var(--font-mono);
+  color: var(--a-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ad-kv code.d {
+  color: var(--a-dim);
+}
+.ad-copy {
+  font-size: 10.5px;
+  color: var(--a-acc);
+}

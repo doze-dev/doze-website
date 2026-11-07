@@ -3,6 +3,8 @@
 // then a guided tour of the app, then "everything is a command too", one
 // file, the pains it fixes, any language, compared, install.
 import "../components/product/product.css";
+import DomainsTeaser from "../components/domains/Teaser.astro";
+import FirstStack from "../components/doze/FirstStack.astro";
 import MenuBar from "../components/doze/MenuBar.astro";
 import { maybe, pick } from "../components/doze/media";
 import Themes from "../components/doze/Themes.astro";
@@ -195,7 +197,7 @@ const pains = [
 ---
 <Page title="doze, the app" description="doze wakes your stack when you start and sleeps it when you stop. A Mac app first, every switch a command too: Postgres, Kafka, a local AWS and your own services, native, no VM." current="doze">
 <div class="pp pp-doze dz">
-  <SubNav name="doze" icon="/brand/doze.svg" links={[["The app", "#app"], ["Commands", "#cli"], ["One file", "#file"], ["Why", "#why"], ["Any language", "#polyglot"], ["Compared", "#compare"], ["Install", "#install"], ["Docs", "/docs/doze/"]]} />
+  <SubNav name="doze" icon="/brand/doze.svg" links={[["First stack", "#start"], ["The app", "#app"], ["Commands", "#cli"], ["One file", "#file"], ["Why", "#why"], ["Any language", "#polyglot"], ["Your domain", "/doze/domains/"], ["Compared", "#compare"], ["Install", "#install"], ["Docs", "/docs/doze/"]]} />
 
   <!-- Hero: the product's own identity, then the window, big -->
   <section class="pp-hero dz-hero">
@@ -217,6 +219,13 @@ const pains = [
         {media.hero.pending && <> <span class="pp-pending">stand-in {demo} · {media.hero.pending} pending</span></>}</p>
     </div>
   </section>
+
+  <!-- Your first stack, in the app: before the tour, the way in -->
+  <div class="pp-sec dz-first">
+    <div class="pp-wrap dz-first-in">
+      <FirstStack id="start" title="Drop a folder. Flip a switch." sub="Before the tour, the way in: from a fresh install to a running stack in three steps, all in the window." />
+    </div>
+  </div>
 
   <!-- The app, a guided tour -->
   <section class="pp-sec dz-tour" id="app">
@@ -340,6 +349,13 @@ const pains = [
     </div>
   </section>
 
+  <!-- Your own domain, over https -->
+  <div class="pp-sec dz-dom">
+    <div class="pp-wrap">
+      <DomainsTeaser id="dz-domains" />
+    </div>
+  </div>
+
   <!-- The pains, and what doze does about each -->
   <section class="pp-sec pp-sec-tint" id="why">
     <div class="pp-wrap">
@@ -432,21 +448,27 @@ const pains = [
       </div>
       <div class="dz-inst">
         <div class="dz-inst-app" data-reveal>
-          <img src="/brand/doze.svg" alt="" width="56" height="56" />
-          <h3 class="pp-h3">The Mac app</h3>
-          <p>The menu bar app with the CLI inside, for Apple silicon. One password prompt sets up .doze names.</p>
-          <a class="pp-btn dz-btn-ink" href="/download/">Get the doze app</a>
+          <div class="dz-inst-top">
+            <img src="/brand/doze.svg" alt="" width="56" height="56" />
+            <div>
+              <span class="dz-inst-k">Start here</span>
+              <h3 class="pp-h3">Get the app</h3>
+            </div>
+          </div>
+          <p>Doze.app for Apple silicon: the window, the bat in your menu bar, and <code>doze</code> on your PATH, always the same version as the app. Open it and the Library walks you through your first stack; its Machine line offers one password prompt, for .doze names.</p>
+          <div class="dz-inst-do">
+            <a class="pp-btn dz-btn-ink" href="/download/">Download for Mac</a>
+            <div class="dz-inst-cmd"><Cmd cmd="brew install --cask doze-dev/tap/doze" label="Copy the app install command" /></div>
+          </div>
+          <span class="dz-inst-fine">macOS 14 or later, M1 and newer · signed and notarised · <a href="/download/#first-launch">what the first launch changes</a></span>
         </div>
         <div class="dz-inst-card" data-reveal>
-          <h3 class="pp-h3">Homebrew</h3>
-          <Cmd cmd="brew install --cask doze-dev/tap/doze" label="Copy the app install command" />
+          <span class="dz-inst-k2">Second</span>
+          <h3 class="pp-h3">Just the command line</h3>
+          <p>For servers, CI and terminal people: the same <code class="dz-c">doze</code>, no window. Install the formula or the cask, not both: they conflict.</p>
           <Cmd cmd="brew install doze-dev/tap/doze" label="Copy the CLI install command" />
-          <span class="pp-small">The first installs the app; the second, the CLI alone.</span>
-        </div>
-        <div class="dz-inst-card" data-reveal>
-          <h3 class="pp-h3">Linux</h3>
-          <p>x86_64 and arm64: Homebrew, mise or a tarball. On Windows, WSL2 works.</p>
-          <a class="pp-btn pp-btn-ghost dz-inst-go" href="/download/">Linux install options</a>
+          <p class="dz-inst-lx">Linux x86_64 and arm64: Homebrew, mise or a tarball. On Windows, WSL2.</p>
+          <a class="pp-btn pp-btn-ghost dz-inst-go" href="/download/">Every way to install</a>
         </div>
       </div>
     </div>
@@ -466,7 +488,9 @@ const pains = [
   .dz-cta-cmd { width: min(460px, 100%); }
   .dz-hero-win { max-width: 1280px; margin: 64px auto 0; padding: 0 32px; }
 
-  .dz-tour { padding-top: 140px; }
+  .dz-first { padding-top: 140px; }
+  .dz-first-in { max-width: 1340px; }
+  .dz-tour { padding-top: 120px; }
   .dz-tour > .pp-wrap { max-width: 1340px; }
   .dz-drawn { height: 100%; max-width: 100%; }
   .dz-c { font-family: var(--font-mono); font-size: 0.9em; color: var(--acc); }
@@ -521,11 +545,20 @@ const pains = [
   .dz-cmp tbody td:last-child { color: var(--t3); }
   .dz-cmp tbody tr { border-top: 1px solid var(--ln); }
 
-  .dz-inst { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; }
-  .dz-inst-app { background: var(--acc); color: var(--acc-ink); border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .dz-inst { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 16px; }
+  .dz-inst-app { background: var(--acc); color: var(--acc-ink); border-radius: 22px; padding: 32px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; min-width: 0; }
+  .dz-inst-top { display: flex; align-items: center; gap: 16px; }
   .dz-inst-app img { width: 56px; height: 56px; border-radius: 14px; box-shadow: 0 0 0 2px var(--acc-ink); }
-  .dz-inst-app p { margin: 0; line-height: 1.6; }
-  .pp .dz-btn-ink { background: var(--acc-ink); color: var(--t1); margin-top: auto; }
+  .dz-inst-k, .dz-inst-k2 { display: block; font: 600 12px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+  .dz-inst-k2 { color: var(--t3); }
+  .dz-inst-app p { margin: 0; line-height: 1.6; font-size: 16.5px; max-width: 40rem; }
+  .dz-inst-app p code { font: 0.9em var(--font-mono); }
+  .dz-inst-do { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; width: 100%; }
+  .dz-inst-cmd { flex: 1 1 320px; min-width: 0; padding: 4px; border-radius: 14px; background: var(--acc-ink); }
+  .dz-inst-fine { font-size: 14px; }
+  .pp .dz-inst-fine a { color: var(--acc-ink); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
+  .dz-inst-lx { font-size: 14.5px; }
+  .pp .dz-btn-ink { background: var(--acc-ink); color: var(--t1); }
   .pp .dz-btn-ink:hover { background: #3a2448; color: #fff; }
   .dz-inst-card { background: var(--g2); border: 1px solid var(--ln); border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
   .dz-inst-card p { margin: 0; color: var(--t2); line-height: 1.6; }
@@ -541,7 +574,8 @@ const pains = [
     .dz-hero-win { padding: 0 12px; margin-top: 44px; }
     .dz-cta { flex-direction: column; align-items: stretch; width: 100%; }
     .dz-cta-cmd { width: 100%; }
-    .dz-tour { padding-top: 96px; }
+    .dz-first { padding-top: 88px; }
+    .dz-tour { padding-top: 88px; }
     .dz-drawn { aspect-ratio: auto; height: auto; }
     .dz-pains, .dz-langs { grid-template-columns: minmax(0, 1fr); }
     .dz-moved { padding: 24px; }

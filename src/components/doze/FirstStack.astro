@@ -1,0 +1,340 @@
+---
+// Your first stack, in the app: open doze, drop your repo folder, flip Up.
+// Every word in the drawings is the app's own (internal/desk/frontend/src/
+// pages/library.tsx, empty.tsx and overview.tsx; internal/display/empty.go;
+// internal/desk/view/library.go's Getting started steps), and what doze
+// "found" is what internal/detect reports for Larder's gateway folder
+// (doze-examples/larder/apps/gateway), run against the current detector:
+// the Where column is detect's own wording. detect reads the folder you
+// drop, not its subfolders, so Larder's root alone finds nothing; the
+// drawing drops one service's folder, as it was before Larder had a doze.hcl.
+//
+// A step shows a capture when one exists in public/media (the names below),
+// and a drawing labelled as one until then: drop the file in and it swaps.
+import "./appdraw.css";
+import { maybe } from "./media";
+
+interface Props {
+  id?: string;
+  kicker?: string;
+  title?: string;
+  sub?: string;
+  class?: string;
+}
+const {
+  id = "first-stack",
+  kicker = "Your first stack, in the app",
+  title = "Drop a folder. Flip a switch.",
+  sub = "doze is an app first. Three steps from a fresh install to a running stack, without opening a terminal.",
+  class: cls = "",
+} = Astro.props;
+
+const shots = {
+  library: maybe([
+    "app-library-empty.webp",
+    "The doze app's Library on a fresh Mac: drop a project folder here, or start empty",
+  ]),
+  folder: maybe([
+    "app-empty-folder.webp",
+    "A folder with no doze.hcl in the doze app: what doze found in it, and the three ways to start",
+  ]),
+  up: maybe(
+    [
+      "app-rec-up.webm",
+      "Flipping a stack's Up switch in the doze app: its services start in the order they need each other",
+    ],
+    ["app-stack-up.webp", "A stack just brought up in the doze app"],
+  ),
+};
+
+// What internal/detect finds in doze-examples/larder/apps/gateway.
+const found = [
+  ["gateway", "go run .", 'app "gateway"'],
+  ["db", "the code imports github.com/jackc/pgx/v5", 'module postgres "db"'],
+  ["cache", "the code imports github.com/redis/go-redis/v9", 'module valkey "cache"'],
+  ["events", "the code imports github.com/twmb/franz-go", 'module kafka "events"'],
+  ["cloud", "the code imports github.com/aws/aws-sdk-go-v2", 'module aws "cloud"'],
+];
+const choices = [
+  ["Set it up from this repo", "reads go.mod, package.json, compose files and writes a doze.hcl"],
+  ["Add one thing", "name a module or a service: postgres, valkey, mongo, …"],
+  ["Start with an empty file", "writes a short doze.hcl, with comments, to fill in"],
+];
+// Larder's apps (doze-examples/larder/doze.hcl), after Up: what was called
+// is awake, the rest asleep until something connects.
+const tiles = [
+  ["gateway", "awake", "gateway.larder.doze"],
+  ["storefront", "awake", "storefront.larder.doze"],
+  ["identity", "asleep", "identity.larder.doze"],
+  ["catalog", "asleep", "catalog.larder.doze"],
+];
+const drawn = "Drawn from the app's own screen · capture pending";
+---
+<section class:list={["fs", cls]} id={id} aria-labelledby={`${id}-h`}>
+  <div class="fs-head" data-reveal>
+    <p class="fs-kicker">{kicker}</p>
+    <h2 class="fs-h2" id={`${id}-h`}>{title}</h2>
+    <p class="fs-sub">{sub}</p>
+  </div>
+
+  <ol class="fs-steps">
+    <!-- 1. Open doze -->
+    <li class="fs-step" data-reveal>
+      <div class="fs-media">
+        {shots.library ? (
+          <img src={shots.library.src} alt={shots.library.alt} width="1440" height="900" loading="lazy" decoding="async" />
+        ) : (
+          <div class="ad fs-draw" role="img" aria-label="Drawing of the doze app's Library on a fresh Mac: three getting-started steps, a box saying drop a project folder here with an Open folder button, a box saying or start empty with a New stack button, and the Machine line offering Set up, one password">
+            <div class="ad-tb" aria-hidden="true"><i></i><i></i><i></i><span class="ad-tab on">Home</span></div>
+            <div class="ad-body" aria-hidden="true">
+              <div class="fs-gs">
+                <span class="now"><b>1</b>Open a project</span>
+                <span><b>2</b>Bring it up</span>
+                <span><b>3</b>Connect to it</span>
+              </div>
+              <div class="fs-ways">
+                <div class="fs-way fs-way-drop">
+                  <b>Drop a project folder here</b>
+                  <span>doze reads what is in it and says what it found before anything starts.</span>
+                  <span class="ad-btn pri">Open folder… <kbd>⌘O</kbd></span>
+                </div>
+                <div class="fs-way">
+                  <b>Or start empty</b>
+                  <span>A new folder with a doze.hcl of a few lines.</span>
+                  <span class="ad-btn">New stack… <kbd>⌘N</kbd></span>
+                </div>
+              </div>
+              <div class="fs-machine"><b>Machine</b><span><i class="ad-dot y"></i>resolver route</span><span class="ad-grow"></span><span class="ad-btn pri">Set up (one password)</span></div>
+            </div>
+          </div>
+        )}
+      </div>
+      <div class="fs-say">
+        <span class="fs-n">1</span>
+        <h3>Open doze</h3>
+        <p>The Library is home for every stack on this Mac. On a fresh one it shows three steps and two ways in, and the Machine line offers the one-password setup that gives your services names.</p>
+        {!shots.library && <span class="fs-drawn">{drawn}</span>}
+      </div>
+    </li>
+
+    <!-- 2. Drop your repo folder -->
+    <li class="fs-step" data-reveal data-reveal-delay="1">
+      <div class="fs-media">
+        {shots.folder ? (
+          <img src={shots.folder.src} alt={shots.folder.alt} width="1440" height="900" loading="lazy" decoding="async" />
+        ) : (
+          <div class="ad fs-draw" role="img" aria-label="Drawing of the doze app after dropping Larder's gateway folder, with no doze.hcl: nothing has started; doze lists what it found (the gateway app, and postgres, valkey, kafka and aws modules from the code's imports) and offers three ways to start: set it up from this repo, add one thing, or start with an empty file">
+            <div class="ad-tb" aria-hidden="true"><i></i><i></i><i></i><span class="ad-tab">Home</span><span class="ad-tab on">gateway</span></div>
+            <div class="ad-body" aria-hidden="true">
+              <div class="fs-folder"><svg viewBox="0 0 24 20" width="22" height="18"><path d="M1 3a2 2 0 0 1 2-2h6l2 2.5h10a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2Z" fill="#82aaff" /></svg>gateway</div>
+              <div class="fs-found">
+                <div class="ad-head"><h4>gateway</h4><span class="ad-path">~/code/larder/apps/gateway · no doze.hcl yet</span></div>
+                <div class="ad-banner"><span class="ad-dot c"></span><div class="ad-t"><b>Nothing has started. doze read the folder and found this.</b></div></div>
+                <div class="fs-table">
+                  <div class="fs-tr fs-th"><span>Found</span><span>Where</span><span>Becomes</span></div>
+                  {found.map(([n, w, b]) => <div class="fs-tr"><b class="ad-mono ad-bright">{n}</b><span class="ad-dim">{w}</span><span class="ad-mono ad-dim">{b}</span></div>)}
+                </div>
+                <div class="fs-choices">
+                  {choices.map(([t, w], i) => <div class:list={["fs-choice", { sel: i === 0 }]}><b><span>{i + 1}</span>{t}</b><span>{w}</span></div>)}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      <div class="fs-say">
+        <span class="fs-n">2</span>
+        <h3>Drop your repo folder on it</h3>
+        <p>doze reads the folder’s go.mod and Go imports, package.json, compose files, a Makefile and the variables the code asks for, like <code>DATABASE_URL</code>, and lists what it found and where. Here, Larder’s gateway, before it had a doze.hcl. Nothing starts. <b>Set it up from this repo</b> writes doze.hcl, with the reason above each block.</p>
+        {!shots.folder && <span class="fs-drawn">{drawn}</span>}
+      </div>
+    </li>
+
+    <!-- 3. Flip Up -->
+    <li class="fs-step" data-reveal data-reveal-delay="2">
+      <div class="fs-media">
+        {shots.up ? (
+          shots.up.video
+            ? <video src={shots.up.src} aria-label={shots.up.alt} muted loop playsinline preload="none" data-fs-video width="1440" height="900"></video>
+            : <img src={shots.up.src} alt={shots.up.alt} width="1440" height="900" loading="lazy" decoding="async" />
+        ) : (
+          <div class="ad fs-draw" role="img" aria-label="Drawing of the stack larder in the doze app: its Up switch flips on; gateway and storefront come up awake, identity and catalog stay asleep until something connects">
+            <div class="ad-tb" aria-hidden="true"><i></i><i></i><i></i><span class="ad-tab">Home</span><span class="ad-tab on">larder</span></div>
+            <div class="ad-body" aria-hidden="true">
+              <div class="ad-head">
+                <h4>larder</h4><span class="ad-path">~/code/larder</span><span class="ad-grow"></span>
+                <b class="fs-uplabel">Up</b>
+                <span class="fs-sw"><b></b><i></i></span>
+                <span class="fs-more">···</span>
+              </div>
+              <div class="fs-strip">
+                <span class="fs-x fs-x-off"><b>Stopped</b> · Up starts everything, as last time.</span>
+                <span class="fs-x fs-x-on"><b>Up</b> · 2 awake · the rest wake when something connects</span>
+              </div>
+              <div class="fs-tiles">
+                {tiles.map(([n, st, a], i) => (
+                  <div class:list={["fs-tile", { "fs-tile-asleep": st === "asleep" }]} style={`--i:${i}`}>
+                    <div class="fs-tile-top"><span class="fs-tdot"><i></i></span><b>{n}</b><span class="fs-tsw"><b></b><i></i></span></div>
+                    <span class="fs-tst"><span class="fs-x fs-x-off">down</span><span class="fs-x fs-x-on">{st}</span></span>
+                    <span class="ad-mono ad-dim fs-ta">{a}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      <div class="fs-say">
+        <span class="fs-n">3</span>
+        <h3>Flip Up</h3>
+        <p>One switch brings the stack up, each service after what it needs; what nobody calls goes to sleep. Next time Up starts what you had up last time. The menu beside it offers <b>Start everything</b> or <b>Choose what starts…</b>: tick the apps you’ll work on, and what they need comes too.</p>
+        {!shots.up && <span class="fs-drawn">{drawn}</span>}
+      </div>
+    </li>
+  </ol>
+
+  <p class="fs-cli" data-reveal>Prefer the terminal? <code>doze init &amp;&amp; doze up</code> in the folder does the same, and the app shows the stack either way.</p>
+</section>
+
+<script>
+  // A capture of the switch, when one lands, plays only while on screen.
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  for (const v of document.querySelectorAll<HTMLVideoElement>("[data-fs-video]")) {
+    if (still) {
+      v.controls = true;
+      v.preload = "metadata";
+      continue;
+    }
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        v.preload = "auto";
+        v.play().catch(() => (v.controls = true));
+      } else v.pause();
+    }, { threshold: 0.35 }).observe(v);
+  }
+</script>
+
+<style>
+  .fs { --fs-acc: var(--amber); --fs-t1: var(--text); --fs-t2: var(--text-2); --fs-t3: var(--text-3); --fs-ln: var(--line); }
+  .fs-head { max-width: 760px; margin-bottom: clamp(32px, 4.5vw, 52px); }
+  .fs-kicker { margin: 0 0 14px; font: 600 13px/1 var(--font-text); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fs-acc); }
+  .fs-h2 { margin: 0; font: 700 clamp(34px, 4.6vw, 60px)/1.02 var(--font-display); letter-spacing: -0.035em; text-wrap: balance; color: var(--fs-t1); }
+  .fs-sub { margin: 18px 0 0; max-width: 560px; font-size: 18px; line-height: 1.55; color: var(--fs-t2); text-wrap: pretty; }
+
+  .fs-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; counter-reset: none; }
+  .fs-step { display: flex; flex-direction: column; min-width: 0; border-radius: 20px; background: linear-gradient(180deg, rgba(42, 28, 54, 0.75), rgba(24, 15, 32, 0.9)); border: 1px solid var(--fs-ln); overflow: hidden; }
+  .fs-media { position: relative; height: 330px; padding: 18px 18px 0; display: flex; align-items: flex-end; background: radial-gradient(90% 80% at 50% 100%, rgba(240, 162, 75, 0.12), transparent 70%); border-bottom: 1px solid var(--fs-ln); overflow: hidden; }
+  .fs-media > img, .fs-media > video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; border-radius: 10px 10px 0 0; }
+  .fs-draw { width: 100%; height: 100%; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 0; }
+  .fs-draw .ad-body { overflow: hidden; }
+  .fs-draw .ad-body > *, .fs-found > * { flex: none; }
+  .fs-draw .ad-body > .fs-ways { flex: 1 1 auto; }
+  .fs-say { position: relative; padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .fs-n { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: rgba(240, 162, 75, 0.14); border: 1px solid rgba(240, 162, 75, 0.4); color: var(--fs-acc); font: 700 15px var(--font-display); }
+  .fs-say h3 { margin: 4px 0 0; font: 700 23px/1.15 var(--font-display); letter-spacing: -0.02em; color: var(--fs-t1); }
+  .fs-say p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--fs-t2); text-wrap: pretty; }
+  .fs-say p b { color: var(--fs-t1); font-weight: 600; }
+  .fs-say code, .fs-cli code { font: 0.88em var(--font-mono); color: var(--fs-t1); font-variant-ligatures: none; }
+  .fs-drawn { margin-top: auto; padding-top: 6px; font: 12px var(--font-mono); color: var(--fs-t3); }
+  .fs-cli { margin: 26px 0 0; font-size: 15.5px; color: var(--fs-t3); }
+  .fs-cli code { padding: 3px 8px; border-radius: 7px; background: rgba(10, 6, 14, 0.7); border: 1px solid var(--fs-ln); }
+
+  /* Step 1: the empty Library */
+  .fs-gs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .fs-gs span { display: flex; align-items: center; gap: 5px; padding: 6px 6px; border-radius: 8px; border: 1px solid var(--a-line); font-size: 10.5px; color: var(--a-dim); white-space: nowrap; overflow: hidden; }
+  .fs-gs b { box-sizing: border-box; display: grid; place-items: center; flex: none; width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--a-line2); font-size: 9px; }
+  .fs-gs .now { border-color: color-mix(in srgb, var(--a-acc) 60%, var(--a-line)); color: var(--a-bright); }
+  .fs-gs .now b { background: var(--a-acc); border-color: var(--a-acc); color: var(--a-bg); }
+  .fs-ways { display: grid; grid-template-columns: 1.15fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+  .fs-way { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px; border-radius: 10px; border: 1px solid var(--a-line); background: var(--a-panel); }
+  .fs-way b { color: var(--a-bright); font-size: 12.5px; font-weight: 650; }
+  .fs-way > span:not(.ad-btn) { font-size: 10.5px; color: var(--a-dim); }
+  .fs-way .ad-btn { margin-top: auto; }
+  .fs-way-drop { border: 1.5px dashed color-mix(in srgb, var(--a-acc) 55%, var(--a-line)); background: color-mix(in srgb, var(--a-acc) 6%, var(--a-panel)); }
+  .fs-machine { display: flex; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid var(--a-line); font-size: 10.5px; white-space: nowrap; }
+  .fs-machine b { color: var(--a-bright); }
+  .fs-machine > span:not(.ad-btn) { display: inline-flex; align-items: center; gap: 5px; color: var(--a-dim); }
+  .fs-machine .ad-btn { height: 20px; font-size: 10px; padding: 0 8px; }
+
+  /* Step 2: the folder lands, and what doze found */
+  .fs-folder { display: none; }
+  .fs-found { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+  .fs-found .ad-banner b { font-size: 11px; }
+  .fs-table { border: 1px solid var(--a-line); border-radius: 9px; overflow: hidden; }
+  .fs-tr { display: grid; grid-template-columns: 50px minmax(0, 1fr) 92px; gap: 8px; padding: 4px 9px; border-top: 1px solid var(--a-line); font-size: 10.5px; }
+  .fs-tr > * { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fs-tr > span:nth-child(2) { white-space: normal; overflow-wrap: anywhere; line-height: 1.25; }
+  .fs-th { border-top: 0; background: var(--a-side); color: var(--a-dim); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .fs-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .fs-choice { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-radius: 9px; border: 1px solid var(--a-line); background: var(--a-panel); min-width: 0; }
+  .fs-choice.sel { border-color: var(--a-line2); background: color-mix(in srgb, var(--a-acc) 10%, var(--a-panel)); }
+  .fs-choice b { display: flex; gap: 5px; align-items: flex-start; font-size: 10.5px; line-height: 1.25; color: var(--a-bright); font-weight: 650; }
+  .fs-choice b span { flex: none; display: grid; place-items: center; width: 14px; height: 14px; border-radius: 4px; background: var(--a-line2); font-size: 9px; }
+  .fs-choice.sel b span { background: var(--a-acc); color: var(--a-bg); }
+  .fs-choice > span { font-size: 9.5px; line-height: 1.3; color: var(--a-dim); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* Step 3: the switch */
+  .fs-uplabel { color: var(--a-bright); font-size: 12px; }
+  .fs-sw, .fs-tsw { position: relative; flex: none; width: 36px; height: 20px; border-radius: 10px; border: 1px solid var(--a-dim); background: var(--a-track); overflow: hidden; }
+  .fs-sw b, .fs-tsw b { position: absolute; inset: 0; background: var(--a-acc); }
+  .fs-sw i, .fs-tsw i { position: absolute; top: 2px; left: 18px; width: 14px; height: 14px; border-radius: 50%; background: var(--a-dim); }
+  .fs-sw i::after, .fs-tsw i::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--a-bg); }
+  .fs-tsw { width: 24px; height: 14px; margin-left: auto; }
+  .fs-tsw i { top: 2px; left: 12px; width: 8px; height: 8px; }
+  .fs-more { color: var(--a-dim); letter-spacing: 1px; padding: 0 2px; }
+  .fs-strip { position: relative; display: grid; padding: 8px 10px; border-radius: 9px; border: 1px solid var(--a-line); background: var(--a-panel); font-size: 11px; color: var(--a-dim); }
+  .fs-strip b { color: var(--a-bright); }
+  .fs-x { grid-area: 1 / 1; }
+  .fs-x-off { opacity: 0; }
+  .fs-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .fs-tile { display: flex; flex-direction: column; gap: 4px; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--a-line); background: var(--a-panel); min-width: 0; }
+  .fs-tile-top { display: flex; align-items: center; gap: 6px; }
+  .fs-tile-top b { color: var(--a-bright); font-size: 12.5px; font-weight: 650; }
+  .fs-tdot { position: relative; width: 7px; height: 7px; border-radius: 50%; background: var(--a-dim); flex: none; }
+  .fs-tdot i { position: absolute; inset: 0; border-radius: 50%; background: var(--a-good); }
+  .fs-tst { display: grid; font-size: 11px; color: var(--a-dim); }
+  .fs-tile-asleep .fs-tdot i, .fs-tile-asleep .fs-tsw b, .fs-tile-asleep .fs-tsw i::after { display: none; }
+  .fs-tile-asleep .fs-tsw i { left: 2px; animation: none !important; }
+  .fs-ta { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Motion: once, when the step reveals; the end state is the static one. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.rv.is-in) .fs-folder { display: inline-flex; position: absolute; z-index: 2; top: 34%; left: 50%; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; background: rgba(27, 25, 39, 0.95); border: 1px solid var(--a-line2); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5); color: var(--a-bright); font-size: 12px; font-weight: 600; animation: fs-drop 1100ms var(--ease-out) 250ms both; }
+    :global(.rv.is-in) .fs-found { animation: fs-in var(--t-slow) var(--ease-out) 1050ms both; }
+    :global(.rv.is-in) .fs-sw b, :global(.rv.is-in) .fs-tsw b { animation: fs-fade-in var(--t-mid) var(--ease-out) 900ms both; }
+    :global(.rv.is-in) .fs-sw i { animation: fs-knob var(--t-mid) var(--ease-out) 900ms both; }
+    :global(.rv.is-in) .fs-sw i::after { animation: fs-fade-in var(--t-mid) var(--ease-out) 900ms both; }
+    :global(.rv.is-in) .fs-tsw i::after { animation: fs-fade-in var(--t-mid) var(--ease-out) calc(1200ms + var(--i) * 220ms) both; }
+    :global(.rv.is-in) .fs-tsw i { animation: fs-knob-sm var(--t-mid) var(--ease-out) calc(1200ms + var(--i) * 220ms) both; }
+    :global(.rv.is-in) .fs-tsw b { animation-delay: calc(1200ms + var(--i) * 220ms); }
+    :global(.rv.is-in) .fs-tdot i, :global(.rv.is-in) .fs-tst .fs-x-on { animation: fs-fade-in var(--t-slow) var(--ease-out) calc(1300ms + var(--i) * 220ms) both; }
+    :global(.rv.is-in) .fs-tst .fs-x-off { animation: fs-fade-out var(--t-slow) var(--ease-out) calc(1300ms + var(--i) * 220ms) both; }
+    :global(.rv.is-in) .fs-strip .fs-x-on { animation: fs-fade-in var(--t-slow) var(--ease-out) 1100ms both; }
+    :global(.rv.is-in) .fs-strip .fs-x-off { animation: fs-fade-out var(--t-slow) var(--ease-out) 1100ms both; }
+  }
+  @keyframes fs-drop {
+    0% { opacity: 0; transform: translate(40%, -160%) rotate(-6deg) scale(1.08); }
+    25% { opacity: 1; }
+    65% { opacity: 1; transform: translate(-50%, 0) rotate(0) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, 10px) scale(0.92); }
+  }
+  @keyframes fs-in { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes fs-fade-in { from { opacity: 0; } }
+  @keyframes fs-fade-out { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes fs-knob { from { transform: translateX(-16px); } }
+  @keyframes fs-knob-sm { from { transform: translateX(-10px); } }
+
+  @media (max-width: 1060px) {
+    .fs-steps { grid-template-columns: minmax(0, 1fr); max-width: 620px; }
+    .fs-media { height: 320px; }
+  }
+  @media (max-width: 520px) {
+    .fs-media { height: 290px; padding: 12px 12px 0; }
+    .fs-say { padding: 18px 18px 22px; }
+    .fs-gs span { font-size: 9.5px; }
+    .fs-ways { grid-template-columns: 1fr; }
+    .fs-ways .fs-way:last-child { display: none; }
+    .fs-tr { grid-template-columns: 46px minmax(0, 1fr) 84px; }
+    .fs-choice > span { display: none; }
+  }
+</style>

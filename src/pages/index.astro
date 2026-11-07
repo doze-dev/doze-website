@@ -6,6 +6,8 @@
 // The sky goes from dusk to night as the page scrolls (scroll-driven CSS where
 // the browser has it, a still dusk over the hero where it doesn't).
 import { existsSync } from "node:fs";
+import DomainsTeaser from "../components/domains/Teaser.astro";
+import FirstStack from "../components/doze/FirstStack.astro";
 import Popular from "../components/home/Popular.astro";
 import VCarousel from "../components/motion/VCarousel.astro";
 import Page from "../layouts/Page.astro";
@@ -171,6 +173,13 @@ const family = [
     </div>
   </section>
 
+  <!-- 2. Your first stack, in the app: the GUI way is the first way -->
+  <div class="hm-sec hm-first">
+    <div class="hm-wrap">
+      <FirstStack id="hm-first" />
+    </div>
+  </div>
+
   <!-- 3. Sound familiar? -->
   <section class="hm-sec hm-pains" aria-labelledby="hm-pains-h">
     <div class="hm-wrap">
@@ -248,6 +257,13 @@ const family = [
       </div>
     </div>
   </section>
+
+  <!-- 4b. Your own domain, over https -->
+  <div class="hm-sec">
+    <div class="hm-wrap">
+      <DomainsTeaser id="hm-domains" />
+    </div>
+  </div>
 
   <!-- 5. Three products, one family -->
   <section class="hm-sec" aria-labelledby="hm-fam-h">

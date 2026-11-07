@@ -1,0 +1,518 @@
+---
+// Your own domain, on your laptop, over https: doze's domains feature.
+// Every claim here is from the code or the docs, named beside it:
+//   docs/cli/domains.md (doze repo, website/src/content/docs) — the block,
+//     doze trust and its flags, the edge cases, the env vars, cert/key;
+//   doze-names: ca.go (root "doze local CA", ECDSA, 10-year root, 30-day
+//     leaves renewed a week early, minted on first handshake, key 0600),
+//     ingress.go (front door on :80 and :443, HTTP/2, a 307 to https for a
+//     declared domain while doze holds 443), trust_darwin.go (/etc/resolver
+//     per domain, the System keychain), trust_linux.go (systemd-resolved,
+//     the distribution's bundle), resolver.go (forwards when no stack
+//     declares the name), names.go (resolver on 127.0.0.1:5323);
+//   doze: internal/daemon/ingress.go (caEnv), internal/desk/view/instance.go
+//     (the Reach it rows), internal/desk/serve/service.go (the banner's
+//     words), internal/desk/frontend/src/pages/overview.tsx and settings.tsx.
+// Google's redirect-URI rules: the P2.5 plan, verified 2026-11-05.
+import "../../components/product/product.css";
+import "../../components/doze/appdraw.css";
+import Browser from "../../components/domains/Browser.astro";
+import Cmd from "../../components/product/Cmd.astro";
+import Endorse from "../../components/product/Endorse.astro";
+import SubNav from "../../components/product/SubNav.astro";
+import Page from "../../layouts/Page.astro";
+
+const usual = [
+  {
+    t: "A reverse proxy, to put a name in front of a port",
+    code: "dev.acme.com {\n  reverse_proxy localhost:3000\n}",
+    p: "Caddy or nginx, configured by hand and kept running. Caddy can even be its own local authority (tls internal, then caddy trust).",
+  },
+  {
+    t: "A certificate your browser believes",
+    code: 'mkcert -install\nmkcert dev.acme.com "*.dev.acme.com"',
+    p: "mkcert is the right tool for this: it trusts its authority in the system store, in Firefox’s when certutil is there, and in Java’s when JAVA_HOME is set.",
+  },
+  {
+    t: "/etc/hosts, one line per name",
+    code: "127.0.0.1  dev.acme.com\n127.0.0.1  larder.dev.acme.com",
+    p: "The hosts file has no wildcards, so every tenant is another line, and another sudo.",
+  },
+  {
+    t: "Each runtime told about the authority",
+    code: 'export NODE_EXTRA_CA_CERTS="$(mkcert -CAROOT)/rootCA.pem"',
+    p: "Node doesn’t read the keychain by default, and Python’s requests carries its own bundle, so a call from one service to another fails until you point each at the root.",
+  },
+  {
+    t: "Then again, on every laptop",
+    code: "# SETUP.md, step 7 of 12",
+    p: "The proxy config and the hosts lines live on your machine, not in the repo. Each teammate does it again from a wiki page, and the wiki page drifts.",
+  },
+];
+const ours = [
+  {
+    t: "One line, in the repo",
+    code: 'domains = ["dev.acme.com", "*.dev.acme.com"]',
+    p: "On the app block that already has a port. It travels with the code, so every teammate’s doze.hcl already says it.",
+  },
+  {
+    t: "doze trust, once per machine",
+    code: "doze trust",
+    p: "One admin prompt does both halves: a resolver route for each domain, and a certificate authority of this machine’s own, trusted. doze trust --print shows the script first.",
+  },
+  {
+    t: "A wildcard is a route, not a list",
+    code: "/etc/resolver/dev.acme.com",
+    p: "One resolver file covers the name and every name under it. Each tenant gets its own certificate on its first visit.",
+  },
+  {
+    t: "Every process in the stack already trusts it",
+    code: "SSL_CERT_FILE  NODE_EXTRA_CA_CERTS\nREQUESTS_CA_BUNDLE  DOZE_CA_FILE",
+    p: "Set on everything doze runs, so Go, curl, Node and Python verify without being told. The two that replace a store get your machine’s roots plus doze’s, so public hosts keep working.",
+  },
+  {
+    t: "No port, no proxy to keep running",
+    code: "https://dev.acme.com",
+    p: "doze’s own front door answers on 443 and 80 while your stack is up, speaks HTTP/2, and sends a plain http request for a declared domain to https.",
+  },
+];
+
+const edges = [
+  [
+    "A VPN or a management profile",
+    "macOS consults configuration profiles before /etc/resolver, so one that sets DNS can win. doze doctor reports a domain that doesn’t resolve to the stack despite the route.",
+  ],
+  [
+    "Firefox",
+    "Firefox 120 and later read the system keychain; older versions keep their own store. Chrome and Safari always read it.",
+  ],
+  [
+    "Containers in the stack",
+    "A container doesn’t see the machine’s resolver routes. From inside one, use the app’s .doze name with its port.",
+  ],
+  [
+    "Something else on 80 or 443",
+    "doze doesn’t fight Caddy or nginx for the port. doze doctor names what holds it, and the domain still works with the app’s port in the URL.",
+  ],
+  [
+    "A resolver file of your own",
+    "doze never writes over or removes a file in /etc/resolver that isn’t its own. doze trust says so and leaves the domain to it.",
+  ],
+  [
+    "One level of wildcard",
+    "*.dev.acme.com serves larder.dev.acme.com and dev.acme.com itself. a.b.dev.acme.com resolves but fails the handshake, as certificates do.",
+  ],
+  [
+    "The real site",
+    "While a stack declares dev.acme.com, this machine sends it to the stack. When none does, the name goes to your usual DNS and the real host is back.",
+  ],
+  [
+    "Java, and names off the public list",
+    "Java reads its own store: import DOZE_CA_FILE with keytool. A name like dev.acme.test is accepted, and doze doctor warns that sign-in providers will refuse it.",
+  ],
+];
+---
+<Page title="Your own domain, over https · doze" description="Your own domain on your laptop, over https: one line in doze.hcl and one doze trust. A resolver route and a certificate authority of your machine's own, trusted once, so sign-in callbacks, cookies and tenant subdomains work locally." current="doze">
+<div class="pp pp-doze dm">
+  <SubNav name="doze" icon="/brand/doze.svg" links={[["Why", "#why"], ["The usual way", "#usual"], ["How it works", "#how"], ["What it changes", "#changes"], ["Edge cases", "#edges"], ["In the app", "#app"], ["Docs", "/docs/doze/cli/domains/"]]} />
+
+  <!-- Hero: the browser types the name, the padlock comes, the app loads -->
+  <section class="pp-hero dm-hero">
+    <div class="pp-wrap dm-hero-in">
+      <a class="dm-back" href="/doze/"><img src="/brand/doze.svg" alt="" width="22" height="22" />doze</a>
+      <h1 class="pp-h1 dm-h1">Your own domain, on your laptop, <span>over https.</span></h1>
+      <p class="pp-lede dm-lede">Put <code>dev.acme.com</code> in doze.hcl and run <code>doze trust</code> once. Your browser gets a padlock it believes, your sign-in provider gets the https callback it insists on, and every tenant under <code>*.dev.acme.com</code> answers too. Served from this machine, by doze, with no web server of your own to configure.</p>
+      <div class="dm-two">
+        <div class="dm-two-hcl"><span class="dm-two-k">doze.hcl</span><code><span class="dm-dim">domains =</span> ["dev.acme.com", "*.dev.acme.com"]</code></div>
+        <span class="dm-plus" aria-hidden="true">+</span>
+        <div class="dm-two-cmd"><span class="dm-two-k">once</span><code><span class="dm-dim">$</span> doze trust</code></div>
+      </div>
+    </div>
+    <div class="dm-hero-win">
+      <Browser />
+    </div>
+  </section>
+
+  <!-- Why -->
+  <section class="pp-sec" id="why">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Why you’d want it</span>
+        <h2 class="pp-h2">localhost gets you most of the way. Then you add sign-in.</h2>
+      </div>
+      <div class="dm-why">
+        <article class="dm-card" data-reveal>
+          <span class="pp-chip">redirect_uri_mismatch</span>
+          <h3 class="pp-h3">Sign-in providers want a real name.</h3>
+          <p>Google, for one, accepts plain <code>http://localhost</code>, but not <code>acme.localhost</code>, not a <code>.test</code> name and not a bare IP address. Anything else must be https, under a public top-level domain. The moment your app has tenants or a callback of its own, that means a real domain.</p>
+        </article>
+        <article class="dm-card" data-reveal data-reveal-delay="1">
+          <span class="pp-chip">Set-Cookie: …; Domain=.acme.com</span>
+          <h3 class="pp-h3">Cookies, CORS and HSTS go by host.</h3>
+          <p>A cookie for <code>.acme.com</code>, a CORS allow-list that names <code>https://dev.acme.com</code>, an HSTS header: each is about the host. On <code>localhost:3000</code> you’re testing a different setup from the one you ship.</p>
+        </article>
+        <article class="dm-card" data-reveal data-reveal-delay="2">
+          <span class="pp-chip">*.dev.acme.com</span>
+          <h3 class="pp-h3">Tenants are subdomains.</h3>
+          <p>A customer per subdomain is one wildcard line. <code>larder.dev.acme.com</code> and any name you make up next answer at once, each with its own certificate, made on its first visit.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- The usual way vs doze -->
+  <section class="pp-sec pp-sec-tint" id="usual">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">The usual way, and doze</span>
+        <h2 class="pp-h2">The usual way works. There’s just a lot of it.</h2>
+        <p class="pp-lede">Caddy and nginx are fine web servers, built to serve production traffic. mkcert makes certificates your machine trusts, with no configuration. Each does its job well. Stitching them into a dev setup is the part that doesn’t travel with the repo.</p>
+      </div>
+      <div class="dm-vs">
+        <div class="dm-col dm-col-usual" data-reveal>
+          <h3 class="dm-col-h"><span>The usual way</span><small>by hand, on each laptop</small></h3>
+          <ol class="dm-list">
+            {usual.map((u) => (
+              <li>
+                <b>{u.t}</b>
+                <pre class="dm-code">{u.code}</pre>
+                <p>{u.p}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div class="dm-col dm-col-doze" data-reveal data-reveal-delay="1">
+          <h3 class="dm-col-h"><span>With doze</span><small>in the repo, then once per machine</small></h3>
+          <ol class="dm-list">
+            {ours.map((u) => (
+              <li>
+                <b>{u.t}</b>
+                <pre class="dm-code">{u.code}</pre>
+                <p>{u.p}</p>
+              </li>
+            ))}
+          </ol>
+          <p class="dm-byo"><b>Already have a certificate?</b> One from mkcert, or a real one for the domain: give the app <code>cert</code> and <code>key</code>, and doze serves yours and trusts nothing of its own. <code>doze trust</code> then installs the route only.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="pp-sec" id="how">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">How it works</span>
+        <h2 class="pp-h2">Two hard parts doze already had.</h2>
+        <p class="pp-lede">Every doze stack already has a resolver for its .doze names and a front door that routes by name. A domain is one more name for both, plus a certificate.</p>
+      </div>
+      <figure class="dm-flow" data-reveal>
+        <ol class="dm-nodes">
+          <li class="dm-node">
+            <span class="dm-node-k">Your browser</span>
+            <b><code>https://larder.dev.acme.com</code></b>
+            <span>Asks the system for the name.</span>
+          </li>
+          <li class="dm-node">
+            <span class="dm-node-k">1 · The resolver route</span>
+            <b><code>/etc/resolver/dev.acme.com</code></b>
+            <span>macOS sends that name, and every name under it, to doze’s resolver on <code>127.0.0.1:5323</code>, which answers with a loopback address. Nothing else in <code>.com</code> is touched.</span>
+          </li>
+          <li class="dm-node dm-node-door">
+            <span class="dm-node-k">2 · doze’s front door, :443</span>
+            <b>TLS, by name</b>
+            <span>Picks a certificate for the name. The first handshake mints it from the doze authority, good for 30 days and renewed a week before. HTTP/2. On :80 it sends a declared domain to https.</span>
+          </li>
+          <li class="dm-node">
+            <span class="dm-node-k">3 · Your app</span>
+            <b><code>127.0.0.x:3000</code></b>
+            <span>On its own loopback address, served plain, exactly as <code>pnpm dev</code> serves it.</span>
+          </li>
+        </ol>
+        <div class="dm-ca">
+          <div class="dm-ca-box">
+            <span class="dm-node-k">The doze authority · <code>~/.doze/ca</code></span>
+            <div class="dm-ca-files">
+              <span><code>root.crt</code> trusted once, in the System keychain</span>
+              <span><code>root.key</code> readable by you alone (0600); never leaves the folder</span>
+              <span><code>certs/</code> the leaves the front door minted</span>
+            </div>
+          </div>
+          <p class="dm-ca-down"><b>When the stack is down,</b> and no stack declares the name, the resolver forwards it to your usual DNS. The real dev.acme.com is back.</p>
+        </div>
+        <figcaption class="pp-cap">On Linux the route goes into systemd-resolved and the authority into the distribution’s bundle (update-ca-certificates or update-ca-trust), in the same single prompt.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- What it changes, and how to undo it -->
+  <section class="pp-sec pp-sec-tint" id="changes">
+    <div class="pp-wrap dm-chg">
+      <div data-reveal>
+        <span class="pp-eyebrow">No surprises</span>
+        <h2 class="pp-h2">What <code class="dm-c">doze trust</code> changes, and how to take it back.</h2>
+        <ul class="dm-ticks">
+          <li><b>A file per domain in <code>/etc/resolver</code>.</b> <code>/etc/resolver/dev.acme.com</code>, pointing at doze’s resolver. A file that isn’t doze’s is never written over or removed.</li>
+          <li><b>The doze authority, trusted.</b> In the System keychain, as a root for TLS. Made only when a stack declares a domain; nothing is trusted before that.</li>
+          <li><b>A folder in your home.</b> <code>~/.doze/ca</code>: the root, its key (readable by you alone) and the certificates it minted.</li>
+        </ul>
+        <p class="dm-honest"><b>Be clear about what trusting a root means.</b> Like any root, it could sign any name, so whoever got hold of <code>root.key</code> could sign for this machine. doze only ever mints names declared here, and the key never leaves the folder. Keep <code>~/.doze/ca</code> out of anything synced or shared.</p>
+      </div>
+      <div data-reveal data-reveal-delay="1">
+        <div class="pp-term-head"><span>Read it, check it, undo it</span><span>one prompt each</span></div>
+        <pre class="pp-term dm-undo"><span class="c">$</span> <span class="w">doze trust --print</span>    <span class="c"># the script, to read or paste yourself</span>
+<span class="c">$</span> <span class="w">doze trust --check</span>    <span class="c"># the authority, and when it expires</span>
+<span class="c">$</span> <span class="w">doze trust --rotate</span>   <span class="c"># a new one; the old one untrusted</span>
+<span class="c">$</span> <span class="w">doze trust --remove</span>   <span class="c"># this project's routes, and the</span>
+                       <span class="c"># authority with the last project</span>
+<span class="c">$</span> <span class="w">doze dns-setup --uninstall</span>
+                       <span class="c"># everything doze set up for names</span></pre>
+        <p class="dm-stale">A domain that leaves doze.hcl leaves a stale route behind; <code>doze up</code> and <code>doze doctor</code> say so, and the next <code>doze trust</code> removes it in the same prompt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Edge cases -->
+  <section class="pp-sec" id="edges">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">Where things can get in the way</span>
+        <h2 class="pp-h2">The edge cases, before you find them.</h2>
+      </div>
+      <div class="dm-edges">
+        {edges.map(([t, p], i) => (
+          <article class="dm-edge" data-reveal data-reveal-delay={String(i % 4)}>
+            <h3>{t}</h3>
+            <p>{p}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- The app's part -->
+  <section class="pp-sec pp-sec-tint" id="app">
+    <div class="pp-wrap">
+      <div class="pp-head" data-reveal>
+        <span class="pp-eyebrow">In the app</span>
+        <h2 class="pp-h2">A banner, a row, a line. No new page.</h2>
+        <p class="pp-lede">The app does the same thing in the places you already look. Drawn here from its own screens until captures land.</p>
+      </div>
+      <div class="dm-app">
+        <figure class="dm-app-f" data-reveal>
+          <div class="ad dm-app-d" role="img" aria-label="Drawing of a banner on the stack's page in the doze app: dev.acme.com is not reachable here yet; missing: route dev.acme.com, certificate authority, one admin prompt; buttons Set up the machine (one password) and Copy doze trust">
+            <div class="ad-tb" aria-hidden="true"><i></i><i></i><i></i><span class="ad-tab">Home</span><span class="ad-tab on">larder</span></div>
+            <div class="ad-body" aria-hidden="true">
+              <div class="ad-head"><h4>larder</h4><span class="ad-path">~/code/larder · up 2m</span></div>
+              <div class="ad-banner dm-banner">
+                <span class="ad-dot c"></span>
+                <div class="ad-t"><b>dev.acme.com is not reachable here yet</b><span>missing: route dev.acme.com, certificate authority · one admin prompt</span></div>
+                <span class="dm-banner-b"><span class="ad-btn pri">Set up the machine <span class="dm-on-acc">(one password)</span></span><span class="ad-btn">Copy <span class="ad-mono">doze trust</span></span></span>
+              </div>
+              <div class="dm-ghost-tiles"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          <figcaption><b>The banner.</b> On the stack’s page until this machine is set up for its domains. The button asks with macOS’s own password prompt; the stack runs meanwhile, at its .doze name.</figcaption>
+        </figure>
+        <figure class="dm-app-f" data-reveal data-reveal-delay="1">
+          <div class="ad dm-app-d" role="img" aria-label="Drawing of the Reach it card for Larder's storefront in the doze app: Domain https://dev.acme.com with Copy; Subdomains https://*.dev.acme.com, any name under it; URL http://storefront.larder.doze with Copy">
+            <div class="ad-tb" aria-hidden="true"><i></i><i></i><i></i><span class="ad-tab">larder</span><span class="ad-tab on">storefront</span></div>
+            <div class="ad-body" aria-hidden="true">
+              <div class="ad-head"><span class="ad-dot g"></span><h4>storefront</h4><span class="ad-path">app · awake</span></div>
+              <div class="ad-card">
+                <h5>Reach it</h5>
+                <div class="ad-kv"><span>Domain</span><code>https://dev.acme.com</code><span class="ad-copy">Copy</span></div>
+                <div class="ad-kv"><span>Subdomains</span><code class="d dm-wrap">https://*.dev.acme.com · any name under it</code><span></span></div>
+                <div class="ad-kv"><span>URL</span><code>http://storefront.larder.doze</code><span class="ad-copy">Copy</span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption><b>The row.</b> Inside the app, its card leads with the https address; the Library’s address pills show it first too, and <code>doze url storefront</code> prints it.</figcaption>
+        </figure>
+        <figure class="dm-app-f" data-reveal data-reveal-delay="2">
+          <div class="ad dm-app-d" role="img" aria-label="Drawing of Settings, Machine, in the doze app: under domains, declared by stacks on this Mac, route dev.acme.com points /etc/resolver/dev.acme.com at 127.0.0.1:5323, and the certificate authority is trusted in the System keychain">
+            <div class="ad-tb" aria-hidden="true"><i></i><i></i><i></i><span class="ad-tab on">Settings</span></div>
+            <div class="ad-body" aria-hidden="true">
+              <div class="ad-head"><h4>Machine</h4></div>
+              <div class="dm-chk">
+                <div class="dm-chk-h">domains <span>· declared by stacks on this Mac</span></div>
+                <div class="dm-chk-r"><span class="ad-dot g"></span><b>route dev.acme.com</b><span class="ad-mono">/etc/resolver/dev.acme.com → 127.0.0.1:5323</span></div>
+                <div class="dm-chk-r"><span class="ad-dot g"></span><b>certificate authority</b><span>trusted in the System keychain · doze local CA</span></div>
+                <div class="dm-chk-h">names <span>· shared with doze-aws and doze-kafka</span></div>
+                <div class="dm-chk-r"><span class="ad-dot g"></span><b>resolver route</b><span class="ad-mono">/etc/resolver/doze</span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption><b>The line.</b> Settings › Machine lists what doze set up here, part by part, each with the command that fixes it and Repair for all of them.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Try it -->
+  <section class="pp-sec" id="try">
+    <div class="pp-wrap dm-try" data-reveal>
+      <div class="dm-try-say">
+        <span class="pp-eyebrow">Try it</span>
+        <h2 class="pp-h2">One line. One prompt. Your domain.</h2>
+        <p class="pp-lede">Add <code class="dm-c">domains</code> to an app that has a port, bring the stack up, and say yes once.</p>
+        <div class="dm-try-go">
+          <a class="pp-btn pp-btn-acc" href="/docs/doze/cli/domains/">Read the domains docs</a>
+          <a class="pp-btn pp-btn-ghost" href="/download/">Get the doze app</a>
+        </div>
+      </div>
+      <div class="dm-try-cmd">
+        <pre class="pp-term"><span class="a">app</span> <span class="s">"web"</span> &#123;
+  run     = <span class="s">"pnpm dev"</span>
+  port    = <span class="n">3000</span>
+  domains = [<span class="s">"dev.acme.com"</span>, <span class="s">"*.dev.acme.com"</span>]
+&#125;</pre>
+        <Cmd cmd="doze trust" label="Copy doze trust" />
+      </div>
+    </div>
+    <div class="pp-wrap dm-end"><Endorse /></div>
+  </section>
+</div>
+</Page>
+
+<style>
+  .dm code { font-family: var(--font-mono); font-variant-ligatures: none; }
+  .dm-dim { color: var(--t3); }
+  .dm-c { font-size: 0.85em; color: var(--acc); }
+
+  /* hero */
+  .dm-hero { padding-bottom: 0; }
+  .dm-hero-in { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px; }
+  .pp .dm-back { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px 0 10px; border-radius: 999px; border: 1px solid var(--ln2); color: var(--t2); font-weight: 600; font-size: 14px; }
+  .pp .dm-back:hover { color: var(--t1); }
+  .dm-back img { border-radius: 6px; }
+  .dm-h1 { font-size: clamp(40px, 6vw, 84px); max-width: 15ch; }
+  .dm-h1 span { color: var(--acc); }
+  .dm-lede { max-width: 44rem; }
+  .dm-lede code { font-size: 0.88em; color: var(--t1); }
+  .dm-two { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
+  .dm-two > div { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 16px; border-radius: 12px; background: var(--well); border: 1px solid var(--ln2); text-align: left; max-width: 100%; }
+  .dm-two code { font-size: 14px; color: var(--t1); white-space: nowrap; overflow-x: auto; max-width: 100%; }
+  .dm-two-k { font: 600 11px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--acc); }
+  .dm-plus { font: 600 22px var(--font-display); color: var(--t3); }
+  .dm-hero-win { max-width: 1180px; margin: 56px auto 0; padding: 0 32px; }
+
+  /* why */
+  .dm-why { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .dm-card { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 26px; border-radius: 18px; background: var(--g2); border: 1px solid var(--ln); }
+  .dm-card p { margin: 0; color: var(--t2); line-height: 1.6; font-size: 15.5px; }
+  .dm-card code { font-size: 0.9em; color: var(--t1); }
+  .dm-card .pp-chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+  /* usual vs doze */
+  .dm-vs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .dm-col { border-radius: 22px; padding: 28px; border: 1px solid var(--ln); background: var(--g); min-width: 0; }
+  .dm-col-doze { border-color: color-mix(in srgb, var(--acc) 45%, var(--ln)); background: radial-gradient(90% 60% at 100% 0%, rgba(240, 162, 75, 0.12), transparent 60%), var(--g2); }
+  .dm-col-h { margin: 0 0 18px; display: flex; flex-direction: column; gap: 4px; font: 700 26px/1.1 var(--font-display); letter-spacing: -0.02em; }
+  .dm-col-h small { font: 500 13px var(--font-mono); letter-spacing: 0.04em; color: var(--t3); }
+  .dm-col-doze .dm-col-h span { color: var(--acc); }
+  .dm-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+  .dm-list li { display: flex; flex-direction: column; gap: 8px; padding: 16px 0; border-top: 1px solid var(--ln); min-width: 0; }
+  .dm-list b { font-size: 16.5px; color: var(--t1); }
+  .dm-list p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--t2); }
+  .dm-code { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--well); border: 1px solid var(--ln); font: 13px/1.6 var(--font-mono); color: var(--t2); overflow-x: auto; white-space: pre; }
+  .dm-col-doze .dm-code { color: var(--t1); }
+  .dm-byo { margin: 8px 0 0; padding: 16px; border-radius: 14px; background: var(--well); border: 1px dashed var(--ln2); font-size: 15px; line-height: 1.6; color: var(--t2); }
+  .dm-byo b { color: var(--t1); }
+  .dm-byo code { font-size: 0.9em; color: var(--t1); }
+
+  /* how it works */
+  .dm-flow { margin: 0; }
+  .dm-nodes { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+  .dm-node { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 20px; border-radius: 16px; background: var(--g2); border: 1px solid var(--ln); min-width: 0; }
+  .dm-node:not(:last-child)::after { content: ""; position: absolute; top: 50%; right: -24px; width: 20px; height: 2px; background: linear-gradient(90deg, var(--ln2), var(--acc)); }
+  .dm-node:not(:last-child)::before { content: ""; position: absolute; top: calc(50% - 4px); right: -26px; width: 8px; height: 8px; border-top: 2px solid var(--acc); border-right: 2px solid var(--acc); transform: rotate(45deg); }
+  .dm-node-k { font: 600 11.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); }
+  .dm-node b { font-size: 16px; color: var(--t1); overflow-wrap: anywhere; }
+  .dm-node b code { font-size: 13.5px; }
+  .dm-node > span:last-child { font-size: 14px; line-height: 1.55; color: var(--t2); }
+  .dm-node code { font-size: 0.92em; color: var(--t1); overflow-wrap: anywhere; }
+  .dm-node-door { border-color: color-mix(in srgb, var(--acc) 50%, var(--ln)); background: radial-gradient(100% 80% at 50% 0%, rgba(240, 162, 75, 0.14), transparent 70%), var(--g2); }
+  .dm-ca { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; margin-top: 28px; align-items: center; }
+  .dm-ca-box { position: relative; padding: 20px; border-radius: 16px; border: 1px dashed color-mix(in srgb, var(--acc) 50%, var(--ln2)); background: var(--well); display: flex; flex-direction: column; gap: 10px; }
+  .dm-ca-files { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--t2); }
+  .dm-ca-files code { color: var(--t1); margin-right: 6px; }
+  .dm-ca-down { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--t2); }
+  .dm-ca-down b { color: var(--t1); }
+  @media (min-width: 1001px) {
+    .dm-ca { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .dm-ca-box { grid-column: 2 / span 2; }
+    .dm-ca-box::before { content: ""; position: absolute; left: 75%; top: -29px; height: 28px; border-left: 2px dashed color-mix(in srgb, var(--acc) 60%, var(--ln2)); }
+    .dm-ca-down { grid-column: 4; }
+  }
+  .dm-flow .pp-cap { margin-top: 22px; text-align: left; }
+
+  /* changes */
+  .dm-chg { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+  .dm-chg .pp-h2 { margin-top: 12px; }
+  .dm-ticks { margin: 24px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; color: var(--t2); line-height: 1.6; font-size: 15.5px; }
+  .dm-ticks li { position: relative; padding-left: 26px; }
+  .dm-ticks li::before { content: "✓"; position: absolute; left: 0; color: var(--ok); font-weight: 700; }
+  .dm-ticks b { color: var(--t1); }
+  .dm-ticks code, .dm-honest code, .dm-stale code { font-size: 0.88em; color: var(--t1); }
+  .dm-honest { margin: 24px 0 0; padding: 16px 18px; border-radius: 14px; background: var(--bad-g); border: 1px solid var(--bad-l); color: var(--t2); line-height: 1.6; font-size: 15px; }
+  .dm-honest b { color: var(--t1); }
+  .dm-undo { font-size: 13px; }
+  .dm-stale { margin: 16px 0 0; font-size: 15px; line-height: 1.6; color: var(--t2); }
+
+  /* edges */
+  .dm-edges { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .dm-edge { padding: 22px; border-radius: 16px; background: var(--g2); border: 1px solid var(--ln); }
+  .dm-edge h3 { margin: 0 0 8px; font: 700 17px/1.25 var(--font-display); letter-spacing: -0.01em; color: var(--t1); }
+  .dm-edge p { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--t2); }
+
+  /* the app */
+  .dm-app { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .dm-app-f { margin: 0; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .dm-app-d { min-height: 250px; }
+  .dm-app-f figcaption { font-size: 15px; line-height: 1.55; color: var(--t2); }
+  .dm-app-f figcaption b { color: var(--t1); }
+  .dm-app-f figcaption code { font-size: 0.88em; color: var(--t1); }
+  .dm-banner { flex-wrap: wrap; }
+  .dm-app .ad-kv code.dm-wrap { white-space: normal; }
+  .dm-banner .ad-t { flex: 1 1 200px; }
+  .dm-banner-b { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ad-banner .dm-on-acc { color: #3b2a5c; font-weight: 500; font-size: inherit; }
+  .dm-ghost-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; flex: 1; min-height: 60px; }
+  .dm-ghost-tiles span { border-radius: 10px; border: 1px solid var(--a-line); background: var(--a-panel); }
+  .dm-chk { display: flex; flex-direction: column; border: 1px solid var(--a-line); border-radius: 10px; overflow: hidden; }
+  .dm-chk-h { padding: 6px 10px; background: var(--a-side); font-size: 10.5px; font-weight: 600; color: var(--a-bright); }
+  .dm-chk-h span { color: var(--a-dim); font-weight: 400; }
+  .dm-chk-r { display: grid; grid-template-columns: 8px minmax(0, 1fr); gap: 2px 8px; align-items: center; padding: 6px 10px; border-top: 1px solid var(--a-line); font-size: 10.5px; }
+  .dm-chk-r b { color: var(--a-bright); font-weight: 600; white-space: nowrap; }
+  .dm-chk-r > span:last-child { grid-column: 2; color: var(--a-dim); overflow-wrap: anywhere; }
+
+  /* try */
+  .dm-try { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .dm-try-say { display: flex; flex-direction: column; gap: 16px; }
+  .dm-try-go { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+  .dm-try-cmd { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .dm-try-cmd .s { color: #e9deef; }
+  .dm-try-cmd .n { color: #8fbdff; }
+  .dm-end { margin-top: 64px; padding-bottom: 32px; }
+
+  @media (max-width: 1000px) {
+    .dm-why, .dm-app { grid-template-columns: minmax(0, 1fr); max-width: 640px; }
+    .dm-vs, .dm-chg, .dm-try { grid-template-columns: minmax(0, 1fr); }
+    .dm-nodes { grid-template-columns: minmax(0, 1fr); gap: 26px; max-width: 640px; }
+    .dm-node:not(:last-child)::after { top: auto; bottom: -22px; right: auto; left: 32px; width: 2px; height: 18px; background: linear-gradient(180deg, var(--ln2), var(--acc)); }
+    .dm-node:not(:last-child)::before { top: auto; bottom: -24px; right: auto; left: 28px; transform: rotate(135deg); }
+    .dm-ca { grid-template-columns: minmax(0, 1fr); max-width: 640px; }
+    .dm-edges { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 760px) {
+    .dm-hero-win { padding: 0 12px; margin-top: 40px; }
+    .dm-two { flex-direction: column; align-items: stretch; width: 100%; }
+    .dm-two > div { align-items: stretch; }
+    .dm-two code { font-size: 12.5px; white-space: normal; overflow-wrap: anywhere; }
+    .dm-plus { display: none; }
+    .dm-col { padding: 20px; }
+    .dm-edges { grid-template-columns: minmax(0, 1fr); }
+    .dm-undo { font-size: 11.5px; }
+  }
+</style>
