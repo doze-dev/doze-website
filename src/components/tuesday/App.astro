@@ -9,6 +9,7 @@
 // app's default dark theme, the same as components/doze/appdraw.css.
 // Larder's figures are MapFlow's own; billing's are the story's.
 // Decorative, inside the aria-hidden stage: the beats say it all in words.
+import FlowMap, { type FlowData } from "./FlowMap.astro";
 import { on } from "./steps";
 
 // Where each page of the window shows.
@@ -19,70 +20,132 @@ const gateway = on("d0905");
 const orders = on("d1131", "d1133");
 const larderTrouble = on(["d0903", "d1133"]);
 
-// Larder, as the MapFlow board draws it: who calls whom, left to right.
-type Node = {
-  n: string;
-  lang: string;
-  mb: string;
-  uses: string[];
-  c: number;
-  r: number;
-  bad?: string;
-  badIn?: string;
-  sel?: string;
+// Larder as the app maps it: boxes and paths from doze's golden
+// (internal/desk/view/testdata/larder-map.json); the figures are MapFlow's.
+const larder: FlowData = {
+  w: 1430,
+  h: 674,
+  band: 534,
+  caps: [
+    { text: "Who calls whom", sub: "left to right, the way a request travels", x: 24, y: 16 },
+    { text: "Nobody calls these", sub: "they work from events", x: 24, y: 420 },
+    {
+      text: "Shared by the stack",
+      sub: "one line each would be 17 lines; the chips on each card say who uses what",
+      x: 24,
+      y: 544,
+    },
+  ],
+  cards: [
+    { n: "storefront", x: 24, y: 192, w: 214, h: 74, lang: "ts", mb: "61 MB", quiet: "no shared services", tone: "y" },
+    {
+      n: "gateway",
+      x: 310,
+      y: 192,
+      w: 214,
+      h: 74,
+      lang: "go",
+      mb: "46 MB",
+      chips: ["redis"],
+      bad: "port taken",
+      badIn: on("d0903"),
+    },
+    { n: "identity", x: 596, y: 52, w: 250, h: 74, lang: "go", mb: "42 MB", chips: ["postgres", "kafka"] },
+    { n: "fulfilment", x: 596, y: 192, w: 250, h: 74, lang: "py", mb: "52 MB", chips: ["kafka", "aws"] },
+    {
+      n: "recommendations",
+      x: 596,
+      y: 332,
+      w: 250,
+      h: 74,
+      lang: "py",
+      mb: "58 MB",
+      chips: ["postgres", "kafka", "redis"],
+    },
+    {
+      n: "orders",
+      x: 918,
+      y: 192,
+      w: 214,
+      h: 74,
+      lang: "go",
+      mb: "47 MB",
+      chips: ["postgres", "kafka"],
+      bad: "crashing",
+      badIn: on("d1130"),
+    },
+    { n: "catalog", x: 1204, y: 192, w: 214, h: 74, lang: "go", mb: "47 MB", chips: ["postgres", "aws"] },
+    { n: "payments", x: 24, y: 444, w: 214, h: 74, lang: "go", mb: "47 MB", chips: ["postgres", "kafka", "redis"] },
+    { n: "notifications", x: 310, y: 444, w: 214, h: 74, lang: "ts", mb: "45 MB", chips: ["kafka", "mailpit"] },
+    {
+      n: "mailpit",
+      x: 24,
+      y: 570,
+      w: 214,
+      h: 88,
+      mb: "24 MB",
+      what: "brought in by you",
+      used: "used by 1",
+      only: "notifications",
+    },
+    { n: "redis", x: 310, y: 570, w: 214, h: 88, mb: "5 MB", what: "valkey 9", used: "used by 3" },
+    { n: "kafka", x: 596, y: 570, w: 250, h: 88, mb: "24 MB", what: "kafka 4", used: "used by 6" },
+    { n: "postgres", x: 918, y: 570, w: 214, h: 88, mb: "13 MB", what: "postgres 18", used: "used by 5" },
+    { n: "aws", x: 1204, y: 570, w: 214, h: 88, mb: "25 MB", what: "aws", used: "used by 2" },
+  ],
+  edges: [
+    "M238 229 C 274 229, 256 229, 292 229 L 300 229",
+    "M524 229 L 536 229 Q 548 229, 548 217 L 548 107 Q 548 89, 566 89 L 586 89",
+    "M524 229 C 560 229, 542 229, 578 229 L 586 229",
+    "M524 229 L 536 229 Q 548 229, 548 241 L 548 351 Q 548 369, 566 369 L 586 369",
+    "M496 192 L 496 175.5 Q 496 159, 512.5 159 L 929.5 159 Q 946 159, 946 175.5 L 946 182",
+    "M496 266 L 496 282.5 Q 496 299, 512.5 299 L 1215.5 299 Q 1232 299, 1232 282.5 L 1232 276",
+    "M846 229 C 882 229, 864 229, 900 229 L 908 229",
+    "M846 369 L 1316 369 Q 1334 369, 1334 351 L 1334 276",
+    "M1132 229 C 1168 229, 1150 229, 1186 229 L 1194 229",
+  ],
 };
-const larderFlow: Node[] = [
-  { n: "storefront", lang: "ts", mb: "61 MB", uses: [], c: 1, r: 2 },
-  { n: "gateway", lang: "go", mb: "46 MB", uses: ["redis"], c: 2, r: 2, bad: "port taken", badIn: on("d0903") },
-  { n: "identity", lang: "go", mb: "42 MB", uses: ["postgres", "kafka"], c: 3, r: 1 },
-  { n: "fulfilment", lang: "py", mb: "52 MB", uses: ["kafka", "aws"], c: 3, r: 2 },
-  { n: "recommendations", lang: "py", mb: "58 MB", uses: ["postgres", "kafka", "redis"], c: 3, r: 3 },
-  {
-    n: "orders",
-    lang: "go",
-    mb: "47 MB",
-    uses: ["postgres", "kafka"],
-    c: 4,
-    r: 2,
-    bad: "crashing",
-    badIn: on("d1130"),
-  },
-  { n: "catalog", lang: "go", mb: "47 MB", uses: ["postgres", "aws"], c: 5, r: 2 },
-];
-const larderNobody: Node[] = [
-  { n: "payments", lang: "go", mb: "47 MB", uses: ["postgres", "kafka", "redis"], c: 0, r: 0 },
-  { n: "notifications", lang: "ts", mb: "45 MB", uses: ["kafka", "mailpit"], c: 0, r: 0 },
-];
-const larderShared = [
-  ["mailpit", "24 MB", "used by 1"],
-  ["redis", "5 MB", "used by 3"],
-  ["postgres", "13 MB", "used by 5"],
-  ["kafka", "24 MB", "used by 6"],
-  ["aws", "25 MB", "used by 2"],
-];
-// x: five columns, 16.6% wide, 4.25% apart; y: three rows of the flow box.
-const larderEdges = [
-  "M16.6 50 L20.85 50",
-  "M37.45 50 C39.6 50 39.6 14.4 41.7 14.4",
-  "M37.45 50 L41.7 50",
-  "M37.45 50 C39.6 50 39.6 85.6 41.7 85.6",
-  "M58.3 50 L62.55 50",
-  "M29.15 35.6 C29.15 28 70.85 28 70.85 35.6",
-  "M29.15 64.4 C29.15 72 91.7 72 91.7 64.4",
-  "M79.15 50 L83.4 50",
-  "M58.3 85.6 C80 85.6 91.7 80 91.7 64.4",
-];
 
-// billing: the repo from spring, with the TypeScript service nobody told you about.
-const billingFlow: Node[] = [
-  { n: "portal", lang: "ts", mb: "58 MB", uses: [], c: 1, r: 1 },
-  { n: "invoices", lang: "ts", mb: "44 MB", uses: ["postgres"], c: 2, r: 1 },
-  { n: "notifications", lang: "ts", mb: "41 MB", uses: ["mailpit"], c: 3, r: 1, sel: on("d1406") },
-];
-const billingShared = [
-  ["postgres", "12 MB", "used by 1"],
-  ["mailpit", "asleep", "used by 1"],
-];
+// billing: the repo from spring, with the TypeScript service nobody told you
+// about, laid out with flow.go's constants (one row; the middle column 250).
+const billing: FlowData = {
+  w: 1430,
+  h: 290,
+  band: 150,
+  caps: [
+    { text: "Who calls whom", sub: "left to right, the way a request travels", x: 24, y: 16 },
+    { text: "Shared by the stack", sub: "the chips on each card say who uses what", x: 24, y: 160 },
+  ],
+  cards: [
+    { n: "portal", x: 24, y: 52, w: 214, h: 74, lang: "ts", mb: "58 MB", quiet: "no shared services" },
+    { n: "invoices", x: 310, y: 52, w: 214, h: 74, lang: "ts", mb: "44 MB", chips: ["postgres"] },
+    { n: "notifications", x: 596, y: 52, w: 250, h: 74, lang: "ts", mb: "41 MB", chips: ["mailpit"], sel: on("d1406") },
+    {
+      n: "postgres",
+      x: 24,
+      y: 186,
+      w: 214,
+      h: 88,
+      mb: "12 MB",
+      what: "postgres 18",
+      used: "used by 1",
+      only: "invoices",
+    },
+    {
+      n: "mailpit",
+      x: 310,
+      y: 186,
+      w: 214,
+      h: 88,
+      mb: "asleep",
+      what: "brought in by you",
+      used: "used by 1",
+      only: "notifications",
+      tone: "off",
+    },
+  ],
+  edges: ["M238 89 C 274 89, 256 89, 292 89 L 300 89", "M524 89 C 560 89, 542 89, 578 89 L 586 89"],
+};
 
 // The sidebar of a Larder service page.
 const side: [string, [string, string, string?][]][] = [
@@ -224,33 +287,7 @@ const house =
       <div class="ta-st"><span class="v">12<small>awake</small></span><span class="s"><i class="y">1 dozing</i> · <i class="r">1 crashing</i></span></div>
       <div class="ta-st"><span class="v"><span class="ta-x"><span data-in={on("d0903")}>19</span><span data-in={on("d1130")}>20</span></span><small>connections</small></span><span class="s">tasks ✓ 9 done · 1 not run</span></div>
     </div>
-    <div class="ta-map">
-      <div class="ta-mh"><b>Who calls whom</b> left to right, the way a request travels</div>
-      <div class="ta-flow">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none">{larderEdges.map((d) => <path d={d} />)}</svg>
-        {larderFlow.map((x) => (
-          <div class="ta-n" style={`--c:${x.c};--r:${x.r}`} data-hi={x.badIn ?? ""}>
-            <div class="ta-nt"><b class="ta-d"></b><b>{x.n}</b><span class="ta-sp"></span><span class="mb">{x.mb}</span><span class="bad">{x.bad}</span></div>
-            <div class="ta-chips"><code>{x.lang}</code>{x.uses.length ? x.uses.map((u) => <span>{u}</span>) : <span class="none">no shared services</span>}</div>
-          </div>
-        ))}
-      </div>
-      <div class="ta-mh"><b>Nobody calls these</b> they work from events</div>
-      <div class="ta-row">
-        {larderNobody.map((x) => (
-          <div class="ta-n">
-            <div class="ta-nt"><b class="ta-d"></b><b>{x.n}</b><span class="ta-sp"></span><span class="mb">{x.mb}</span></div>
-            <div class="ta-chips"><code>{x.lang}</code>{x.uses.map((u) => <span>{u}</span>)}</div>
-          </div>
-        ))}
-      </div>
-      <div class="ta-mh ta-band-h"><b>Shared by the stack</b> the chips on each card say who uses what</div>
-      <div class="ta-row ta-band">
-        {larderShared.map(([n, mb, used]) => (
-          <div class="ta-n"><div class="ta-nt"><b class="ta-d"></b><b>{n}</b><span class="ta-sp"></span><span class="mb">{mb}</span></div><span class="ta-used">{used}</span></div>
-        ))}
-      </div>
-    </div>
+    <div class="ta-map"><FlowMap m={larder} /></div>
   </div>
 
   <!-- billing's overview, as a map -->
@@ -267,24 +304,7 @@ const house =
       <div class="ta-st"><span class="v">4<small>awake</small></span><span class="s">1 asleep</span></div>
       <div class="ta-st"><span class="v">3<small>connections</small></span><span class="s">tasks ✓ 3 done</span></div>
     </div>
-    <div class="ta-map">
-      <div class="ta-mh"><b>Who calls whom</b> left to right, the way a request travels</div>
-      <div class="ta-flow one">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M16.6 50 L20.85 50" /><path class="sel" d="M37.45 50 L41.7 50" data-hi={on("d1406")} /></svg>
-        {billingFlow.map((x) => (
-          <div class="ta-n" style={`--c:${x.c};--r:${x.r}`} data-hi={x.sel ?? ""}>
-            <div class="ta-nt"><b class="ta-d"></b><b>{x.n}</b><span class="ta-sp"></span><span class="mb">{x.mb}</span></div>
-            <div class="ta-chips"><code>{x.lang}</code>{x.uses.length ? x.uses.map((u) => <span>{u}</span>) : <span class="none">no shared services</span>}</div>
-          </div>
-        ))}
-      </div>
-      <div class="ta-mh ta-band-h"><b>Shared by the stack</b> the chips on each card say who uses what</div>
-      <div class="ta-row ta-band">
-        {billingShared.map(([n, mb, used]) => (
-          <div class:list={["ta-n", { "ta-asleep": mb === "asleep" }]}><div class="ta-nt"><b class="ta-d"></b><b>{n}</b><span class="ta-sp"></span><span class="mb">{mb}</span></div><span class="ta-used">{used}</span></div>
-        ))}
-      </div>
-    </div>
+    <div class="ta-map"><FlowMap m={billing} /></div>
   </div>
 
   <!-- a Larder service: the sidebar, and the page of the one in trouble -->
@@ -438,12 +458,13 @@ const house =
 .ta-machine > span { display: inline-flex; align-items: center; gap: 0.5cqi; }
 
 /* A stack's overview */
+.ta-ov { gap: 0.9cqi; padding-top: 1.4cqi; padding-bottom: 0; }
 .ta-oh { display: flex; align-items: center; gap: 1cqi; min-width: 0; }
 .ta-oh > b { font: 700 1.9cqi/1 var(--tn-display); color: var(--a-bright); letter-spacing: -0.02em; }
 .ta-up { font-weight: 650; color: var(--a-bright); font-size: 1.15cqi; margin-left: 0.6cqi; }
-.ta-strip { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2cqi; padding-bottom: 1.3cqi; border-bottom: 0.12cqi solid var(--a-line); }
-.ta-st { display: flex; flex-direction: column; gap: 0.5cqi; min-width: 0; }
-.ta-st .v { display: flex; align-items: baseline; gap: 0.6cqi; font: 700 1.9cqi/1 var(--tn-body); color: var(--a-bright); white-space: nowrap; }
+.ta-strip { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2cqi; padding-bottom: 0.8cqi; border-bottom: 0.12cqi solid var(--a-line); }
+.ta-st { display: flex; flex-direction: column; gap: 0.35cqi; min-width: 0; }
+.ta-st .v { display: flex; align-items: baseline; gap: 0.6cqi; font: 700 1.7cqi/1 var(--tn-body); color: var(--a-bright); white-space: nowrap; }
 .ta-st small { font: 400 1.05cqi/1 var(--tn-body); color: var(--a-dim); }
 .ta-st .s { font-size: 1cqi; color: var(--a-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ta-bar { display: flex; height: 0.5cqi; border-radius: 0.3cqi; overflow: hidden; background: var(--a-line2); width: 80%; }
@@ -452,37 +473,7 @@ const house =
 .ta-bar i:nth-child(2) { background: var(--a-acc); }
 .ta-bar i:nth-child(3) { background: var(--a-good); }
 .ta-bar i:nth-child(4) { background: #4a4462; }
-.ta-map > * { flex-shrink: 0; }
-.ta-map { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0.75cqi; padding: 1.1cqi 1.2cqi; border-radius: 1cqi; border: 0.12cqi solid var(--a-line); background: #17151f; }
-.ta-mh { font-size: 0.95cqi; color: var(--a-dim); white-space: nowrap; overflow: hidden; }
-.ta-mh b { font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-right: 0.6cqi; color: #b4afd0; }
-.ta-band-h { padding-top: 0.7cqi; border-top: 0.12cqi dashed var(--a-line2); }
-.ta-flow { position: relative; height: 14.9cqi; flex: none; }
-.ta-flow.one { height: 4.3cqi; }
-.ta-flow svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.ta-flow path { fill: none; stroke: color-mix(in srgb, var(--a-acc) 70%, transparent); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
-.ta-flow path.sel.hi { stroke: var(--a-acc); stroke-width: 2.4; }
-.ta-flow .ta-n { position: absolute; left: calc((var(--c) - 1) * 20.85%); top: calc((var(--r) - 1) * 5.3cqi); width: 16.6%; height: 4.3cqi; }
-.ta-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 4.25%; }
-.ta-n { display: flex; flex-direction: column; justify-content: center; gap: 0.45cqi; padding: 0.5cqi 0.75cqi; border-radius: 0.8cqi; border: 0.12cqi solid var(--a-line2); background: var(--a-panel); min-width: 0; transition: border-color 0.4s, background 0.4s, box-shadow 0.4s; }
-.ta-nt { display: flex; align-items: center; gap: 0.5cqi; min-width: 0; font-size: 1cqi; }
-.ta-nt b:not(.ta-d) { color: var(--a-bright); font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.ta-nt .ta-d { background: var(--a-good); }
-.ta-chips code { flex: none; padding: 0 0.3cqi; border-radius: 0.3cqi; border: 0.12cqi solid var(--a-line2); font: 0.82cqi/1.45 var(--tn-mono); color: var(--a-dim); }
-.ta-nt .mb { flex: none; font-size: 0.85cqi; color: var(--a-dim); white-space: nowrap; }
-.ta-nt .bad { display: none; flex: none; font-size: 0.95cqi; color: var(--a-bad); white-space: nowrap; }
-.ta-chips { display: flex; gap: 0.3cqi; overflow: hidden; }
-.ta-chips span { flex: none; padding: 0.15cqi 0.5cqi; border-radius: 0.4cqi; background: #2a2540; font-size: 0.88cqi; color: #c4bde0; }
-.ta-chips .none { background: none; border: 0.12cqi solid var(--a-line2); }
-.ta-used { font-size: 0.92cqi; color: var(--a-dim); }
-.ta-n.hi { border-color: var(--a-bad); background: #2a1824; }
-.ta-n.hi .ta-d { background: var(--a-bad); }
-.ta-n.hi .mb { display: none; }
-.ta-n.hi .bad { display: inline; }
-.ta-flow.one .ta-n.hi { border-color: var(--a-acc); background: #241f3a; box-shadow: 0 0 0 0.25cqi color-mix(in srgb, var(--a-acc) 30%, transparent); }
-.ta-flow.one .ta-n.hi .ta-d { background: var(--a-good); }
-.ta-flow.one .ta-n.hi .mb { display: inline; }
-.ta-asleep .ta-d { background: var(--a-line2); }
+.ta-map { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; overflow: hidden; padding: 0; border-radius: 1cqi; border: 0.12cqi solid var(--a-line); background: #17151f; }
 
 /* A service page: the sidebar and the main column */
 .ta-svc { flex-direction: row; gap: 0; padding: 0; }
@@ -578,21 +569,7 @@ const house =
   .ta-st:nth-child(2), .ta-st:nth-child(4), .ta-st .s, .ta-bar { display: none; }
   .ta-st .v { font-size: 14px; gap: 4px; }
   .ta-st small { font-size: 11px; }
-  .ta-map { gap: 6px; padding: 8px; border-radius: 7px; border-width: 1px; }
-  .ta-mh { font-size: 11px; }
-  .ta-mh b { margin-right: 4px; }
-  .ta-mh { display: none; }
-  .ta-band { padding-top: 6px; border-top: 1px dashed var(--a-line2); }
-  .ta-flow, .ta-flow.one { height: auto; display: flex; flex-wrap: wrap; gap: 4px; }
-  .ta-flow svg { display: none; }
-  .ta-flow .ta-n { position: static; width: auto; height: auto; }
-  .ta-row { display: flex; flex-wrap: wrap; gap: 4px; }
-  .ta-n { padding: 3px 7px; border-radius: 6px; border-width: 1px; gap: 0; }
-  .ta-nt { font-size: 11px; gap: 4px; }
-  .ta-nt .mb, .ta-chips, .ta-used { display: none; }
-  .ta-n.hi .bad { font-size: 11px; }
-  .ta-flow.one .ta-n.hi .mb { display: none; }
-  .ta-flow.one .ta-n.hi { box-shadow: 0 0 0 2px color-mix(in srgb, var(--a-acc) 35%, transparent); }
+  .ta-map { align-items: stretch; padding: 8px; border-radius: 7px; border-width: 1px; }
   .ta-side { display: none; }
   .ta-main { inset: 0; gap: 7px; padding: 9px 10px; }
   .ta-ih { gap: 6px; flex-wrap: wrap; }

@@ -1,0 +1,130 @@
+---
+// A stack's Map view, as the app draws it since doze 809976d (desk: the map
+// spaced as the first map was). Larder's card boxes and call paths are lifted
+// from doze/internal/desk/view/testdata/larder-map.json, the golden of
+// view/flow.go (72 px between columns, 140 down, cards 214 wide, the middle
+// column 250); billing's are laid out with the same constants. Lines route
+// square with rounded corners, stop 10 px short of the card, and a solid head
+// fills the last 10 px (frontend/src/pages/flow.tsx's flow-ar marker, drawn
+// here as a polygon so the reduced-motion copies need no marker ids).
+// Everything is in the map's own pixels; the box scales them with the laptop.
+export interface Card {
+  n: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  lang?: string;
+  mb?: string;
+  chips?: string[];
+  quiet?: string;
+  tone?: "y" | "off";
+  bad?: string;
+  badIn?: string;
+  sel?: string;
+  what?: string;
+  used?: string;
+  only?: string;
+}
+export interface FlowData {
+  w: number;
+  h: number;
+  band: number;
+  caps: { text: string; sub: string; x: number; y: number }[];
+  cards: Card[];
+  edges: string[];
+}
+interface Props {
+  m: FlowData;
+}
+const { m } = Astro.props;
+
+// The head: from where the line stops, 10 px on in the direction it arrives,
+// 8.4 px wide at its base (the marker's path, M0.5 0.8 L9.5 5 L0.5 9.2).
+function head(d: string): string {
+  const n = (d.match(/-?\d+(\.\d+)?/g) ?? []).map(Number);
+  const [x, y] = n.slice(-2);
+  const [px, py] = n.slice(-4, -2);
+  const len = Math.hypot(x - px, y - py) || 1;
+  const [dx, dy] = [(x - px) / len, (y - py) / len];
+  const pt = (a: number, b: number) => `${(x + dx * a - dy * b).toFixed(1)},${(y + dy * a + dx * b).toFixed(1)}`;
+  return `${pt(0.5, -4.2)} ${pt(9.5, 0)} ${pt(0.5, 4.2)}`;
+}
+const pc = (v: number, of: number) => `${((v / of) * 100).toFixed(3)}%`;
+---
+<div class="ta-fm" style={`--fw:${m.w};aspect-ratio:${m.w} / ${m.h}`}>
+  <i class="ta-fm-band" style={`top:${pc(m.band, m.h)}`}></i>
+  <svg viewBox={`0 0 ${m.w} ${m.h}`} aria-hidden="true">
+    {m.edges.map((d) => (
+      <g><path d={d} /><polygon points={head(d)} /></g>
+    ))}
+  </svg>
+  {m.caps.map((c) => (
+    <span class="ta-fm-cap" style={`left:${pc(c.x, m.w)};top:${pc(c.y, m.h)}`}><b>{c.text}</b> {c.sub}</span>
+  ))}
+  {m.cards.map((c) => (
+    <div
+      class:list={["ta-fc", c.tone, { sh: c.what }]}
+      style={`left:${pc(c.x, m.w)};top:${pc(c.y, m.h)};width:${pc(c.w, m.w)};height:${pc(c.h, m.h)}`}
+      data-hi={c.badIn ?? c.sel ?? ""}
+      data-kind={c.badIn ? "bad" : c.sel ? "sel" : undefined}
+    >
+      <div class="top"><b class="ta-d"></b><b class="nm">{c.n}</b>{c.lang && <code>{c.lang}</code>}<span class="m">{c.mb}</span>{c.bad && <span class="bad">{c.bad}</span>}</div>
+      {c.what ? (
+        <>
+          <span class="what">{c.what}</span>
+          <span class="used"><b>{c.used}</b>{c.only && ` · ${c.only}`}</span>
+        </>
+      ) : (
+        <div class="chips">{(c.chips ?? []).length ? (c.chips ?? []).map((u) => <span>{u}</span>) : <span class="q">{c.quiet}</span>}<span class="ok">✓</span></div>
+      )}
+    </div>
+  ))}
+</div>
+
+<style is:global>
+/* One map pixel is --u: the box is 84cqi wide and the map --fw px. */
+.ta-fm { --u: calc(84cqi / var(--fw)); position: relative; width: 84cqi; flex: none; }
+.ta-fm svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ta-fm path { fill: none; stroke: var(--a-acc); stroke-width: 1.8; stroke-linecap: round; }
+.ta-fm polygon { fill: var(--a-acc); stroke: var(--a-acc); stroke-width: 1; stroke-linejoin: round; }
+.ta-fm-band { position: absolute; left: -3cqi; right: -3cqi; bottom: calc(-200 * var(--u)); border-top: max(1px, calc(1 * var(--u))) dashed var(--a-line2); background: color-mix(in srgb, var(--a-panel) 45%, transparent); }
+.ta-fm-cap { position: absolute; z-index: 2; white-space: nowrap; font-size: calc(12.5 * var(--u)); line-height: calc(16 * var(--u)); color: var(--a-dim); }
+.ta-fm-cap b { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-right: calc(4 * var(--u)); color: #b4afd0; }
+.ta-fc { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: calc(7 * var(--u)); padding: calc(11 * var(--u)) calc(13 * var(--u)); border: max(1px, calc(1 * var(--u))) solid var(--a-line2); border-radius: calc(11 * var(--u)); background: var(--a-panel); transition: border-color 0.4s, background 0.4s, box-shadow 0.4s; }
+.ta-fc .top { display: flex; align-items: center; gap: calc(7 * var(--u)); min-width: 0; height: calc(20 * var(--u)); }
+.ta-fc .ta-d { width: calc(8 * var(--u)); height: calc(8 * var(--u)); background: var(--a-good); }
+.ta-fc.y .ta-d { background: var(--a-warn); }
+.ta-fc.off .ta-d { background: var(--a-line2); }
+.ta-fc .nm { font-size: calc(14.5 * var(--u)); letter-spacing: -0.01em; font-weight: 650; color: var(--a-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.ta-fc code { flex: none; padding: 0 calc(4 * var(--u)); border: max(1px, calc(1 * var(--u))) solid var(--a-line2); border-radius: calc(4 * var(--u)); font: 600 calc(10 * var(--u)) / calc(14 * var(--u)) var(--tn-mono); color: var(--a-dim); }
+.ta-fc .m, .ta-fc .bad { margin-left: auto; flex: none; font-size: calc(12.5 * var(--u)); color: var(--a-dim); white-space: nowrap; }
+.ta-fc .bad { display: none; color: var(--a-bad); }
+.ta-fc .chips { display: flex; align-items: center; gap: calc(5 * var(--u)); white-space: nowrap; overflow: hidden; }
+.ta-fc .chips span { flex: none; height: calc(20 * var(--u)); padding: 0 calc(7 * var(--u)); border-radius: calc(10 * var(--u)); background: #2b2542; color: var(--a-text); font-size: calc(11.5 * var(--u)); line-height: calc(20 * var(--u)); }
+.ta-fc .chips .q { padding: 0; background: none; color: var(--a-dim); }
+.ta-fc .chips .ok { margin-left: auto; padding: 0; background: none; color: var(--a-good); }
+.ta-fc.sh { gap: calc(3 * var(--u)); padding: calc(10 * var(--u)) calc(13 * var(--u)); }
+.ta-fc .what, .ta-fc .used { font-size: calc(12.5 * var(--u)); line-height: calc(20 * var(--u)); color: var(--a-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ta-fc .used b { font-weight: 600; color: var(--a-text); }
+.ta-fc.hi[data-kind="bad"] { border-color: color-mix(in srgb, var(--a-bad) 70%, var(--a-line)); background: #2a1824; }
+.ta-fc.hi[data-kind="bad"] .ta-d { background: var(--a-bad); }
+.ta-fc.hi[data-kind="bad"] .m { display: none; }
+.ta-fc.hi[data-kind="bad"] .bad { display: inline; }
+.ta-fc.hi[data-kind="sel"] { border-color: var(--a-acc); box-shadow: 0 0 0 max(1px, calc(1 * var(--u))) var(--a-acc), 0 calc(8 * var(--u)) calc(24 * var(--u)) color-mix(in srgb, var(--a-acc) 16%, transparent); }
+
+/* Small phones: the cards as chips, no lines. */
+@media (max-width: 760px) {
+  .ta-fm { width: auto; aspect-ratio: auto !important; display: flex; flex-wrap: wrap; gap: 4px; }
+  .ta-fm svg, .ta-fm-cap { display: none; }
+  .ta-fm-band { position: static; flex: 0 0 100%; height: 0; margin: 2px 0; border-top: 1px dashed var(--a-line2); background: none; order: 1; }
+  .ta-fc { position: static; width: auto !important; height: auto !important; gap: 0; padding: 3px 7px; border-width: 1px; border-radius: 6px; }
+  .ta-fc.sh { order: 2; padding: 3px 7px; }
+  .ta-fc .top { height: auto; gap: 4px; }
+  .ta-fc .ta-d { width: 6px; height: 6px; }
+  .ta-fc .nm { font-size: 11px; }
+  .ta-fc .bad { font-size: 11px; }
+  .ta-fc code, .ta-fc .m, .ta-fc .chips, .ta-fc .what, .ta-fc .used { display: none; }
+  .ta-fc.hi[data-kind="sel"] { box-shadow: 0 0 0 2px color-mix(in srgb, var(--a-acc) 35%, transparent); }
+}
+</style>
