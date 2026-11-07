@@ -53,6 +53,10 @@ const end = { ...b("h-e", false), "data-step": "end" };
         <li><a href={`#l-${c.id}`} data-rail={c.id} aria-label={c.name}><span class="w">{c.label}</span><span class="s">{c.short}</span></a></li>
       ))}
     </ol>
+    <button type="button" class="lw-snd" data-sound aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" /></svg>
+      <span class="lw-snd-l">Sound</span><span class="sr-only"> of the till</span>
+    </button>
     <i class="lw-prog" aria-hidden="true"></i>
   </nav>
 
@@ -80,8 +84,9 @@ const end = { ...b("h-e", false), "data-step": "end" };
             <p>Save the file, refresh the page. Between you and your running code: nothing at all.</p>
           </article>
           <article class="lw-beat" {...b("r1b")}>
-            <p>Then a second project needed a different Postgres. Then a new hire's laptop didn't have one running.</p>
-            <p>The README was right on exactly one machine: the one that wrote it.</p>
+            <p>Then a second project wanted a different Postgres, and a new hire's laptop didn't have one running at all.</p>
+            <p>The README knew one machine by heart: the one that wrote it.</p>
+            <p class="lw-line">Works on my machine. Exactly one machine.</p>
             <dl class="lw-ledger"><div><dt>What it fixed</dt><dd>{L.readme.fixed}</dd></div><div><dt>What it cost</dt><dd>{L.readme.cost}</dd></div></dl>
           </article>
         </div>
@@ -92,12 +97,12 @@ const end = { ...b("h-e", false), "data-step": "end" };
         <div class="lw-ch" id="l-vm" tabindex="-1">
           <article class="lw-beat" {...b("vm-a")}>
             <h2 class="lw-era-h" id="lw-h2"><span>Stop two · A VM per project</span>A computer inside the computer.</h2>
-            <p>So each project got its own virtual machine, built from a file in the repo. The same OS and the same versions, for everyone.</p>
-            <p>One command. Go and make a coffee.</p>
+            <p>So each project got its own virtual machine, built from a file in the repo. The same OS and the same versions, for everyone, and no laptop got a vote.</p>
+            <p>Still your laptop, though: the VM runs on it. One command. Go and make a coffee. Possibly two.</p>
           </article>
           <article class="lw-beat" {...b("vm-b")}>
-            <p>It worked. It was also a whole operating system per project: memory reserved whether you used it or not, and a shared folder that made every file read slower.</p>
-            <p>Three projects meant three machines, warming your lap.</p>
+            <p>It worked. It was also a whole operating system per project: memory reserved whether you used it or not, and a shared folder that sent every file read the scenic route.</p>
+            <p class="lw-line">Three projects, three computers, one lap.</p>
             <dl class="lw-ledger"><div><dt>What it fixed</dt><dd>{L.vm.fixed}</dd></div><div><dt>What it cost</dt><dd>{L.vm.cost}</dd></div></dl>
           </article>
         </div>
@@ -113,7 +118,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
           </article>
           <article class="lw-beat" {...b("c-b")}>
             <p>But on a Mac or a Windows laptop, a container means a Linux VM. The VM came back: smaller, always on, holding every service all day, used or not. The fan noticed.</p>
-            <p>Every file change crossed a mount. Reloads got slow, so the web app quietly moved back outside to run natively.</p>
+            <p>Every file change crossed a mount. Reloads dragged, so web quietly moved back out to run on the laptop. Now the stack lived in two places, and you kept track of which.</p>
           </article>
           <article class="lw-beat" {...b("c-c")}>
             <p>Debugging meant publishing a port from inside the container and mapping source paths across the wall.</p>
@@ -128,12 +133,17 @@ const end = { ...b("h-e", false), "data-step": "end" };
         <div class="lw-ch" id="l-cluster" tabindex="-1">
           <article class="lw-beat" {...b("k-a")}>
             <h2 class="lw-era-h" id="lw-h4"><span>Stop four · Kubernetes for dev</span>Then production became a cluster.</h2>
-            <p>So development tried to look like it. A cluster on the laptop, inside the VM, inside the laptop.</p>
+            <p>So development tried to look like it: a cluster on the laptop, inside the VM, inside the laptop. Nesting dolls, with YAML.</p>
             <p>A chart of ten templates, to say hello world.</p>
+            <p class="lw-line">“It's just YAML,” said nobody twice.</p>
+          </article>
+          <article class="lw-beat" {...b("k-out")}>
+            <p>Then the laptop gave up, and the stack moved out to a shared cluster: a namespace per developer.</p>
+            <p>For the first time on this trip, your running code is not on your laptop. What's left on your laptop is the editor, and a VPN.</p>
           </article>
           <article class="lw-beat" {...b("k-b")}>
-            <p>The laptop gave up, and the stack moved to a shared cluster: a namespace per developer.</p>
-            <p>Now every save is a sync and a rebuild, somewhere else. Every database you want to look at is a port-forward back to your laptop, and 5432 is still taken on this side.</p>
+            <p>Web came home to reload fast, again. Everything it talks to stayed in the cluster.</p>
+            <p>So every save is a sync and a rebuild somewhere else, and every database you want to look at is a port-forward back to your laptop. 5432 is still taken on this side.</p>
           </article>
           <article class="lw-beat" {...b("k-c")}>
             <p>The debugger waits on the tunnel. The tunnel waits on the debugger. The logs are in another tool, in another tab.</p>
@@ -148,10 +158,11 @@ const end = { ...b("h-e", false), "data-step": "end" };
           <article class="lw-beat" {...b("cl-a")}>
             <h2 class="lw-era-h" id="lw-h5"><span>Stop five · Cloud dev environments</span>Then the editor left too.</h2>
             <p>A dev box per developer, in the cloud. The editor in a browser tab, or attached over SSH. A fresh machine in minutes, the same for everyone.</p>
-            <p>Your laptop became a window onto somebody else's computer. On a train, the cursor runs a little behind your typing.</p>
+            <p>Your laptop became a window onto somebody else's computer. On a train, the cursor runs a little behind your typing, as if it's thinking it over.</p>
+            <p class="lw-line">Your laptop became a very expensive Chromebook.</p>
           </article>
           <article class="lw-beat" {...b("cl-b")}>
-            <p>Every pull request got a preview environment of its own, billed by the hour. And everyone shared one staging, which everyone, eventually, broke.</p>
+            <p>Every pull request got a preview environment of its own, billed by the hour until somebody closed it. And everyone shared one staging, which everyone, eventually, broke.</p>
             <dl class="lw-ledger"><div><dt>What it fixed</dt><dd>{L.cloud.fixed}</dd></div><div><dt>What it cost</dt><dd>{L.cloud.cost}</dd></div></dl>
           </article>
         </div>
@@ -162,11 +173,12 @@ const end = { ...b("h-e", false), "data-step": "end" };
         <div class="lw-ch" id="l-platform" tabindex="-1">
           <article class="lw-beat" {...b("pl-a")}>
             <h2 class="lw-era-h" id="lw-h6"><span>Stop six · The platform team</span>A team to hold it all up.</h2>
-            <p>Somebody has to run all of this. So there's a platform team, and between you and a new database there is now a ticket.</p>
+            <p>Somebody has to run all of this. So there's a platform team, and they're good at it.</p>
+            <p>Between you and a new database: a ticket, a queue and a person.</p>
           </article>
           <article class="lw-beat" {...b("pl-b")}>
             <p>Then quotas: your namespace is out of memory. On Thursday, a cost review for dev environments.</p>
-            <p>A new hire spends their first week on access requests. The VPN, the cluster, the dev box, the secrets.</p>
+            <p>A new hire spends week one on access requests: the VPN, the cluster, the dev box, the secrets. Writing code is pencilled in for later.</p>
           </article>
           <article class="lw-beat" {...b("pl-c")}>
             <p>Then <code>#platform</code>: <em>Dev environments degraded. No ETA.</em> The platform team is on a production incident first, as they should be. Nobody on your team can run anything.</p>
@@ -200,7 +212,8 @@ const end = { ...b("h-e", false), "data-step": "end" };
             <h2 class="lw-era-h" id="lw-hh"><span>The way home · doze</span>Bring it home.</h2>
             <p>doze runs the whole stack on your machine as native processes. Postgres is a process. Your API is a process. One file in the repo, <code>doze.hcl</code>, says what runs and what it needs, and <code>doze.lock</code> pins the versions for everyone.</p>
             <p>Here that's Larder, our made-up grocery example: real code, seven services in Go, Python and TypeScript, a gateway and a web shop, on Postgres, Valkey, Kafka and AWS.</p>
-            <p><code>doze up</code>. Everything comes back. Between you and your running code: nothing, again.</p>
+            <p><code>doze up</code>. Everything comes back. Between you and your running code: nothing, again. The receipt? Torn up.</p>
+            <p class="lw-line">Your laptop. Already paid for.</p>
           </article>
           <article class="lw-beat" {...b("h-b")}>
             <p>Everything sleeps until it's called. Two minutes with no connections and a service goes to sleep; the next connection wakes it. At rest it's one daemon: it held 27.1 MB on our Mac, and 1.3 MB more after 100,000 log lines (<code>make bench</code>).</p>
@@ -287,11 +300,9 @@ const end = { ...b("h-e", false), "data-step": "end" };
   --sky-night: radial-gradient(60% 50% at 85% 10%, #2a1e3a 0%, transparent 70%), linear-gradient(180deg, #100a18 0%, #0b0711 100%);
   --rail-h: 60px;
   --stage-h: calc(100svh - var(--rail-h));
-  /* the map: band 0 (your laptop) and each band beyond it, in % of the map */
-  --b0: 26;
-  --bw: 12.333;
-  --r0: 14;
-  --rs: 15;
+  /* the map's rows, in % of its height (columns live in steps.ts: places) */
+  --r0: 17;
+  --rs: 14.6;
 }
 
 /* ── Frame ── */
@@ -339,7 +350,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
 /* ── Film ── */
 .lw-film { display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); column-gap: clamp(32px, 5vw, 72px); max-width: 1440px; margin: 0 auto; padding: 0 clamp(24px, 4vw, 56px); }
 .lw-beats { grid-column: 1; grid-row: 1; }
-.lw-stage { grid-column: 2; grid-row: 1; position: sticky; top: var(--rail-h); align-self: start; height: var(--stage-h); display: flex; flex-direction: column; gap: 14px; padding: 20px 0 22px; min-width: 0; }
+.lw-stage { grid-column: 2; grid-row: 1; position: sticky; top: var(--rail-h); align-self: start; height: var(--stage-h); display: flex; flex-direction: column; gap: 12px; padding: 18px 0 20px; min-width: 0; }
 .lw:not(.lw-js) .lw-stage { display: none; }
 .lw:not(.lw-js) .lw-film { grid-template-columns: minmax(0, 640px); justify-content: center; }
 
@@ -373,9 +384,9 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-meter-n { flex: 0 0 auto; display: flex; flex-direction: column; gap: 4px; }
 .lw-meter-n small { font: 600 11px/1.2 var(--lw-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--lw-dim); max-width: 24ch; }
 .lw-meter-n span { display: flex; align-items: baseline; gap: 8px; }
-.lw-meter-n b { font: 800 46px/0.9 var(--lw-display); letter-spacing: -0.03em; color: var(--lw-amber); font-variant-numeric: tabular-nums; min-width: 1ch; transition: color 0.6s; }
+.lw-meter-n b { font: 800 38px/0.9 var(--lw-display); letter-spacing: -0.03em; color: var(--lw-amber); font-variant-numeric: tabular-nums; min-width: 1ch; transition: color 0.6s; }
 .lw-meter-n em { font: 500 14px/1 var(--lw-body); font-style: normal; color: var(--lw-text-2); }
-.lw-stage:not([data-d="0,0,0,0,0,0"]) .lw-meter-n b { color: var(--lw-cold); }
+.lw-gone .lw-meter-n b { color: var(--lw-cold); }
 .lw-chain { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; min-width: 0; }
 .lw-chain li { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--lw-mono); color: var(--lw-cold); white-space: nowrap; animation: lw-pop 0.28s ease both; }
 .lw-chain li:not(:first-child)::before { content: "→"; color: var(--lw-dim); }
@@ -386,20 +397,16 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-chain.none li.end:last-child::before { content: "→ nothing in between →"; color: var(--lw-amber); opacity: 0.8; }
 
 /* ── Stage: the map ── */
-.lw-map { flex: 1 1 auto; min-height: 0; position: relative; container-type: size; border-radius: 18px; background: rgba(10, 6, 14, 0.4); border: 1px solid rgba(255, 255, 255, 0.07); overflow: hidden; }
-.lw-band { position: absolute; top: 0; bottom: 0; left: calc((var(--b0) + (var(--k) - 1) * var(--bw)) * 1%); width: calc(var(--bw) * 1%); border-left: 1px dashed var(--lw-cold-line); background: rgba(120, 165, 230, calc(0.025 + var(--k) * 0.016)); opacity: 0; transition: opacity 0.6s ease; }
-.lw-band.on { opacity: 1; }
-.lw-band span { position: absolute; left: 4px; right: 4px; top: 10px; text-align: center; font: 500 11px/1.2 var(--lw-mono); color: var(--lw-cold); overflow-wrap: anywhere; }
-.lw-band[data-band="6"] { background: rgba(255, 140, 160, 0.08); border-left-color: rgba(255, 150, 170, 0.45); }
-.lw-band[data-band="6"] span { color: #ffc2cb; }
+.lw-map { flex: 1 1 auto; min-height: 0; min-width: 0; position: relative; container-type: size; border-radius: 18px; background: rgba(10, 6, 14, 0.4); border: 1px solid rgba(255, 255, 255, 0.07); overflow: hidden; }
 
-.lw-laptop { position: absolute; left: 1.2%; top: 2.5%; bottom: 2.5%; width: calc((var(--b0) - 2.4) * 1%); }
-.lw-lid { position: absolute; inset: 0; border-radius: 14px; background: linear-gradient(180deg, rgba(74, 44, 40, 0.55), rgba(40, 24, 40, 0.55)); border: 1px solid rgba(240, 162, 75, 0.28); box-shadow: 0 0 40px rgba(240, 162, 75, 0.1); transform-origin: 50% 100%; transition: transform 0.8s cubic-bezier(.6, 0, .2, 1), opacity 0.6s, box-shadow 0.8s; }
-.lw-lt-h { position: absolute; left: 12px; top: 11px; font: 600 11px/1 var(--lw-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--lw-amber); }
+.lw-laptop { position: absolute; left: 1.2%; top: 3%; bottom: 3%; width: 55%; transition: width 0.8s var(--ease-settle, ease); }
+.lw-stage[data-wide="1"] .lw-laptop { width: 97.6%; }
+.lw-lid { position: absolute; inset: 0; border-radius: 14px; background: linear-gradient(180deg, rgba(74, 44, 40, 0.5), rgba(40, 24, 40, 0.5)); border: 2px solid rgba(240, 162, 75, 0.78); box-shadow: 0 0 40px rgba(240, 162, 75, 0.1); transform-origin: 50% 100%; transition: transform 0.8s cubic-bezier(.6, 0, .2, 1), opacity 0.6s, box-shadow 0.8s; }
+.lw-lt-h { position: absolute; left: 12px; top: -2px; z-index: 1; padding: 5px 9px 5px; border-radius: 0 0 7px 7px; background: var(--lw-amber); font: 700 11px/1 var(--lw-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--lw-amber-ink); }
 .lw-lid .lw-fan { position: absolute; right: 10px; top: 7px; width: 20px; height: 20px; }
 .lw-lt-idle { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font: 600 12px/1 var(--lw-mono); color: var(--lw-amber); }
 .lw-stage[data-laptop="hi"] .lw-lid { box-shadow: 0 0 0 2px rgba(240, 162, 75, 0.8), 0 0 70px rgba(240, 162, 75, 0.35); }
-.lw-stage[data-laptop="hi"] .lw-chip:not([data-dist="0"]), .lw-stage[data-laptop="hi"] .lw-lines, .lw-stage[data-laptop="hi"] .lw-person { opacity: 0.35; }
+.lw-stage[data-laptop="hi"] .lw-chip[data-out="1"], .lw-stage[data-laptop="hi"] .lw-lines, .lw-stage[data-laptop="hi"] .lw-person, .lw-stage[data-laptop="hi"] .lw-box.on { opacity: 0.35; }
 .lw-stage[data-lid="closed"] .lw-lid { transform: scaleY(0.04); opacity: 0.7; }
 .lw-stage[data-lid="closed"] .lw-chip { opacity: 0; }
 .lw-moon { position: absolute; left: 50%; top: 42%; width: 44px; height: 44px; margin: -22px 0 0 -22px; transform: translateY(24px); filter: drop-shadow(0 0 22px rgba(240, 162, 75, 0.5)); transition: opacity 1.4s ease, transform 2s cubic-bezier(.2, .7, .2, 1) !important; }
@@ -412,8 +419,8 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-lines line[data-line="you"] { stroke: rgba(240, 162, 75, 0.6); }
 .lw-moving .lw-lines line { opacity: 0 !important; transition: none; }
 
-.lw-chip { position: absolute; left: 0; top: 0; z-index: 2; --x: calc(var(--b0) / 2 + var(--d) * var(--bw) + min(var(--d), 1) * (var(--b0) / 2 - var(--bw) / 2)); --y: calc(var(--r0) + var(--i) * var(--rs)); transform: translate(calc(var(--x) * 1cqw - 50%), calc(var(--y) * 1cqh - 50%)); display: flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px; background: #2a1d33; border: 1px solid rgba(240, 162, 75, 0.3); font: 500 13px/1 var(--lw-mono); color: var(--lw-text); white-space: nowrap; transition: transform 0.8s var(--ease-settle, ease), opacity 0.4s, background 0.6s, border-color 0.6s; }
-.lw-chip:not([data-dist="0"]) { background: #18202e; border-color: rgba(160, 195, 245, 0.35); }
+.lw-chip { position: absolute; left: 0; top: calc((var(--r0) + var(--i) * var(--rs)) * 1%); z-index: 2; transform: translate(calc(var(--x) * 1cqw - 50%), -50%); display: flex; align-items: center; gap: 8px; padding: 5px 11px 5px 10px; border-radius: 11px; background: #2a1d33; border: 1px solid rgba(240, 162, 75, 0.3); font: 500 13px/1 var(--lw-mono); color: var(--lw-text); white-space: nowrap; transition: transform 0.8s var(--ease-settle, ease), opacity 0.4s, background 0.6s, border-color 0.6s; }
+.lw-chip[data-out="1"] { background: #18202e; border-color: rgba(160, 195, 245, 0.45); }
 .lw-dot { flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; background: var(--lw-good); transition: background 0.3s, box-shadow 0.3s; }
 .lw-chip[data-s="sleep"] { color: var(--lw-dim); }
 .lw-chip[data-s="sleep"] .lw-dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--lw-dim); animation: lw-breathe 4s ease-in-out infinite; }
@@ -423,7 +430,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-chip[data-s="down"] .lw-dot { background: var(--lw-bad); }
 .lw-ed .lw-dot { width: 2px; height: 13px; border-radius: 1px; background: var(--lw-amber); animation: lw-blink 1.1s steps(2) infinite; }
 
-.lw-person { position: absolute; left: calc((var(--b0) + 5.5 * var(--bw)) * 1%); top: 47%; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 4px; translate: -50% -50%; opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.6s cubic-bezier(.2, .7, .2, 1); }
+.lw-person { position: absolute; left: 69%; top: 54%; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 4px; translate: -50% -50%; opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.6s cubic-bezier(.2, .7, .2, 1); }
 .lw-stage[data-person="on"] .lw-person, .lw-stage[data-person="paged"] .lw-person { opacity: 1; transform: none; }
 .lw-person svg { width: 36px; height: 36px; overflow: visible; }
 .lw-person .h, .lw-person .b { fill: #ffc2cb; }
@@ -434,7 +441,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-stage[data-person="paged"] .lw-page { opacity: 1; }
 
 /* at home: each service's own name, and whether it's awake */
-.lw-addr { position: absolute; left: calc((var(--b0) + 2) * 1%); top: calc((var(--r0) + var(--i) * var(--rs)) * 1%); translate: 0 -50%; display: flex; align-items: baseline; gap: 12px; font: 500 13px/1 var(--lw-mono); white-space: nowrap; transform: translateX(-12px); }
+.lw-addr { position: absolute; left: 25%; top: calc((var(--r0) + var(--i) * var(--rs)) * 1%); translate: 0 -50%; display: flex; align-items: baseline; gap: 12px; font: 500 13px/1 var(--lw-mono); white-space: nowrap; transform: translateX(-12px); }
 .lw-addr::before { content: ""; align-self: center; width: 18px; height: 1px; background: rgba(240, 162, 75, 0.45); }
 .lw-addr b { font-weight: 500; color: var(--lw-text); }
 .lw-addr em { font-style: normal; color: var(--lw-dim); }
@@ -444,7 +451,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-stage[data-ch="home"] .lw-chip .lx { display: inline; }
 
 /* ── Stage: the cards ── */
-.lw-cards { flex: 0 0 auto; height: clamp(150px, 27%, 220px); position: relative; }
+.lw-cards { flex: 0 0 auto; height: clamp(150px, 24%, 200px); position: relative; }
 .lw-card { position: absolute; top: 0; bottom: 0; border-radius: 12px; overflow: hidden; background: var(--lw-term); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 14px 34px rgba(0, 0, 0, 0.45); transform: translateY(10px); }
 .lw-l { left: 0; width: calc(50% - 6px); }
 .lw-r { right: 0; width: calc(50% - 6px); }
@@ -518,12 +525,70 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-stage[data-fan="1"] .lw-fan .a, .lw-stage[data-fan="2"] .lw-fan .a, .lw-stage[data-fan="2"] .lw-fan .b, .lw-stage[data-fan="3"] .lw-fan g { animation-play-state: running; }
 .lw-stage[data-fan="3"] .lw-fan { fill: #ffb08a; }
 .lw-stage[data-fan="0"] .lw-fan { fill: var(--lw-dim); }
-.lw-bill { display: flex; gap: 3px; align-items: flex-end; height: 26px; }
-.lw-bill i { width: 7px; border-radius: 2px; background: rgba(255, 255, 255, 0.12); transition: background 0.5s; }
-.lw-bill i:nth-child(1) { height: 10px; }
-.lw-bill i:nth-child(2) { height: 17px; }
-.lw-bill i:nth-child(3) { height: 25px; }
-.lw-stage[data-bill="1"] .lw-bill i:nth-child(-n+1), .lw-stage[data-bill="2"] .lw-bill i:nth-child(-n+2), .lw-stage[data-bill="3"] .lw-bill i { background: var(--lw-bad); }
+
+/* ── Stage: the sign, where your code runs ── */
+.lw-sign { flex: 0 0 auto; display: flex; align-items: center; gap: 14px; min-height: 62px; padding: 10px 16px; border-radius: 12px; background: #0b0710; border: 1px solid rgba(240, 162, 75, 0.22); box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.45); overflow: hidden; }
+.lw-sign b { flex: 0 0 auto; min-width: 4.2ch; padding: 5px 7px; border-radius: 6px; background: var(--lw-amber); color: var(--lw-amber-ink); font: 700 13px/1 var(--lw-mono); text-align: center; }
+.lw-sign span { font: 700 clamp(19px, 1.7vw, 24px)/1.2 var(--lw-display); letter-spacing: -0.01em; color: #ffc46e; text-shadow: 0 0 16px rgba(240, 162, 75, 0.35); text-wrap: balance; transition: color 0.6s; }
+.lw-gone .lw-sign span { color: #c4dbff; text-shadow: 0 0 16px rgba(140, 180, 240, 0.35); }
+.lw-gone .lw-sign { border-color: rgba(160, 195, 245, 0.25); }
+.lw-sign em { font-style: normal; margin-right: 6px; padding: 0 6px; border-radius: 5px; background: rgba(255, 255, 255, 0.1); color: #fff1dc; }
+.lw-sign span.flip { animation: lw-flip 0.45s cubic-bezier(.2, .8, .2, 1); }
+
+/* ── Stage: the map's places ── */
+.lw-mid { flex: 1 1 auto; min-height: 0; display: flex; gap: 12px; }
+.lw-away { position: absolute; left: 58%; right: 1.2%; top: 3%; bottom: 3%; border-radius: 14px; border: 1.5px dashed rgba(160, 195, 245, 0.3); opacity: 0.5; transition: opacity 0.6s; }
+.lw-gone .lw-away { opacity: 1; border-color: rgba(160, 195, 245, 0.55); }
+.lw-stage[data-wide="1"] .lw-away { opacity: 0; }
+.lw-away > span { position: absolute; right: 12px; top: -1.5px; padding: 5px 9px; border-radius: 0 0 7px 7px; background: rgba(160, 195, 245, 0.16); font: 700 11px/1 var(--lw-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--lw-cold); white-space: nowrap; transition: background 0.6s, color 0.6s; }
+.lw-gone .lw-away > span { background: var(--lw-cold); color: #0f1726; }
+.lw-map > .lw-box > span { display: none; }
+.lw-box { position: absolute; top: 9%; bottom: 4%; border-radius: 10px; border: 1px solid rgba(160, 195, 245, 0.3); background: rgba(120, 165, 230, 0.07); opacity: 0; transition: opacity 0.5s; }
+.lw-box.on { opacity: 1; }
+.lw-box > span { position: absolute; left: 4px; right: 4px; top: 6px; text-align: center; font: 500 11px/1.15 var(--lw-mono); color: var(--lw-cold); }
+.lw-box[data-box="shared"] { left: 61%; right: 3.5%; }
+.lw-box[data-box="box"] { left: 60.5%; width: 17%; }
+.lw-box[data-box="cloud"] { left: 79%; right: 2.7%; }
+.lw-vm { left: 49%; right: 2.5%; top: 9%; bottom: 3%; border-style: dashed; border-color: rgba(240, 162, 75, 0.5); background: rgba(240, 162, 75, 0.06); }
+.lw-vm > span { color: var(--lw-amber); }
+.lw-nm { display: flex; flex-direction: column; gap: 3px; line-height: 1; }
+.lw-nm small { font: 500 10px/1 var(--lw-mono); letter-spacing: 0.02em; color: #d9a46a; }
+.lw-chip[data-out="1"] .lw-nm small { color: var(--lw-cold); }
+.lw-chip[data-at="ticket"] { border-style: dashed; border-color: #ff9aa8; }
+.lw-chip[data-at="ticket"] .lw-nm small { color: #ffc2cb; }
+.lw-cross { animation: lw-cross 1s ease-out; }
+.lw-crossing .lw-lid { animation: lw-edge 1s ease-out; }
+
+/* ── Stage: the receipt ── */
+.lw-till { flex: 0 0 214px; position: relative; display: flex; flex-direction: column; min-height: 0; }
+.lw-paper-w { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; -webkit-mask: linear-gradient(transparent, #000 34px); mask: linear-gradient(transparent, #000 34px); transform-origin: 30% 100%; transition: transform 0.7s cubic-bezier(.5, 0, .7, .4), opacity 0.6s ease; }
+.lw-roll { padding: 14px 14px 18px; background: #f7f1e6; color: #2b2033; font: 500 11.5px/1.35 var(--lw-mono); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4); -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom/10px 51% repeat-x, linear-gradient(#000 0 0) top/100% calc(100% - 4px) no-repeat; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom/10px 51% repeat-x, linear-gradient(#000 0 0) top/100% calc(100% - 4px) no-repeat; }
+.lw-rh { margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px dashed #b9ab9b; text-align: center; font: 700 11px/1.3 var(--lw-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.lw-rh span { font-weight: 500; letter-spacing: 0; text-transform: none; color: #7b6c86; }
+.lw-items { list-style: none; margin: 0; padding: 0; }
+.lw-items li { display: none; padding: 4px 2px; border-radius: 3px; }
+.lw-items li.on { display: grid; gap: 1px; }
+.lw-items li em { font-style: normal; text-align: right; color: #7b6c86; }
+.lw-items li.new { animation: lw-ink 1.6s ease-out; }
+.lw-tot { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin: 8px 0 0; padding-top: 8px; border-top: 1px dashed #b9ab9b; font: 700 12px/1 var(--lw-mono); text-transform: uppercase; letter-spacing: 0.08em; }
+.lw-tot b { font: 800 19px/1 var(--lw-display); letter-spacing: 0; text-transform: none; color: #b0302a; text-align: right; }
+.lw-till.feed .lw-roll { animation: lw-feed 0.6s steps(6, end); }
+.lw-stage[data-torn="1"] .lw-paper-w { opacity: 0; transform: translate(-6%, -40%) rotate(-7deg); }
+.lw-stub { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 14px 14px; background: #f7f1e6; color: #2b2033; opacity: 0; transform: translateY(6px); transition: opacity 0.5s ease 0.35s, transform 0.5s ease 0.35s; -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top/10px 51% repeat-x, linear-gradient(#000 0 0) bottom/100% calc(100% - 4px) no-repeat; mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top/10px 51% repeat-x, linear-gradient(#000 0 0) bottom/100% calc(100% - 4px) no-repeat; }
+.lw-stage[data-torn="1"] .lw-stub { opacity: 1; transform: none; }
+.lw-stub p { margin: 0; }
+.lw-stub p:first-child { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 8px; border-bottom: 1px dashed #b9ab9b; font: 700 12px/1 var(--lw-mono); text-transform: uppercase; letter-spacing: 0.08em; }
+.lw-stub b { font: 800 30px/1 var(--lw-display); letter-spacing: -0.02em; color: #2e7a3c; }
+.lw-stub-l { padding-top: 8px; font: 700 15px/1.25 var(--lw-display); }
+
+/* the Sound button, as on /tuesday/ */
+.lw-snd { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.14); background: transparent; color: var(--lw-text-2); font: 500 13px/1 var(--lw-body); cursor: pointer; }
+.lw-snd svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+.lw-snd .w { opacity: 0.25; }
+.lw-snd[aria-pressed="true"] { color: var(--lw-amber); border-color: rgba(240, 162, 75, 0.5); }
+.lw-snd[aria-pressed="true"] .w { opacity: 1; }
+.lw-snd:focus-visible { outline: 2px solid var(--lw-amber); outline-offset: 2px; }
+.lw:not(.lw-js) .lw-snd { display: none; }
 
 /* ── Ending ── */
 .lw-end { position: relative; max-width: 1040px; margin: 0 auto; padding: 18vh 40px 120px; text-align: center; scroll-margin-top: var(--rail-h); }
@@ -563,6 +628,11 @@ const end = { ...b("h-e", false), "data-step": "end" };
 @keyframes lw-page { from { opacity: 0.9; transform: scale(0.8); } to { opacity: 0; transform: scale(1.6); } }
 @keyframes lw-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes lw-prog { to { transform: scaleX(1); } }
+@keyframes lw-flip { from { opacity: 0; transform: translateY(45%); } }
+@keyframes lw-feed { from { transform: translateY(30px); } }
+@keyframes lw-ink { from { background: rgba(240, 162, 75, 0.5); } }
+@keyframes lw-cross { 0% { box-shadow: 0 0 0 0 rgba(160, 195, 245, 0.7); } 100% { box-shadow: 0 0 0 14px rgba(160, 195, 245, 0); } }
+@keyframes lw-edge { 0%, 100% { box-shadow: 0 0 40px rgba(240, 162, 75, 0.1); } 30% { box-shadow: 0 0 0 4px rgba(240, 162, 75, 0.6), 0 0 50px rgba(240, 162, 75, 0.4); } }
 
 @supports (animation-timeline: scroll()) {
   .lw-prog { animation: lw-prog linear both; animation-timeline: scroll(root block); }
@@ -571,7 +641,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
 
 /* ── Phone: the stage pinned on top, the beats beneath ── */
 @media (max-width: 900px) {
-  .lw { --rail-h: 52px; --stage-h: 58svh; --b0: 26; --bw: 12.333; --r0: 11; --rs: 15; }
+  .lw { --rail-h: 52px; --stage-h: 64svh; --r0: 18.5; --rs: 14.1; }
   .lw-rail { padding: 0 6px; gap: 0; background: rgba(12, 8, 16, 0.96); }
   .lw-rail-t { display: none; }
   .lw-rail ol { flex: 1; justify-content: space-between; gap: 0; margin: 0; }
@@ -583,33 +653,31 @@ const end = { ...b("h-e", false), "data-step": "end" };
   .lw-cold { padding: 48px 28px 96px; }
   .lw-cue { left: 28px; }
   .lw-film { grid-template-columns: minmax(0, 1fr); padding: 0 24px; }
-  .lw-stage { grid-column: 1; grid-row: 1; z-index: 5; gap: 8px; margin: 0 -24px; padding: 8px 12px 8px; background: #110b17; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+  .lw-stage { grid-column: 1; grid-row: 1; z-index: 5; gap: 6px; margin: 0 -24px; padding: 8px 12px 8px; background: #110b17; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
   .lw-meter { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 10px; row-gap: 5px; align-items: center; }
   .lw-meter-n { display: contents; }
-  .lw-meter-n small { grid-column: 2; grid-row: 1; max-width: none; font-size: 11px; letter-spacing: 0.06em; }
+  .lw-meter-n small { display: none; }
   .lw-meter-n span { grid-column: 1; grid-row: 1 / 3; }
-  .lw-meter-n b { font-size: 34px; }
+  .lw-meter-n b { font-size: 28px; }
   .lw-meter-n em { display: none; }
-  .lw-chain { grid-column: 2; grid-row: 2; gap: 4px 3px; }
-  .lw-band span { display: none; }
+  .lw-chain { grid-column: 2; grid-row: 1 / 3; gap: 4px 3px; }
   .lw-chain li { font-size: 11px; }
   .lw-chain li { gap: 4px; }
   .lw-chain li b { padding: 3px 5px; }
   .lw-chain.none li.end:last-child::before { content: "→ nothing →"; }
   .lw-map { border-radius: 12px; }
-  .lw-laptop { left: 1%; width: calc((var(--b0) - 2) * 1%); }
   .lw-lid { border-radius: 9px; }
-  .lw-lt-h { left: 0; right: 0; top: auto; bottom: 3px; text-align: center; font-size: 11px; letter-spacing: 0.02em; text-transform: none; }
+  .lw-lt-h { left: 8px; padding: 3px 6px 4px; font-size: 9.5px; letter-spacing: 0.08em; }
   .lw-lid .lw-fan { display: none; }
   .lw-lt-idle { display: none; }
-  .lw-chip { gap: 3px; padding: 3px 4px; font-size: 11px; letter-spacing: -0.04em; }
+  .lw-chip { gap: 4px; padding: 2px 5px; border-radius: 7px; font-size: 11px; letter-spacing: -0.04em; }
   .lw-dot { width: 6px; height: 6px; }
   .lw-ed .lw-dot { height: 10px; }
-  .lw-person { top: 37%; }
+  .lw-person { top: 50%; }
   .lw-person svg { width: 24px; height: 24px; }
   .lw-person span { display: none; }
   .lw-page { display: none; }
-  .lw-cards { height: 128px; }
+  .lw-cards { height: 104px; }
   .lw-addr { gap: 6px; font-size: 11px; }
   .lw-addr::before { width: 8px; }
   .lw-addr em::after { content: none; }
@@ -630,7 +698,7 @@ const end = { ...b("h-e", false), "data-step": "end" };
   .lw-paused { font-size: 11px; padding: 5px 10px; }
   .lw-recon { font-size: 11px; margin-top: 4px; }
   .lw-strip { gap: 12px; padding: 4px 12px; max-width: 100%; }
-  .lw-st:first-child small, .lw-st:last-child small { display: none; }
+  .lw-st:first-child small { display: none; }
   .lw-st small { text-transform: none; }
   .lw-st { gap: 6px; }
   .lw-st small { font-size: 11px; letter-spacing: 0.04em; }
@@ -638,11 +706,31 @@ const end = { ...b("h-e", false), "data-step": "end" };
   .lw-st-wait b { min-width: 0; }
   .lw-st > span:last-child { flex-direction: row; gap: 5px; align-items: baseline; }
   .lw-strip .lw-fan { width: 18px; height: 18px; }
-  .lw-bill { height: 16px; }
-  .lw-bill i { width: 5px; }
-  .lw-bill i:nth-child(1) { height: 6px; }
-  .lw-bill i:nth-child(2) { height: 11px; }
-  .lw-bill i:nth-child(3) { height: 16px; }
+  .lw-sign { min-height: 0; gap: 8px; padding: 6px 10px; border-radius: 9px; }
+  .lw-sign b { font-size: 11px; padding: 3px 5px; }
+  .lw-sign span { font-size: 15px; line-height: 1.2; }
+  .lw-mid { display: contents; }
+  .lw-box > span { top: 3px; font-size: 9px; }
+  .lw-nm { gap: 2px; }
+  .lw-nm small { font-size: 9px; letter-spacing: 0; }
+  .lw-away > span { right: 6px; padding: 3px 6px 4px; font-size: 10px; letter-spacing: 0; text-transform: none; }
+  .lw-till { flex: 0 0 52px; }
+  .lw-paper-w { -webkit-mask: linear-gradient(transparent, #000 14px); mask: linear-gradient(transparent, #000 14px); }
+  .lw-roll { padding: 6px 10px 9px; font-size: 10.5px; line-height: 1.25; }
+  .lw-rh { display: none; }
+  .lw-items li { padding: 1px 0; }
+  .lw-items li.on { display: flex; justify-content: space-between; gap: 10px; }
+  .lw-items li span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lw-items li em { flex: 0 0 auto; }
+  .lw-tot { margin-top: 3px; padding-top: 3px; font-size: 10.5px; }
+  .lw-tot b { font-size: 14px; }
+  .lw-stub { padding: 9px 10px 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .lw-stub p:first-child { padding: 0; border: 0; gap: 8px; align-items: center; }
+  .lw-stub b { font-size: 20px; }
+  .lw-stub-l { padding: 0; font-size: 13px; text-align: right; }
+  .lw-stub-l br { display: none; }
+  .lw-snd { width: 40px; height: 40px; padding: 0; justify-content: center; }
+  .lw-snd-l { display: none; }
   .lw-beats { grid-row: 2; }
   .lw-ch, .lw-beat { scroll-margin-top: calc(var(--rail-h) + var(--stage-h)); }
   .lw-beat { min-height: 52svh; justify-content: flex-start; padding: 6vh 0 12vh; }
@@ -664,10 +752,11 @@ const end = { ...b("h-e", false), "data-step": "end" };
 .lw-rm .lw-beats { grid-column: 1; grid-row: 1; }
 .lw-rm .lw-beat { min-height: 0; padding: 56px 0; }
 .lw-rm .lw-still { display: flex; position: static; align-self: stretch; width: 100%; height: 740px; margin: 22px 0 0; padding: 0; background: none; border: 0; backdrop-filter: none; }
-@media (max-width: 900px) { .lw-rm .lw-still { height: 560px; margin: 18px 0 0; } }
+@media (max-width: 900px) { .lw-rm .lw-still { height: 600px; margin: 18px 0 0; } }
 @media (prefers-reduced-motion: reduce) {
   .lw *, .lw *::before, .lw *::after { animation: none !important; transition-property: opacity !important; transition-duration: 0.3s !important; transition-delay: 0s !important; }
-  .lw-stage [data-in], .lw-moon, .lw-person { transform: none !important; }
+  .lw-stage [data-in], .lw-moon, .lw-person, .lw-paper-w { transform: none !important; }
+  .lw-till.feed .lw-roll, .lw-items li.new, .lw-sign span.flip, .lw-cross { animation: none !important; }
   .lw-stage[data-lid="closed"] .lw-lid { transform: scaleY(0.04) !important; }
 }
 </style>

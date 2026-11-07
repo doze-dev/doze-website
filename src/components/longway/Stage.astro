@@ -1,12 +1,13 @@
 ---
-// The pinned stage of "The long way round": a map of distance. Band 0 is
-// your laptop; each band to the right (below, on a phone) is one more wall
-// between you and your running code. The editor and five services sit in a
-// band per step; tethers run from you to them; the meter on top counts the
-// walls; the cards underneath are the evidence for each step. Every layer is
-// painted from the beat in view (see steps.ts), so any step is a complete
-// picture. Decorative: the beats beside it say everything in words.
-import { on, things } from "./steps";
+// The pinned stage of "The long way round": a map of WHERE your code runs.
+// A hard frame is your laptop; everything outside it is somebody else's
+// computer. The editor and five services sit in a place per step (see
+// steps.ts), each wearing that place as a tag; the sign on top says it in
+// words; the meter counts the walls; the receipt beside the map prints what
+// each stop added to the bill; the cards underneath are the evidence. Every
+// layer is painted from the beat in view, so any step is a complete picture.
+// Decorative: the beats beside it say everything in words.
+import { on, receipt, things } from "./steps";
 
 const fan = [
   "M20 20 C 18 12, 20 5, 26 5 C 30 6, 27 14, 20 20Z",
@@ -16,49 +17,75 @@ const fan = [
 ];
 ---
 <div class="lw-stage" aria-hidden="true" data-stage>
+  <div class="lw-sign">
+    <b data-no>01</b><span data-sign>On your laptop.</span>
+  </div>
+
   <div class="lw-meter">
     <div class="lw-meter-n">
-      <small>Between you and your running code</small>
+      <small>Walls between you and your running code</small>
       <span><b data-hops>0</b> <em data-hops-word>walls</em></span>
     </div>
     <ol class="lw-chain" data-chain></ol>
   </div>
 
-  <div class="lw-map">
-    {[1, 2, 3, 4, 5, 6].map((k) => (
-      <div class="lw-band" style={`--k:${k}`} data-band={k}><span data-band-label></span></div>
-    ))}
+  <div class="lw-mid">
+    <div class="lw-map">
+      <div class="lw-away"><span>somebody else's computer</span></div>
+      <div class="lw-box" data-box="shared"><span>a shared cluster</span></div>
+      <div class="lw-box" data-box="box"><span>a dev box</span></div>
+      <div class="lw-box" data-box="cloud"><span>a cluster, in the cloud</span></div>
 
-    <div class="lw-laptop">
-      <div class="lw-lid">
-        <span class="lw-lt-h">your laptop</span>
-        <svg class="lw-fan" viewBox="0 0 40 40"><g class="a"><g class="b"><g class="c">{fan.map((d) => <path d={d} />)}</g></g></g><circle cx="20" cy="20" r="3" /></svg>
-        <span class="lw-lt-idle" data-in={on(["t-a", "t-b"])}>mostly idle</span>
+      <div class="lw-laptop">
+        <div class="lw-lid">
+          <span class="lw-lt-h">your laptop</span>
+          <svg class="lw-fan" viewBox="0 0 40 40"><g class="a"><g class="b"><g class="c">{fan.map((d) => <path d={d} />)}</g></g></g><circle cx="20" cy="20" r="3" /></svg>
+          <div class="lw-box lw-vm" data-box="vm"><span data-vm-label>a VM</span></div>
+          <span class="lw-lt-idle" data-in={on(["t-a", "t-b"])}>mostly idle</span>
+        </div>
+        <img class="lw-moon" src="/brand/family-moon.svg" alt="" width="48" height="48" data-in={on("h-e")} />
       </div>
-      <img class="lw-moon" src="/brand/family-moon.svg" alt="" width="48" height="48" data-in={on("h-e")} />
+
+      <svg class="lw-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <line data-line="you" />
+        {things.slice(1).map((t) => <line data-line={t.id} />)}
+      </svg>
+
+      {things.map((t, i) => (
+        <div class={`lw-chip${i === 0 ? " lw-ed" : ""}`} data-t={t.id} style={`--i:${i};--x:15`}>
+          <i class="lw-dot"></i><span class="lw-nm"><span class="g">{t.name}</span><span class="lx">{t.home}</span><small data-tag>laptop</small></span>
+        </div>
+      ))}
+
+      {things.map((t, i) => (
+        <div class="lw-addr" style={`--i:${i}`} data-in={on(["h-a", "h-d"])} data-addr={t.id}>
+          <b>{t.id === "ed" ? "your editor" : `${t.home}.larder.doze`}</b><em data-word></em>
+        </div>
+      ))}
+
+      <div class="lw-person" data-person>
+        <svg viewBox="0 0 40 40"><circle class="h" cx="20" cy="13" r="7" /><path class="b" d="M6 38c1-9 7-14 14-14s13 5 14 14z" /><circle class="ring" cx="20" cy="20" r="18" /></svg>
+        <span>platform team</span>
+        <b class="lw-page">paged</b>
+      </div>
     </div>
 
-    <svg class="lw-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <line data-line="you" />
-      {things.slice(1).map((t) => <line data-line={t.id} />)}
-    </svg>
-
-    {things.map((t, i) => (
-      <div class={`lw-chip${i === 0 ? " lw-ed" : ""}`} data-t={t.id} style={`--i:${i};--d:0`}>
-        <i class="lw-dot"></i><span class="g">{t.name}</span><span class="lx">{t.home}</span>
+    <div class="lw-till" data-till>
+      <div class="lw-paper-w">
+        <div class="lw-roll" data-roll>
+          <p class="lw-rh">The long way round<br /><span>receipt · no prices, just units</span></p>
+          <ol class="lw-items">
+            {receipt.map((r, n) => (
+              <li data-n={n}><span>{r.item}</span><em>{r.per}</em></li>
+            ))}
+          </ol>
+          <p class="lw-tot"><span>Total</span><b data-total>$0</b></p>
+        </div>
       </div>
-    ))}
-
-    {things.map((t, i) => (
-      <div class="lw-addr" style={`--i:${i}`} data-in={on(["h-a", "h-d"])} data-addr={t.id}>
-        <b>{t.id === "ed" ? "your editor" : `${t.home}.larder.doze`}</b><em data-word></em>
+      <div class="lw-stub">
+        <p><span>Total</span><b>$0</b></p>
+        <p class="lw-stub-l">Your laptop. <br />Already paid for.</p>
       </div>
-    ))}
-
-    <div class="lw-person" data-person>
-      <svg viewBox="0 0 40 40"><circle class="h" cx="20" cy="13" r="7" /><path class="b" d="M6 38c1-9 7-14 14-14s13 5 14 14z" /><circle class="ring" cx="20" cy="20" r="18" /></svg>
-      <span>platform team</span>
-      <b class="lw-page">paged</b>
     </div>
   </div>
 
@@ -161,6 +188,13 @@ templates/
 NAME          READY   STATUS
 api-7c9d…     0/1     <b>ContainerCreating</b>
 db-0          0/1     <b>Pending</b></pre>
+    </div>
+    <div class="lw-card lw-w" data-in={on("k-out")}>
+      <div class="lw-ct">Terminal · moving day</div>
+<pre class="lw-cb"><i>$</i> vpn connect
+<i>$</i> kubectl config use-context dev-shared
+<i>$</i> helm upgrade --install shop ./chart -n dev-you
+<u>Release "shop" has been upgraded.</u>   <i># on somebody else's computer</i></pre>
     </div>
     <div class="lw-card lw-w" data-in={on("k-b")}>
       <div class="lw-ct">Terminal · four tabs of these</div>
@@ -332,10 +366,6 @@ app "storefront" &#123;
     </div>
     <div class="lw-st lw-st-wait">
       <span><small>Waiting on</small><b data-wait>nobody</b></span>
-    </div>
-    <div class="lw-st">
-      <span class="lw-bill"><i></i><i></i><i></i></span>
-      <span><small>Extra bill</small><b data-bill-word>none</b></span>
     </div>
   </div>
 </div>
