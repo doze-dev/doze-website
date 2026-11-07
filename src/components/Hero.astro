@@ -1,0 +1,28 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede: string;
+  cmd?: string;
+  docs?: string;
+}
+const { eyebrow, title, lede, cmd, docs } = Astro.props;
+---
+<section class="hero">
+  <div class="wrap">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="display">{title}</h1>
+    <p class="lede">{lede}</p>
+    <div class="go">
+      {cmd && <code class="cmd">{cmd}</code>}
+      {docs && <a class="btn primary" href={docs}>Read the docs</a>}
+    </div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .hero { padding-block: clamp(72px, 12vw, 148px) clamp(48px, 8vw, 96px); background: radial-gradient(900px 520px at 50% -10%, #3e2450 0%, transparent 70%); }
+  h1 { font-size: clamp(44px, 7.4vw, 92px); max-width: 15ch; margin-block: 14px 22px; }
+  .go { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+</style>

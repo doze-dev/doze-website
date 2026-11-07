@@ -1,0 +1,39 @@
+{
+  "$comment": "Where each docs section comes from. Docs live beside the code they describe; the site pulls them at build time. `ref` is a branch or tag; pin tags once each product cuts docs-stable releases.",
+  "sources": [
+    {
+      "name": "doze",
+      "repo": "doze-dev/doze",
+      "ref": "main",
+      "path": "website/src/content/docs",
+      "links": "absolute",
+      "keep": [
+        "/registry",
+        "/schema"
+      ],
+      "copy": {
+        "website/public/schema": "schema"
+      },
+      "also": [
+        "website/src/assets"
+      ]
+    },
+    {
+      "name": "aws",
+      "repo": "doze-dev/doze-aws",
+      "ref": "main",
+      "path": "docs",
+      "links": "relative"
+    },
+    {
+      "name": "kafka",
+      "repo": "doze-dev/doze-kafka",
+      "ref": "main",
+      "path": "docs",
+      "links": "relative",
+      "exclude": [
+        "reports/**"
+      ]
+    }
+  ]
+}

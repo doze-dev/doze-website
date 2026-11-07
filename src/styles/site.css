@@ -1,0 +1,114 @@
+/* The marketing pages: dark, the night the bat sleeps in. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  background: var(--night);
+  color: var(--text);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  margin: 0;
+  line-height: 1.55;
+}
+a {
+  color: inherit;
+}
+img,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+}
+code,
+kbd,
+pre {
+  font-family: var(--font-mono);
+}
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wrap {
+  width: min(var(--wrap), 100% - 48px);
+  margin-inline: auto;
+}
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  margin: 0;
+}
+.lede {
+  font-size: clamp(18px, 2vw, 21px);
+  color: var(--text-2);
+  max-width: 46rem;
+}
+.eyebrow {
+  font: 600 13px var(--font-text);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--line);
+}
+.btn.primary {
+  background: var(--amber);
+  color: var(--amber-ink);
+  border-color: var(--amber);
+}
+.btn:hover {
+  filter: brightness(1.08);
+}
+.cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #0f0914;
+  border: 1px solid var(--line);
+  font: 15px var(--font-mono);
+  color: var(--text);
+}
+.cmd::before {
+  content: "$";
+  color: var(--text-3);
+}
+
+.cards {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.card {
+  background: var(--night-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+a.card:hover {
+  border-color: #5a4168;
+}
+section {
+  padding-block: clamp(56px, 9vw, 112px);
+}

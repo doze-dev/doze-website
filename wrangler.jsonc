@@ -1,0 +1,8 @@
+// Cloudflare Pages project for doze-dev.com. Static files only: no Functions,
+// so every request is free and unmetered. The registry's machine files live in
+// their own project (registry.doze-dev.com) so a site deploy never touches them.
+{
+  "name": "doze-website",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-11-01"
+}

@@ -1,0 +1,14 @@
+---
+import Hero from "../components/Hero.astro";
+import Base from "../layouts/Base.astro";
+import { site } from "../site";
+---
+<Base title="doze" description="Your whole stack from one doze.hcl, as native processes that sleep when you stop.">
+  <Hero
+    eyebrow="doze"
+    title="The local stack that knows when to quit."
+    lede="One doze.hcl describes everything: databases, queues, AWS, your own services and the order they start in. Things wake when something connects and sleep when nothing does."
+    cmd={site.install}
+    docs="/docs/doze/"
+  />
+</Base>

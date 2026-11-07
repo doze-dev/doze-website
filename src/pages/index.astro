@@ -1,0 +1,29 @@
+---
+import Hero from "../components/Hero.astro";
+import Base from "../layouts/Base.astro";
+import { products, site } from "../site";
+---
+<Base>
+  <Hero
+    eyebrow="Local development, sorted"
+    title={site.tagline}
+    lede="Your laptop is a beast. Stop making it run a VM. doze runs real Postgres, Kafka, AWS and the rest as native processes that wake when your code calls and sleep when it stops."
+    cmd={site.install}
+    docs="/docs/doze/start/getting-started/"
+  />
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">The family</p>
+      <h2 class="display" style="font-size: clamp(32px, 4.6vw, 56px); margin: 10px 0 32px">Three tools. Three things you can uninstall.</h2>
+      <div class="cards">
+        {products.map((p) => (
+          <a class="card" href={p.href} style={`border-top: 3px solid ${p.accent}`}>
+            <img src={p.logo} alt="" width="48" height="48" style="border-radius: 12px" />
+            <b style="font: 800 24px var(--font-display)">{p.name}</b>
+            <span style="color: var(--text-2)">{p.line}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

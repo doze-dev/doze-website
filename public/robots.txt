@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://doze-dev.com/sitemap-index.xml

@@ -1,0 +1,41 @@
+---
+import { products, site } from "../site";
+
+const year = new Date().getFullYear();
+---
+<footer>
+  <div class="wrap cols">
+    <div>
+      <p class="tag">{site.tagline}</p>
+      <p class="small">Open source, Apache 2.0. doze sends nothing home.</p>
+    </div>
+    <div>
+      <h2>Products</h2>
+      {products.map((p) => <a href={p.href}>{p.name}</a>)}
+      <a href="/registry/">Registry</a>
+    </div>
+    <div>
+      <h2>Docs</h2>
+      {products.map((p) => <a href={p.docs}>{p.name}</a>)}
+    </div>
+    <div>
+      <h2>Project</h2>
+      <a href={site.github}>GitHub</a>
+      <a href="https://github.com/doze-dev/doze-examples">Examples</a>
+      <a href="https://github.com/doze-dev/doze/blob/main/CHANGELOG.md">Changelog</a>
+    </div>
+  </div>
+  <p class="wrap small">© {year} the doze authors</p>
+</footer>
+
+<style>
+  footer { border-top: 1px solid var(--line); padding-block: 56px 32px; color: var(--text-2); }
+  .cols { display: grid; gap: 32px; grid-template-columns: 2fr repeat(3, 1fr); margin-bottom: 40px; }
+  .cols div { display: flex; flex-direction: column; gap: 8px; }
+  h2 { font: 600 13px var(--font-text); letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin: 0 0 4px; }
+  a { text-decoration: none; }
+  a:hover { color: var(--text); }
+  .tag { font: 800 24px/1.15 var(--font-display); color: var(--text); margin: 0; max-width: 18ch; }
+  .small { font-size: 14px; color: var(--text-3); }
+  @media (max-width: 720px) { .cols { grid-template-columns: 1fr 1fr; } }
+</style>

@@ -1,0 +1,13 @@
+---
+import Hero from "../components/Hero.astro";
+import Base from "../layouts/Base.astro";
+---
+<Base title="doze Kafka" theme="kafka" description="A real Kafka broker in one Go binary. No JVM, no ZooKeeper, no KRaft.">
+  <Hero
+    eyebrow="doze Kafka"
+    title="Kafka without the JVM."
+    lede="Speaks the Kafka wire protocol, versions 1 to 4, so your clients and tests hit a real broker. Consumer groups, transactions and a schema registry, on disk, in one small process."
+    cmd="doze add kafka"
+    docs="/docs/kafka/"
+  />
+</Base>

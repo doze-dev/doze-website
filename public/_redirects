@@ -1,0 +1,11 @@
+# Old docs paths (doze.nerdmenot.in served doze's docs at the root).
+/why/*        /docs/doze/why/:splat        301
+/start/*      /docs/doze/start/:splat      301
+/guides/*     /docs/doze/guides/:splat     301
+/reference/*  /docs/doze/reference/:splat  301
+/engines/*    /docs/doze/engines/:splat    301
+/modules/*    /docs/doze/modules/:splat    301
+/operate/*    /docs/doze/operate/:splat    301
+/cli/*        /docs/doze/cli/:splat        301
+/docs         /docs/doze/                  302
+/docs/        /docs/doze/                  302

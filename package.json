@@ -1,0 +1,36 @@
+{
+  "name": "doze-website",
+  "type": "module",
+  "private": true,
+  "description": "doze-dev.com: the doze family's home, product pages, docs and registry",
+  "scripts": {
+    "docs": "bun scripts/docs-pull.ts",
+    "dev": "bun scripts/docs-pull.ts && astro dev",
+    "build": "bun scripts/docs-pull.ts && astro build",
+    "preview": "wrangler pages dev dist",
+    "check": "astro-check && biome check .",
+    "format": "biome check --write .",
+    "links": "bun scripts/check-links.ts",
+    "deploy": "wrangler pages deploy dist"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.10",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "astro": "^7.4.7",
+    "sharp": "^0.35.5",
+    "starlight-sidebar-topics": "^0.9.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@biomejs/biome": "^2.6.6",
+    "@types/bun": "^1.4.4",
+    "typescript": "^6",
+    "wrangler": "^4.158.0"
+  },
+  "overrides": {
+    "@emnapi/runtime": "1.11.3"
+  },
+  "//overrides": "rolldown pins @emnapi/runtime 2.0.0-beta (used only by its wasm fallback); @astrojs/astro2tsx needs 1.11.3 or astro check crashes"
+}

@@ -1,0 +1,30 @@
+/* Starlight, in doze's colours. Docs read light by default, dark on request. */
+:root {
+  --sl-font: var(--font-text);
+  --sl-font-mono: var(--font-mono);
+  --sl-color-accent-low: #3d2516;
+  --sl-color-accent: var(--amber);
+  --sl-color-accent-high: #ffd9ad;
+}
+:root[data-theme="light"] {
+  --sl-color-accent-low: #fde6cb;
+  --sl-color-accent: #b5650f;
+  --sl-color-accent-high: #4a2a08;
+  --sl-color-white: #1a1020;
+  --sl-color-bg: #fffaf4;
+  --sl-color-bg-nav: #fff4e8;
+  --sl-color-bg-sidebar: #fff7ee;
+}
+:root[data-theme="dark"] {
+  --sl-color-bg: var(--night);
+  --sl-color-bg-nav: #1a1022;
+  --sl-color-bg-sidebar: #170e1e;
+  --sl-color-hairline: var(--line);
+}
+h1,
+h2,
+h3,
+.site-title {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}

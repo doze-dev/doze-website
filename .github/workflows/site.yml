@@ -1,0 +1,64 @@
+# Build, check and deploy doze-dev.com.
+#
+# Every PR: type check, lint, build (docs pulled from each product repo at the
+# ref in sources.json), check every internal link, deploy a preview.
+# main: the same, deployed to production.
+# Product repos trigger a rebuild when their docs change by sending a
+# repository_dispatch of type "docs-changed"; a nightly run catches the rest.
+name: site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  repository_dispatch:
+    types: [docs-changed]
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: write
+
+jobs:
+  site:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      # deploy only when the Cloudflare secrets are set (not on forks)
+      CAN_DEPLOY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      # bun and node at the versions in .prototools
+      - uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun run build
+        env:
+          DOCS_SOURCE: git
+      - run: bun run links
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        if: ${{ env.CAN_DEPLOY == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=doze-website --branch=${{ github.head_ref || github.ref_name }}
+
+      - name: Preview link on the PR
+        if: ${{ github.event_name == 'pull_request' && steps.deploy.outputs.deployment-url != '' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: "Preview: ${{ steps.deploy.outputs.deployment-url }}"

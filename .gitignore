@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.cache/
+.wrangler/
+# pulled from the product repos at build time (scripts/docs-pull.ts)
+src/content/docs/docs/
+public/schema/
+.DS_Store
+brand/gallery.html

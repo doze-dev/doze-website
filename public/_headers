@@ -1,0 +1,13 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: interest-cohort=()
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+# pagefind's entry files keep stable names while their shards rotate: never cache them
+/pagefind/pagefind-entry.json
+  Cache-Control: no-cache
+/pagefind/pagefind.js
+  Cache-Control: no-cache
+/pagefind/pagefind-ui.js
+  Cache-Control: no-cache
