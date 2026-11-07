@@ -1,0 +1,191 @@
+---
+// doze in motion (design: Tour). Tabs on the left, a real recording on the
+// right. set="family" shows doze, doze AWS and doze Kafka; set="doze" shows
+// six moments in the doze app. One video is loaded at a time; a tab swaps it.
+interface Props {
+  set?: "doze" | "family";
+}
+const { set = "doze" } = Astro.props;
+const app = "doze app, from its demo stack";
+const rc = "[re-capture with Larder]";
+const doze = [
+  {
+    title: "Turn one off. Its dependents follow.",
+    line: "Switch a database off and doze asks: sleep the services that need it too? Memory comes back.",
+    video: "/media/tour-cascade.webm",
+    alt: "Switching a database off; doze offers to sleep the service that needs it; both go to sleep and memory drops",
+    window: "doze · demo stack",
+    what: app,
+    note: `Figures are the demo stack’s. ${rc}`,
+    accent: "#F0A24B",
+  },
+  {
+    title: "Wake anything with one click.",
+    line: "Flip a switch: asleep, waking, awake.",
+    video: "/media/tour-wake.webm",
+    alt: "Flipping a service on: it wakes",
+    window: "doze · demo stack",
+    what: app,
+    note: rc,
+    accent: "#F0A24B",
+  },
+  {
+    title: "⌘K. A verb and a name.",
+    line: "Type “wake”, a name, and press return. Every action is a keystroke away.",
+    video: "/media/tour-palette.webm",
+    alt: "Typing wake and a service name in the command palette",
+    window: "doze · demo stack",
+    what: app,
+    note: rc,
+    accent: "#F0A24B",
+  },
+  {
+    title: "Tiles, list, map.",
+    line: "The same stack three ways. The map draws who needs whom.",
+    video: "/media/tour-views.webm",
+    alt: "Switching between the tiles, list and map views",
+    window: "doze · demo stack",
+    what: app,
+    note: rc,
+    accent: "#F0A24B",
+  },
+  {
+    title: "Mistakes that explain themselves.",
+    line: "Save a broken doze.hcl: the line, what’s wrong, and what to write.",
+    video: "/media/tour-mistake.webm",
+    alt: "A broken doze.hcl: the app shows line 4 and the fix",
+    window: "doze · demo stack",
+    what: app,
+    note: rc,
+    accent: "#F0A24B",
+  },
+  {
+    title: "Needs you.",
+    line: "What’s broken or worth doing, each with its fix one click away.",
+    video: "/media/tour-needs-you.webm",
+    alt: "The Needs you panel with two items and their fixes",
+    window: "doze · demo stack",
+    what: app,
+    note: rc,
+    accent: "#F0A24B",
+  },
+];
+const family = [
+  {
+    title: "doze",
+    line: "Turn one service off and the ones that need it follow it to sleep.",
+    video: "/media/tour-cascade.webm",
+    alt: "Switching a database off in doze; it and the service that needs it go to sleep",
+    window: "doze · demo stack",
+    what: app,
+    note: `Figures are the demo stack’s. ${rc}`,
+    accent: "#F0A24B",
+  },
+  {
+    title: "doze AWS",
+    line: "Every call your app makes, live. Open the refused one: what you sent and why.",
+    video: "/media/aws-live.webm",
+    alt: "S3, SQS and DynamoDB calls stream into the doze AWS console; a refused PutItem opens",
+    window: "doze AWS · /_console",
+    what: "doze AWS console, with real AWS CLI traffic",
+    note: "",
+    accent: "#5BB8E8",
+  },
+  {
+    title: "doze Kafka",
+    line: "Orders arrive, the tape fills, every record on disk.",
+    video: "/media/kafka-live.webm",
+    alt: "Records produced with kcat appear in the doze Kafka console and its tape",
+    window: "doze Kafka · console",
+    what: "doze Kafka console, with real kcat traffic",
+    note: "",
+    accent: "#FFD60A",
+  },
+];
+const slides = set === "family" ? family : doze;
+const first = slides[0];
+---
+<div class="tr" data-tour style={`--tr-glow:${first.accent}44`}>
+  <div class="tr-row">
+    <div class="tr-tabs" role="tablist" aria-label={set === "family" ? "The doze family, live" : "doze, live"}>
+      {slides.map((s, i) => (
+        <button type="button" class="tr-tab" role="tab" aria-selected={i === 0 ? "true" : "false"} aria-controls={`tr-${set}-panel`} data-video={s.video} data-alt={s.alt} data-window={s.window} data-what={s.what} data-note={s.note} data-accent={s.accent} style={`--dot:${s.accent}`}>
+          <span class="tr-title"><span class="tr-dot"></span>{s.title}</span>
+          <span class="tr-line">{s.line}</span>
+        </button>
+      ))}
+    </div>
+    <span class="tr-cue" aria-hidden="true">Swipe for more →</span>
+    <div class="tr-rec" id={`tr-${set}-panel`} role="tabpanel">
+      <div class="tr-stage">
+        <div class="tr-glow"></div>
+        <div class="tr-win">
+          <div class="tr-bar"><span class="tr-d" style="background:#FF5F57"></span><span class="tr-d" style="background:#FEBC2E"></span><span class="tr-d" style="background:#28C840"></span><span class="tr-wt" data-tr-window>{first.window}</span></div>
+          <video src={first.video} autoplay muted loop playsinline controls preload="metadata" aria-label={first.alt}></video>
+        </div>
+      </div>
+      <span class="tr-cap">Recorded from the real <span data-tr-what>{first.what}</span>, not animated. <span data-tr-note>{first.note}</span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // A tab swaps the one video, its window title, its caption and the glow.
+  for (const root of document.querySelectorAll<HTMLElement>("[data-tour]")) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>(".tr-tab")];
+    const video = root.querySelector("video");
+    const set = (sel: string, text: string) => {
+      const el = root.querySelector(sel);
+      if (el) el.textContent = text;
+    };
+    if (video) {
+      video.muted = true;
+      video.play().catch(() => {});
+    }
+    for (const tab of tabs) {
+      tab.addEventListener("click", () => {
+        const d = tab.dataset;
+        for (const t of tabs) t.setAttribute("aria-selected", String(t === tab));
+        root.style.setProperty("--tr-glow", `${d.accent}44`);
+        set("[data-tr-window]", d.window ?? "");
+        set("[data-tr-what]", d.what ?? "");
+        set("[data-tr-note]", d.note ?? "");
+        if (video && d.video && video.getAttribute("src") !== d.video) {
+          video.src = d.video;
+          video.setAttribute("aria-label", d.alt ?? "");
+          video.muted = true;
+          video.play().catch(() => {});
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .tr{font-family:var(--font-text);color:#F4ECE4;background:#140C1B;padding:8px 0}
+  .tr-row{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+  .tr-tabs{flex:1 1 280px;max-width:340px;display:flex;flex-direction:column;gap:6px}
+  .tr-tab{min-height:44px;display:flex;flex-direction:column;gap:4px;text-align:left;padding:16px 18px;border-radius:14px;border:1px solid transparent;background:transparent;color:#C9BAD3;font-family:var(--font-text);cursor:pointer;width:100%}
+  .tr-tab:hover{background:#1E1328;color:#F4ECE4}
+  .tr-tab:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+  .tr-tab[aria-selected="true"]{background:#1E1328;border-color:#4A3458;color:#E9DEEF}
+  .tr-title{display:flex;align-items:center;gap:10px;font-weight:600;font-size:17px;color:#F4ECE4}
+  .tr-dot{width:9px;height:9px;border-radius:5px;flex:none;background:#4A3458}
+  .tr-tab[aria-selected="true"] .tr-dot{background:var(--dot)}
+  .tr-line{font-size:14px;line-height:1.5}
+  .tr-cue{display:none;flex:1 1 100%;margin:-16px 0 0;font-size:13px;color:#9C8AAB}
+  .tr-rec{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:12px}
+  .tr-stage{position:relative}
+  .tr-glow{position:absolute;left:10%;right:10%;top:5%;height:80%;border-radius:50%;background:radial-gradient(closest-side,var(--tr-glow),transparent)}
+  .tr-win{position:relative;border-radius:16px;overflow:hidden;border:1px solid #4A3458;box-shadow:0 50px 120px rgba(0,0,0,.55);background:#15131D}
+  .tr-bar{height:32px;background:#110F18;display:flex;align-items:center;gap:7px;padding:0 14px}
+  .tr-d{width:11px;height:11px;border-radius:6px}
+  .tr-wt{margin:0 auto;font:13px var(--font-mono);color:#8A85A8}
+  .tr video{display:block;width:100%;height:auto;aspect-ratio:16/10;background:#15131D}
+  .tr-cap{font-size:13px;color:#9C8AAB}
+  @media (max-width:900px){
+    .tr-tabs{flex-direction:row;overflow-x:auto;flex:1 1 100%;max-width:none;-webkit-mask-image:linear-gradient(90deg,#000 80%,transparent);mask-image:linear-gradient(90deg,#000 80%,transparent);padding-right:48px}
+    .tr-tab{min-width:220px}
+    .tr-cue{display:block}
+  }
+</style>

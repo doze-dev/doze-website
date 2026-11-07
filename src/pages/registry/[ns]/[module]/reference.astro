@@ -1,0 +1,185 @@
+---
+// A module's arguments and blocks (design: RegistryReference), for every module,
+// from meta.config in the index (the module's own describe.go). The search box
+// marks matches, opens the groups that have them and lists jumps to each.
+import "../../../../components/module/reference.css";
+import ModuleHead from "../../../../components/ModuleHead.astro";
+import { display, hcl, modulePaths } from "../../../../components/module/lib";
+import RegistryBar from "../../../../components/RegistryBar.astro";
+import { extrasFor } from "../../../../data/module-extras";
+import Page from "../../../../layouts/Page.astro";
+import { getModule } from "../../../../lib/registry";
+
+export const getStaticPaths = modulePaths;
+
+const m = getModule(Astro.params.module as string)!;
+const x = extrasFor(m.name);
+const ref = x.reference ?? {};
+const cfg = m.meta.config ?? {};
+type Arg = { name: string; type?: string; default?: string; desc?: string; required?: boolean };
+const args: Arg[] = cfg.arguments ?? [];
+const blocks: { name: string; label?: string; desc?: string; arguments?: Arg[] }[] = cfg.blocks ?? [];
+const since = ref.since;
+const common = ["port", "listen", "enabled", "count", "for_each", "after", "sleep"];
+const total = args.length + blocks.reduce((n, b) => n + (b.arguments?.length ?? 0), 0);
+const examples = [...args, ...blocks.flatMap((b) => b.arguments ?? [])]
+  .filter((a) => a.name !== "version")
+  .slice(0, 3)
+  .map((a) => a.name);
+const groups = [
+  {
+    id: "args",
+    title: "Arguments",
+    code: false,
+    blurb: `Set directly in <code class="rf-ic">module ${m.name} "…" { }</code>.${ref.argsBlurb ? ` ${ref.argsBlurb}` : ""}`,
+    args,
+    prefix: "arg",
+    repeat: false,
+  },
+  ...blocks.map((b) => ({
+    id: b.name,
+    title: `${b.name} "<${b.label ?? "name"}>"`,
+    code: true,
+    blurb: `${b.desc ?? ""}${ref.blurbs?.[b.name] ? ` ${ref.blurbs[b.name]}` : ""}`,
+    args: b.arguments ?? [],
+    prefix: b.name,
+    repeat: true,
+  })),
+].filter((g) => g.code || g.args.length > 0);
+const cnt = (g: (typeof groups)[number]) =>
+  g.args.length === 1 && g.repeat
+    ? `1 argument: ${g.args[0].name} · repeatable`
+    : `${g.args.length} argument${g.args.length === 1 ? "" : "s"}${g.repeat ? " · repeatable" : ""}`;
+const link =
+  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>';
+const chev =
+  '<svg class="rf-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+---
+<Page title={`${display(m)} reference · registry`} description={`Every argument and block ${m.namespace}/${m.name} takes in doze.hcl.`} theme="light" current="registry">
+  <RegistryBar section="modules" />
+  <ModuleHead module={m} tab="reference" />
+
+  <div class="rf-page">
+    <div class="rf-wrap">
+      <nav class="rf-toc" aria-label="Reference sections">
+        <span class="rf-lbl rf-onp">On this page</span>
+        {groups.map((g, i) => <a href={`#${g.id}`} aria-current={i === 0 ? "true" : undefined} data-toc={g.id}>{g.code ? g.id : g.title} <small><span class="rf-hitn" hidden></span><span>{g.args.length}</span></small></a>)}
+        <a href="#common" data-toc="common">Every module <small><span>{common.length}</span></small></a>
+      </nav>
+
+      <div class="rf-main">
+        <div class="rf-top">
+          <div class="rf-h">
+            <h2>Reference</h2>
+            <span class="rf-for">For release <b>{m.newest}</b> · the module's own description</span>
+          </div>
+          <form class="rf-search" role="search" data-search>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+            <label for="ref-q" class="sr-only">Search the {m.name} reference</label>
+            <input id="ref-q" type="search" placeholder={`Search ${total} arguments${examples.length ? `: ${examples.join(", ")}` : ""}`} autocomplete="off" />
+            <button class="rf-clear" type="button" data-clear>Clear</button>
+          </form>
+          <div class="rf-results" aria-live="polite" data-results></div>
+        </div>
+
+        {groups.map((g) => (
+          <details class="rf-grp" id={g.id} open data-group={g.id}>
+            <summary>
+              <Fragment set:html={chev} />
+              <h3>{g.code ? <code>{g.title}</code> : g.title}</h3><span class="rf-cnt">{g.code ? cnt(g) : g.args.length}</span><span class="rf-hits" hidden></span>
+            </summary>
+            {g.blurb && <p class="rf-blurb" set:html={g.blurb} />}
+            {ref.panels?.[g.id] && (
+              <div class="rf-panel">
+                <pre class="rf-code" set:html={hcl(ref.panels[g.id].code, "rf-k", "rf-s")} />
+                <p class="rf-foot rf-pc" set:html={ref.panels[g.id].note} />
+              </div>
+            )}
+            {g.args.length > 0 && (
+              <div class="rf-tbl">
+                <table class:list={[!since && "rf-nosince"]}>
+                  <thead><tr><th scope="col">Argument</th><th scope="col">Type</th><th scope="col">Default</th>{since && <th scope="col">Since</th>}<th scope="col">Description</th></tr></thead>
+                  <tbody>
+                    {g.args.map((a) => {
+                      const id = `${g.prefix}-${a.name}`;
+                      return (
+                        <tr id={id} data-name={g.prefix === "arg" ? a.name : `${g.prefix}.${a.name}`}>
+                          <td class="rf-nm"><code data-hl>{a.name}</code><a class="rf-anc" href={`#${id}`} aria-label={`Link to ${a.name}`} set:html={link} /></td>
+                          <td class="rf-ty">{a.type}{a.required && <span class="rf-req">required</span>}</td>
+                          <td class="rf-df">{a.default !== undefined && a.default !== "" ? <code>{a.default}</code> : <span class="rf-none">none</span>}</td>
+                          {since && <td class="rf-since">{since}</td>}
+                          <td class="rf-ds"><span data-hl>{a.desc}</span>{ref.argNotes?.[a.name] && g.prefix === "arg" && <span class="rf-note" set:html={ref.argNotes[a.name]} />}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </details>
+        ))}
+
+        <details class="rf-grp" id="common" data-group="common">
+          <summary>
+            <Fragment set:html={chev} />
+            <h3>Fields every module takes</h3><span class="rf-cnt">{common.length} from doze itself: {common.join(", ")}</span>
+          </summary>
+          <p class="rf-blurb">doze reads these on every module block, whatever the module: <code class="rf-ic">{common.join(", ")}</code>. <a href="/docs/doze/">The doze docs</a> describe each.</p>
+        </details>
+
+        <p class="rf-foot">{since ? <><b class="rf-fb">Since</b> is the module release that added an argument. Every argument here is in {since}, the oldest release in the index (from doze-modules history; releases do not yet record this, so the column is derived). </> : null}Descriptions and defaults are the module's own (describe.go on main), so this page cannot drift from what doze accepts.</p>
+      </div>
+    </div>
+  </div>
+</Page>
+
+<script>
+  // Search: mark matching names and descriptions, open the groups with matches,
+  // close the rest, and list a jump to each match.
+  const form = document.querySelector<HTMLFormElement>("[data-search]");
+  if (form) {
+    const input = form.querySelector<HTMLInputElement>("input")!;
+    const results = document.querySelector<HTMLElement>("[data-results]")!;
+    const groups = [...document.querySelectorAll<HTMLDetailsElement>("details[data-group]")];
+    for (const el of document.querySelectorAll<HTMLElement>("[data-hl]")) el.dataset.text = el.textContent ?? "";
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+    const run = () => {
+      const q = input.value.trim().toLowerCase();
+      const hits: { id: string; name: string }[] = [];
+      let groupsHit = 0;
+      for (const g of groups) {
+        let n = 0;
+        for (const row of g.querySelectorAll<HTMLTableRowElement>("tr[data-name]")) {
+          let hit = false;
+          for (const el of row.querySelectorAll<HTMLElement>("[data-hl]")) {
+            const t = el.dataset.text ?? "";
+            const i = q ? t.toLowerCase().indexOf(q) : -1;
+            if (i >= 0) {
+              hit = true;
+              const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+              el.innerHTML = esc(t).replace(re, (s) => `<mark>${s}</mark>`);
+            } else el.textContent = t;
+          }
+          row.classList.toggle("rf-hit", hit);
+          if (hit) { n++; hits.push({ id: row.id, name: row.dataset.name! }); }
+        }
+        const badge = g.querySelector<HTMLElement>(".rf-hits");
+        if (badge) { badge.hidden = !q || n === 0; badge.textContent = `${n} match${n === 1 ? "" : "es"}`; }
+        const toc = document.querySelector<HTMLElement>(`[data-toc="${g.dataset.group}"] .rf-hitn`);
+        if (toc) { const tot = toc.nextElementSibling as HTMLElement; tot.dataset.total ??= tot.textContent ?? ""; toc.hidden = !q || n === 0; toc.textContent = String(n); tot.textContent = q && n ? ` / ${tot.dataset.total}` : tot.dataset.total!; }
+        if (n) groupsHit++;
+        if (q) g.open = n > 0;
+        else g.open = g.dataset.group !== "common";
+      }
+      if (!q) { results.replaceChildren(); return; }
+      results.innerHTML = hits.length
+        ? `<span><b class="rf-b">${hits.length} match${hits.length === 1 ? "" : "es"}</b> in ${groupsHit} group${groupsHit === 1 ? "" : "s"}:</span>` + hits.map((h) => `<a class="rf-jump" href="#${h.id}">${esc(h.name)}</a>`).join("")
+        : `<span>No argument matches “${esc(input.value.trim())}”.</span>`;
+    };
+    input.addEventListener("input", run);
+    form.addEventListener("submit", (e) => e.preventDefault());
+    form.querySelector<HTMLButtonElement>("[data-clear]")!.addEventListener("click", () => { input.value = ""; run(); input.focus(); });
+    const q0 = new URLSearchParams(location.search).get("q");
+    if (q0) { input.value = q0; run(); }
+  }
+</script>

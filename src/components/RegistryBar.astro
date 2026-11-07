@@ -1,0 +1,112 @@
+---
+// The registry's own bar (design: RegistryBar): search, the doze-version picker, sections.
+interface Props {
+  section?: "modules" | "extensions" | "tools" | "trust" | "publish" | "none";
+  q?: string;
+}
+const { section = "modules", q = "" } = Astro.props;
+const items = [
+  ["modules", "Modules", "/registry/"],
+  ["extensions", "Postgres extensions", "/registry/extensions/"],
+  ["tools", "Bring your own", "/registry/tools/"],
+  ["trust", "How signing works", "/registry/trust/"],
+  ["publish", "Publish a module", "/registry/publish/"],
+] as const;
+
+import { fmtDate, registry } from "../lib/registry";
+
+// doze releases the picker offers: what GitHub lists as released, newest first.
+const dozeVersions = registry.doze?.length
+  ? registry.doze
+  : [
+      { version: "0.1.1", date: "2026-07-02" },
+      { version: "0.1.0", date: "2026-07-02" },
+    ];
+---
+<div class="rb">
+  <div class="rb-in">
+    <div class="rb-row">
+      <a class="rb-title" href="/registry/">Registry</a>
+      <form class="rb-search" role="search" action="/registry/search/">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+        <label for="rb-q" class="sr-only">Search modules, extensions and tools</label>
+        <input id="rb-q" name="q" type="search" value={q} placeholder="Search: redis, pgvector, s3…" autocomplete="off" />
+        <kbd class="rb-kbd">/</kbd>
+      </form>
+      <span class="rb-grow"></span>
+      <details class="rb-pick">
+        <summary>
+          <span data-doze-when="unset">Check against your doze</span>
+          <span data-doze-when="set" hidden><img src="/brand/doze.svg" alt="" width="20" height="20" />Checking against doze <b data-doze-text></b></span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <div class="rb-menu">
+          <p>Which doze do you run?</p>
+          <form class="rb-detect" data-doze-detect>
+            <label for="rb-detect">Or paste what <code>doze version</code> prints</label>
+            <span><input id="rb-detect" type="text" placeholder="doze 0.1.1 (darwin/arm64)" autocomplete="off" /><button type="submit">Check</button></span>
+          </form>
+          {dozeVersions.map((v, i) => <a href={`?doze=${v.version}`} data-doze-pick={v.version}>doze {v.version}<small>{i === 0 ? "newest · " : ""}{fmtDate(v.date)}</small></a>)}
+          <a href="?" data-doze-pick="">Stop checking</a>
+          <small>Kept in this browser only. Nothing is sent anywhere.</small>
+        </div>
+      </details>
+    </div>
+    <nav class="rb-nav" aria-label="Registry">
+      {items.map(([id, label, href]) => <a href={href} aria-current={id === section ? "page" : undefined}>{label}</a>)}
+    </nav>
+  </div>
+</div>
+<script>import "../scripts/doze-check.ts";</script>
+<script>
+  // "/" focuses the search, unless you're typing somewhere already.
+  document.addEventListener("keydown", (e) => {
+    const t = e.target as HTMLElement;
+    if (e.key !== "/" || t.closest("input, textarea, [contenteditable]")) return;
+    e.preventDefault();
+    document.getElementById("rb-q")?.focus();
+  });
+</script>
+
+<style>
+  .rb { font-family: var(--font-text); background: #fff4e8; border-bottom: 1px solid #eadfd3; color: #140c1b; }
+  .rb-in { box-sizing: content-box; max-width: 1240px; margin: 0 auto; padding: 18px 32px 0; display: flex; flex-direction: column; gap: 14px; }
+  .rb-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .rb a { text-decoration: none; }
+  .rb-title { font: 800 22px var(--font-display); letter-spacing: -0.02em; color: #140c1b; margin-right: 10px; display: inline-flex; align-items: center; min-height: 44px; }
+  .rb-search { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border: 1px solid #dccfc2; border-radius: 10px; background: #fff; flex: 1 1 320px; max-width: 520px; }
+  .rb-search:focus-within { border-color: #a85a0c; box-shadow: 0 0 0 3px #fde6cb; }
+  .rb-search input { border: 0; outline: 0; flex: 1; height: 100%; font: 15px var(--font-text); color: #140c1b; background: transparent; min-width: 0; }
+  .rb-kbd { font: 600 11px var(--font-mono); color: #6e5f79; border: 1px solid #dccfc2; border-radius: 5px; padding: 1px 6px; }
+  .rb-grow { flex: 1; }
+  .rb-pick { position: relative; }
+  .rb-pick summary { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #dccfc2; background: #fff; font: 500 14px var(--font-text); white-space: nowrap; cursor: pointer; list-style: none; }
+  .rb-pick summary::-webkit-details-marker { display: none; }
+  .rb-pick summary span { display: inline-flex; align-items: center; gap: 8px; }
+  :global(html[data-doze]) .rb-pick summary { border-color: #a85a0c; }
+  .rb-menu { position: absolute; right: 0; top: 52px; z-index: 20; width: 300px; padding: 10px; border-radius: 14px; background: #fff; border: 1px solid #dccfc2; box-shadow: 0 24px 60px rgba(40, 20, 60, 0.18); display: flex; flex-direction: column; }
+  .rb-menu p { margin: 4px 8px 8px; font-size: 14px; color: #4a3d55; }
+  .rb-menu a { padding: 11px 10px; border-radius: 8px; font-size: 15px; color: #140c1b; }
+  .rb-menu a:hover { background: #fff4e8; }
+  .rb-menu > small { margin: 8px; font-size: 13px; color: #6e5f79; }
+  .rb-menu a { display: flex; justify-content: space-between; gap: 10px; }
+  .rb-menu a small { font-size: 13px; color: #6e5f79; }
+  .rb-detect { display: flex; flex-direction: column; gap: 6px; padding: 4px 8px 10px; border-bottom: 1px solid #eadfd3; margin-bottom: 6px; }
+  .rb-detect label { font-size: 13px; color: #4a3d55; }
+  .rb-detect span { display: flex; gap: 6px; }
+  .rb-detect input { flex: 1; min-width: 0; height: 40px; padding: 0 10px; border: 1px solid #dccfc2; border-radius: 8px; font: 14px var(--font-mono); }
+  .rb-detect button { height: 40px; padding: 0 12px; border: 0; border-radius: 8px; background: #140c1b; color: #fff; font: 600 14px var(--font-text); cursor: pointer; }
+  .rb-nav { display: flex; gap: 24px; flex-wrap: wrap; }
+  .rb-nav a { font-size: 14px; color: #4a3d55; padding: 10px 2px; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .rb-nav a:hover { color: #140c1b; }
+  .rb-nav a[aria-current="page"] { color: #140c1b; font-weight: 600; border-bottom-color: var(--amber); }
+  .rb a:focus-visible, .rb summary:focus-visible { outline: 2px solid #a85a0c; outline-offset: 2px; border-radius: 6px; }
+  @media (max-width: 760px) {
+    .rb-nav { gap: 4px 18px; }
+    .rb-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; }
+    .rb-pick { flex: 1 1 100%; }
+    .rb-pick summary { width: 100%; }
+    .rb-menu { left: 0; right: auto; width: 100%; }
+    .rb-kbd { display: none; }
+  }
+</style>

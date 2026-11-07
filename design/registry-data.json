@@ -1,0 +1,695 @@
+{
+  "key": {
+    "namespace": "doze",
+    "key": "Nu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw="
+  },
+  "modules": {
+    "temporal": {
+      "title": "Temporal",
+      "tagline": "Durable workflow engine (local dev server)",
+      "category": "workflow",
+      "engine": "temporal",
+      "port": 7233,
+      "description": "A local Temporal dev server: a single pure-Go binary bundling the Temporal services, a SQLite store, and the Web UI, with no JVM or Docker. Supervised and always-on (workers long-poll it); connect via TEMPORAL_ADDRESS.",
+      "arguments": [
+        "version: string (required) — temporal CLI version",
+        "port: number = 7233 — frontend gRPC port",
+        "ui_port: number = 8233 — Web UI port",
+        "headless: bool = false — disable the Web UI",
+        "namespace: block — a namespace to create (repeatable; label = name; retention, description)",
+        "restart: block — supervisor restart policy (policy, backoff, max_retries)"
+      ],
+      "blocks": [],
+      "releases": {
+        "0.2.1": {
+          "protocol": 1,
+          "engines": [
+            "1"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "304b2ea0e81a5732689fb5266030d62b5832825daaba8fdcb6de7edc63a2f57f",
+            "aarch64-unknown-linux-gnu": "f2c2fdc362092dad3267e0ac0c2fbd66ee4d2786dcb2f3d0436f79d7223fab11",
+            "x86_64-unknown-linux-gnu": "2aa60dda107a49c23c5a81e6929a31b31b84fc53bcd4b69e10d5c562b37ab6ab"
+          },
+          "doze": null
+        },
+        "0.2.2": {
+          "protocol": 1,
+          "engines": [
+            "1"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "debb394579ee866233564dc1e9d7d9abff6d024d80c1fe620517f37b64421bd9",
+            "aarch64-unknown-linux-gnu": "fd14771bce7613586a667b661ecb6ba7258fdb452bacac5b5237437f601aa58b",
+            "x86_64-unknown-linux-gnu": "b274ce4cdd96ab99f111e4d3c25a1a17dea56fc343a07176936811a52d339e2b"
+          },
+          "doze": null
+        }
+      }
+    },
+    "mariadb": {
+      "title": "MariaDB",
+      "tagline": "MySQL-compatible relational database",
+      "category": "database",
+      "engine": "mariadb",
+      "port": 3306,
+      "description": "A socket-only MariaDB backend behind the doze proxy, with declarative databases, users, and grants. The instance database is created automatically; connect via DATABASE_URL.",
+      "arguments": [
+        "version: string (required) — MariaDB server version (e.g. 11.4)",
+        "character_set: string — default charset for the instance database (e.g. utf8mb4)",
+        "collation: string — default collation for the instance database",
+        "settings: map(string) — extra [mysqld] my.cnf entries",
+        "user: block — a MariaDB account (repeatable; label = name; host, password)",
+        "grant: block — a privilege grant (user, privileges, database, table)"
+      ],
+      "blocks": [],
+      "releases": {
+        "0.2.1": {
+          "protocol": 1,
+          "engines": [
+            "11"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "73cce951bb990a9a5a4c9e4ffb147e0afc6c3cb5c6ecb44a58fa88709a28dea3",
+            "aarch64-unknown-linux-gnu": "8642d8fe452554f9428826a0ff7f1403d6e426268e9be55c7c0fcd12c9094f19",
+            "x86_64-unknown-linux-gnu": "bec23a0a3bb1e4714a0378ce686db313adb280e531e5cbd65e5d9e1f14ef3433"
+          },
+          "doze": null
+        }
+      }
+    },
+    "valkey": {
+      "title": "Valkey",
+      "tagline": "In-memory cache, Redis-compatible.",
+      "category": "cache",
+      "engine": "valkey",
+      "port": 6379,
+      "description": "A local Valkey server — the open-source Redis fork. Speaks the Redis protocol, so any redis client works. Set a memory ceiling and an eviction policy and use it as a cache; doze boots it on first connect and reaps it when idle.",
+      "arguments": [
+        "version: number (required) — Engine major to run — 8 or 9.",
+        "maxmemory: string — Memory ceiling before eviction, e.g. \"256mb\".",
+        "maxmemory_policy: string = noeviction — Eviction policy (allkeys-lru, volatile-ttl, …).",
+        "appendonly: bool = false — Enable the append-only file for durability.",
+        "password: string — requirepass auth password.",
+        "save: string — RDB snapshot schedule, e.g. \"900 1 300 10\" (empty disables).",
+        "settings: map(string) — Arbitrary valkey.conf directives, applied verbatim."
+      ],
+      "blocks": [],
+      "releases": {
+        "0.2.1": {
+          "protocol": 1,
+          "engines": [
+            "8",
+            "9"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "4d4ccc27eafeced61dc6597fb9089fac8ab64803dbf4d67e01f98fc52e987f13",
+            "aarch64-unknown-linux-gnu": "f800301cfc0427474587d20cbee3387613593dda3cfc7819e9961e4b0f6a42b4",
+            "x86_64-unknown-linux-gnu": "d06d41ea23051a8310dee5ad94bce2c6c06f0912c9bf3360fd73402d2fdac458"
+          },
+          "doze": null
+        }
+      }
+    },
+    "ferret": {
+      "title": "FerretDB",
+      "tagline": "MongoDB-compatible database (FerretDB v2 over Postgres)",
+      "category": "database",
+      "engine": "ferret",
+      "port": 27017,
+      "description": "A MongoDB-wire database you connect to with any Mongo client. Under the hood it is FerretDB v2 fronting a private PostgreSQL with Microsoft's DocumentDB extension — no MongoDB server, no license worries.",
+      "arguments": [
+        "version: string (required) — FerretDB v2.x gateway version",
+        "database: block — a Mongo database to ensure (repeatable; label = name)",
+        "collection: block — a collection within a database (repeatable; label = name)",
+        "seed: string — path to a JSON array seeded into an empty collection",
+        "index: block — an index on a collection (keys = {field=1|-1}, unique)",
+        "settings: map(string) — extra FERRETDB_* gateway settings",
+        "auth: bool = false — enable auth + user convergence (scaffold; needs validation)",
+        "user: block — a Mongo user when auth is on (name, password, database, roles)"
+      ],
+      "blocks": [],
+      "releases": {
+        "0.2.1": {
+          "protocol": 1,
+          "engines": [
+            "2"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "2e1a2a88ed9510f067f3c38b8b00d059fb814bd76e985e9255ffbcb31bd2caf8",
+            "aarch64-unknown-linux-gnu": "0e724c1fe516e2601a524df3a644f26dc80008c10ebe93f876e1d299a9cb81ea",
+            "x86_64-unknown-linux-gnu": "626c367efe415fc2bced2f28bc4f3d61f678ff0ec2c07939a525149ad7f5cc96"
+          },
+          "doze": null
+        },
+        "0.2.2": {
+          "protocol": 1,
+          "engines": [
+            "2"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "7bdde3bfd9c41c01c9b14884e20432486fe82ab5c8e474ca19832cdd986753fb",
+            "aarch64-unknown-linux-gnu": "e962983b1006a0a3469ef1b7b0c11610d07be6c82de0ef0babe0885f6318252b",
+            "x86_64-unknown-linux-gnu": "53f98d691f348b3cafe59452083b905196a686521ee0ff0b2ecda44839bd1bcd"
+          },
+          "doze": null
+        },
+        "0.2.3": {
+          "protocol": 1,
+          "engines": [
+            "2"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "c658434a1d781d2f3b81d8fe114cad6ac1943a324b5bd2b09e63ec8544c9d37c",
+            "aarch64-unknown-linux-gnu": "d7c189497583a23859b74d6eefdddd2a231dfff459ff874b03fb65a47dabcb1e",
+            "x86_64-unknown-linux-gnu": "40de4c1878177a21ad67a682387b1d142bceaa3eb47c9d83f98e1d4a65cfb363"
+          },
+          "doze": null
+        }
+      }
+    },
+    "postgres": {
+      "title": "PostgreSQL",
+      "tagline": "Real local Postgres, declared not scripted.",
+      "category": "database",
+      "engine": "postgres",
+      "port": 5432,
+      "description": "A real PostgreSQL server per instance — no Docker. Declare roles, schemas, extensions and grants in HCL and doze converges them: creating what's new, updating what changed, dropping what you removed. Boots on first connect, reaps when idle.",
+      "arguments": [
+        "version: number (required) — Engine major to run — 14, 15, 16, 17 or 18.",
+        "owner: string — Owner role for the instance's default database.",
+        "encoding: string = UTF8 — Character-set encoding for the database.",
+        "locale: string — Locale (LC_COLLATE + LC_CTYPE) for the database.",
+        "lc_collate: string — Collation order, overriding locale.",
+        "lc_ctype: string — Character classification, overriding locale.",
+        "template: string — Template database to create from.",
+        "connection_limit: number = -1 — Max concurrent connections to the database.",
+        "is_template: bool = false — Mark the database as a template.",
+        "allow_connections: bool = true — Whether the database accepts connections.",
+        "tablespace: string — Tablespace the database lives in.",
+        "comment: string — COMMENT applied to the database.",
+        "shared_buffers: string = 16MB — shared_buffers server setting, e.g. \"256MB\".",
+        "max_connections: number = 50 — max_connections server setting.",
+        "fsync: bool = false — fsync server setting (off for the dev tuning profile).",
+        "autovacuum: bool = true — autovacuum server setting.",
+        "extensions: list(string) — Shorthand list of extensions to CREATE (or use extension blocks).",
+        "settings: map(string) — Arbitrary postgresql.conf settings, applied verbatim."
+      ],
+      "blocks": [
+        "role",
+        "schema",
+        "extension",
+        "grant"
+      ],
+      "releases": {
+        "0.2.1": {
+          "protocol": 1,
+          "engines": [
+            "14",
+            "15",
+            "16",
+            "17",
+            "18"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "58e2a5bf4cf90e9b919581cb254f5445c698e7adff3ad0c1c85a007fc37df305",
+            "aarch64-unknown-linux-gnu": "787bd6d42c6777aa2610d1784b70000c92b4a48304ab33f2c364af3e32d7b9bf",
+            "x86_64-unknown-linux-gnu": "56a50ca979d03c1ca63915be2f81cd0d49a77c8dc84116c2584e48a4abbaf1e2"
+          },
+          "doze": null
+        },
+        "0.2.2": {
+          "protocol": 1,
+          "engines": [
+            "14",
+            "15",
+            "16",
+            "17",
+            "18"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "242d0614a7ed3bcba1373d53634968899e69707cdee9a7e6452e2c04e30be3ac",
+            "aarch64-unknown-linux-gnu": "e92127bc120dad7f4b718254228345938d303b1531d7a1d1a553ece216931d74",
+            "x86_64-unknown-linux-gnu": "a9c49d2ceeb9ff7ff43f1db4ca9aa8bbba530f1d2bc70f9dfb6e57f927664871"
+          },
+          "doze": null
+        },
+        "0.2.3": {
+          "protocol": 1,
+          "engines": [
+            "14",
+            "15",
+            "16",
+            "17",
+            "18"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "b92e4a9242e1a042cd368ad2c0328a9a04c510eb10669827edd45e22091cbb46",
+            "aarch64-unknown-linux-gnu": "0c615d46b24495a05583d4a684e68b4f802f18179c7a063ac11fdad5e7278db9",
+            "x86_64-unknown-linux-gnu": "4fad3b7e5378eff742031b36a21199a656b17b2fde263f6f479a695449ecc5e3"
+          },
+          "doze": null
+        },
+        "0.2.4": {
+          "protocol": 1,
+          "engines": [
+            "14",
+            "15",
+            "16",
+            "17",
+            "18"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "a07134d07cf988862f5b2d1a288cc43a40ace5b96e88e190b5d66ca8b207b89a",
+            "aarch64-unknown-linux-gnu": "f29c48e5dab175d6f1b2991f274e2e5aedb55a9993eff90128feb423380fd2a2",
+            "x86_64-unknown-linux-gnu": "7c920599a5a52f4ed4306963797e88de7ed6beb0be130b8b1039f7c7d0354f68"
+          },
+          "doze": null
+        }
+      }
+    },
+    "kvrocks": {
+      "title": "Kvrocks",
+      "tagline": "Redis API on RocksDB — durable, low-RAM.",
+      "category": "database",
+      "engine": "kvrocks",
+      "port": 6380,
+      "description": "A local Apache Kvrocks server: the Redis protocol backed by RocksDB on disk. Durable and memory-frugal — a drop-in Redis API when you want persistence without holding the dataset in RAM. Supports namespaces with per-namespace tokens.",
+      "arguments": [
+        "version: number (required) — Engine major to run — 2.",
+        "workers: number — Number of worker threads.",
+        "password: string — requirepass auth password (the admin namespace); required when namespaces are declared.",
+        "settings: map(string) — Arbitrary kvrocks.conf directives, applied verbatim."
+      ],
+      "blocks": [
+        "namespace"
+      ],
+      "releases": {
+        "0.2.1": {
+          "protocol": 1,
+          "engines": [
+            "2"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "4f6c052ee05b538703b34ad3264384c55fc477664cf319e96c68e9ad8e06f657",
+            "aarch64-unknown-linux-gnu": "7a347288e232a6618b2861a72323430d6aa8456a4e32049e385c86c40b2886b7",
+            "x86_64-unknown-linux-gnu": "275b8e40e02ae938bb6b67821f61c14237ab2b68c426cf77180a1871754f2c87"
+          },
+          "doze": null
+        }
+      }
+    },
+    "kafka": {
+      "title": "Kafka",
+      "tagline": "Single-node Kafka-protocol broker, no JVM.",
+      "category": "queue",
+      "engine": "kafka",
+      "port": 9092,
+      "description": "A local, disk-backed broker that speaks enough of the Kafka wire protocol that unmodified clients (franz-go, kcat, Sarama, the Java client) connect and work. No JVM, no ZooKeeper, no KRaft — the engine is doze-kafka, embedded in the module, and `version` selects the Kafka protocol profile it advertises (1–4). Declare topics and doze converges them on boot; auto-create handles the rest.",
+      "arguments": [
+        "version: number (required) — Advertised Kafka protocol profile — 1, 2, 3, or 4.",
+        "auto_create_topics: bool = true — Create unknown topics on first reference.",
+        "default_partitions: number = 1 — Partition count for auto-created topics.",
+        "retention: string — Delete segments older than this (Go duration, e.g. \"168h\"); empty = unbounded.",
+        "retention_bytes: number — Delete old segments once a partition exceeds this size (0 = unbounded)."
+      ],
+      "blocks": [
+        "topic"
+      ],
+      "releases": {
+        "0.1.0": {
+          "protocol": 1,
+          "engines": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "512b216f089c2a393cd8fdea9e9cf7612a38640c9a71565f97800f805a96afee",
+            "aarch64-unknown-linux-gnu": "f3bf624cf9ab8dfc5fc2ef25ccb4afbd981884c406492ca62a4570afa4ff5a4e",
+            "x86_64-unknown-linux-gnu": "20338fe58d75c990b8f026929a41a10374fe4938e7b5d9e537eba9afbc882d6f"
+          },
+          "doze": null
+        },
+        "0.1.1": {
+          "protocol": 1,
+          "engines": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "c5dfcbf911517ac8718aac8f7f9f94fceb473a4482cad37abf68ec4472c71ed6",
+            "aarch64-unknown-linux-gnu": "644d99d060ea0878c47f4b8a6dab5ab2bbc6d73462a0fe3576aaec056c33b184",
+            "x86_64-unknown-linux-gnu": "eaf11bab449e281be6483cf18586502ffef2b4db6c5426db5fbe01ce02cc4640"
+          },
+          "doze": null
+        }
+      }
+    },
+    "aws": {
+      "title": "AWS",
+      "tagline": "The whole local AWS as ONE service — with its web console.",
+      "category": "cloud",
+      "engine": "aws",
+      "port": 4566,
+      "description": "Every doze-aws service — S3, SQS, SNS, DynamoDB, Lambda, EventBridge, KMS, SSM, Secrets Manager, STS — behind one gateway on one endpoint, as one doze instance. Declare buckets, queues, topics, tables, functions, rules, keys, secrets and parameters as nested blocks (the same shape as doze-aws's stack.yaml); doze converges them on boot. A stock SDK or the aws CLI points AWS_ENDPOINT_URL at the one endpoint; the web console at /_console manages everything, with the live Flows graph and a Traffic tail capturing every call. One process, no Docker, no JVM, no LocalStack.",
+      "arguments": [],
+      "blocks": [
+        "bucket",
+        "queue",
+        "topic",
+        "table",
+        "function",
+        "rule",
+        "key",
+        "secret",
+        "parameter"
+      ],
+      "releases": {
+        "0.1.0": {
+          "protocol": 1,
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "10edd75a23bb969559bb65ea4191f92edfcad1cd52e2d506c48af9d538ccb9e3",
+            "aarch64-unknown-linux-gnu": "9a986d2836ee746bbc370539978bfd37c34aa8b7650277228f9f240f66c1f1b7",
+            "x86_64-unknown-linux-gnu": "dd0fd25000e0cf5514650b53f67acc3821b45c8140dc3b3caa1921631c93d02d"
+          },
+          "doze": null
+        },
+        "0.1.1": {
+          "protocol": 1,
+          "platforms": [
+            "aarch64-apple-darwin",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-gnu"
+          ],
+          "sha256": {
+            "aarch64-apple-darwin": "10edd75a23bb969559bb65ea4191f92edfcad1cd52e2d506c48af9d538ccb9e3",
+            "aarch64-unknown-linux-gnu": "9a986d2836ee746bbc370539978bfd37c34aa8b7650277228f9f240f66c1f1b7",
+            "x86_64-unknown-linux-gnu": "dd0fd25000e0cf5514650b53f67acc3821b45c8140dc3b3caa1921631c93d02d"
+          },
+          "doze": null
+        }
+      }
+    }
+  },
+  "platforms": [
+    "x86_64-unknown-linux-gnu",
+    "aarch64-unknown-linux-gnu",
+    "aarch64-apple-darwin"
+  ],
+  "engineVersions": {
+    "postgres": {
+      "versions": [
+        "14.0",
+        "14.1",
+        "14.2",
+        "14.3",
+        "14.4",
+        "14.5",
+        "14.6",
+        "14.7",
+        "14.8",
+        "14.9",
+        "14.10",
+        "14.11",
+        "14.12",
+        "14.13",
+        "14.14",
+        "14.15",
+        "14.16",
+        "14.17",
+        "14.18",
+        "14.19",
+        "14.20",
+        "14.21",
+        "14.22",
+        "14.23",
+        "14.24",
+        "15.0",
+        "15.1",
+        "15.2",
+        "15.3",
+        "15.4",
+        "15.5",
+        "15.6",
+        "15.7",
+        "15.8",
+        "15.9",
+        "15.10",
+        "15.11",
+        "15.12",
+        "15.13",
+        "15.14",
+        "15.15",
+        "15.16",
+        "15.17",
+        "15.18",
+        "15.19",
+        "16.0",
+        "16.1",
+        "16.2",
+        "16.3",
+        "16.4",
+        "16.5",
+        "16.6",
+        "16.7",
+        "16.8",
+        "16.9",
+        "16.10",
+        "16.11",
+        "16.12",
+        "16.13",
+        "16.14",
+        "16.15",
+        "17.0",
+        "17.1",
+        "17.2",
+        "17.3",
+        "17.4",
+        "17.5",
+        "17.6",
+        "17.7",
+        "17.8",
+        "17.9",
+        "17.10",
+        "17.11",
+        "18.0",
+        "18.1",
+        "18.2",
+        "18.3",
+        "18.4",
+        "18.6"
+      ],
+      "triples": "all",
+      "major_parts": 1
+    },
+    "valkey": {
+      "versions": [
+        "8.0.0",
+        "8.0.1",
+        "8.0.2",
+        "8.0.3",
+        "8.0.4",
+        "8.0.5",
+        "8.0.6",
+        "8.0.7",
+        "8.0.8",
+        "8.0.9",
+        "8.1.0",
+        "8.1.1",
+        "8.1.2",
+        "8.1.3",
+        "8.1.4",
+        "8.1.5",
+        "8.1.6",
+        "8.1.7",
+        "8.1.8",
+        "8.1.9",
+        "9.0.0",
+        "9.0.1",
+        "9.0.2",
+        "9.0.3",
+        "9.0.4",
+        "9.1.0",
+        "9.1.1"
+      ],
+      "triples": "all",
+      "major_parts": 1
+    },
+    "kvrocks": {
+      "versions": [
+        "2.1.0",
+        "2.2.0",
+        "2.3.0",
+        "2.4.0",
+        "2.5.0",
+        "2.5.1",
+        "2.6.0",
+        "2.7.0",
+        "2.8.0",
+        "2.9.0",
+        "2.10.0",
+        "2.10.1",
+        "2.11.0",
+        "2.11.1",
+        "2.12.0",
+        "2.12.1",
+        "2.13.0",
+        "2.14.0",
+        "2.15.0",
+        "2.16.0"
+      ],
+      "triples": "all",
+      "major_parts": 1
+    },
+    "ferretdb": {
+      "versions": [
+        "2.7.0"
+      ],
+      "triples": "all",
+      "major_parts": 1
+    },
+    "documentdb": {
+      "versions": [
+        "0.112-0"
+      ],
+      "triples": "all",
+      "major_parts": 1
+    },
+    "mariadb": {
+      "versions": [
+        "11.4.2",
+        "11.4.3",
+        "11.4.4",
+        "11.4.5",
+        "11.4.6",
+        "11.4.7",
+        "11.4.8",
+        "11.4.9",
+        "11.4.10",
+        "11.4.11",
+        "11.4.12",
+        "11.4.13",
+        "11.8.2",
+        "11.8.3",
+        "11.8.4",
+        "11.8.5",
+        "11.8.6",
+        "11.8.7",
+        "11.8.8",
+        "11.8.9",
+        "12.0.2",
+        "12.1.2",
+        "12.2.2",
+        "12.3.2",
+        "12.3.3"
+      ],
+      "triples": "all",
+      "major_parts": 2
+    },
+    "temporal": {
+      "versions": [
+        "1.0.0",
+        "1.1.0",
+        "1.1.1",
+        "1.1.2",
+        "1.2.0",
+        "1.3.0",
+        "1.4.0",
+        "1.4.1",
+        "1.5.0",
+        "1.5.1",
+        "1.6.0",
+        "1.6.1",
+        "1.6.2",
+        "1.7.0",
+        "1.7.1",
+        "1.7.2",
+        "1.7.3",
+        "1.8.0",
+        "1.8.1",
+        "1.8.2"
+      ],
+      "triples": "all",
+      "major_parts": 2
+    }
+  }
+}

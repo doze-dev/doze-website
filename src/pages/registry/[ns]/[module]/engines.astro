@@ -1,0 +1,181 @@
+---
+// The engine builds a module runs (design: RegistryEngines), for every module
+// with engine binaries in doze-binaries (postgres, valkey, kvrocks, ferret,
+// mariadb, temporal). Builds come from registry.engines; support dates, gaps and
+// end-of-life stages are postgres copy from src/data/module-extras.ts.
+import "../../../../components/module/engines.css";
+import ModuleHead from "../../../../components/ModuleHead.astro";
+import {
+  display,
+  engineKey,
+  engineMajors,
+  engineOf,
+  hcl,
+  plat,
+  relHref,
+  sortTriples,
+  triShort,
+  versionIsString,
+} from "../../../../components/module/lib";
+import RegistryBar from "../../../../components/RegistryBar.astro";
+import { extrasFor } from "../../../../data/module-extras";
+import Page from "../../../../layouts/Page.astro";
+import { look, modules } from "../../../../lib/registry";
+
+export function getStaticPaths() {
+  return modules
+    .filter((m) => engineKey[m.name] && look[m.name]?.engine)
+    .map((m) => ({ params: { ns: m.namespace, module: m.name } }));
+}
+
+const m = modules.find((x) => x.name === Astro.params.module)!;
+const x = extrasFor(m.name);
+const ex = x.engines ?? {};
+const e = engineOf(m)!;
+const key = engineKey[m.name];
+const eName = look[m.name]!.engine!;
+const majors = engineMajors(m);
+const total = e.versions.length;
+const triples = sortTriples(e.triples);
+const quote = versionIsString(m);
+const val = (v: string) => (quote ? `"${v}"` : v);
+const shortName = ex.short ?? eName;
+const rels = m.releases;
+const newest = rels[0];
+const relMajors = [...new Set([...(x.coming?.engines ?? []), ...rels.flatMap((r) => r.engines)])].sort(
+  (a, b) => Number(a) - Number(b),
+);
+const allSame = rels.every((r) => r.engines.join() === rels[0].engines.join());
+const hasGaps = !!ex.gaps && Object.keys(ex.gaps).length > 0;
+const sample = majors[1] ?? majors[0];
+const firstMin = [...rels].reverse().find((r) => r.doze);
+const k = (s: string) => hcl(s, "re-k", "re-s");
+const info =
+  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>';
+const pinMajor = ex.pin ? `module ${m.name} "${m.name}" {\n  version = ${ex.pin.major}\n}` : "";
+const pinExact = ex.pin ? `module ${m.name} "${m.name}" {\n  version = "${ex.pin.exact}"\n}` : "";
+---
+<Page title={`${display(m)} engine versions · registry`} description={`Every ${eName} build doze can run, from doze-binaries.`} theme="light" current="registry">
+  <RegistryBar section="modules" />
+  <ModuleHead module={m} tab="engines" />
+
+  <div class="re-pg">
+    <section class="re-wrap re-sec">
+      <div class="re-top">
+        <div class="re-col8">
+          <h2 class="re-h2">Engine versions</h2>
+          <p class="re-lead">The {eName} {total === 1 ? "build" : "servers"} doze runs: {total} build{total === 1 ? "" : "s"} of {eName} from <a href="https://github.com/doze-dev/doze-binaries">doze-binaries</a>, every one for {triples.length === 3 ? "all three platforms" : `${triples.length} platforms`}. The engine and the module ({m.namespace}/{m.name}) are pinned separately in doze.lock.</p>
+        </div>
+        <a class="re-ext" href={`https://github.com/doze-dev/doze-binaries/releases/download/${key}/index.yaml`}>The same list as index.yaml
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg></a>
+      </div>
+
+      <div class="re-small re-legend">
+        <span class="re-li"><span class="re-mn re-top">{sample.newest}</span> what a bare {e.majorParts > 1 ? "version line" : "major"} resolves to today</span>
+        {hasGaps && Object.values(ex.gaps!).flat().slice(0, 1).map((g) => <span class="re-li"><span class="re-mn re-gap">{g.v}</span> never tagged upstream</span>)}
+        <span class="re-li re-wrapf">Platforms: <span class="re-pm">mac</span> macOS arm64 <span class="re-pm">arm</span> Linux arm64 <span class="re-pm">x86</span> Linux x86_64</span>
+      </div>
+
+      <div class="re-majors">
+        {majors.map((g) => {
+          const eol = ex.eol?.major === g.major ? ex.eol : null;
+          const gaps = ex.gaps?.[g.major] ?? [];
+          const all = [...g.versions.map((v) => ({ v, gap: false })), ...gaps.map((x) => ({ v: x.v, gap: true }))].sort((a, b) => {
+            const pa = a.v.split(".").map(Number), pb = b.v.split(".").map(Number);
+            for (let i = 0; i < 3; i++) if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) - (pb[i] ?? 0);
+            return 0;
+          });
+          const id = `${key}-${g.major.replace(/\./g, "-")}`;
+          return (
+            <article class:list={["re-major", eol && "re-eolb"]} aria-labelledby={id}>
+              <div class="re-major-head">
+                <h3 id={id} class="re-h3">{eName} {g.major}</h3>
+                {eol ? <><span class="re-chip re-c-warn">{eol.chip}</span> <span class="re-small">{eol.date}</span></> : ex.support?.[g.major] && <span class="re-chip re-c-good">Supported upstream until {ex.support[g.major]}</span>}
+                <span class="re-grow"></span>
+                <span class="re-pms">{triples.map((t) => <span class="re-pm" title={plat(t)}>{triShort[t] ?? t}</span>)}</span>
+              </div>
+              <div class="re-major-body">
+                <div class="re-resolve">
+                  <span class="re-eyebrow">Bare {e.majorParts > 1 ? "line" : "major"} resolves to</span>
+                  <code class="re-mono"><span class="re-dimc">version =</span> {val(g.major)} <span class="re-dimc">→</span> <b>{g.newest}</b></code>
+                  <span class="re-small">today, then pinned in doze.lock</span>
+                </div>
+                <div class="re-mcol">
+                  <span class="re-eyebrow">{g.versions.length} {g.versions.length === 1 ? "build" : e.majorParts > 1 || g.versions[0].split(".").length > 2 ? "builds" : "minors built"}{g.versions.length > 1 && ", oldest to newest"}</span>
+                  <ul class="re-mns" aria-label={`${eName} ${g.major} builds`}>
+                    {all.map((a) => (a.gap ? <li class="re-mn re-gap" title={`Upstream never tagged ${a.v}`}>{a.v}</li> : <li class:list={["re-mn", a.v === g.newest && "re-top"]}>{a.v}</li>))}
+                  </ul>
+                  {gaps.map((x) => <p class="re-small re-m0">{x.note}</p>)}
+                </div>
+              </div>
+              {eol && (
+                <ol class="re-stages" aria-label={`${eName} ${g.major} support stages`}>
+                  {eol.stages.map((s) => <li class:list={[s.on && "re-on"]}><span class="re-eyebrow">{s.when}</span><b>{s.title}</b><span class="re-small" set:html={s.body.replace("{newest}", g.newest)} /></li>)}
+                </ol>
+              )}
+            </article>
+          );
+        })}
+      </div>
+      {ex.sourceNote && <p class="re-small re-m12" set:html={ex.sourceNote} />}
+    </section>
+
+    {ex.pin && (
+      <section class="re-wrap re-sec" aria-labelledby="pin-h">
+        <div class="re-col8 re-mb18">
+          <h2 id="pin-h" class="re-h2">Pin a major, or pin exactly</h2>
+          <p class="re-lead">{ex.pin.lede}</p>
+        </div>
+        <div class="re-pin2">
+          <div class="re-code">
+            <div class="re-code-bar"><span>doze.hcl · a major</span><button class="re-copy" type="button" aria-label="Copy the major version block" data-copy={pinMajor}>Copy</button></div>
+            <pre set:html={k(pinMajor)} />
+          </div>
+          <div class="re-code">
+            <div class="re-code-bar"><span>doze.hcl · exactly</span><button class="re-copy" type="button" aria-label="Copy the exact version block" data-copy={pinExact}>Copy</button></div>
+            <pre set:html={k(pinExact)} />
+          </div>
+        </div>
+        <div class="re-code re-mt16">
+          <div class="re-code-bar"><span>doze.lock · what each lands as (a new entry under each spec)</span><button class="re-copy" type="button" aria-label="Copy the lock entries" data-copy={ex.pin.lock}>Copy</button></div>
+          <pre>{ex.pin.lock}</pre>
+        </div>
+        <p class="re-small re-m12">{ex.pin.after}</p>
+      </section>
+    )}
+
+    {relMajors.length > 0 && (
+      <section class="re-wrap re-sec re-last" aria-labelledby="mx-h">
+        <div class="re-col8 re-mb16">
+          <h2 id="mx-h" class="re-h2">Which module release runs which {e.majorParts > 1 ? "version" : "major"}</h2>
+          <p class="re-lead">{allSame ? <>Every {m.name} release so far runs {relMajors.length === 1 ? `${eName} ${relMajors[0]}` : `all ${relMajors.length === 5 ? "five" : relMajors.length} majors`}, and any {e.majorParts > 1 ? "build" : "minor"} within {relMajors.length === 1 ? "it" : "them"}. What changes between releases is the doze they need.</> : <>The majors each release supports, from its signed index entry.</>}</p>
+        </div>
+        <div class="re-tbox" role="region" aria-label={`Module releases by ${eName} major`} tabindex="0">
+          <table class="re-t re-mx" style={`min-width: ${Math.max(480, 280 + relMajors.length * 96)}px`}>
+            <thead><tr>
+              <th class="re-stick" scope="col">Module release</th>
+              <th scope="col">Needs doze</th>
+              {relMajors.map((mj) => <th scope="col">{shortName} {mj}</th>)}
+            </tr></thead>
+            <tbody>
+              {x.coming && (
+                <tr><th data-label="Module release" class="re-stick" scope="row"><span class="re-mono">{x.coming.version}</span> <span class="re-chip re-c-info re-cs">Coming</span></th><td data-label="Needs doze">{x.coming.doze}</td>{relMajors.map((mj) => <td data-label={`${shortName} ${mj}`}>{x.coming!.engines.includes(mj) ? <span class="re-cm">coming</span> : "—"}</td>)}</tr>
+              )}
+              {rels.map((r) => (
+                <tr>
+                  <th data-label="Module release" class="re-stick" scope="row"><a class="re-mono" href={relHref(m, r.version)}>{r.version}</a>{r === newest && <> <span class="re-chip re-c-good re-cs2">Current</span></>}</th>
+                  <td data-label="Needs doze">{r.doze ? <b>{r.doze}</b> : "any"}</td>
+                  {relMajors.map((mj) => <td data-label={`${shortName} ${mj}`}>{r.engines.includes(mj) ? <span class="re-ok" aria-label="runs">✓</span> : <span aria-label="does not run">—</span>}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="re-foot">
+          <span class="re-small re-note"><Fragment set:html={info} /><span>{firstMin ? <>Releases before {firstMin.version} run on any doze; {firstMin.version} and later need doze {firstMin.doze}.</> : x.coming ? <>{rels.length > 1 ? `${rels[rels.length - 1].version}–${newest.version}` : newest.version} run on any doze; {x.coming.short} needs doze {x.coming.doze}.</> : <>Every release runs on any doze.</>}</span></span>
+          <span class="re-small">{e.majorParts > 1 ? "Versions" : "Majors"} per release come from the signed index (<code class="re-mono">engines: [{newest.engines.map((v) => `"${v}"`).join(newest.engines.length > 2 ? " … " : ", ").replace(/ … .*/, ` … "${newest.engines[newest.engines.length - 1]}"`)}]</code>). <a href={`/registry/${m.namespace}/${m.name}/versions/`}>All versions</a></span>
+        </p>
+      </section>
+    )}
+  </div>
+</Page>

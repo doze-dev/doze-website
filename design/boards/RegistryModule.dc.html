@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PostgreSQL · doze registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.rm-page{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#140C1B;background:#FFFAF4}
+.rm-page a{color:#A85A0C;text-decoration:none}.rm-page code,.rm-page pre{font-variant-ligatures:none !important}
+.rm-page a:hover{text-decoration:underline}
+.rm-wrap{max-width:1240px;margin:0 auto;padding:40px 32px 96px;display:grid;grid-template-columns:minmax(0,1fr) 420px;grid-template-areas:"a b" "c b";gap:56px 44px;align-items:start}.rm-a{grid-area:a;min-width:0}.rm-c{grid-area:c}
+.rm-main{display:flex;flex-direction:column;gap:56px;min-width:0}
+.rm-rail{grid-area:b;align-self:start;position:sticky;top:24px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.rm-page h2{margin:0;font:700 30px/1.15 'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+.rm-page h3{margin:0;font:700 20px/1.25 'Bricolage Grotesque',sans-serif;letter-spacing:-0.01em}
+.rm-lede{margin:0;font-size:16px;line-height:1.6;color:#4A3D55;max-width:44rem}
+.rm-sec{display:flex;flex-direction:column;gap:18px}
+.rm-eyebrow{font:600 12px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.rm-code{position:relative;margin:0;background:#1E1328;border-radius:12px;padding:16px 18px;font:13.5px/1.7 'JetBrains Mono',monospace;color:#F4ECE4;overflow-x:auto;white-space:pre}
+.rm-code .rm-c{color:#B3A2C2}.rm-code .rm-k{color:#F0A24B}.rm-code .rm-s{color:#A8E0B4}.rm-code .rm-p{color:#9C8AAB}
+.rm-copy{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 12px Geist,sans-serif;cursor:pointer;flex:none}
+.rm-codebox{background:#1E1328;border-radius:12px;overflow:hidden;min-width:0}
+.rm-codebar{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-bottom:1px solid #34233F}
+.rm-codebar span{font:500 12.5px Geist,sans-serif;color:#C9BAD3;flex:1;min-width:0}
+.rm-codebox .rm-code{border-radius:0}
+.rm-tabs{display:flex;gap:4px;padding:6px 6px 0;border-bottom:1px solid #34233F;overflow-x:auto}
+.rm-tabs button{height:40px;padding:0 14px;border:0;background:transparent;color:#C9BAD3;font:500 13.5px Geist,sans-serif;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.rm-tabs button[aria-selected="true"]{color:#FFFFFF;border-bottom-color:#F0A24B}
+.rm-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.rm-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font:600 12px Geist,sans-serif;white-space:nowrap}
+.rm-chip.rm-info{background:#E8EEFC;color:#2F62D9}.rm-chip.rm-warn{background:#FFF1D6;color:#8A5300}.rm-chip.good{background:#E6F4EA;color:#1D7A45}.rm-chip.rm-dim{background:#F3ECE4;color:#5A4B66}
+.rm-recipes{display:flex;flex-direction:column;gap:16px}
+.rm-recipe{padding:20px;display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:20px;min-width:0;align-items:start}.rm-r-t,.rm-r-c{display:flex;flex-direction:column;gap:12px;min-width:0}
+.rm-recipe .rm-code{font-size:13px}.rm-recipe p{margin:0;font-size:15px;line-height:1.55;color:#4A3D55}
+.rm-exts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.rm-ext{display:flex;flex-direction:column;gap:8px;padding:16px;color:#140C1B !important;text-decoration:none !important;min-width:0}
+.rm-ext:hover{border-color:#A85A0C}
+.rm-ext code{font:600 14px 'JetBrains Mono',monospace;color:#140C1B}
+.rm-ext p{margin:0;font-size:15px;line-height:1.45;color:#4A3D55}
+.rm-ext .rm-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.rm-does{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0;border-top:1px solid #EADFD3}
+.rm-does div{padding:18px 20px 18px 0;border-bottom:1px solid #EADFD3;display:flex;gap:14px;align-items:flex-start}
+.rm-does b{display:block;font-size:15.5px;margin-bottom:4px}
+.rm-does p{margin:0;font-size:15px;line-height:1.55;color:#4A3D55}
+.rm-does svg{flex:none;margin-top:2px}
+.rm-qa{list-style:none;margin:0;padding:0}
+.rm-qa li{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:start;padding:14px 18px;border-top:1px solid #EADFD3}
+.rm-qa li:first-child{border-top:0}
+.rm-qa b{font-size:15px;font-weight:600}
+.rm-qa p{margin:3px 0 0;font-size:13.5px;line-height:1.5;color:#6E5F79}
+.rm-tick{width:24px;height:24px;border-radius:999px;background:#E6F4EA;color:#1D7A45;display:flex;align-items:center;justify-content:center}
+.rm-rail-box{padding:18px;display:flex;flex-direction:column;gap:14px}
+.rm-sel{display:flex;flex-direction:column;gap:6px}
+.rm-sel label{font:600 12px Geist,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79}
+.rm-sel select{height:44px;border:1px solid #DCCFC2;border-radius:10px;background:#FFFFFF;padding:0 12px;font:500 15px Geist,sans-serif;color:#140C1B}
+.rm-mini{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+.rm-mini th{font:600 11.5px Geist,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6E5F79;text-align:left;padding:0 8px 8px 0}
+.rm-mini td{padding:9px 8px 9px 0;border-top:1px solid #EADFD3;color:#4A3D55;white-space:nowrap}
+.rm-mini td:first-child{color:#140C1B;font-weight:600}
+.rm-lbl{font:600 12.5px Geist,sans-serif;color:#4A3D55}
+@media (max-width:1040px){.rm-wrap{grid-template-columns:minmax(0,1fr);grid-template-areas:"a" "b" "c"}.rm-rail{position:static}}
+@media (max-width:760px){.rm-recipe{grid-template-columns:minmax(0,1fr)}.rm-wrap{padding:28px 32px 72px;gap:44px}.rm-main{gap:44px}.rm-page h2{font-size:26px}.rm-qa li{grid-template-columns:28px minmax(0,1fr)}.rm-qa li .rm-chip{grid-column:2;justify-self:start}.rm-tabs button{height:44px}.rm-copy{height:44px;padding:0 14px}.rm-sel select{height:48px}}
+@media (max-width:600px){.rm-mini thead{display:none}.rm-mini,.rm-mini tbody{display:block}.rm-mini tr{display:flex;flex-wrap:wrap;gap:2px 12px;padding:10px 0;border-top:1px solid #EADFD3}.rm-mini td{border:0;padding:0;white-space:normal}.rm-mini td:first-child{width:100%}.rm-mini td:nth-child(2)::before{content:"needs doze ";color:#6E5F79}}
+</style>
+</helmet>
+<div class="rm-page">
+  <dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+  <dc-import name="RegistryBar" section="modules" hint-size="100%,120px"></dc-import>
+  <dc-import name="RegistryModuleHead" tab="overview" newest="0.2.5" hint-size="100%,330px"></dc-import>
+
+  <div class="rm-wrap">
+    <main class="rm-main" style="display: contents">
+
+      <!-- START -->
+      <section class="rm-sec rm-a" aria-labelledby="start">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h2 id="start">Start</h2>
+          <p class="rm-lede">Three lines in doze.hcl give you a real Postgres. Nothing starts until something connects.</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr)); gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+            <span class="rm-lbl">1 · In doze.hcl</span>
+            <div class="rm-codebox">
+              <div class="rm-codebar"><span>doze.hcl</span><button class="rm-copy" type="button" aria-label="Copy the postgres block">Copy</button></div>
+<pre class="rm-code"><span class="rm-k">module</span> postgres <span class="rm-s">"postgres"</span> {
+  version = 18
+}</pre>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+            <span class="rm-lbl">2 · Hand your app the URL</span>
+            <div class="rm-codebox">
+              <div class="rm-codebar"><span>doze.hcl</span><button class="rm-copy" type="button" aria-label="Copy the app block">Copy</button></div>
+<pre class="rm-code"><span class="rm-k">app</span> <span class="rm-s">"orders"</span> {
+  run = <span class="rm-s">"go run ./services/orders"</span>
+  env = { DATABASE_URL = module.postgres.url }
+}</pre>
+            </div>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 14px; color: #4A3D55; line-height: 1.6">Your app sees <code style="font: 13px 'JetBrains Mono', monospace; background: #FFF4E8; border: 1px solid #EADFD3; border-radius: 6px; padding: 2px 6px; color: #140C1B">postgres://postgres@127.0.0.1:5432/postgres?sslmode=disable</code>. The database is named after the instance. <code style="font: 13px 'JetBrains Mono', monospace">doze env</code> prints it for tools outside doze.hcl.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+          <span class="rm-lbl">3 · Connect</span>
+          <div class="rm-codebox">
+            <div style="display: flex; align-items: flex-end; border-bottom: 1px solid #34233F">
+              <div class="rm-tabs" role="tablist" aria-label="Connect from" style="border-bottom: 0; flex: 1; min-width: 0">
+                <button type="button" role="tab" aria-selected="true">Go · pgx</button>
+                <button type="button" role="tab" aria-selected="false">Node · pg</button>
+                <button type="button" role="tab" aria-selected="false">Python · psycopg</button>
+                <button type="button" role="tab" aria-selected="false">psql</button>
+              </div>
+              <div style="padding: 0 8px 8px"><button class="rm-copy" type="button" aria-label="Copy the Go example">Copy</button></div>
+            </div>
+<pre class="rm-code" role="tabpanel" aria-label="Go · pgx"><span class="rm-k">import</span> (
+  <span class="rm-s">"context"</span>
+  <span class="rm-s">"os"</span>
+
+  <span class="rm-s">"github.com/jackc/pgx/v5/pgxpool"</span>
+)
+
+<span class="rm-k">func</span> open(ctx context.Context) (*pgxpool.Pool, <span class="rm-k">error</span>) {
+  <span class="rm-c">// The first connection wakes Postgres; it can take a moment.</span>
+  <span class="rm-k">return</span> pgxpool.New(ctx, os.Getenv(<span class="rm-s">"DATABASE_URL"</span>))
+}</pre>
+          </div>
+          <p style="margin: 0; font-size: 13.5px; color: #6E5F79">Node: <code style="font: 12.5px 'JetBrains Mono', monospace">new pg.Pool({ connectionString: process.env.DATABASE_URL })</code> · Python: <code style="font: 12.5px 'JetBrains Mono', monospace">psycopg.connect(os.environ["DATABASE_URL"])</code> · psql: <code style="font: 12.5px 'JetBrains Mono', monospace">psql "$(doze url postgres)"</code></p>
+        </div>
+      </section>
+
+      <div class="rm-main rm-c">
+      <!-- RECIPES -->
+      <section class="rm-sec" aria-labelledby="recipes">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h2 id="recipes">Recipes</h2>
+          <p class="rm-lede">The setups people write most, each complete. Paste one over the block above.</p>
+        </div>
+        <div class="rm-recipes">
+          <article class="rm-panel rm-recipe"><div class="rm-r-t">
+            <div style="display: flex; justify-content: space-between; gap: 12px; align-items: baseline"><h3>A role and a schema per service</h3><a href="Examples.dc.html" style="font-size: 13px; white-space: nowrap">From Larder</a></div>
+            <p>Each service connects as itself and can touch only its own tables. The schema shares the role's name, so the default search_path finds it.</p></div><div class="rm-r-c">
+            <div class="rm-codebox">
+              <div class="rm-codebar"><span>doze.hcl</span><button class="rm-copy" type="button" aria-label="Copy recipe: a role and a schema per service">Copy</button></div>
+<pre class="rm-code"><span class="rm-k">module</span> postgres <span class="rm-s">"postgres"</span> {
+  version = 18
+
+  role <span class="rm-s">"orders"</span>   { password = <span class="rm-s">"orders"</span> }
+  role <span class="rm-s">"payments"</span> { password = <span class="rm-s">"payments"</span> }
+
+  schema <span class="rm-s">"orders"</span>   { owner = <span class="rm-s">"orders"</span> }
+  schema <span class="rm-s">"payments"</span> { owner = <span class="rm-s">"payments"</span> }
+}</pre>
+            </div>
+          </div></article>
+          <article class="rm-panel rm-recipe"><div class="rm-r-t">
+            <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap"><h3>Vectors with pgvector</h3><span class="rm-chip rm-info">Coming in postgres 0.3</span></div>
+            <p>Name the extension; doze fetches the build for your Postgres major and platform, pins it in doze.lock and runs CREATE EXTENSION.</p>
+            <a href="RegistryExtension.dc.html" style="font-size: 14px; font-weight: 600">vector: versions, platforms, how to query</a></div><div class="rm-r-c">
+            <div class="rm-codebox">
+              <div class="rm-codebar"><span>doze.hcl</span><button class="rm-copy" type="button" aria-label="Copy recipe: vectors with pgvector">Copy</button></div>
+<pre class="rm-code"><span class="rm-k">module</span> postgres <span class="rm-s">"postgres"</span> {
+  version    = 18
+  extensions = [<span class="rm-s">"vector"</span>]
+}</pre>
+            </div>
+          </div></article>
+          <article class="rm-panel rm-recipe"><div class="rm-r-t">
+            <h3>Pin an exact minor</h3>
+            <p><code style="font: 13px 'JetBrains Mono', monospace">18</code> takes the newest 18.x at first use (today 18.6) and then never moves. Quote a version with a dot: as a number, 17.10 would read as 17.1.</p>
+            <a href="RegistryEngines.dc.html" style="font-size: 14px; font-weight: 600">All 79 Postgres builds</a></div><div class="rm-r-c">
+            <div class="rm-codebox">
+              <div class="rm-codebar"><span>doze.hcl</span><button class="rm-copy" type="button" aria-label="Copy recipe: pin an exact minor">Copy</button></div>
+<pre class="rm-code"><span class="rm-k">module</span> postgres <span class="rm-s">"postgres"</span> {
+  version = <span class="rm-s">"18.4"</span>
+}</pre>
+            </div>
+          </div></article>
+          <article class="rm-panel rm-recipe"><div class="rm-r-t">
+            <h3>A throwaway database for tests</h3>
+            <p>A second instance on its own port. Reset wipes its rows; the next connection brings your roles and schemas back. Parallel workers each create and drop their own database inside it.</p></div><div class="rm-r-c">
+            <div class="rm-codebox">
+              <div class="rm-codebar"><span>doze.hcl</span><button class="rm-copy" type="button" aria-label="Copy recipe: a throwaway database for tests">Copy</button></div>
+<pre class="rm-code"><span class="rm-k">module</span> postgres <span class="rm-s">"test"</span> {
+  version = 18
+  port    = 5433
+  sleep   = <span class="rm-s">"30s"</span>
+}</pre>
+            </div>
+            <div class="rm-codebox">
+              <div class="rm-codebar"><span>terminal</span><button class="rm-copy" type="button" aria-label="Copy the test commands">Copy</button></div>
+<pre class="rm-code"><span class="rm-p">$</span> doze reset test --yes
+<span class="rm-p">$</span> doze run -- go test ./...</pre>
+            </div>
+          </div></article>
+        </div>
+      </section>
+
+      <!-- EXTENSIONS PREVIEW -->
+      <section class="rm-sec" aria-labelledby="extensions">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h2 id="extensions">Extensions</h2>
+            <p class="rm-lede">16 extensions by name, coming in postgres 0.3: doze fetches each for your Postgres major and platform. Contrib ones (pg_trgm, uuid-ossp, hstore, citext) ship with Postgres and work now.</p>
+          </div>
+          <a href="RegistryExtensions.dc.html" style="font-weight: 600; font-size: 15px; white-space: nowrap">All 16 extensions</a>
+        </div>
+        <div class="rm-exts">
+          <a class="rm-panel rm-ext" href="RegistryExtension.dc.html"><code>vector</code><p>Similarity search over embeddings (HNSW, IVFFlat).</p><div class="rm-meta"><span class="rm-chip rm-dim">PG 14–18</span><span class="rm-chip rm-dim">PostgreSQL</span></div></a>
+          <a class="rm-panel rm-ext" href="RegistryExtensions.dc.html"><code>pg_cron</code><p>Cron-style jobs run inside the database.</p><div class="rm-meta"><span class="rm-chip rm-dim">PG 14–18</span><span class="rm-chip rm-warn">Preloads</span></div></a>
+          <a class="rm-panel rm-ext" href="RegistryExtensions.dc.html"><code>postgis</code><p>Geographic types, indexes and functions; with h3 and pgRouting.</p><div class="rm-meta"><span class="rm-chip rm-dim">PG 14–18</span><span class="rm-chip rm-dim">GPL-2.0</span></div></a>
+          <a class="rm-panel rm-ext" href="RegistryExtensions.dc.html"><code>timescaledb</code><p>Hypertables and time_bucket (Apache-only build).</p><div class="rm-meta"><span class="rm-chip rm-dim">PG 15–18</span><span class="rm-chip rm-warn">Preloads</span></div></a>
+          <a class="rm-panel rm-ext" href="RegistryExtensions.dc.html"><code>pgmq</code><p>Message queues in plain tables.</p><div class="rm-meta"><span class="rm-chip rm-dim">PG 14–18</span><span class="rm-chip rm-dim">PostgreSQL</span></div></a>
+          <a class="rm-panel rm-ext" href="RegistryExtensions.dc.html"><code>pg_search</code><p>BM25 full-text search (ParadeDB).</p><div class="rm-meta"><span class="rm-chip rm-dim">PG 15–18</span><span class="rm-chip rm-dim">AGPL-3.0</span><span class="rm-chip rm-warn">Preloads</span></div></a>
+        </div>
+        <p style="margin: 0; font-size: 13.5px; color: #6E5F79">Preloads: doze adds it to shared_preload_libraries and restarts the instance once when the set changes.</p>
+      </section>
+
+      <!-- WHAT DOZE DOES -->
+      <section class="rm-sec" aria-labelledby="does">
+        <h2 id="does">What doze does for you</h2>
+        <div class="rm-does">
+          <div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>
+            <span><b>Wakes on connect</b><p>doze holds port 5432. The first connection wakes Postgres and is handed over once it is ready.</p></span>
+          </div>
+          <div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+            <span><b>Sleeps after 2 minutes</b><p>With no connection open for 2m it goes to sleep; the data stays on disk. <code style="font: 12.5px 'JetBrains Mono', monospace">sleep = "never"</code> keeps it on.</p></span>
+          </div>
+          <div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+            <span><b>Converges what you declare</b><p>Roles, schemas, grants and extensions: creates what is new, changes what changed, drops what you removed.</p></span>
+          </div>
+          <div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <span><b>Moves your data between majors</b><p>Change 17 to 18, then <code style="font: 12.5px 'JetBrains Mono', monospace">doze migrate postgres</code>: dump, fresh cluster, restore. The old data is kept beside it.</p></span>
+          </div>
+          <div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
+            <span><b>Tuned for a laptop</b><p>fsync off, 16MB shared_buffers, 50 connections. Set <code style="font: 12.5px 'JetBrains Mono', monospace">fsync = true</code> when you need it crash-safe.</p></span>
+          </div>
+          <div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            <span><b>Same bytes on every machine</b><p>The module and the Postgres build are pinned by sha256 in doze.lock. Commit it.</p></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUALITY -->
+      <section class="rm-sec" aria-labelledby="quality">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h2 id="quality">Quality</h2>
+          <p class="rm-lede">Each line says where it comes from, so you can check it.</p>
+        </div>
+        <ul class="rm-panel rm-qa">
+          <li><span class="rm-tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Signed by doze-dev</b><p>ed25519 key <code style="font: 12px 'JetBrains Mono', monospace">Nu5y8mbj…GWjw=</code>, compiled into doze, over every file and over the whole index. <a href="RegistryTrust.dc.html">How signing works</a></p></span><span class="rm-chip rm-dim">signed index</span></li>
+          <li><span class="rm-tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Three platforms</b><p>macOS arm64, Linux x86_64, Linux arm64, each with its own sha256, in every release.</p></span><span class="rm-chip rm-dim">signed index</span></li>
+          <li><span class="rm-tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Conformance-tested on Postgres 14–18</b><p>Every argument on the Reference tab converged into a running server, once per major, before a release is signed.</p></span><span class="rm-chip rm-info">doze-modules CI · new</span></li>
+          <li><span class="rm-tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Every example on this page parsed by doze</b><p>By doze 0.2 with <code style="font: 12px 'JetBrains Mono', monospace">doze lint --offline</code>, on every change to the registry.</p></span><span class="rm-chip rm-info">registry CI · new</span></li>
+          <li><span class="rm-tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Source linked</b><p><a href="https://github.com/doze-dev/doze-modules/tree/main/modules/postgres">doze-modules/modules/postgres</a>, Apache-2.0; Postgres builds from <a href="https://github.com/doze-dev/doze-binaries">doze-binaries</a>.</p></span><span class="rm-chip rm-dim">GitHub</span></li>
+        </ul>
+      </section>
+      </div>
+    </main>
+
+    <!-- RAIL -->
+    <aside class="rm-rail" aria-label="Install and compatibility">
+      <section class="rm-panel rm-rail-box" aria-labelledby="install">
+        <h2 id="install" style="font-size: 20px">Install</h2>
+        <div class="rm-sel">
+          <label for="rel">Module release</label>
+          <select id="rel">
+            <option selected>0.2.5 (newest)</option>
+            <option>0.2.4</option>
+            <option>0.2.3</option>
+            <option>0.2.2</option>
+            <option>0.2.1</option>
+          </select>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center"><span class="rm-chip rm-warn">Needs doze 0.2.0</span><span style="font-size: 13px; color: #6E5F79">[publish date] · Postgres 14–18</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span class="rm-lbl">Run</span>
+          <div style="display: flex; align-items: center; gap: 8px; background: #1E1328; border-radius: 10px; min-height: 44px; padding: 0 7px 0 14px">
+            <code style="font: 13.5px 'JetBrains Mono', monospace; color: #F4ECE4; flex: 1; min-width: 0"><span style="color: #9C8AAB">$</span> doze add postgres</code>
+            <button class="rm-copy" type="button" aria-label="Copy doze add postgres">Copy</button>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span class="rm-lbl">It writes to doze.hcl <span style="font-weight: 500; color: #6E5F79">[doze add will name it postgres: to build]</span></span>
+          <div class="rm-codebox">
+<pre class="rm-code" style="font-size: 12.5px; padding: 12px 14px"><span class="rm-k">module</span> postgres <span class="rm-s">"postgres"</span> {
+  version = 18
+  port    = 5432
+}</pre>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; justify-content: space-between; align-items: center"><span class="rm-lbl">And to doze.lock, on first use</span><button class="rm-copy" type="button" aria-label="Copy the doze.lock entry" style="background: #FFFFFF; color: #140C1B; border-color: #DCCFC2">Copy</button></div>
+          <div class="rm-codebox">
+<pre class="rm-code" style="font-size: 11.5px; line-height: 1.6; padding: 12px 10px">modules:
+    doze/postgres:
+        version: 0.2.5
+        protocol: 1
+        engines:
+            - <span class="rm-s">"14"</span>
+            - <span class="rm-s">"15"</span>
+            - <span class="rm-s">"16"</span>
+            - <span class="rm-s">"17"</span>
+            - <span class="rm-s">"18"</span>
+        hashes:
+            aarch64-apple-darwin: sha256:8f9a…
+            aarch64-unknown-linux-gnu: sha256:a123…
+            x86_64-unknown-linux-gnu: sha256:32b0…
+        doze: 0.2.0</pre>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #4A3D55; display: flex; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span><b style="color: #140C1B">Pinned forever.</b> Only <code style="font: 12.5px 'JetBrains Mono', monospace">doze modules upgrade</code> moves it.</span></p>
+      </section>
+
+      <section class="rm-panel rm-rail-box" aria-labelledby="compat">
+        <div style="display: flex; justify-content: space-between; align-items: baseline"><h2 id="compat" style="font-size: 20px">Compatibility</h2><a href="RegistryVersions.dc.html" style="font-size: 13.5px">Versions</a></div>
+        <div style="overflow-x: auto">
+          <table class="rm-mini">
+            <thead><tr><th scope="col">Release</th><th scope="col">Needs doze</th><th scope="col">Engines</th></tr></thead>
+            <tbody>
+              <tr><td style="color: #2F62D9">0.3 <span style="font-weight: 500">coming</span></td><td>0.2.0</td><td>14–18 + extensions</td></tr>
+              <tr><td>0.2.5</td><td>0.2.0</td><td>14–18</td></tr>
+              <tr><td>0.2.4</td><td>any</td><td>14–18</td></tr>
+              <tr><td>0.2.3</td><td>any</td><td>14–18</td></tr>
+              <tr><td>0.2.2</td><td>any</td><td>14–18</td></tr>
+              <tr><td>0.2.1</td><td>any</td><td>14–18</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: #6E5F79; border-top: 1px dashed #DCCFC2; padding-top: 10px">"any": the release sets no minimum and runs on doze 0.1.0 and up. <a href="RegistryTooOld.dc.html" style="font-weight: 600">On doze 0.1.1?</a></p>
+      </section>
+
+      <section class="rm-rail-box" style="padding: 4px 4px 0; gap: 6px" aria-labelledby="tele">
+        <h2 id="tele" style="font: 600 14px Geist, sans-serif">No download counts</h2>
+        <p style="margin: 0; font-size: 13.5px; line-height: 1.55; color: #4A3D55">We don't count downloads: doze sends nothing home.</p>
+      </section>
+    </aside>
+  </div>
+
+  <dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

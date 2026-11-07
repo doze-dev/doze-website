@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cassandra · doze Registry search</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.rg-wrap *{box-sizing:border-box}
+.rg a{color:#A85A0C;text-decoration:none}
+.rg a:hover{text-decoration:underline}
+.rg-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.rg-eyebrow{font:600 13px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#A85A0C}
+.rg-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-0.03em;text-wrap:balance}
+.rg-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:30px;line-height:1.15;letter-spacing:-0.02em}
+.rg-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-0.01em}
+.rg-lead{margin:0;font-size:18px;line-height:1.55;color:#4A3D55;max-width:44rem}
+.rg-p{margin:0;font-size:15px;line-height:1.6;color:#4A3D55}
+.rg-small{font-size:13px;line-height:1.5;color:#6E5F79}
+.rg-mono{font-family:'JetBrains Mono',monospace}
+.rg-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.rg-sunk{background:#FFF4E8;border:1px solid #EADFD3;border-radius:14px}
+.rg-card{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.rg-card:hover{border-color:#DCCFC2;box-shadow:0 2px 10px rgba(20,12,27,.05)}
+.rg-card.dim{background:#FFFCF8}
+.rg-tile{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font:800 21px 'Bricolage Grotesque',sans-serif;flex:none}
+.rg-tile.sm{width:32px;height:32px;border-radius:8px;font-size:15px}
+.rg-tile img{width:100%;height:100%;border-radius:inherit}
+.rg-name{font:700 18px 'Bricolage Grotesque',sans-serif;letter-spacing:-0.01em;color:#140C1B}
+.rg-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font:600 13px Geist,sans-serif;white-space:nowrap}
+.rg-chip.ok{background:#E6F4EA;color:#1D7A45}
+.rg-chip.warn{background:#FFF1D6;color:#8A5300}
+.rg-chip.bad{background:#FCE8EC;color:#B4233C}
+.rg-chip.info{background:#E8EEFC;color:#2F62D9}
+.rg-chip.dim{background:#F3ECE4;color:#5E5068}
+.rg-chip.off{background:#FDE6CB;color:#6B3A06}
+.rg-chip.line{background:#FFFFFF;color:#4A3D55;border:1px solid #DCCFC2}
+.rg-facts{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:0;font-size:13.5px}
+.rg-facts dt{color:#6E5F79}
+.rg-facts dd{margin:0;color:#140C1B;font-weight:500;min-width:0}
+.rg-snip{display:flex;align-items:center;gap:8px;background:#1E1328;border-radius:9px;height:40px;padding:0 5px 0 12px;min-width:0}
+.rg-snip code{font:13px 'JetBrains Mono',monospace;color:#F4ECE4;flex:1;white-space:pre;overflow-x:auto;min-width:0;scrollbar-width:none}
+.rg-snip code i{font-style:normal;color:#9C8AAB}
+.rg-copy{height:30px;padding:0 11px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer;flex:none}
+.rg-code{background:#1E1328;border-radius:12px;overflow:hidden;min-width:0}
+.rg-code-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-bottom:1px solid #34233F}
+.rg-code-top span{font:13px 'JetBrains Mono',monospace;color:#C9BAD3}
+.rg-code pre{margin:0;padding:14px 16px;font:13px/1.65 'JetBrains Mono',monospace;color:#F4ECE4;overflow-x:auto;white-space:pre !important}
+.rg code,.rg pre,.rg .rg-mono{font-variant-ligatures:none}
+.rg-code .c{color:#A796B5}
+.rg-code .k{color:#FFC27A}
+.rg-code .s{color:#B8E6C1}
+.rg-code .p{color:#9C8AAB}
+.rg-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 16px;border-radius:10px;font:600 14px Geist,sans-serif;cursor:pointer;white-space:nowrap}
+.rg-btn.pri{background:#F0A24B;color:#2A1534;border:1px solid #F0A24B}
+.rg-btn.sec{background:#FFFFFF;color:#140C1B;border:1px solid #DCCFC2}
+.rg .rg-btn:hover{text-decoration:none}
+.rg-btn.pri:hover{background:#FFB866}
+.rg-facet{display:flex;flex-direction:column;gap:2px;padding:16px 0;border-top:1px solid #EADFD3}
+.rg-facet h3{margin:0 0 6px;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.rg-opt{display:flex;align-items:center;gap:10px;min-height:34px;font-size:14.5px;color:#140C1B;cursor:pointer}
+.rg-opt input{width:16px;height:16px;margin:0;accent-color:#A85A0C;flex:none}
+.rg-opt span:first-of-type{flex:1}
+.rg-opt .n{font:13px 'JetBrains Mono',monospace;color:#6E5F79}
+.rg-switch{display:inline-flex;align-items:center;width:38px;height:22px;border-radius:999px;background:#DCCFC2;padding:2px;flex:none}
+.rg-switch::after{content:"";width:18px;height:18px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.rg-switch.on{background:#A85A0C;justify-content:flex-end}
+.rg-select{height:44px;border:1px solid #DCCFC2;border-radius:9px;background:#FFFFFF;padding:0 10px;font:500 14px Geist,sans-serif;color:#140C1B}
+.rg-why{font-size:13px;color:#4A3D55;background:#FFF4E8;border-radius:7px;padding:5px 9px;align-self:flex-start}
+.rg-why b{color:#6B3A06;font-weight:600}
+.rg-mark{background:#FDE6CB;color:#140C1B;border-radius:3px;padding:0 2px}
+.rg-hr{height:1px;background:#EADFD3;border:0;margin:0}
+.rg-filters-btn{display:none}
+.rg-note{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:#4A3D55;padding:12px 14px;border-radius:10px;background:#FFF4E8;border:1px dashed #DCCFC2}
+.rg-tag-new{font:600 13px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#2F62D9;background:#E8EEFC;border-radius:4px;padding:2px 5px}
+@media (max-width:760px){
+
+  .rg-h1{font-size:36px}
+  .rg-h2{font-size:26px}
+  .rg-lead{font-size:16.5px}
+  .rg-filters-btn{display:inline-flex}
+  .rg-hide-sm{display:none !important}
+  .rg-stack-sm{flex-direction:column !important;align-items:stretch !important}
+  .rg-copy{height:44px;padding:0 14px}
+  .rg-snip{height:54px}
+  .rg-opt{min-height:44px}
+}
+
+/* tables become stacked row cards on phones: each td carries data-l */
+@media (max-width:600px){
+  .rg-tc thead{display:none}
+  .rg-tc,.rg-tc tbody,.rg-tc tr,.rg-tc td{display:block;width:100%}
+  .rg-tc tr{padding:12px 16px;border-bottom:1px solid #EADFD3}
+  .rg-tc td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 !important;border:0 !important;white-space:normal !important;text-align:right}
+  .rg-tc td::before{content:attr(data-l);font-size:13px;color:#6E5F79;text-align:left;flex:none}
+  .rg-tc td:first-child{font-weight:600;text-align:left}
+  .rg-tc td.rg-tc-empty{display:none}
+  .rg-tc .rg-hide-sm{display:flex !important}
+}
+.nr-ways{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px;align-items:start}
+.nr-num{width:28px;height:28px;border-radius:50%;background:#140C1B;color:#FFFAF4;display:flex;align-items:center;justify-content:center;font:700 14px 'Bricolage Grotesque',sans-serif;flex:none}
+.nr-lines{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.nr-lines li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;font-size:14px;line-height:1.5;color:#4A3D55}
+.nr-lines li > code{font:13px 'JetBrains Mono',monospace;color:#140C1B;background:#FFF4E8;border-radius:5px;padding:2px 6px;align-self:start;justify-self:start;white-space:nowrap}
+@media (max-width:1000px){.nr-ways{grid-template-columns:1fr}}
+@media (max-width:760px){.nr-lines li{grid-template-columns:1fr;gap:4px}}
+</style>
+</helmet>
+<div class="rg" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; background: #FFFAF4; color: #140C1B; min-height: 100%">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="none" q="cassandra" hint-size="100%,120px"></dc-import>
+
+<div class="rg-wrap" style="padding-top: 40px; padding-bottom: 72px; display: flex; flex-direction: column; gap: 32px">
+  <section style="display: flex; flex-direction: column; gap: 12px; max-width: 780px">
+    <span class="rg-eyebrow">0 results</span>
+    <h1 class="rg-h1">Nothing in the registry for cassandra.</h1>
+    <p class="rg-lead">No module, Postgres extension or bring-your-own tool is called cassandra, has it as an alias, or mentions it. That's 8 modules, 16 extensions, 9 tools and the docs searched.</p>
+    <div class="rg-note" style="margin-top: 4px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 1px"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span><b style="color: #140C1B">Closest matches: none.</b> No near spelling, and no other wide-column database either: ScyllaDB isn't in the registry. The nearest thing doze runs on disk is <a href="RegistryModule.dc.html">Kvrocks</a>, but it speaks Redis, not CQL, so it is not a substitute.</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="ways" style="display: flex; flex-direction: column; gap: 16px">
+    <h2 class="rg-h2" id="ways">Three ways forward</h2>
+    <div class="nr-ways">
+      <article class="rg-panel" style="padding: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+        <div style="display: flex; gap: 12px; align-items: center"><span class="nr-num">1</span><h3 class="rg-h3">Run it yourself, today</h3><span class="rg-chip ok" style="margin-left: auto">Works today</span></div>
+        <p class="rg-p">doze runs anything with a port as a <code class="rg-mono" style="font-size: 13.5px">service</code>. <code class="rg-mono" style="font-size: 13.5px">doze add</code> with a name it doesn't know writes the generic block: a download to fill in.</p>
+        <div class="rg-code"><div class="rg-code-top"><span>terminal</span><button class="rg-copy" type="button">Copy</button></div><pre><span class="p">$</span> doze add cassandra --port 9042
+<span class="c">→ cassandra is not a doze module — adding it as a service
+  nothing found on this machine — the block is a download to fill in
+  other ways: --as installed · --as container · --as download</span></pre></div>
+        <div class="rg-code"><div class="rg-code-top"><span>doze.hcl, as written: fill in download and run</span></div><pre><span class="k">service</span> <span class="s">"cassandra"</span> {
+  <span class="c"># fetched once, pinned in doze.lock by its checksum, and run from the archive</span>
+  download = <span class="s">"https://example.com/cassandra-darwin-arm64.tar.gz"</span> <span class="c"># fill this in</span>
+  run      = <span class="s">"./cassandra --port $PORT"</span>
+  port = 9042
+}</pre></div>
+        <ul class="nr-lines">
+          <li><code>download</code><span>Put the real archive URL here. doze fetches it once and pins its sha256 in doze.lock; a changed file is refused.</span></li>
+          <li><code>run</code><span>A placeholder: doze doesn't know Cassandra's flags. Change it to the real start command, in the foreground (Cassandra's is <code style="background: transparent; padding: 0">bin/cassandra -f</code>, port set in its config).</span></li>
+          <li><code>port</code><span>What doze listens on and wakes it for. $HOST, $PORT and $DATA are filled in at run time.</span></li>
+          <li><code>--as container</code><span>Writes <code style="background: transparent; padding: 0">run = "docker run --rm -p $HOST:$PORT:9042 cassandra"</code> instead, if you have Docker.</span></li>
+        </ul>
+        <p class="rg-small" style="margin: 0">doze still gives it a name, a port, sleep and wake, and logs. It isn't signed by doze. <a href="RegistryTool.dc.html">How bring-your-own works</a></p>
+      </article>
+
+      <div style="display: flex; flex-direction: column; gap: 18px; min-width: 0">
+        <article class="rg-panel" style="padding: 22px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px; align-items: center"><span class="nr-num">2</span><h3 class="rg-h3">Ask for a module</h3></div>
+          <p class="rg-p">Say what you'd run it for and which version. A module means doze pins the engine, signs it, and declares keyspaces in doze.hcl.</p>
+          <p class="rg-small" style="margin: 0">doze-dev.com keeps no search log, so a missing module only gets noticed when someone asks.</p>
+          <a class="rg-btn sec" href="https://github.com/doze-dev/doze/discussions" style="align-self: flex-start">Open a GitHub discussion
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+        </article>
+        <article class="rg-panel" style="padding: 22px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 12px; align-items: center"><span class="nr-num">3</span><h3 class="rg-h3">Write one</h3></div>
+          <p class="rg-p">A module is a Go plugin that speaks doze's module protocol 1. The official ones are open source to copy from: six in doze-modules, doze AWS and doze Kafka in their own repositories.</p>
+          <p class="rg-small" style="margin: 0">Outside publishers aren't open yet; the publish page says how it will work.</p>
+          <a class="rg-btn sec" href="RegistryPublish.dc.html" style="align-self: flex-start">Publish a module →</a>
+        </article>
+        <div class="rg-sunk" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
+          <b style="font-size: 14px">Try instead</b>
+          <span class="rg-small" style="color: #4A3D55">Searches that find things: <a href="RegistrySearch.dc.html">redis</a> · <a href="RegistrySearch.dc.html">pgvector</a> · <a href="RegistrySearch.dc.html">mongodb</a> · <a href="RegistrySearch.dc.html">s3</a> · <a href="RegistrySearch.dc.html">mysql</a></span>
+          <a href="Registry.dc.html" style="font-size: 14px; font-weight: 600">Browse all modules →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1704}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

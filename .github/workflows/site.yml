@@ -1,7 +1,8 @@
 # Build, check and deploy doze-dev.com.
 #
 # Every PR: type check, lint, build (docs pulled from each product repo at the
-# ref in sources.json), check every internal link, deploy a preview.
+# ref in sources.json, the registry from doze-registry and doze-binaries), check
+# every internal link, deploy a preview.
 # main: the same, deployed to production.
 # Product repos trigger a rebuild when their docs change by sending a
 # repository_dispatch of type "docs-changed"; a nightly run catches the rest.
@@ -46,6 +47,8 @@ jobs:
       - run: bun run build
         env:
           DOCS_SOURCE: git
+          # release dates for the registry pages come from GitHub's API
+          GITHUB_TOKEN: ${{ github.token }}
       - run: bun run links
 
       - name: Deploy to Cloudflare Pages

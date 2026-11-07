@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Docs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+.dh-pg{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#140C1B;background:#FFFAF4;min-height:100%}
+.dh-pg a{color:#A85A0C;text-decoration:none}.dh-pg a:hover{color:#7A3F05;text-decoration:underline}
+.dh-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.dh-eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#A85A0C}
+.dh-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:46px;line-height:1.05;letter-spacing:-0.04em;text-wrap:balance}
+.dh-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;line-height:1.05;letter-spacing:-0.03em;text-wrap:balance}
+.dh-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-0.01em}
+.dh-lede{margin:0;font-size:19px;line-height:1.55;color:#4A3D55;max-width:42rem}
+.dh-p{margin:0;font-size:16px;line-height:1.6;color:#4A3D55}
+.dh-dim{color:#6E5F79}
+.dh-mono{font-family:'JetBrains Mono',monospace}
+.dh-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:20px;box-sizing:border-box}
+.dh-chip{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid #DCCFC2;color:#4A3D55;background:#FFFFFF;white-space:nowrap;box-sizing:border-box;cursor:pointer;font-family:Geist,sans-serif}
+.dh-chip[aria-pressed="true"]{background:#140C1B;color:#FFFAF4;border-color:#140C1B}
+.dh-chip .dh-n{font:13px 'JetBrains Mono',monospace;color:inherit}
+.dh-search{display:flex;align-items:center;gap:12px;background:#FFFFFF;border:1px solid #DCCFC2;border-radius:16px;min-height:60px;padding:0 10px 0 18px;box-shadow:0 1px 0 #EADFD3,0 12px 32px rgba(20,12,27,0.06);box-sizing:border-box}
+.dh-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:18px Geist,sans-serif;color:#140C1B;height:56px}
+.dh-search input::placeholder{color:#6E5F79}
+.dh-kbd{font:13px 'JetBrains Mono',monospace;color:#4A3D55;border:1px solid #DCCFC2;border-bottom-width:2px;border-radius:6px;padding:2px 7px;background:#FFF4E8}
+.dh-prod{display:flex;flex-direction:column;overflow:hidden}
+.dh-prod-top{padding:28px 28px 22px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid #EADFD3}
+.dh-prod-top .dh-brand{display:flex;align-items:center;gap:12px}
+.dh-prod-top .dh-brand b{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px;letter-spacing:-0.01em}
+.dh-prod ul{list-style:none;margin:0;padding:8px 0}
+.dh-prod li a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;padding:0 28px;font-size:16px;color:#140C1B}
+.dh-prod li a:hover{background:#FFF4E8;text-decoration:none;color:#140C1B}
+.dh-prod li a span{white-space:nowrap;font:13px 'JetBrains Mono',monospace;color:#6E5F79}
+.dh-prod-foot{margin-top:auto;padding:16px 28px 22px;border-top:1px solid #EADFD3;font-weight:600}
+.dh-stripe{height:6px}
+.dh-state{display:flex;align-items:center;gap:10px;font:13px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.dh-state:before,.dh-state:after{content:"";height:1px;background:#DCCFC2;flex:1}
+.dh-res-group{border-top:1px solid #EADFD3;padding:18px 0 10px}
+.dh-res-head{display:flex;align-items:center;gap:10px;padding:0 24px 8px;font-size:13px;font-weight:600;color:#4A3D55}
+.dh-res{display:block;padding:12px 24px;border-left:3px solid transparent;color:#140C1B !important}
+.dh-res:hover{background:#FFF4E8;text-decoration:none !important}
+.dh-res.dh-sel{background:#FFF4E8;border-left-color:#F0A24B}
+.dh-res b{font-size:16px;font-weight:600}
+.dh-res .dh-crumb{display:block;font:13px 'JetBrains Mono',monospace;color:#6E5F79;margin-top:2px}
+.dh-res .dh-snip{display:block;font-size:15px;line-height:1.5;color:#4A3D55;margin-top:4px}
+.dh-res mark{background:#FFE2B8;color:#140C1B;border-radius:3px;padding:0 2px}
+.dh-path{display:flex;flex-direction:column;gap:16px;padding:28px}
+.dh-path ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;counter-reset:s}
+.dh-path li{counter-increment:s}
+.dh-path li a{display:flex;gap:12px;align-items:center;min-height:44px;color:#140C1B;font-size:16px}
+.dh-path li a:before{content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;background:#FFF4E8;border:1px solid #DCCFC2;font:600 13px 'JetBrains Mono',monospace;color:#A85A0C;display:flex;align-items:center;justify-content:center}
+pre.dh-code{margin:0;white-space:pre;font:14px/1.75 'JetBrains Mono',monospace;background:#1E1328;border-radius:14px;padding:18px 20px;color:#F4ECE4;overflow-x:auto}
+pre.dh-code .dh-pr{color:#9C8AAB}pre.dh-code .dh-c{color:#B6A6C2}
+.dh-copy{height:44px;min-width:44px;padding:0 12px;border-radius:8px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer}
+.dh-sec{padding:80px 0}
+.dh-pg code,.dh-pg pre{font-variant-ligatures:none}
+.dh-wrap.dh-sec{padding:80px 32px}
+.dh-pg :focus-visible{outline:2px solid #A85A0C;outline-offset:2px}
+@media (max-width:760px){.dh-h1{font-size:38px}.dh-h2{font-size:28px}.dh-lede{font-size:17px}.dh-wrap{padding:0 32px}.dh-wrap.dh-sec{padding:56px 32px}.dh-chip{min-height:44px}.dh-stack-sm{flex-direction:column !important;align-items:stretch !important}.dh-hide-sm{display:none !important}.dh-prod li a{padding:0 20px}.dh-prod li a span{display:none}.dh-prod-top{padding:22px 20px 18px}.dh-prod-foot{padding:14px 20px 18px}.dh-res{padding:12px 16px}.dh-res-head{padding:0 16px 8px}.dh-path{padding:22px}}
+</style>
+</helmet>
+<div class="dh-pg">
+  <dc-import name="SiteHeader" theme="light" current="docs" hint-size="100%,72px"></dc-import>
+
+  <main>
+  <!-- Hero + search -->
+  <section style="border-bottom: 1px solid #EADFD3; background: #FFF4E8">
+    <div class="dh-wrap" style="padding-top: 72px; padding-bottom: 64px; display: flex; flex-direction: column; gap: 22px; align-items: center; text-align: center">
+      <span class="dh-eyebrow">Docs</span>
+      <h1 class="dh-h1" style="max-width: 16ch">You have a question. Here is the page.</h1>
+      <p class="dh-lede">Three products, one search. Every page lives in the same repo as the code it describes, and changes in the same commit.</p>
+      <form role="search" style="width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 14px" action="DocsHome.dc.html">
+        <label for="docs-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search the docs for doze, doze AWS and doze Kafka</label>
+        <div class="dh-search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="docs-q" type="search" name="q" placeholder="Search all docs" autocomplete="off">
+          <span class="dh-kbd dh-hide-sm" aria-hidden="true">/</span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center" role="group" aria-label="Search in">
+          <button class="dh-chip" type="button" aria-pressed="true">All docs</button>
+          <button class="dh-chip" type="button" aria-pressed="false">doze</button>
+          <button class="dh-chip" type="button" aria-pressed="false">doze AWS</button>
+          <button class="dh-chip" type="button" aria-pressed="false">doze Kafka</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Choose a product -->
+  <section class="dh-wrap dh-sec" style="display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <h2 class="dh-h2">Choose a product</h2>
+      <p class="dh-p">Each has its own docs, its own reference and its own release notes.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 20px">
+      <div class="dh-panel dh-prod">
+        <div class="dh-stripe" style="background: #F0A24B"></div>
+        <div class="dh-prod-top">
+          <div class="dh-brand"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 44px; height: 44px; min-height: 0"><b>doze</b></div>
+          <p class="dh-p">doze.hcl from first line to team setup: installing, running your own services next to their databases, names and https, the registry and its modules, and the CLI.</p>
+        </div>
+        <ul>
+          <li><a href="DozeDocs.dc.html">Install <span>install</span></a></li>
+          <li><a href="DozeDocs.dc.html">Getting started <span>getting-started</span></a></li>
+          <li><a href="DozeDocs.dc.html">Coming from Docker Compose <span>from-docker-compose</span></a></li>
+          <li><a href="DozeDocs.dc.html">Configuration reference <span>configuration</span></a></li>
+          <li><a href="DozeDocs.dc.html">CLI reference <span>cli</span></a></li>
+        </ul>
+        <a class="dh-prod-foot" href="DozeDocs.dc.html">All doze docs →</a>
+      </div>
+      <div class="dh-panel dh-prod">
+        <div class="dh-stripe" style="background: #5BB8E8"></div>
+        <div class="dh-prod-top">
+          <div class="dh-brand"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 44px; height: 44px; min-height: 0"><b>doze AWS</b></div>
+          <p class="dh-p">Pointing a stock SDK at it, each service and what it answers, Lambda as real processes, IAM that evaluates, the console, and what is not built and why.</p>
+        </div>
+        <ul>
+          <li><a href="AwsDocs.dc.html">Getting started <span>getting-started</span></a></li>
+          <li><a href="AwsDocs.dc.html">Lambda, locally <span>lambda</span></a></li>
+          <li><a href="AwsDocs.dc.html">Endpoints <span>endpoints</span></a></li>
+          <li><a href="AwsDocs.dc.html">CLI reference <span>cli</span></a></li>
+          <li><a href="AwsDocs.dc.html">What is not built, and why <span>not-built</span></a></li>
+        </ul>
+        <a class="dh-prod-foot" href="AwsDocs.dc.html">All doze AWS docs →</a>
+      </div>
+      <div class="dh-panel dh-prod">
+        <div class="dh-stripe" style="background: #FFD60A"></div>
+        <div class="dh-prod-top">
+          <div class="dh-brand"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 44px; height: 44px; min-height: 0"><b>doze Kafka</b></div>
+          <p class="dh-p">Connecting any Kafka client, consumer groups (classic and KIP-848), transactions, SASL and TLS, the built-in schema registry and the console.</p>
+        </div>
+        <ul>
+          <li><a href="KafkaDocs.dc.html">Getting started <span>getting-started</span></a></li>
+          <li><a href="KafkaDocs.dc.html">Clients <span>clients</span></a></li>
+          <li><a href="KafkaDocs.dc.html">Consumer groups <span>consumer-groups</span></a></li>
+          <li><a href="KafkaDocs.dc.html">Schema Registry <span>schema-registry</span></a></li>
+          <li><a href="KafkaDocs.dc.html">The web console <span>console</span></a></li>
+        </ul>
+        <a class="dh-prod-foot" href="KafkaDocs.dc.html">All doze Kafka docs →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Second state: search open -->
+  <section style="background: #FFF4E8; border-top: 1px solid #EADFD3; border-bottom: 1px solid #EADFD3">
+    <div class="dh-wrap dh-sec" style="display: flex; flex-direction: column; gap: 28px">
+      <p class="dh-state" style="margin: 0">State 2 · the search open, typing “lambda”</p>
+      <div class="dh-panel" role="dialog" aria-label="Search the docs" style="max-width: 820px; width: 100%; margin: 0 auto; box-shadow: 0 30px 80px rgba(20,12,27,0.14); overflow: hidden">
+        <div style="padding: 16px 16px 12px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid #EADFD3">
+          <label for="docs-q2" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search the docs</label>
+          <div class="dh-search" style="box-shadow: none; border-color: #A85A0C; box-shadow: 0 0 0 3px #FFE2B8">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input id="docs-q2" type="search" value="lambda" autocomplete="off">
+            <span class="dh-kbd" aria-hidden="true">esc</span>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap" role="group" aria-label="Show results from">
+            <button class="dh-chip" type="button" aria-pressed="true">All <span class="dh-n">9</span></button>
+            <button class="dh-chip" type="button" aria-pressed="false">doze AWS <span class="dh-n">7</span></button>
+            <button class="dh-chip" type="button" aria-pressed="false">doze <span class="dh-n">2</span></button>
+            <button class="dh-chip" type="button" aria-pressed="false">doze Kafka <span class="dh-n">0</span></button>
+          </div>
+        </div>
+        <div aria-live="polite">
+          <div class="dh-res-group" style="border-top: 0">
+            <div class="dh-res-head"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 20px; height: 20px; min-height: 0">doze AWS</div>
+            <a class="dh-res dh-sel" href="AwsDocs.dc.html"><b>Lambda, locally</b><span class="dh-crumb">docs/aws/lambda</span><span class="dh-snip">A function is a process on your machine, started by doze AWS with the same environment and the same wire protocol AWS gives it: the <mark>Lambda</mark> Runtime API.</span></a>
+            <a class="dh-res" href="AwsDocs.dc.html"><b>How a function runs</b><span class="dh-crumb">docs/aws/lambda › How a function runs</span></a>
+            <a class="dh-res" href="AwsDocs.dc.html"><b>Getting a function in</b><span class="dh-crumb">docs/aws/lambda › Getting a function in</span></a>
+            <a class="dh-res" href="AwsDocs.dc.html"><b>Seeing what it did</b><span class="dh-crumb">docs/aws/lambda › Seeing what it did</span></a>
+            <a class="dh-res" href="AwsDocs.dc.html"><b>Versions, aliases and URLs · Layers</b><span class="dh-crumb">docs/aws/lambda › Versions, aliases and URLs</span></a>
+            <a class="dh-res" href="AwsDocs.dc.html"><b>Getting started › <mark>Lambda</mark></b><span class="dh-crumb">docs/aws/getting-started</span><span class="dh-snip">Functions run as real local processes speaking the AWS <mark>Lambda</mark> Runtime API.</span></a>
+            <a class="dh-res" href="AwsDocs.dc.html"><b>What doze AWS does not build, and why</b><span class="dh-crumb">docs/aws/not-built</span><span class="dh-snip"><mark>lambda</mark>: container images, SnapStart, provisioned concurrency semantics, code signing.</span></a>
+          </div>
+          <div class="dh-res-group">
+            <div class="dh-res-head"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 20px; height: 20px; min-height: 0">doze</div>
+            <a class="dh-res" href="DozeDocs.dc.html"><b>The aws module</b><span class="dh-crumb">docs/doze/engines/aws</span><span class="dh-snip">Every doze AWS service (S3, SQS, SNS, DynamoDB, <mark>Lambda</mark>, EventBridge…) behind one gateway on one endpoint, as one doze instance.</span></a>
+            <a class="dh-res" href="DozeDocs.dc.html"><b>Recipes › <mark>Lambda</mark> + EventBridge</b><span class="dh-crumb">docs/doze/guides/recipes/aws</span><span class="dh-snip dh-mono" style="font-size: 13px; white-space: pre; overflow-x: auto">targets = ["<mark>lambda</mark>:resize", "queue:emails"]</span></a>
+          </div>
+          <div class="dh-res-group">
+            <div class="dh-res-head"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 20px; height: 20px; min-height: 0">doze Kafka</div>
+            <p class="dh-p" style="padding: 4px 24px 12px; font-size: 15px">Nothing about “lambda” in the doze Kafka docs. Showing doze AWS and doze results above.</p>
+          </div>
+        </div>
+        <div class="dh-hide-sm" style="display: flex; gap: 18px; padding: 12px 24px; border-top: 1px solid #EADFD3; background: #FFFAF4; font-size: 13px; color: #4A3D55">
+          <span><span class="dh-kbd">↑</span> <span class="dh-kbd">↓</span> to move</span><span><span class="dh-kbd">enter</span> to open</span><span><span class="dh-kbd">esc</span> to close</span><span style="margin-left: auto">Searches all three products</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Start here -->
+  <section class="dh-wrap dh-sec" style="display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <h2 class="dh-h2">Start here</h2>
+      <p class="dh-p">Three paths for three different first days. Each is a few pages, in order.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 20px">
+      <div class="dh-panel dh-path">
+        <span class="dh-eyebrow">New to doze</span>
+        <h3 class="dh-h3">From nothing to a running stack.</h3>
+        <ol>
+          <li><a href="DozeDocs.dc.html">Install</a></li>
+          <li><a href="DozeDocs.dc.html">Getting started</a></li>
+          <li><a href="DozeDocs.dc.html">Core concepts</a></li>
+          <li><a href="DozeDocs.dc.html">Running your own services</a></li>
+        </ol>
+      </div>
+      <div class="dh-panel dh-path">
+        <span class="dh-eyebrow">Coming from Docker Compose</span>
+        <h3 class="dh-h3">Your compose file, read as doze.hcl.</h3>
+        <ol>
+          <li><a href="DozeDocs.dc.html">Coming from docker-compose</a></li>
+          <li><a href="DozeDocs.dc.html">Native processes vs containers</a></li>
+          <li><a href="DozeDocs.dc.html">A microservices stack</a></li>
+          <li><a href="DozeDocs.dc.html">Teams and CI</a></li>
+        </ol>
+      </div>
+      <div class="dh-panel dh-path">
+        <span class="dh-eyebrow">Writing a module</span>
+        <h3 class="dh-h3">Teach doze a new engine.</h3>
+        <ol>
+          <li><a href="DozeDocs.dc.html">How modules work</a></li>
+          <li><a href="DozeDocs.dc.html">Write your first module</a></li>
+          <li><a href="DozeDocs.dc.html">Testing</a></li>
+          <li><a href="DozeDocs.dc.html">Releasing</a></li>
+        </ol>
+        <p class="dh-p dh-dim" style="font-size: 15px">Publishing to the registry is open to doze-dev only for now. <a href="RegistryPublish.dc.html">How it will open up</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- llms.txt -->
+  <section class="dh-wrap" style="padding-bottom: 88px">
+    <div style="background: #140C1B; color: #F4ECE4; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px; align-items: center">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span class="dh-eyebrow" style="color: #F0A24B">Docs for your coding agent</span>
+        <h2 class="dh-h2" style="color: #F4ECE4">Your agent guesses flags. Give it the docs instead.</h2>
+        <p class="dh-p" style="color: #C9BAD3">A plain-text map of the docs and the facts an agent gets wrong most: engine version against module version, the install lines, the core commands.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: center; gap: 8px; background: #1E1328; border: 1px solid #4A3458; border-radius: 12px; min-height: 52px; padding: 0 8px 0 16px">
+          <code style="font: 15px 'JetBrains Mono', monospace; color: #F4ECE4; flex: 1; overflow-x: auto; white-space: pre; font-variant-ligatures: none"><span style="color: #9C8AAB">$</span> curl https://doze-dev.com/llms.txt</code>
+          <button class="dh-copy" type="button" aria-label="Copy the command">Copy</button>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 15px">
+          <li style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2E1F3A"><a href="https://doze-dev.com/llms.txt" style="color: #F0A24B; font-family: 'JetBrains Mono', monospace">/llms.txt</a><span style="color: #9C8AAB; text-align: right">doze, and links to all three [rebuilt for the new site]</span></li>
+          <li style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2E1F3A"><span style="font-family: 'JetBrains Mono', monospace; color: #D6C8DF">/docs/aws/llms.txt</span><span style="color: #9C8AAB">[not built yet]</span></li>
+          <li style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0"><span style="font-family: 'JetBrains Mono', monospace; color: #D6C8DF">/docs/kafka/llms.txt</span><span style="color: #9C8AAB">[not built yet]</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Can't find it -->
+  <section class="dh-wrap" style="padding-bottom: 88px">
+    <div class="dh-stack-sm" style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; border-top: 1px solid #EADFD3; padding-top: 32px">
+      <p class="dh-p" style="font-size: 17px"><b style="color: #140C1B">Didn't find it?</b> A missing answer is a docs bug. Tell us what you searched for.</p>
+      <div class="dh-stack-sm" style="display: flex; gap: 12px; flex-wrap: wrap">
+        <a href="https://github.com/doze-dev/doze/issues/new" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid #DCCFC2; border-radius: 10px; background: #FFFFFF; font-weight: 600">Open an issue</a>
+        <a href="Changelog.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid #DCCFC2; border-radius: 10px; background: #FFFFFF; font-weight: 600">What changed lately</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4140}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

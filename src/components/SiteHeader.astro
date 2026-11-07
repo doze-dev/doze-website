@@ -1,0 +1,74 @@
+---
+// The site's header (design: SiteHeader). Themes: each product's own night, or daylight.
+export type Theme = "dark" | "light" | "aws" | "kafka";
+interface Props {
+  theme?: Theme;
+  current?: string;
+  news?: string;
+  newsHref?: string;
+}
+const { theme = "dark", current = "none", news, newsHref = "/registry/extensions/" } = Astro.props;
+const items = [
+  ["doze", "doze", "/doze/"],
+  ["aws", "doze AWS", "/aws/"],
+  ["kafka", "doze Kafka", "/kafka/"],
+  ["registry", "Registry", "/registry/"],
+  ["examples", "Examples", "/examples/"],
+  ["docs", "Docs", "/docs/"],
+] as const;
+---
+<header class={`sh sh-${theme}`}>
+  <div class="sh-in">
+    <a class="sh-mark" href="/" aria-label="doze, home">
+      <img src="/brand/doze.svg" alt="" width="34" height="34" />
+      <span>doze</span>
+    </a>
+    <nav class="sh-nav" aria-label="Site">
+      {items.map(([id, label, href]) => <a href={href} aria-current={id === current ? "page" : undefined}>{label}</a>)}
+    </nav>
+    {news && <a class="sh-news" href={newsHref}><span>New</span> · {news} →</a>}
+    <a class="sh-gh" href="https://github.com/doze-dev">GitHub</a>
+    <a class="sh-dl" href="/download/">Download</a>
+    <details class="sh-menu">
+      <summary aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      </summary>
+      <nav aria-label="Site">
+        {items.map(([id, label, href]) => <a href={href} aria-current={id === current ? "page" : undefined}>{label}</a>)}
+        <a class="sh-menu-gh" href="https://github.com/doze-dev">GitHub</a>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<style>
+  .sh { --g: #140c1b; --l: #2e1f3a; --l2: #4a3458; --i: #f4ece4; --i2: #c9bad3; --p: #1e1328; font-family: var(--font-text); background: var(--g); border-bottom: 1px solid var(--l); position: relative; z-index: 30; }
+  .sh-aws { --g: #0c1320; --l: #1c2b44; }
+  .sh-kafka { --g: #16150f; --l: #2c2a1c; }
+  .sh-light { --g: #fffaf4; --l: #eadfd3; --l2: #dccfc2; --i: #140c1b; --i2: #5a4b66; --p: #ffffff; }
+  .sh-in { box-sizing: content-box; max-width: 1240px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; gap: 28px; }
+  .sh a { text-decoration: none; }
+  .sh a:focus-visible, .sh summary:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+  .sh-mark { display: flex; align-items: center; gap: 11px; min-height: 44px; color: var(--i); font: 700 22px/1 var(--font-display); letter-spacing: -0.01em; }
+  .sh-nav { display: flex; gap: 22px; flex: 1; flex-wrap: wrap; }
+  .sh-nav a { font-size: 15px; padding: 6px 2px; border-bottom: 2px solid transparent; color: var(--i2); }
+  .sh-nav a:hover, .sh-nav a[aria-current="page"] { color: var(--i); }
+  .sh-nav a[aria-current="page"] { border-bottom-color: var(--amber); }
+  .sh-news { font-size: 13px; color: var(--i); border: 1px solid var(--l2); border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
+  .sh-news span { color: var(--amber); font-weight: 600; }
+  .sh-gh { font-size: 14px; color: var(--i2); white-space: nowrap; }
+  .sh-dl { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 10px; background: var(--amber); color: var(--amber-ink); font-weight: 600; font-size: 14px; }
+  .sh-dl:hover { background: #ffb866; }
+  .sh-menu { display: none; margin-left: auto; position: relative; }
+  .sh-menu summary { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid var(--l2); color: var(--i); list-style: none; cursor: pointer; }
+  .sh-menu summary::-webkit-details-marker { display: none; }
+  .sh-menu nav { position: absolute; right: 0; top: 52px; width: 260px; display: flex; flex-direction: column; padding: 8px; border-radius: 14px; background: var(--p); border: 1px solid var(--l2); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
+  .sh-menu nav a { padding: 12px; border-radius: 8px; font-size: 16px; color: var(--i); }
+  .sh-menu nav a[aria-current="page"] { color: var(--amber); }
+  .sh-menu-gh { border-top: 1px solid var(--l); margin-top: 4px; color: var(--i2) !important; }
+  @media (max-width: 900px) {
+    .sh-nav, .sh-gh, .sh-news { display: none; }
+    .sh-menu { display: block; }
+    .sh-in { gap: 14px; }
+  }
+</style>

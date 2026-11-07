@@ -1,30 +1,1084 @@
-/* Starlight, in doze's colours. Docs read light by default, dark on request. */
-:root {
+/* The docs in daylight (design/boards/DozeDocs.dc.html, AwsDocs, KafkaDocs).
+   Starlight draws the pages; src/components/docs/ overrides its frame; this
+   file sets the colours, the type and the parts Starlight renders itself
+   (markdown, asides, tables, search, code frames). Docs are light only. */
+
+:root,
+:root[data-theme="light"],
+::backdrop {
+  --dz-ground: #fffaf4;
+  --dz-panel: #ffffff;
+  --dz-sunk: #fff4e8;
+  --dz-line: #eadfd3;
+  --dz-line-2: #dccfc2;
+  --dz-ink: #140c1b;
+  --dz-ink-2: #4a3d55;
+  --dz-dim: #6e5f79;
+  --dz-link: #a85a0c;
+  --dz-link-hover: #7a3f05;
+
   --sl-font: var(--font-text);
   --sl-font-mono: var(--font-mono);
-  --sl-color-accent-low: #3d2516;
-  --sl-color-accent: var(--amber);
-  --sl-color-accent-high: #ffd9ad;
-}
-:root[data-theme="light"] {
   --sl-color-accent-low: #fde6cb;
-  --sl-color-accent: #b5650f;
+  --sl-color-accent: var(--dz-link);
   --sl-color-accent-high: #4a2a08;
-  --sl-color-white: #1a1020;
-  --sl-color-bg: #fffaf4;
-  --sl-color-bg-nav: #fff4e8;
-  --sl-color-bg-sidebar: #fff7ee;
+  --sl-color-white: var(--dz-ink);
+  --sl-color-gray-1: #2a1f33;
+  --sl-color-gray-2: var(--dz-ink-2);
+  --sl-color-gray-3: var(--dz-dim);
+  --sl-color-gray-4: #9c8aab;
+  --sl-color-gray-5: var(--dz-line-2);
+  --sl-color-gray-6: var(--dz-sunk);
+  --sl-color-gray-7: #fffcf8;
+  --sl-color-black: var(--dz-ground);
+  --sl-color-text: var(--dz-ink);
+  --sl-color-text-accent: var(--dz-link);
+  --sl-color-bg: var(--dz-ground);
+  --sl-color-bg-nav: var(--dz-ground);
+  --sl-color-bg-sidebar: var(--dz-ground);
+  --sl-color-bg-inline-code: var(--dz-sunk);
+  --sl-color-hairline-light: var(--dz-line);
+  --sl-color-hairline: var(--dz-line);
+  --sl-color-hairline-shade: var(--dz-line-2);
+  --sl-color-backdrop-overlay: rgba(20, 12, 27, 0.45);
+
+  /* The frame is ours (PageFrame): no fixed Starlight bar to make room for. */
+  --sl-nav-height: 0rem;
+  --sl-mobile-toc-height: 0rem;
+  --sl-main-pad: 0;
+  --sl-content-width: 760px;
+  --sl-text-h1: 46px;
+  --sl-text-h2: 30px;
+  --sl-text-h3: 20px;
+  --sl-text-h4: 17px;
+  --sl-text-body: 17px;
 }
-:root[data-theme="dark"] {
-  --sl-color-bg: var(--night);
-  --sl-color-bg-nav: #1a1022;
-  --sl-color-bg-sidebar: #170e1e;
-  --sl-color-hairline: var(--line);
+
+html {
+  scroll-padding-top: 24px !important;
+  background: var(--dz-ground);
 }
-h1,
-h2,
-h3,
-.site-title {
+body {
+  background: var(--dz-ground);
+  color: var(--dz-ink);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+}
+body.dz-pane-open {
+  overflow: hidden;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+}
+:focus-visible {
+  outline: 2px solid var(--dz-link);
+  outline-offset: 2px;
+}
+
+/* ---------- Frame (PageFrame) ---------- */
+.dz-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.dz-page > .sf {
+  margin-top: auto;
+}
+/* Lines up with SiteHeader: 1240px of content, 32px outside it. */
+.dz-wrap {
+  width: min(1240px, 100% - 64px);
+  margin: 0 auto;
+  padding: 0 32px;
+  box-sizing: content-box;
+  display: flex;
+  gap: 0;
+}
+.dz-side {
+  flex: 0 0 248px;
+  width: 248px;
+  margin-right: 20px;
+  padding: 28px 0 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-self: flex-start;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  box-sizing: border-box;
+}
+.dz-frame {
+  flex: 1 1 auto;
+  min-width: 0;
+  border-left: 1px solid var(--dz-line);
+  padding-left: 44px;
+}
+.dz-side a,
+.dz-frame a {
+  text-decoration: none;
+}
+
+/* Product switcher: Starlight's sidebar topics, as the boards draw them. */
+.dz-sw-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--dz-panel);
+  border: 1px solid var(--dz-line);
+  border-radius: 14px;
+  padding: 6px;
+}
+.dz-sw-h {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dz-dim);
+  padding: 4px 8px 2px;
+}
+a.dz-sw {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: var(--dz-ink);
+  border: 1px solid transparent;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+a.dz-sw:hover {
+  background: var(--dz-sunk);
+}
+a.dz-sw img {
+  width: 28px;
+  height: 28px;
+  flex: none;
+}
+a.dz-sw b {
+  font-size: 14px;
+  font-weight: 600;
+}
+.dz-sw-t {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+.dz-sw-path {
+  font: 12px var(--font-mono);
+  color: var(--dz-dim);
+}
+a.dz-sw-on {
+  background: var(--dz-sunk);
+  border-color: var(--amber);
+}
+
+/* The bar: on wide screens only the search shows; on phones it is the
+   switcher, the search button and "Pages" in one row. */
+.dz-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.dz-sw-m,
+.dz-pages {
+  display: none;
+}
+.dz-srch {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.dz-srch site-search,
+.dz-srch site-search > button {
+  display: flex;
+  width: 100%;
+}
+.dz-srch site-search > button[data-open-modal] {
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--dz-line-2);
+  border-radius: 10px;
+  background: var(--dz-panel);
+  color: var(--dz-dim);
+  font: 14px var(--font-text);
+  cursor: pointer;
+  max-width: none;
+}
+.dz-srch site-search > button[data-open-modal]:hover {
+  border-color: var(--dz-dim);
+  color: var(--dz-ink);
+}
+.dz-srch site-search > button > span {
+  visibility: hidden;
+}
+.dz-srch site-search > button > svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.dz-srch site-search > button > kbd {
+  margin-inline-start: auto;
+  gap: 2px;
+  font: 12px var(--font-mono);
+  color: var(--dz-dim);
+  background: transparent;
+  border: 0;
+}
+.dz-srch site-search > button > kbd kbd {
+  font: inherit;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.dz-srch-ph {
+  position: absolute;
+  left: 37px;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--dz-dim);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The search dialog (Starlight + Pagefind) in daylight. */
+site-search dialog {
+  background: var(--dz-panel);
+  color: var(--dz-ink);
+  border: 1px solid var(--dz-line-2);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px rgba(20, 12, 27, 0.14);
+}
+site-search dialog::backdrop {
+  background: rgba(20, 12, 27, 0.45);
+}
+#starlight__search {
+  --pagefind-ui-primary: var(--dz-link);
+  --pagefind-ui-text: var(--dz-ink);
+  --pagefind-ui-background: var(--dz-panel);
+  --pagefind-ui-border: var(--dz-line-2);
+  --pagefind-ui-tag: var(--dz-sunk);
+  --pagefind-ui-font: var(--font-text);
+}
+#starlight__search mark {
+  background: #ffe2b8;
+  color: var(--dz-ink);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* The section's pages (Sidebar). */
+.dz-pane {
+  display: block;
+  position: static;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: inherit;
+  overflow: visible;
+}
+.dz-pane-head {
+  display: none;
+}
+.dz-grps {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.dz-grp {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.dz-grp-h {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dz-dim);
+  padding: 0 12px 6px;
+}
+.dz-grp-fold > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+  min-height: 28px;
+}
+.dz-grp-fold > summary::-webkit-details-marker,
+.dz-sub > summary::-webkit-details-marker {
+  display: none;
+}
+.dz-grp-fold[open] > summary svg,
+.dz-sub[open] > summary svg {
+  transform: rotate(90deg);
+}
+.dz-grp a,
+.dz-sub > summary {
+  color: var(--dz-ink-2);
+  font-size: 14px;
+  line-height: 1.4;
+  display: block;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+.dz-grp a:hover,
+.dz-sub > summary:hover {
+  background: var(--dz-sunk);
+  color: var(--dz-ink);
+}
+.dz-grp a.dz-on {
+  background: var(--dz-sunk);
+  color: var(--dz-ink);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--amber);
+}
+.dz-sub > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+}
+.dz-sub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-left: 12px;
+  padding-left: 6px;
+  border-left: 1px solid var(--dz-line);
+}
+
+/* ---------- Article and contents (TwoColumnContent) ---------- */
+.dz-cols {
+  display: flex;
+  gap: 44px;
+}
+.dz-main {
+  flex: 1 1 560px;
+  min-width: 0;
+  max-width: 760px;
+}
+.dz-main > main {
+  padding: 36px 0 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+:root:not([data-has-sidebar]) .dz-main {
+  max-width: none;
+}
+.dz-panel > * + * {
+  margin-top: 20px;
+}
+.dz-toc {
+  flex: 0 0 200px;
+  min-width: 0;
+  align-self: flex-start;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 40px 0;
+  box-sizing: border-box;
+  scrollbar-width: none;
+}
+.dz-toc h2 {
+  margin: 0 0 10px;
+  font: 600 12px var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dz-dim);
+}
+.dz-toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dz-toc ul ul {
+  padding-left: 12px;
+}
+.dz-toc a {
+  display: block;
+  color: var(--dz-ink-2);
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 3px 0;
+  overflow-wrap: anywhere;
+}
+.dz-toc a:hover {
+  color: var(--dz-ink);
+}
+.dz-toc a[aria-current="true"] {
+  color: var(--dz-link);
+  font-weight: 600;
+}
+
+/* Title block (PageTitle). */
+.dz-head {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.dz-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.dz-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--dz-dim);
+}
+.dz-crumbs a {
+  color: var(--dz-link);
+}
+.dz-crumbs a:hover {
+  text-decoration: underline;
+}
+.dz-crumb-now {
+  color: var(--dz-ink);
+}
+.dz-ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.dz-ver a {
+  color: var(--dz-link);
+}
+.dz-ver a:hover {
+  text-decoration: underline;
+}
+.dz-vchip {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--dz-sunk);
+  border: 1px solid var(--dz-line);
+  color: var(--dz-ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.dz-urlpath {
+  font: 12px var(--font-mono);
+  color: var(--dz-dim);
+  background: var(--dz-sunk);
+  border: 1px solid var(--dz-line);
+  border-radius: 6px;
+  padding: 2px 8px;
+  align-self: flex-start;
+  overflow-wrap: anywhere;
+}
+.dz-head h1 {
+  margin: 0;
   font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 46px;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  color: var(--dz-ink);
+  text-wrap: balance;
+}
+.dz-lede {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--dz-ink-2);
+}
+
+/* End of the article (Footer, Pagination, EditLink). */
+.dz-pn {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+.dz-pn a {
+  border: 1px solid var(--dz-line);
+  background: var(--dz-panel);
+  border-radius: 14px;
+  padding: 16px 18px;
+  color: var(--dz-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dz-pn a:hover {
+  border-color: var(--amber);
+}
+.dz-pn a.dz-pn-next {
+  text-align: right;
+}
+.dz-pn span {
+  font-size: 13px;
+  color: var(--dz-dim);
+}
+.dz-pn b {
+  font-weight: 600;
+  color: var(--dz-link);
+}
+.dz-meta {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--dz-dim);
+  border-top: 1px solid var(--dz-line);
+  padding-top: 16px;
+  margin-top: 20px;
+}
+.dz-meta a {
+  color: var(--dz-link);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.dz-meta a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Markdown (Starlight's .sl-markdown-content) ---------- */
+.sl-markdown-content {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--dz-ink);
+}
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-display);
+  color: var(--dz-ink);
+  line-height: 1.2;
+}
+.sl-markdown-content h2 {
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: -0.015em;
+  margin-top: 2.2em;
+}
+.sl-markdown-content h3 {
+  font-weight: 700;
+  font-size: 20px;
   letter-spacing: -0.01em;
+  margin-top: 1.8em;
+}
+.sl-markdown-content h4 {
+  font-weight: 700;
+  font-size: 17px;
+}
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--dz-link);
+  text-decoration: none;
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  color: var(--dz-link-hover);
+  text-decoration: underline;
+}
+.sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--dz-sunk);
+  border: 1px solid var(--dz-line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  color: var(--dz-ink);
+  overflow-wrap: anywhere;
+}
+.sl-markdown-content strong {
+  color: var(--dz-ink);
+}
+.sl-markdown-content blockquote:not(:where(.not-content *)) {
+  border: 1px solid #f1d9a6;
+  background: #fff1d6;
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #4a2e05;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.sl-markdown-content hr:not(:where(.not-content *)) {
+  border: 0;
+  border-top: 1px solid var(--dz-line);
+}
+.sl-markdown-content img {
+  border-radius: 14px;
+}
+
+/* Tables: a white panel on wide screens; stacked cards on phones (below). */
+.sl-markdown-content table:not(:where(.not-content *)) {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border: 1px solid var(--dz-line);
+  border-radius: 14px;
+  background: var(--dz-panel);
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+  padding: 12px 16px;
+  border: 0;
+  border-top: 1px solid var(--dz-line);
+  text-align: left;
+  vertical-align: top;
+}
+.sl-markdown-content th:not(:where(.not-content *)) {
+  font-weight: 600;
+  color: var(--dz-ink-2);
+  background: var(--dz-sunk);
+  border-top: 0;
+}
+.sl-markdown-content tr:nth-child(2n):not(:where(.not-content *)) {
+  background: transparent;
+}
+
+/* Asides: info, tip, caution, danger in the brief's status colours. */
+.starlight-aside {
+  border: 1px solid;
+  border-radius: 14px;
+  padding: 16px 18px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.starlight-aside--note {
+  --sl-color-asides-text-accent: #2f62d9;
+  background: #e8eefc;
+  border-color: #c9d6f6;
+  color: #1b2f66;
+}
+.starlight-aside--tip {
+  --sl-color-asides-text-accent: #8a5300;
+  background: #fff1d6;
+  border-color: #f1d9a6;
+  color: #4a2e05;
+}
+.starlight-aside--caution {
+  --sl-color-asides-text-accent: #8a5300;
+  background: #fff1d6;
+  border-color: #e9c27a;
+  color: #4a2e05;
+}
+.starlight-aside--danger {
+  --sl-color-asides-text-accent: #b4233c;
+  background: #fce8ec;
+  border-color: #f2c2cb;
+  color: #5e1020;
+}
+.starlight-aside__title {
+  font-weight: 600;
+}
+.starlight-aside a {
+  color: inherit !important;
+  text-decoration: underline !important;
+}
+
+/* Code: dark frames on the daylight page (expressiveCode in astro.config).
+   Every block gets the boards' bar (dd-cb-bar): a label on the left (the
+   file title, "Terminal", or the language) and a labelled Copy button. */
+.sl-markdown-content .expressive-code .frame {
+  background: #1e1328;
+  border: 1px solid #2e1f3a;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.sl-markdown-content .expressive-code .frame pre {
+  border: 0;
+  border-radius: 0;
+  white-space: pre;
+  overflow-x: auto;
+}
+.sl-markdown-content .expressive-code .frame .header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 45px;
+  box-sizing: border-box;
+  padding: 0 96px 0 16px;
+  border: 0;
+  border-bottom: 1px solid #2e1f3a;
+  background: #1e1328;
+  font: 13px var(--font-mono);
+  color: #c9bad3;
+}
+.sl-markdown-content .expressive-code .frame .header::before,
+.sl-markdown-content .expressive-code .frame .header::after,
+.sl-markdown-content .expressive-code .frame .title::after {
+  display: none;
+}
+.sl-markdown-content .expressive-code .frame.has-title:not(.is-terminal) .title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #c9bad3;
+}
+.sl-markdown-content .expressive-code .frame.is-terminal .title:empty::before {
+  content: "Terminal";
+}
+/* Blocks with neither a title nor a terminal: the empty header is the bar,
+   labelled with the language. */
+.sl-markdown-content .expressive-code .frame:not(.has-title):not(.is-terminal) .header::after {
+  display: block;
+  position: static;
+  border: 0;
+  content: "";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="hcl"])
+  .header::after {
+  content: "HCL";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="toml"])
+  .header::after {
+  content: "TOML";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="yaml"])
+  .header::after {
+  content: "YAML";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="json"])
+  .header::after {
+  content: "JSON";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="go"])
+  .header::after {
+  content: "Go";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="python"])
+  .header::after,
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="py"])
+  .header::after {
+  content: "Python";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="ts"])
+  .header::after,
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="typescript"])
+  .header::after {
+  content: "TypeScript";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="js"])
+  .header::after,
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="javascript"])
+  .header::after {
+  content: "JavaScript";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="java"])
+  .header::after {
+  content: "Java";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="sql"])
+  .header::after {
+  content: "SQL";
+}
+.sl-markdown-content
+  .expressive-code
+  .frame:not(.has-title):not(.is-terminal):has(pre[data-language="diff"])
+  .header::after {
+  content: "Diff";
+}
+.sl-markdown-content .expressive-code .copy {
+  inset-block-start: 6px;
+  inset-inline-end: 8px;
+}
+.sl-markdown-content .expressive-code .copy button {
+  opacity: 1;
+  width: auto;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #4a3458;
+  border-radius: 8px;
+  background: #2a1c36;
+  color: #f4ece4;
+  font: 600 12px var(--font-text);
+}
+.sl-markdown-content .expressive-code .copy button:hover {
+  background: #34233f;
+}
+.sl-markdown-content .expressive-code .copy button div,
+.sl-markdown-content .expressive-code .copy button::before {
+  display: none;
+}
+.sl-markdown-content .expressive-code .copy button::after {
+  content: "Copy";
+  position: static;
+  mask: none;
+  -webkit-mask: none;
+  background: none;
+  margin: 0;
+  line-height: 30px;
+}
+.sl-markdown-content .expressive-code .ec-line .code {
+  padding-inline-end: 20px;
+}
+
+/* Starlight's splash pages (doze's section home) inside our frame. */
+:root:not([data-has-sidebar]) .dz-main > main {
+  padding-top: 24px;
+}
+.hero {
+  padding-block: 32px 16px !important;
+}
+.hero h1 {
+  font-size: clamp(38px, 4vw, 46px) !important;
+  line-height: 1.08 !important;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--dz-ink) !important;
+}
+
+/* ---------- Narrower screens ---------- */
+@media (max-width: 1180px) {
+  .dz-toc {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .dz-wrap {
+    flex-direction: column;
+  }
+  .dz-side {
+    position: static;
+    align-self: stretch;
+    flex: none;
+    width: auto;
+    margin: 0;
+    max-height: none;
+    overflow: visible;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--dz-line);
+  }
+  .dz-frame {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .dz-main > main {
+    padding-top: 24px;
+  }
+  .dz-sw-box {
+    display: none;
+  }
+  .dz-sw-m,
+  .dz-pages {
+    display: block;
+  }
+  .dz-sw-m {
+    position: relative;
+  }
+  .dz-sw-m > summary,
+  .dz-pages {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    min-width: 44px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid var(--dz-line-2);
+    background: var(--dz-panel);
+    color: var(--dz-ink);
+    font: 600 14px var(--font-text);
+    cursor: pointer;
+    list-style: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+  .dz-sw-m > summary::-webkit-details-marker {
+    display: none;
+  }
+  .dz-sw-m-list {
+    position: absolute;
+    z-index: 40;
+    top: 52px;
+    left: 0;
+    width: min(280px, calc(100vw - 64px));
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+    background: var(--dz-panel);
+    border: 1px solid var(--dz-line-2);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(20, 12, 27, 0.16);
+  }
+  .dz-srch {
+    flex: 0 0 44px;
+  }
+  .dz-srch site-search > button[data-open-modal] {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    color: var(--dz-ink);
+  }
+  .dz-srch site-search > button > :is(span, kbd),
+  .dz-srch-ph {
+    display: none !important;
+  }
+  .dz-srch site-search > button > svg {
+    width: 18px;
+    height: 18px;
+  }
+  .dz-pages {
+    flex: 1;
+    justify-content: space-between;
+    padding: 0 14px;
+  }
+  .dz-pane:not(:popover-open) {
+    display: none;
+  }
+  .dz-pane:popover-open {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    overflow-y: auto;
+    background: var(--dz-ground);
+    padding: 0 32px 48px;
+    box-sizing: border-box;
+  }
+  .dz-pane-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    margin-bottom: 12px;
+    background: var(--dz-ground);
+    border-bottom: 1px solid var(--dz-line);
+    font-size: 16px;
+  }
+  .dz-pane-close {
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--dz-line-2);
+    background: var(--dz-panel);
+    color: var(--dz-ink);
+    font: 600 14px var(--font-text);
+    cursor: pointer;
+  }
+  .dz-pane .dz-grp a,
+  .dz-pane .dz-sub > summary,
+  .dz-pane .dz-grp-fold > summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+  }
+  .dz-head h1 {
+    font-size: 38px;
+  }
+  .dz-lede {
+    font-size: 17px;
+  }
+  .dz-crumbs,
+  .dz-ver {
+    min-height: 24px;
+  }
+  .dz-ver a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* Tables become stacked row cards (house rule); labels come from the
+     header row (data-l, set by PageFrame's script). */
+  .sl-markdown-content table.dz-stack {
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .sl-markdown-content table.dz-stack thead {
+    display: none;
+  }
+  .sl-markdown-content table.dz-stack :is(tbody, tr, td) {
+    display: block;
+  }
+  .sl-markdown-content table.dz-stack tr {
+    background: var(--dz-panel);
+    border: 1px solid var(--dz-line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .sl-markdown-content table.dz-stack td {
+    border: 0;
+    padding: 4px 0;
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+  .sl-markdown-content table.dz-stack td::before {
+    content: attr(data-l);
+    display: block;
+    color: var(--dz-dim);
+    font-size: 13px;
+  }
+  .sl-markdown-content table.dz-stack td:first-child {
+    font-weight: 600;
+  }
+  .sl-markdown-content table.dz-stack td:first-child::before {
+    display: none;
+  }
 }

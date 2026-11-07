@@ -1,0 +1,299 @@
+---
+// A publisher's page (design: RegistryPublisher). One page per namespace in the
+// index; today that is only "doze". Module facts come from the signed index via
+// src/lib/registry.ts; who the publisher is, and each module's one line as the
+// board words it, are copy kept here.
+import RegistryBar from "../../../components/RegistryBar.astro";
+import Page from "../../../layouts/Page.astro";
+import { display, engineRange, fmtDate, look, type Module, modules, registry } from "../../../lib/registry";
+import { hrefFor } from "../../../routes";
+
+export function getStaticPaths() {
+  return [...new Set(modules.map((m) => m.namespace))].map((ns) => ({ params: { ns } }));
+}
+
+const { ns } = Astro.params as { ns: string };
+const mine = modules.filter((m) => m.namespace === ns);
+
+// Who publishes each namespace. Only doze exists; outside publishers are planned.
+const publishers: Record<string, { lede: string; keySince: string; licence: string }> = {
+  doze: {
+    lede: "The doze maintainers. Every module in the registry today is published and signed here, built in public CI from source on GitHub.",
+    keySince: "26 Jun 2026",
+    licence: "Apache-2.0",
+  },
+};
+const pub = publishers[ns] ?? publishers.doze;
+
+// Board copy per module: the one line, what it runs, where its source lives, and
+// the tile behind a logo. Facts (releases, dates, engines) come from the index.
+const copy: Record<string, { line: string; runs?: string; repo: string; tile?: string }> = {
+  postgres: {
+    line: "Real Postgres, declared not scripted: roles, schemas, grants and extensions.",
+    repo: "doze-modules",
+  },
+  ferret: {
+    line: "MongoDB-compatible: any Mongo client connects. FerretDB 2 over a private Postgres.",
+    repo: "doze-modules",
+  },
+  kafka: {
+    line: "doze Kafka: a Kafka-protocol broker in one Go binary. No JVM, no ZooKeeper, no KRaft.",
+    runs: "itself · Kafka protocol 1 – 4",
+    repo: "doze-kafka",
+    tile: "#3D2A0A",
+  },
+  aws: {
+    line: "doze AWS as one service: S3, SQS, DynamoDB, Lambda and 13 more on one endpoint, with its console.",
+    runs: "itself: doze AWS is in the module",
+    repo: "doze-aws",
+    tile: "#6B4E16",
+  },
+  temporal: {
+    line: "A local Temporal dev server with its Web UI. One Go binary, SQLite store.",
+    runs: "Temporal CLI 1.x",
+    repo: "doze-modules",
+  },
+  valkey: { line: "In-memory cache that speaks the Redis protocol: any redis client works.", repo: "doze-modules" },
+  kvrocks: {
+    line: "The Redis protocol on RocksDB: durable, and the data lives on disk, not in RAM.",
+    repo: "doze-modules",
+  },
+  mariadb: { line: "MySQL-compatible. Databases, users and grants declared in doze.hcl.", repo: "doze-modules" },
+};
+// Ties on date keep this order (the board's).
+const order = ["postgres", "ferret", "kafka", "aws", "temporal", "valkey", "kvrocks", "mariadb"];
+const newestOf = (m: Module) => m.releases.find((r) => r.version === m.newest) ?? m.releases[0];
+const rows = [...mine]
+  .map((m) => ({ m, r: newestOf(m) }))
+  .sort(
+    (a, b) => (b.r?.date ?? "").localeCompare(a.r?.date ?? "") || order.indexOf(a.m.name) - order.indexOf(b.m.name),
+  );
+const newest = rows[0];
+const needNewer = rows.filter((x) => x.r?.doze);
+const anyDoze = rows.filter((x) => !x.r?.doze);
+const names = (xs: typeof rows) => xs.map((x) => `${display(x.m)} ${x.r?.version}`);
+const list = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
+const word = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+const key = registry.key.key;
+---
+<Page title={`${ns} · Publisher · Registry`} theme="light" current="registry">
+  <div class="rp">
+    <RegistryBar section="none" />
+
+    <section class="rp-head">
+      <div class="rp-wrap rp-head-in">
+        <nav aria-label="Breadcrumb" class="rp-crumb"><a href={hrefFor("Registry.dc.html")}>Registry</a> / {ns}</nav>
+        <div class="rp-who">
+          <div class="rp-logo"><img src="/brand/doze.svg" alt="" width="48" height="48" /></div>
+          <div class="rp-who-txt">
+            <div class="rp-title">
+              <h1 class="rp-h1">{ns}</h1>
+              <span class="rp-badge rp-b-off"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z" /></svg>Official</span>
+              <span class="rp-badge rp-b-sig"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>Signed</span>
+            </div>
+            <p class="rp-lede">{pub.lede}</p>
+            <div class="rp-links">
+              <a href="https://github.com/doze-dev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.6 11.6 0 0 0-6 0C6.8 2.8 5.8 3.1 5.8 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" /></svg>github.com/doze-dev</a>
+              <a href={hrefFor("Main.dc.html")}>doze-dev.com</a>
+              <a href={hrefFor("Security.dc.html")}>Report a security problem</a>
+            </div>
+          </div>
+        </div>
+        <div class="rp-facts">
+          <div class="rp-fact"><span>Namespace</span><b class="rp-mono" style="font-size: 14px">{ns}</b></div>
+          <div class="rp-fact"><span>Modules</span><b>{mine.length}</b></div>
+          <div class="rp-fact"><span>Signing key since</span><b>{pub.keySince}</b></div>
+          <div class="rp-fact"><span>Newest release</span><b>{newest ? `${newest.m.name} ${newest.r?.version} · ${fmtDate(newest.r?.date ?? null)}` : "none"}</b></div>
+          <div class="rp-fact"><span>Licence</span><b>{pub.licence}, all {mine.length}</b></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="rp-wrap rp-body">
+      <section aria-labelledby="mods" class="rp-mods-sec">
+        <div class="rp-mods-top">
+          <div class="rp-stack6"><span class="rp-kick">Published here</span><h2 id="mods">{mine.length} modules</h2></div>
+          <p class="rp-note rp-note-w">No download counts: doze sends nothing home, so the registry has nothing to count. Dates are when each release was built on GitHub.</p>
+        </div>
+        <div class="rp-panel rp-clip">
+          <table class="rp-mods">
+            <thead><tr><th style="width: 56px"><span class="sr-only">Logo</span></th><th>Module</th><th>Newest release</th><th>Runs</th><th>Releases</th><th>Source</th></tr></thead>
+            <tbody>
+              {rows.map(({ m, r }) => {
+                const c = copy[m.name];
+                const l = look[m.name];
+                return (
+                  <tr>
+                    <td class="rp-t">
+                      <div class="rp-tile" aria-hidden="true" style={`background: ${c?.tile ?? l?.tile ?? "#3A2448"}`}>
+                        {l?.logo ? <img src={l.logo} alt="" /> : display(m).charAt(0).toUpperCase()}
+                      </div>
+                    </td>
+                    <td>
+                      <a class="rp-mname" href={`/registry/${m.namespace}/${m.name}/`}>{m.meta.title ?? display(m)}</a> <span class="rp-mono rp-id">{m.namespace}/{m.name}</span>
+                      <div class="rp-line">{c?.line ?? m.meta.tagline}</div>
+                    </td>
+                    <td>
+                      <b class="rp-ink">{r?.version}</b> · {fmtDate(r?.date ?? null)}
+                      <div class="rp-need">{r?.doze ? <span class="rp-chip rp-c-warn">needs doze {r.doze}</span> : <span class="rp-dim">any doze</span>}</div>
+                    </td>
+                    <td>{c?.runs ?? engineRange(m)}</td>
+                    <td class="rp-hide-s">{m.releases.length}</td>
+                    <td class="rp-hide-s rp-mono rp-src">{c?.repo ?? m.meta.source}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p class="rp-note">
+          Releases counts what the signed index serves.{" "}
+          {needNewer.length
+            ? `${word[needNewer.length] ?? needNewer.length} modules' newest releases need doze ${needNewer[0].r?.doze}; an older doze skips them and keeps resolving the release before. ${list(names(anyDoze))} run on any doze.`
+            : "Every module's newest release runs on any doze: none carries an oldest-doze field yet."}
+        </p>
+      </section>
+
+      <section aria-labelledby="verif" class="rp-panel rp-verif">
+        <span class="rp-kick">Who this is</span>
+        <h2 id="verif" style="margin: 6px 0 4px">How it is verified</h2>
+        <p class="rp-sub">Three separate proofs that this namespace belongs to the people who make doze.</p>
+        <div class="rp-vrow">
+          <div class="rp-vic" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4" /><path d="m11 12 9-9M16 7l3 3" /></svg></div>
+          <div><h3>Key compiled into doze</h3><p class="rp-p14">The namespace key is a constant in doze's own source. Every doze binary checks against it.</p></div>
+          <span class="rp-chip rp-c-good rp-vchip">in place</span>
+        </div>
+        <div class="rp-vrow">
+          <div class="rp-vic" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10" /></svg></div>
+          <div><h3>Source in the doze-dev GitHub org</h3><p class="rp-p14">Modules build from <a href="https://github.com/doze-dev/doze-modules">doze-modules</a>, <a href="https://github.com/doze-dev/doze-aws">doze AWS</a> and <a href="https://github.com/doze-dev/doze-kafka">doze Kafka</a>; signing runs in <a href="https://github.com/doze-dev/doze-registry">doze-registry</a>.</p></div>
+          <span class="rp-chip rp-c-good rp-vchip">in place</span>
+        </div>
+        <div class="rp-vrow">
+          <div class="rp-vic" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" /></svg></div>
+          <div><h3>Domain doze-dev.com</h3><p class="rp-p14">A DNS TXT record on the domain names the key, so anyone can check the namespace and the website share an owner.</p><code class="rp-mono rp-txt">_doze-registry.doze-dev.com TXT "ed25519={key}"</code><p class="rp-small">[Record name and format to decide.]</p></div>
+          <span class="rp-chip rp-c-info rp-vchip">new</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="keys-h" id="keys" class="rp-panel rp-card">
+        <span class="rp-kick">Keys</span>
+        <h2 id="keys-h">Key history</h2>
+        <div class="rp-key">
+          <div class="rp-key-top"><b style="font-size: 15px">ed25519 · namespace <span class="rp-mono">{ns}</span></b><span class="rp-chip rp-c-good">Active</span></div>
+          <code class="rp-mono rp-keytxt">{key}</code>
+          <div class="rp-keymeta">Since {pub.keySince} · signs all {mine.length} modules · <a href="https://github.com/doze-dev/doze-registry/blob/main/registry/doze/keys.json">keys.json</a></div>
+        </div>
+        <ol class="rp-hist">
+          <li><b>26 Jun 2026.</b> Namespace renamed from <span class="rp-mono">nerdmenot</span> to <span class="rp-mono">doze</span> and a new key generated, before the first doze release (2 Jul). Nothing signed by the old key is served.</li>
+          <li><b>No rotations since.</b> See the <a href={hrefFor("RegistryTrust.dc.html#rotation")}>rotation policy</a> (still open).</li>
+        </ol>
+        <div class="rp-maint">
+          <b style="font-size: 14px">Maintainers</b>
+          <p class="rp-p14">Owned by the doze-dev GitHub org since 26 Jun 2026. No past owners. [The list of people who can approve a release is to be shown here.]</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="notices-h" id="notices" class="rp-panel rp-card">
+        <span class="rp-kick">From the maintainers</span>
+        <h2 id="notices-h">Notices</h2>
+        <div class="rp-empty">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></svg>
+          <b style="font-size: 16px">No notices</b>
+          <p class="rp-p14" style="max-width: 36ch">No key changes, advisories, yanked releases or deprecations from this publisher.</p>
+        </div>
+        <p class="rp-small">A notice is a dated, plain-text warning shown here and on every affected release page: a key rotation, a security advisory, a yanked release, a module or engine major being deprecated.</p>
+      </section>
+    </div>
+  </div>
+</Page>
+
+<style>
+  .rp { font-family: var(--font-text); color: #140c1b; background: #fffaf4; }
+  .rp code, .rp .rp-mono { font-variant-ligatures: none; }
+  .rp a { color: #a85a0c; text-decoration: underline; text-underline-offset: 2px; }
+  .rp-wrap { box-sizing: content-box; max-width: 1240px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
+  .rp h2 { font-family: var(--font-display); font-weight: 800; font-size: 30px; letter-spacing: -0.025em; line-height: 1.1; margin: 0; }
+  .rp h3 { font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.01em; margin: 0; line-height: 1.25; }
+  .rp p { margin: 0; line-height: 1.6; }
+  .rp-kick { font: 600 13px var(--font-text); letter-spacing: 0.12em; text-transform: uppercase; color: #6e5f79; }
+  .rp-chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 999px; font: 600 13px var(--font-text); white-space: nowrap; }
+  .rp-c-good { background: #e6f4ea; color: #1d7a45; }
+  .rp-c-warn { background: #fff1d6; color: #8a5300; }
+  .rp-c-info { background: #e8eefc; color: #2f62d9; }
+  .rp-badge { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; font: 600 13px var(--font-text); white-space: nowrap; }
+  .rp-b-off { background: #fde6cb; color: #6b3a06; }
+  .rp-b-sig { background: #e6f4ea; color: #1d7a45; }
+  .rp-mono { font-family: var(--font-mono); }
+  .rp-panel { background: #fff; border: 1px solid #eadfd3; border-radius: 14px; }
+  .rp-clip { overflow: hidden; }
+
+  .rp-head { background: #fffaf4; border-bottom: 1px solid #eadfd3; }
+  .rp-head-in { padding-top: 28px; padding-bottom: 28px; display: flex; flex-direction: column; gap: 22px; }
+  .rp-crumb { font-size: 13px; color: #6e5f79; }
+  .rp-who { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+  .rp-logo { width: 72px; height: 72px; border-radius: 18px; background: #140c1b; display: flex; align-items: center; justify-content: center; flex: none; }
+  .rp-who-txt { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 260px; }
+  .rp-title { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .rp-h1 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 46px; letter-spacing: -0.03em; line-height: 1; }
+  .rp-lede { font-size: 18px; color: #4a3d55; max-width: 62ch; }
+  .rp-links { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+  .rp-links a { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; }
+  .rp-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 16px; padding: 16px 0 0; border-top: 1px solid #eadfd3; }
+  .rp-fact { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .rp-fact span { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: #6e5f79; }
+  .rp-fact b { font-size: 15px; font-weight: 600; color: #140c1b; }
+
+  .rp-body { padding-top: 40px; padding-bottom: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px; align-items: start; }
+  .rp-mods-sec { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 14px; }
+  .rp-mods-top { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; }
+  .rp-stack6 { display: flex; flex-direction: column; gap: 6px; }
+  .rp-note { font-size: 13.5px; color: #6e5f79; }
+  .rp-note-w { max-width: 52ch; }
+  .rp-mods { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .rp-mods th { text-align: left; font: 600 13px var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; color: #6e5f79; padding: 12px 16px; border-bottom: 1px solid #dccfc2; background: #fff4e8; white-space: nowrap; }
+  .rp-mods td { padding: 14px 16px; border-bottom: 1px solid #eadfd3; vertical-align: middle; color: #4a3d55; }
+  .rp-mods tr:last-child td { border-bottom: 0; }
+  .rp .rp-mname { color: #140c1b; text-decoration: none; font-weight: 600; font-size: 15.5px; }
+  .rp .rp-mname:hover { color: #a85a0c; }
+  .rp-id { font-size: 13px; color: #6e5f79; }
+  .rp-line { font-size: 14px; }
+  .rp-ink { color: #140c1b; }
+  .rp-dim { color: #6e5f79; }
+  .rp-need { font-size: 13px; margin-top: 3px; }
+  .rp-src { font-size: 13px; white-space: nowrap; }
+  .rp-tile { width: 40px; height: 40px; border-radius: 10px; color: #fff; display: flex; align-items: center; justify-content: center; font: 800 18px var(--font-display); flex: none; }
+  .rp-tile img { width: 26px; height: 26px; }
+
+  .rp-verif { padding: 24px 24px 10px; display: flex; flex-direction: column; }
+  .rp-sub { font-size: 14.5px; color: #4a3d55; margin-bottom: 8px !important; }
+  .rp-p14 { font-size: 14px; color: #4a3d55; }
+  .rp-small { font-size: 13px; color: #6e5f79; }
+  .rp-vrow { display: grid; grid-template-columns: 32px 1fr auto; gap: 4px 14px; align-items: start; justify-items: start; padding: 16px 0; border-top: 1px solid #eadfd3; }
+  .rp-vrow:first-of-type { border-top: 0; }
+  .rp-vic { width: 32px; height: 32px; border-radius: 9px; background: #fff4e8; display: flex; align-items: center; justify-content: center; color: #a85a0c; }
+  .rp-txt { display: block; margin: 8px 0 6px; font-size: 13px; background: #fff4e8; border: 1px solid #eadfd3; border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere; color: #140c1b; }
+
+  .rp-card { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .rp-key { border: 1px solid #eadfd3; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: #fffaf4; }
+  .rp-key-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .rp-keytxt { font-size: 13.5px; overflow-wrap: anywhere; }
+  .rp-keymeta { font-size: 13.5px; color: #4a3d55; }
+  .rp-hist { margin: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; border-left: 2px solid #eadfd3; padding: 0 0 0 16px; }
+  .rp-hist li { font-size: 14px; color: #4a3d55; }
+  .rp-hist b { color: #140c1b; }
+  .rp-maint { border-top: 1px solid #eadfd3; padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .rp-empty { border: 1.5px dashed #dccfc2; border-radius: 12px; padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+
+  @media (max-width: 760px) {
+    .rp-h1 { font-size: 38px; }
+    .rp-vchip { justify-self: start; }
+    .rp-mods thead { display: none; }
+    .rp-mods tr { display: grid; grid-template-columns: 40px 1fr; gap: 4px 14px; padding: 14px 16px; border-bottom: 1px solid #eadfd3; }
+    .rp-mods td { border: 0; padding: 0; }
+    .rp-mods td.rp-t { grid-row: span 3; }
+    .rp-mods td.rp-hide-s { display: none; }
+    .rp-vrow { grid-template-columns: 32px 1fr; }
+    .rp-vrow > .rp-vchip { grid-column: 2; }
+    .rp-links a { min-height: 44px; }
+  }
+</style>

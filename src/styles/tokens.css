@@ -1,7 +1,7 @@
 /* The doze brand: night and a lamp. Plum night, amber lamp; each product
    keeps its tile colour (see brand/README.md). Fonts are self-hosted:
    doze sends nothing home, and neither does its website. */
-@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/bricolage-grotesque/opsz.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/jetbrains-mono";
 

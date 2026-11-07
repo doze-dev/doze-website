@@ -10,7 +10,9 @@
       "!src/content/docs/docs",
       "!public/schema",
       "!brand/gallery.html",
-      "!**/*.svg"
+      "!**/*.svg",
+      "!design",
+      "!src/data/registry.json"
     ]
   },
   "formatter": {
@@ -38,7 +40,9 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.astro"],
+      "includes": [
+        "**/*.astro"
+      ],
       "linter": {
         "rules": {
           "correctness": {

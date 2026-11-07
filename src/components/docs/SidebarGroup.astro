@@ -1,0 +1,24 @@
+---
+// One sidebar group's links; a nested group (doze's Recipes) folds.
+import type { StarlightRouteData } from "@astrojs/starlight/route-data";
+
+type Entry = StarlightRouteData["sidebar"][number];
+interface Props {
+  entries: Entry[];
+}
+const { entries } = Astro.props;
+const hasCurrent = (e: Entry): boolean => (e.type === "link" ? e.isCurrent : e.entries.some(hasCurrent));
+---
+{entries.map((e) =>
+  e.type === "link" ? (
+    <a href={e.href} aria-current={e.isCurrent ? "page" : undefined} class:list={{ "dz-on": e.isCurrent }}>{e.label}</a>
+  ) : (
+    <details class="dz-sub" open={hasCurrent(e) || !e.collapsed}>
+      <summary>
+        {e.label}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+      </summary>
+      <div class="dz-sub-list"><Astro.self entries={e.entries} /></div>
+    </details>
+  ),
+)}

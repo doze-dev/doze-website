@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How doze decides to run something · Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.rt code,.rt pre,.rt .rt-mono,.rt .rt-ic{font-variant-ligatures:none}
+.rt{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#140C1B;background:#FFFAF4}
+.rt a{color:#A85A0C;text-decoration:underline;text-underline-offset:2px}
+.rt-wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+.rt h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;letter-spacing:-0.025em;line-height:1.1;margin:0;text-wrap:balance}
+.rt h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.01em;margin:0;line-height:1.25}
+.rt p{margin:0;line-height:1.6}
+.rt-sec{padding:64px 0 0}
+.rt-kick{font:600 13px Geist,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#6E5F79}
+.rt-lede{font-size:17px;color:#4A3D55;max-width:68ch}
+.rt-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font:600 13px Geist,sans-serif;white-space:nowrap}
+.rt-c-good{background:#E6F4EA;color:#1D7A45}.rt-c-warn{background:#FFF1D6;color:#8A5300}.rt-c-bad{background:#FCE8EC;color:#B4233C}.rt-c-info{background:#E8EEFC;color:#2F62D9}.rt-c-dim{background:#F3ECE4;color:#5A4B66}.rt-c-amb{background:#FDE6CB;color:#6B3A06}
+.rt-mono{font-family:'JetBrains Mono',monospace}
+.rt-ic{font:13px 'JetBrains Mono',monospace;background:#FFF4E8;border:1px solid #EADFD3;border-radius:5px;padding:1px 5px;color:#140C1B;overflow-wrap:anywhere}
+.rt-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.rt-lane{display:flex;align-items:stretch}
+.rt-step{flex:1 1 0;min-width:0;background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px;padding:20px 20px 18px;display:flex;flex-direction:column;gap:10px}
+.rt-step-n{width:28px;height:28px;border-radius:999px;background:#140C1B;color:#FFFAF4;font:700 14px 'Bricolage Grotesque',sans-serif;display:flex;align-items:center;justify-content:center;flex:none}
+.rt-step-where{font:13px 'JetBrains Mono',monospace;color:#6E5F79;overflow-wrap:anywhere}
+.rt-step p{font-size:14.5px;color:#4A3D55;line-height:1.55}
+.rt-arr{flex:0 0 40px;display:flex;align-items:center;justify-content:center;color:#A85A0C}
+.rt-lane-label{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.rt-net{margin:16px 0;border:1.5px dashed #DCCFC2;border-radius:14px;padding:16px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:repeating-linear-gradient(135deg,#FFFAF4 0 10px,#FFF6EC 10px 20px)}
+.rt-tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+.rt-tbl th{text-align:left;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79;padding:12px 16px;border-bottom:1px solid #DCCFC2;background:#FFF4E8}
+.rt-tbl td{padding:16px;border-bottom:1px solid #EADFD3;vertical-align:top;line-height:1.55;color:#4A3D55}
+.rt-tbl td:first-child{color:#140C1B;font-weight:600}
+.rt-tbl tr:last-child td{border-bottom:0}
+.rt-code{background:#1E1328;color:#F4ECE4;border-radius:12px;font:13.5px/1.7 'JetBrains Mono',monospace;position:relative;overflow:hidden}
+.rt-code pre{margin:0;padding:16px 18px;overflow-x:auto;white-space:pre}
+.rt-code .rt-p{color:#9C8AAB}.rt-code .rt-c{color:#9C8AAB}.rt-code .rt-ok{color:#8BE39B}.rt-code .rt-er{color:#FF9AA8}.rt-code .rt-hl{color:#F0A24B}
+.rt-code-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 16px;border-bottom:1px solid #34233F;font:12px Geist,sans-serif;color:#C9BAD3}
+.rt-copy{height:30px;padding:0 12px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer}
+.rt-fail pre{white-space:pre-wrap;overflow-x:auto}.rt-fail{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px, 100%), 1fr));gap:16px}
+.rt-vstep{display:grid;grid-template-columns:36px 1fr;gap:4px 14px;align-items:start}
+.rt-vnum{width:30px;height:30px;border-radius:999px;border:1.5px solid #A85A0C;color:#A85A0C;font:700 14px 'Bricolage Grotesque',sans-serif;display:flex;align-items:center;justify-content:center}
+.rt-gap-card{background:#FFFFFF;border:1px solid #EADFD3;border-left:4px solid #E0A458;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.rt-gap-card p{font-size:14.5px;color:#4A3D55}
+.rt-toc a{color:#4A3D55;text-decoration:none;font-size:14px;padding:6px 0;display:block}
+.rt-toc a:hover{color:#140C1B}
+.rt-open{background:#FFFFFF;border:1.5px dashed #2F62D9;border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px}
+.rt-scroll-x{overflow-x:auto}
+.rt-span2{grid-column:span 2}@media (max-width:1100px){.rt-span2{grid-column:1 / -1}}@media (max-width:980px){.rt-lane{flex-direction:column}.rt-arr{flex-basis:34px}.rt-arr svg{transform:rotate(90deg)}}
+@media (max-width:700px){.rt-wrap{padding-left:32px;padding-right:32px}.rt-sec{padding-top:48px}.rt-vstep{grid-template-columns:1fr}.rt-vnum{display:none}.rt h2{font-size:26px}.rt-h1{font-size:38px !important}.rt-chip{max-width:max-content}.rt-tbl-stack thead{display:none}.rt-tbl-stack tr{display:block;border-bottom:1px solid #EADFD3;padding:6px 0}.rt-tbl-stack td{display:block;border:0;padding:6px 16px}.rt-tbl-stack td[data-l]::before{content:attr(data-l);display:block;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79;margin-bottom:2px}.rt-fail{grid-template-columns:1fr}.rt-copy{height:44px}}
+</style>
+</helmet>
+<div class="rt">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="trust" hint-size="100%,120px"></dc-import>
+
+<main>
+<!-- Hero -->
+<section class="rt-wrap" style="padding-top: 40px">
+  <nav aria-label="Breadcrumb" style="font-size: 13px; color: #6E5F79; margin-bottom: 18px"><a href="Registry.dc.html">Registry</a> / How signing works</nav>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px 56px; align-items: end">
+    <div style="display: flex; flex-direction: column; gap: 16px; grid-column: 1 / -1">
+      <h1 class="rt-h1" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 46px; letter-spacing: -0.03em; line-height: 1.02; text-wrap: balance">How doze decides to run something</h1>
+      <p class="rt-lede"><span class="rt-ic">doze up</span> downloads programs and runs them on the machine that holds your source code and your credentials. So every byte is checked against a key doze already carries before it runs, and once a project is pinned, nothing on the network can change what it runs.</p>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px; margin-top: 30px">
+    <div class="rt-panel" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 6px"><span class="rt-kick">One key</span><b style="font-size: 16px">Compiled into doze, never fetched</b><span style="font-size: 14px; color: #4A3D55">A registry host cannot hand you a key of its own.</span></div>
+    <div class="rt-panel" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 6px"><span class="rt-kick">Two signatures</span><b style="font-size: 16px">Each archive, and the index as a whole</b><span style="font-size: 14px; color: #4A3D55">What runs, and the facts that choose it.</span></div>
+    <div class="rt-panel" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 6px"><span class="rt-kick">One lockfile</span><b style="font-size: 16px">doze.lock pins every hash</b><span style="font-size: 14px; color: #4A3D55">Pinned and cached runs with no network at all.</span></div>
+  </div>
+</section>
+
+<!-- The chain -->
+<section class="rt-wrap rt-sec" aria-labelledby="chain">
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px">
+    <span class="rt-kick">The chain</span>
+    <h2 id="chain">Six steps from source to a running Postgres</h2>
+    <p class="rt-lede">Every arrow assumes the step before it might be hostile. The example is the postgres module, release 0.2.4, on an Apple silicon Mac.</p>
+  </div>
+
+  <div class="rt-lane-label"><span class="rt-chip rt-c-dim">Before it reaches you</span><span style="font-size: 13px; color: #6E5F79">public CI, public source</span></div>
+  <div class="rt-lane">
+    <div class="rt-step">
+      <div style="display: flex; gap: 10px; align-items: center"><span class="rt-step-n">1</span><h3>The engine is built</h3></div>
+      <div class="rt-step-where">github.com/doze-dev/doze-binaries</div>
+      <p>Postgres, Kvrocks and Valkey for macOS are built from upstream source in public CI; engines upstream already ships are re-hosted. Published once, never rebuilt.</p>
+      <div style="margin-top: auto; display: flex; gap: 6px; flex-wrap: wrap"><span class="rt-chip rt-c-dim">sha256 per platform</span><span class="rt-chip rt-c-warn">not signed</span></div>
+    </div>
+    <div class="rt-arr" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="rt-step">
+      <div style="display: flex; gap: 10px; align-items: center"><span class="rt-step-n">2</span><h3>The module is built</h3></div>
+      <div class="rt-step-where">github.com/doze-dev/doze-modules</div>
+      <p>CI cross-compiles the plugin for three platforms with the SDK's release tool and uploads the archives and an unsigned <span class="rt-ic">index.yaml</span> to a GitHub release. doze AWS and doze Kafka ship their modules the same way from their own repos.</p>
+      <div style="margin-top: auto; display: flex; gap: 6px; flex-wrap: wrap"><span class="rt-chip rt-c-dim">3 platforms</span><span class="rt-chip rt-c-dim">unsigned on purpose</span></div>
+    </div>
+    <div class="rt-arr" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="rt-step" style="border-color: #E0A458; box-shadow: 0 0 0 3px #FDE6CB">
+      <div style="display: flex; gap: 10px; align-items: center"><span class="rt-step-n" style="background: #A85A0C">3</span><h3>The registry signs it</h3></div>
+      <div class="rt-step-where">github.com/doze-dev/doze-registry</div>
+      <p>The one place the private key lives (a CI secret). It signs each archive's sha256 with ed25519, then the whole index: module, releases, engine majors, protocol, channels. <span class="rt-ic">validate</span> re-checks every signature before deploy.</p>
+      <div style="margin-top: auto; display: flex; gap: 6px; flex-wrap: wrap"><span class="rt-chip rt-c-good">ed25519 × 2</span><span class="rt-chip rt-c-dim">git history is the ledger</span></div>
+    </div>
+  </div>
+
+  <div class="rt-net">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>
+    <p style="flex: 1 1 420px; font-size: 14.5px; color: #4A3D55"><b style="color: #140C1B">The network.</b> <span class="rt-mono" style="font-size: 13px">registry.doze-dev.com</span> serves the signed index; GitHub releases serve the archives. Neither is trusted: they can be slow or down, and nothing they say is believed without a signature.</p>
+    <span class="rt-chip rt-c-warn">untrusted by design</span>
+  </div>
+
+  <div class="rt-lane-label"><span class="rt-chip rt-c-amb">On your machine</span><span style="font-size: 13px; color: #6E5F79">doze, before anything runs</span></div>
+  <div class="rt-lane">
+    <div class="rt-step">
+      <div style="display: flex; gap: 10px; align-items: center"><span class="rt-step-n">4</span><h3>Check the index</h3></div>
+      <div class="rt-step-where">/doze/postgres/index.yaml</div>
+      <p>doze fetches the index and checks its signature against the key compiled into doze. Only then does it pick a release: newest that speaks its plugin protocol, supports every Postgres major you declared, and runs on this doze.</p>
+      <div style="margin-top: auto; display: flex; gap: 6px; flex-wrap: wrap"><span class="rt-chip rt-c-good">index signature</span></div>
+    </div>
+    <div class="rt-arr" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="rt-step">
+      <div style="display: flex; gap: 10px; align-items: center"><span class="rt-step-n">5</span><h3>Check the archive</h3></div>
+      <div class="rt-step-where">postgres-plugin-0.2.4-aarch64-apple-darwin.tar.gz</div>
+      <p>The download's sha256 must equal the one in the signed index, and the archive's own signature over that sha256 must verify. Nothing is unpacked until both pass.</p>
+      <div style="margin-top: auto; display: flex; gap: 6px; flex-wrap: wrap"><span class="rt-chip rt-c-good">sha256</span><span class="rt-chip rt-c-good">archive signature</span></div>
+    </div>
+    <div class="rt-arr" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="rt-step">
+      <div style="display: flex; gap: 10px; align-items: center"><span class="rt-step-n">6</span><h3>Pin it, then run offline</h3></div>
+      <div class="rt-step-where">doze.lock, next to doze.hcl</div>
+      <p>The lock records the module release, protocol, engine majors and every platform's sha256, plus the engine's exact version and hashes. From then on a cached project resolves with no network, not even the index. Only <span class="rt-ic">doze modules upgrade</span> moves a pin.</p>
+      <div style="margin-top: auto; display: flex; gap: 6px; flex-wrap: wrap"><span class="rt-chip rt-c-good">pinned</span><span class="rt-chip rt-c-good">offline</span></div>
+    </div>
+  </div>
+
+  <div class="rt-code" style="margin-top: 22px">
+    <div class="rt-code-bar"><span>What step 6 writes · doze.lock</span></div>
+<pre><span class="rt-hl">modules</span>:
+    doze/postgres:
+        version: 0.2.4             <span class="rt-c"># the module release, chosen for you</span>
+        protocol: 1                <span class="rt-c"># doze plugin protocol it speaks</span>
+        engines:
+            - "14"
+            - "15"
+            - "16"
+            - "17"
+            - "18"
+        hashes:                    <span class="rt-c"># every platform, from the signed index</span>
+            aarch64-apple-darwin: sha256:a07134d07cf988862f5b2d1a288cc43a40ace5b96e88e190b5d66ca8b207b89a
+            aarch64-unknown-linux-gnu: sha256:f29c48e5dab175d6f1b2991f274e2e5aedb55a9993eff90128feb423380fd2a2
+            x86_64-unknown-linux-gnu: sha256:7c920599a5a52f4ed4306963797e88de7ed6beb0be130b8b1039f7c7d0354f68</pre>
+  </div>
+  <p style="font-size: 13.5px; color: #6E5F79; margin-top: 10px">The registry's key itself is not in the lock: for the <span class="rt-mono">doze</span> namespace it is compiled into doze. Pinning a publisher's key on first use is how <a href="RegistryPublish.dc.html#outside">outside publishers will work</a> <span class="rt-chip rt-c-info">planned</span></p>
+</section>
+
+<!-- What each check stops -->
+<section class="rt-wrap rt-sec" aria-labelledby="stops">
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px">
+    <span class="rt-kick">Threats</span>
+    <h2 id="stops">What each check stops</h2>
+    <p class="rt-lede">Signatures prove who published, not that the code is harmless. These are the attacks the chain is built for, and what is left over.</p>
+  </div>
+  <div class="rt-panel" style="overflow: hidden">
+    <table class="rt-tbl rt-tbl-stack">
+      <thead><tr><th style="width: 19%">If someone…</th><th style="width: 33%">What stops it</th><th>What is left</th></tr></thead>
+      <tbody>
+        <tr><td>Changes an archive on GitHub</td><td data-l="What stops it">The archive's signature covers its sha256, and doze.lock pins the same hash. Changed bytes fail before anything is unpacked.</td><td data-l="What is left">Nothing runs. The host can only make the download fail.</td></tr>
+        <tr><td>Swaps or edits an index</td><td data-l="What stops it">The index signature covers every release, engine major, protocol and channel. Claiming Postgres 19 support, adding a release, or editing a URL breaks it.</td><td data-l="What is left">The oldest-doze field sits outside the signed part today. See <a href="#gaps">known gaps</a>.</td></tr>
+        <tr><td>Rolls a release back</td><td data-l="What stops it">The <span class="rt-mono">stable</span> channel is inside the signature. The registry's CI refuses any change that drops or alters a published release. A pinned project never reads the channel.</td><td data-l="What is left">A host can replay an older, validly signed index to a fresh resolve: indexes carry no expiry yet.</td></tr>
+        <tr><td>Takes over the mirror or CDN</td><td data-l="What stops it">Everything it serves is checked against the key in doze, so it cannot forge an index or an archive.</td><td data-l="What is left">It can refuse service. Locked and cached projects never contact it.</td></tr>
+        <tr><td>Changes the key</td><td data-l="What stops it">doze never fetches a key: it is a constant in the doze binary. A new <span class="rt-mono">keys.json</span> on the host changes nothing; anything signed by another key fails.</td><td data-l="What is left">A real rotation takes a doze release. See the <a href="#rotation">rotation question</a>.</td></tr>
+        <tr><td>Steals the registry key</td><td data-l="What stops it">They could sign new releases. They could not change what a locked project runs: locks pin checksums, and pins move only on <span class="rt-mono">doze modules upgrade</span>.</td><td data-l="What is left">A fresh resolve or an upgrade could pick the forged release until the key is rotated.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Failure -->
+<section class="rt-wrap rt-sec" aria-labelledby="fail">
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px">
+    <span class="rt-kick">Failures</span>
+    <h2 id="fail">What a failure looks like</h2>
+    <p class="rt-lede">doze stops and says which check failed. These are the messages in the code, filled in for postgres 0.2.4.</p>
+  </div>
+  <div class="rt-fail">
+    <div class="rt-code"><div class="rt-code-bar"><span>The index was edited</span><span class="rt-chip rt-c-bad">stops</span></div>
+<pre><span class="rt-er">module index for doze/postgres: index signature does not match the publisher key</span></pre></div>
+    <div class="rt-code"><div class="rt-code-bar"><span>The archive was changed</span><span class="rt-chip rt-c-bad">stops</span></div>
+<pre><span class="rt-er">signature check failed for postgres 0.2.4 (aarch64-apple-darwin): signature does not match the publisher key</span></pre></div>
+    <div class="rt-code"><div class="rt-code-bar"><span>The bytes differ from doze.lock</span><span class="rt-chip rt-c-bad">stops</span></div>
+<pre><span class="rt-er">checksum mismatch for postgres 0.2.4 (aarch64-apple-darwin): locked sha256:a07134d0…b89a, got sha256:[the hash of what arrived]</span></pre></div>
+    <div class="rt-code"><div class="rt-code-bar"><span>A pinned release is gone from the index</span><span class="rt-chip rt-c-warn">says the fix</span></div>
+<pre><span class="rt-er">module doze/postgres 0.2.4 (pinned in doze.lock) is no longer published</span> — run 'doze modules upgrade postgres'</pre></div>
+    <div class="rt-code"><div class="rt-code-bar"><span>The lock was written by a newer doze</span><span class="rt-chip rt-c-dim">doze 0.2 and later</span></div>
+<pre><span class="rt-er">module doze/postgres 0.3.1 (pinned in doze.lock) needs doze 0.3.0 or newer; this doze is 0.2.0.</span> Update doze (in the app: Settings › About); the lock was written by a newer doze</pre></div>
+    <div class="rt-code"><div class="rt-code-bar"><span>The index has no signature</span><span class="rt-chip rt-c-bad">stops</span></div>
+<pre><span class="rt-er">module index for doze/postgres: module index is unsigned</span></pre></div>
+  </div>
+  <p style="font-size: 13.5px; color: #6E5F79; margin-top: 12px">[The prefix <span class="rt-mono">doze up</span> prints before these lines is not shown.] The "needs doze 0.3.0" example is a future release, to show the shape; doze 0.2.0 and later print it, with three-part versions.</p>
+</section>
+
+<!-- Verify -->
+<section class="rt-wrap rt-sec" aria-labelledby="verify">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 32px 48px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span class="rt-kick">Don't take our word</span>
+      <h2 id="verify">Verify it yourself</h2>
+      <p class="rt-lede">Everything doze checks, you can check with stock tools. These commands were run against postgres 0.2.4 and pass.</p>
+      <div class="rt-panel" style="padding: 16px 18px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #4A3D55">
+        <b style="color: #140C1B">You need</b>
+        <span>curl, <span class="rt-mono">shasum</span>, and OpenSSL 3. The <span class="rt-mono">openssl</span> that ships with macOS is LibreSSL and cannot verify ed25519; <span class="rt-mono">brew install openssl@3</span> can.</span>
+      </div>
+      <div class="rt-panel" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #4A3D55">
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap"><b style="color: #140C1B">One command for all of it</b><span class="rt-chip rt-c-info">new</span></div>
+        <span><span class="rt-mono">doze modules verify</span> [not a command yet]: would re-check every pinned module in doze.lock against the registry and print each key, hash and signature.</span>
+      </div>
+    </div>
+    <div class="rt-span2" style="display: flex; flex-direction: column; gap: 18px; min-width: 0">
+      <div class="rt-vstep"><span class="rt-vnum">1</span><div style="display: flex; flex-direction: column; gap: 8px; min-width: 0"><h3>Save the registry's key</h3><p style="font-size: 14.5px; color: #4A3D55">The same 32 bytes as <span class="rt-mono">RegistryKey</span> in doze's source, wrapped as PEM.</p>
+        <div class="rt-code"><div class="rt-code-bar"><span>doze.pem</span><button class="rt-copy" type="button">Copy</button></div><pre>-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEANu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw=
+-----END PUBLIC KEY-----</pre></div></div></div>
+      <div class="rt-vstep"><span class="rt-vnum">2</span><div style="display: flex; flex-direction: column; gap: 8px; min-width: 0"><h3>Download an archive and hash it</h3><p style="font-size: 14.5px; color: #4A3D55">Compare with <span class="rt-mono">releases.0.2.4.artifacts.aarch64-apple-darwin.sha256</span> in the index.</p>
+        <div class="rt-code"><div class="rt-code-bar"><span>Terminal</span><button class="rt-copy" type="button">Copy</button></div><pre><span class="rt-p">$</span> curl -sLO https://github.com/doze-dev/doze-modules/releases/download/postgres/postgres-plugin-0.2.4-aarch64-apple-darwin.tar.gz
+<span class="rt-p">$</span> shasum -a 256 postgres-plugin-0.2.4-aarch64-apple-darwin.tar.gz
+<span class="rt-ok">a07134d07cf988862f5b2d1a288cc43a40ace5b96e88e190b5d66ca8b207b89a</span>  postgres-plugin-0.2.4-aarch64-apple-darwin.tar.gz</pre></div></div></div>
+      <div class="rt-vstep"><span class="rt-vnum">3</span><div style="display: flex; flex-direction: column; gap: 8px; min-width: 0"><h3>Check the signature over that hash</h3><p style="font-size: 14.5px; color: #4A3D55">The signed message is the lowercase hex sha256, with no newline. The signature is the artifact's <span class="rt-mono">sig</span>.</p>
+        <div class="rt-code"><div class="rt-code-bar"><span>Terminal</span><button class="rt-copy" type="button">Copy</button></div><pre><span class="rt-p">$</span> printf %s a07134d07cf988862f5b2d1a288cc43a40ace5b96e88e190b5d66ca8b207b89a &gt; sum.txt
+<span class="rt-p">$</span> echo MiZYLas0hSExnTF4jGo17Do0qjJ+O4XbkzBxqs2oRSJn5FuVo6rl6jC069xgafSKSP/AI4mUAJitsNcsdbDyBQ== | base64 -d &gt; sig.bin
+<span class="rt-p">$</span> openssl pkeyutl -verify -pubin -inkey doze.pem -rawin -in sum.txt -sigfile sig.bin
+<span class="rt-ok">Signature Verified Successfully</span></pre></div></div></div>
+      <div class="rt-vstep"><span class="rt-vnum">4</span><div style="display: flex; flex-direction: column; gap: 8px; min-width: 0"><h3>Check every index and every archive at once</h3><p style="font-size: 14.5px; color: #4A3D55">The index signature is over a canonical JSON form of the index, which is fiddly by hand. The registry's own validator does exactly what doze does; <span class="rt-mono">validate:remote</span> also re-downloads every archive.</p>
+        <div class="rt-code"><div class="rt-code-bar"><span>Terminal</span><button class="rt-copy" type="button">Copy</button></div><pre><span class="rt-p">$</span> git clone https://github.com/doze-dev/doze-registry &amp;&amp; cd doze-registry
+<span class="rt-p">$</span> npm install
+<span class="rt-p">$</span> npm run validate          <span class="rt-c"># structure + every signature, offline</span>
+<span class="rt-p">$</span> npm run validate:remote   <span class="rt-c"># + each archive's sha256 as served</span></pre></div></div></div>
+      <div class="rt-vstep"><span class="rt-vnum">5</span><div style="display: flex; flex-direction: column; gap: 8px; min-width: 0"><h3>Ask your project</h3><p style="font-size: 14.5px; color: #4A3D55">Runs the real client path, signatures included, and changes nothing. Exits 1 if a newer compatible release exists.</p>
+        <div class="rt-code"><div class="rt-code-bar"><span>Terminal</span><button class="rt-copy" type="button">Copy</button></div><pre><span class="rt-p">$</span> doze modules upgrade --check</pre></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Key -->
+<section class="rt-wrap rt-sec" aria-labelledby="key">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 24px; align-items: start">
+    <div class="rt-panel" style="padding: 26px 26px 22px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap"><span class="rt-kick">The registry's key</span><span class="rt-chip rt-c-good"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Active</span></div>
+      <h2 id="key" style="font-size: 26px">Namespace <span class="rt-mono" style="font-size: 24px">doze</span></h2>
+      <div style="background: #FFF4E8; border: 1px solid #EADFD3; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 13px; color: #6E5F79; letter-spacing: .06em; text-transform: uppercase; font-weight: 600">ed25519 public key, base64</span>
+        <code class="rt-mono" style="font-size: 15px; overflow-wrap: anywhere; color: #140C1B">Nu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw=</code>
+      </div>
+      <dl style="display: grid; grid-template-columns: max-content 1fr; gap: 10px 18px; margin: 0; font-size: 14.5px">
+        <dt style="color: #6E5F79">In use since</dt><dd style="margin: 0">26 Jun 2026</dd>
+        <dt style="color: #6E5F79">Signs</dt><dd style="margin: 0">All 8 modules, every release</dd>
+        <dt style="color: #6E5F79">Private half</dt><dd style="margin: 0">One CI secret in doze-registry. Never on the archive host, the module repos or a build machine.</dd>
+        <dt style="color: #6E5F79">Public half</dt><dd style="margin: 0">Compiled into doze; also at <a href="https://registry.doze-dev.com/doze/keys.json">/doze/keys.json</a> for people and the validator.</dd>
+        <dt style="color: #6E5F79">History</dt><dd style="margin: 0"><a href="RegistryPublisher.dc.html#keys">One key, no rotations</a></dd>
+      </dl>
+    </div>
+    <div class="rt-open" id="rotation">
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><span class="rt-chip rt-c-info">Open question</span><span class="rt-chip rt-c-dim">[to decide]</span></div>
+      <h3 style="font-size: 22px">Key rotation policy</h3>
+      <p style="font-size: 14.5px; color: #4A3D55"><b style="color: #140C1B">Decided so far:</b> no rotation on a calendar; rotate on suspected compromise. A rotation is a doze release carrying the new key, then the registry is re-signed. Locked and cached projects keep working throughout; only fresh contact with the registry fails until doze is updated.</p>
+      <p style="font-size: 14.5px; color: #4A3D55"><b style="color: #140C1B">On compromise, in order:</b> rotate, audit what the old key signed (the registry's git history), republish clean indexes, announce on the <a href="RegistryPublisher.dc.html#notices">publisher's notices</a>.</p>
+      <div style="border-top: 1px solid #EADFD3; padding-top: 12px; display: flex; flex-direction: column; gap: 8px">
+        <b style="font-size: 14px">Still open</b>
+        <ul style="margin: 0; padding-left: 18px; font-size: 14.5px; color: #4A3D55; line-height: 1.6">
+          <li>Should doze carry the next key ahead of time, so a rotation does not need an emergency release? [to decide]</li>
+          <li>Should the old key sign a statement naming the new one? [to decide]</li>
+          <li>How long a superseded key stays listed, and what doze says when it sees it. [to decide]</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Files -->
+<section class="rt-wrap rt-sec" aria-labelledby="files">
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px">
+    <span class="rt-kick">Files</span>
+    <h2 id="files">Where the files live</h2>
+    <p class="rt-lede">The registry is static files and signatures: no server, no database, no login. A browser that opens <span class="rt-mono">registry.doze-dev.com</span> is sent here.</p>
+  </div>
+  <div class="rt-panel" style="overflow: hidden">
+    <table class="rt-tbl rt-tbl-stack">
+      <thead><tr><th style="width: 40%">Path</th><th>What it holds</th><th style="width: 18%">Trust</th></tr></thead>
+      <tbody>
+        <tr><td class="rt-mono" style="font-size: 13px; font-weight: 400; overflow-wrap: anywhere">registry.doze-dev.com/doze/&lt;module&gt;/index.yaml</td><td data-l="What it holds">Releases, engine majors, protocol, archive URLs, each sha256 and signature, channels.</td><td data-l="Trust"><span class="rt-chip rt-c-good">signed, twice</span></td></tr>
+        <tr><td class="rt-mono" style="font-size: 13px; font-weight: 400; overflow-wrap: anywhere">registry.doze-dev.com/doze/&lt;module&gt;/meta.yaml</td><td data-l="What it holds">The docs on each module page, generated from the module's <span class="rt-mono">Describe()</span>.</td><td data-l="Trust"><span class="rt-chip rt-c-dim">unsigned, prose only</span></td></tr>
+        <tr><td class="rt-mono" style="font-size: 13px; font-weight: 400; overflow-wrap: anywhere">registry.doze-dev.com/doze/keys.json</td><td data-l="What it holds">The namespace and its public key. doze does not read it; its copy is compiled in.</td><td data-l="Trust"><span class="rt-chip rt-c-dim">reference copy</span></td></tr>
+        <tr><td class="rt-mono" style="font-size: 13px; font-weight: 400; overflow-wrap: anywhere">registry.doze-dev.com/index.json</td><td data-l="What it holds">The catalog this site's search reads, generated from the indexes at build.</td><td data-l="Trust"><span class="rt-chip rt-c-dim">derived</span></td></tr>
+        <tr><td class="rt-mono" style="font-size: 13px; font-weight: 400; overflow-wrap: anywhere">github.com/doze-dev/doze-modules/releases/download/&lt;module&gt;/…tar.gz</td><td data-l="What it holds">The plugin archives, one per platform. doze AWS and doze Kafka host theirs in their own repos.</td><td data-l="Trust"><span class="rt-chip rt-c-warn">untrusted host</span></td></tr>
+        <tr><td class="rt-mono" style="font-size: 13px; font-weight: 400; overflow-wrap: anywhere">github.com/doze-dev/doze-binaries/releases</td><td data-l="What it holds">Engine archives (Postgres 14.0 to 18.6 and the rest), pinned by sha256 in doze.lock.</td><td data-l="Trust"><span class="rt-chip rt-c-warn">checksum only</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size: 13.5px; color: #6E5F79; margin-top: 10px">doze 0.2 and later fetch from registry.doze-dev.com. Older doze (0.1.1) has <span class="rt-mono">doze.nerdmenot.in/registry</span> compiled in; that address keeps serving the same signed files, so it keeps working.</p>
+</section>
+
+<!-- Gaps -->
+<section class="rt-wrap rt-sec" aria-labelledby="gaps" style="padding-bottom: 80px">
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px">
+    <span class="rt-kick">Honesty</span>
+    <h2 id="gaps">Known gaps</h2>
+    <p class="rt-lede">What this chain does not do yet. None of them lets a host change what a locked, cached project runs.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 14px">
+    <div class="rt-gap-card"><h3>The oldest-doze field is not signed</h3><p>Each release can say which doze it needs (<span class="rt-mono">doze: "0.2.0"</span>). It sits beside the signed part so that a doze from before the field still verifies. A host could strip it; the worst case is an older doze choosing a release it then cannot run. The next index schema moves it inside the signature.</p><span class="rt-chip rt-c-info" style="align-self: flex-start">fix designed</span></div>
+    <div class="rt-gap-card"><h3>No transparency log</h3><p>There is no public append-only log of what the key signed. The ledger is the doze-registry git history, and its CI refuses a change that drops or edits a published release.</p><span class="rt-chip rt-c-dim" style="align-self: flex-start">[not planned yet]</span></div>
+    <div class="rt-gap-card"><h3>Indexes do not expire</h3><p>A signed index carries no timestamp, so a hostile host can serve last month's valid index to a fresh resolve and hide a newer release. Pinned projects are unaffected.</p><span class="rt-chip rt-c-dim" style="align-self: flex-start">[to decide]</span></div>
+    <div class="rt-gap-card"><h3>Engine binaries are checked, not signed</h3><p>Postgres and the other engines are verified by sha256 from the doze-binaries index and pinned in doze.lock, but the index itself is not signed. Some engines are re-hosted upstream builds, not rebuilt from source.</p><span class="rt-chip rt-c-dim" style="align-self: flex-start">[to decide]</span></div>
+    <div class="rt-gap-card"><h3>No build provenance</h3><p>Releases are built in public CI, but no release links to the exact CI run that built it, and there is no signed build attestation.</p><span class="rt-chip rt-c-info" style="align-self: flex-start">new: link each release to its run</span></div>
+    <div class="rt-gap-card"><h3>One key for everything</h3><p>A single ed25519 key signs every module. There is no second signer and no threshold. Rotating it takes a doze release.</p><span class="rt-chip rt-c-dim" style="align-self: flex-start">see rotation, above</span></div>
+  </div>
+</section>
+</main>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6917}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

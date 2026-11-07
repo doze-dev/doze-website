@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#140C1B}
+.sm-card{display:flex;flex-direction:column;gap:7px;padding:16px;border-radius:14px;background:#1E1328;border:1px solid #34233F;text-decoration:none;color:#F4ECE4;min-height:136px}
+@media (max-width:1100px){.sm-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important}}@media (max-width:640px){.sm-grid{grid-template-columns:1fr !important}}
+.sm-card:hover{border-color:#7A5E8C}
+.sm-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.sm-top code{font:12.5px "JetBrains Mono",monospace;color:#C9BAD3;overflow-wrap:anywhere}
+.sm-chip{font:600 11px Geist,sans-serif;border-radius:999px;padding:2px 8px;white-space:nowrap;flex:none}
+.sm-card b{font:700 19px 'Bricolage Grotesque',sans-serif;letter-spacing:-0.01em}
+.sm-what{font-size:13.5px;line-height:1.45;color:#C9BAD3}
+.sm-theme{margin-top:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:#9C8AAB}
+.sm-theme i{width:12px;height:12px;border-radius:3px;border:1px solid #5A4168}
+</style>
+</helmet>
+<div style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #F4ECE4; background: #140C1B; padding: 64px 0 80px">
+  <div style="max-width: 1360px; margin: 0 auto; padding: 0 40px; display: flex; flex-direction: column; gap: 44px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 760px">
+        <span style="font: 13px 'JetBrains Mono', monospace; letter-spacing: 0.14em; text-transform: uppercase; color: #F0A24B">doze-dev.com · every page</span>
+        <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 60px; line-height: 1; letter-spacing: -0.035em">The whole site, 32 screens.</h1>
+        <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #C9BAD3">One domain. Marketing pages at night, docs and the registry in daylight. Every card opens its board. From doze 0.2, <b style="color: #F4ECE4">registry.doze-dev.com</b> serves the signed files doze fetches; doze.nerdmenot.in/registry keeps serving older doze.</p>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 13px; color: #C9BAD3">
+        <span style="display: inline-flex; gap: 6px; align-items: center"><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span> a page that didn't exist</span>
+        <span style="display: inline-flex; gap: 6px; align-items: center"><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span> redrawn</span>
+        <span style="display: inline-flex; gap: 6px; align-items: center"><span class="sm-chip" style="background: #24314A; color: #CFE4F6">A state</span> the same page in a situation</span>
+      </div>
+    </div>
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; border-bottom: 1px solid #2E1F3A; padding-bottom: 10px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em">The products</h2>
+        <span style="font-size: 14px; color: #9C8AAB">dark, at night: problem first, then the fix · 7 screens</span>
+      </div>
+      <div class="sm-grid" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px">
+        <a class="sm-card" href="Main.dc.html">
+          <span class="sm-top"><code>/</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>Main</b>
+          <span class="sm-what">The family: the pain, the three tools, Larder, the registry in one line each</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+        <a class="sm-card" href="Story.dc.html">
+          <span class="sm-top"><code>/tuesday</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>Story</b>
+          <span class="sm-what">A Tuesday, honestly: six moments of the day, each flipped to how it goes with doze</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+        <a class="sm-card" href="Doze.dc.html">
+          <span class="sm-top"><code>/doze</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>Doze</b>
+          <span class="sm-what">The app and the CLI: tour, one file, polyglot, compared</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+        <a class="sm-card" href="Aws.dc.html">
+          <span class="sm-top"><code>/aws</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>Aws</b>
+          <span class="sm-what">17 services, a console for each, the IAM policy generator</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+        <a class="sm-card" href="Kafka.dc.html">
+          <span class="sm-top"><code>/kafka</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>Kafka</b>
+          <span class="sm-what">Kafka without the JVM: clients, the console, what it isn't</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+        <a class="sm-card" href="Download.dc.html">
+          <span class="sm-top"><code>/download</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>Download</b>
+          <span class="sm-what">The Mac app, the CLI for Mac and Linux, what the installer changes, verify</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+        <a class="sm-card" href="Examples.dc.html">
+          <span class="sm-top"><code>/examples</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>Examples</b>
+          <span class="sm-what">Larder: Go, Python and TypeScript services in one doze up</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; border-bottom: 1px solid #2E1F3A; padding-bottom: 10px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em">Learn</h2>
+        <span style="font-size: 14px; color: #9C8AAB">daylight: for reading · 5 screens</span>
+      </div>
+      <div class="sm-grid" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px">
+        <a class="sm-card" href="DocsHome.dc.html">
+          <span class="sm-top"><code>/docs</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>DocsHome</b>
+          <span class="sm-what">Pick a product, search all three, start-here paths</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="DozeDocs.dc.html">
+          <span class="sm-top"><code>/docs/doze/…</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>DozeDocs</b>
+          <span class="sm-what">doze docs, pulled from the doze repo</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="AwsDocs.dc.html">
+          <span class="sm-top"><code>/docs/aws/…</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>AwsDocs</b>
+          <span class="sm-what">doze AWS docs, from doze-aws</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="KafkaDocs.dc.html">
+          <span class="sm-top"><code>/docs/kafka/…</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>KafkaDocs</b>
+          <span class="sm-what">doze Kafka docs, from doze-kafka</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="Changelog.dc.html">
+          <span class="sm-top"><code>/changelog</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>Changelog</b>
+          <span class="sm-what">Every release of every product, filterable</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; border-bottom: 1px solid #2E1F3A; padding-bottom: 10px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em">The registry: finding</h2>
+        <span style="font-size: 14px; color: #9C8AAB">daylight; one search over modules, extensions and tools · 6 screens</span>
+      </div>
+      <div class="sm-grid" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px">
+        <a class="sm-card" href="Registry.dc.html">
+          <span class="sm-top"><code>/registry</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>Registry</b>
+          <span class="sm-what">The catalog: facets, cards, extensions, bring your own</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistrySearch.dc.html">
+          <span class="sm-top"><code>/registry?q=redis</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistrySearch</b>
+          <span class="sm-what">Results that say why they matched</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryNoResults.dc.html">
+          <span class="sm-top"><code>/registry?q=cassandra</code><span class="sm-chip" style="background: #24314A; color: #CFE4F6">A state</span></span>
+          <b>RegistryNoResults</b>
+          <span class="sm-what">Nothing here: run it yourself, ask, or write one</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryForYourDoze.dc.html">
+          <span class="sm-top"><code>/registry?doze=0.1.1</code><span class="sm-chip" style="background: #24314A; color: #CFE4F6">A state</span></span>
+          <b>RegistryForYourDoze</b>
+          <span class="sm-what">Checked against your doze: what runs, what needs an update</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryExtensions.dc.html">
+          <span class="sm-top"><code>/registry/extensions</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryExtensions</b>
+          <span class="sm-what">Postgres extensions × Postgres 14–18, Neon-style</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryTool.dc.html">
+          <span class="sm-top"><code>/registry/tools/mongodb</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryTool</b>
+          <span class="sm-what">Bring your own: what doze add writes, what you still get</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; border-bottom: 1px solid #2E1F3A; padding-bottom: 10px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em">The registry: one module</h2>
+        <span style="font-size: 14px; color: #9C8AAB">every version, what doze it needs, what it pins · 8 screens</span>
+      </div>
+      <div class="sm-grid" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px">
+        <a class="sm-card" href="RegistryModule.dc.html">
+          <span class="sm-top"><code>/registry/doze/postgres</code><span class="sm-chip" style="background: #3A2448; color: #F4ECE4">Revised</span></span>
+          <b>RegistryModule</b>
+          <span class="sm-what">Start, recipes, connect, quality; the install box follows the release</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryTooOld.dc.html">
+          <span class="sm-top"><code>…/postgres?doze=0.1.1</code><span class="sm-chip" style="background: #24314A; color: #CFE4F6">A state</span></span>
+          <b>RegistryTooOld</b>
+          <span class="sm-what">Your doze is older: update, or what doze picks for you</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryVersions.dc.html">
+          <span class="sm-top"><code>…/postgres/versions</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryVersions</b>
+          <span class="sm-what">Releases by line: needs doze, engines, platforms, status</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryRelease.dc.html">
+          <span class="sm-top"><code>…/postgres/0.2.4</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryRelease</b>
+          <span class="sm-what">One release: artifacts, sha256, signature, the lock entry</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryReleaseOld.dc.html">
+          <span class="sm-top"><code>…/postgres/0.2.1</code><span class="sm-chip" style="background: #24314A; color: #CFE4F6">A state</span></span>
+          <b>RegistryReleaseOld</b>
+          <span class="sm-what">An older release: not the newest, what changed since</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryEngines.dc.html">
+          <span class="sm-top"><code>…/postgres/engines</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryEngines</b>
+          <span class="sm-what">Every Postgres minor doze builds; what a major resolves to</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryReference.dc.html">
+          <span class="sm-top"><code>…/postgres/reference</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryReference</b>
+          <span class="sm-what">Every argument and block, searchable</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryExtension.dc.html">
+          <span class="sm-top"><code>…/extensions/vector</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryExtension</b>
+          <span class="sm-what">One extension: majors, preload, licence, bundles</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; border-bottom: 1px solid #2E1F3A; padding-bottom: 10px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em">Trust and the project</h2>
+        <span style="font-size: 14px; color: #9C8AAB">how doze decides to run something; who we are · 6 screens</span>
+      </div>
+      <div class="sm-grid" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px">
+        <a class="sm-card" href="RegistryTrust.dc.html">
+          <span class="sm-top"><code>/registry/trust</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryTrust</b>
+          <span class="sm-what">The signing chain, what each check stops, verify it yourself</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryPublisher.dc.html">
+          <span class="sm-top"><code>/registry/doze</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryPublisher</b>
+          <span class="sm-what">The doze-dev publisher: key, modules, notices</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="RegistryPublish.dc.html">
+          <span class="sm-top"><code>/registry/publish</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>RegistryPublish</b>
+          <span class="sm-what">Publish a module: today, and how outside publishing opens</span>
+          <span class="sm-theme"><i style="background: #FFFAF4"></i>daylight</span>
+        </a>
+        <a class="sm-card" href="Security.dc.html">
+          <span class="sm-top"><code>/security</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>Security</b>
+          <span class="sm-what">Reporting, what doze changes on your machine, advisories</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+        <a class="sm-card" href="Brand.dc.html">
+          <span class="sm-top"><code>/brand</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>Brand</b>
+          <span class="sm-what">The bats, colours, type, voice</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+        <a class="sm-card" href="NotFound.dc.html">
+          <span class="sm-top"><code>any missing page</code><span class="sm-chip" style="background: #F0A24B; color: #2A1534">New</span></span>
+          <b>NotFound</b>
+          <span class="sm-what">This page is asleep</span>
+          <span class="sm-theme"><i style="background: #140C1B"></i>night</span>
+        </a>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

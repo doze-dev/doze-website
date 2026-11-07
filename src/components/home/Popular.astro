@@ -1,0 +1,164 @@
+---
+// Popular tools, one line each (design: Popular). Every card is rendered; the
+// chips filter them with a small script. On a phone only six show until
+// "Show all" is pressed.
+const R = "registry";
+const B = "bring your own";
+const E = "extension";
+type Src = typeof R | typeof B | typeof E;
+const tools: { k: string; name: string; what: string; line: string; src: Src }[] = [
+  {
+    k: "db",
+    name: "PostgreSQL",
+    what: "Postgres 14–18, roles and schemas declared.",
+    line: "doze add postgres",
+    src: R,
+  },
+  { k: "db", name: "MariaDB", what: "MariaDB 11, MySQL-compatible.", line: "doze add mariadb", src: R },
+  { k: "db", name: "FerretDB", what: "MongoDB-compatible, on Postgres.", line: "doze add ferret", src: R },
+  { k: "db", name: "MongoDB", what: "The real mongod, from your install.", line: "doze add mongo", src: B },
+  { k: "db", name: "ClickHouse", what: "Columnar analytics.", line: "doze add clickhouse", src: B },
+  { k: "cache", name: "Valkey", what: "Redis-compatible cache, 8 and 9.", line: "doze add valkey", src: R },
+  { k: "cache", name: "Kvrocks", what: "Redis API on disk: durable, low memory.", line: "doze add kvrocks", src: R },
+  { k: "cache", name: "Memcached", what: "The classic cache.", line: "doze add memcached", src: B },
+  {
+    k: "queue",
+    name: "doze Kafka",
+    what: "Kafka without the JVM, schema registry built in.",
+    line: "doze add kafka",
+    src: R,
+  },
+  { k: "queue", name: "Temporal", what: "Durable workflows, the dev server.", line: "doze add temporal", src: R },
+  { k: "queue", name: "NATS", what: "Messaging and streams.", line: "doze add nats", src: B },
+  { k: "queue", name: "RabbitMQ", what: "AMQP broker.", line: "doze add rabbitmq", src: B },
+  { k: "search", name: "Meilisearch", what: "Instant search.", line: "doze add meilisearch", src: B },
+  { k: "search", name: "OpenSearch", what: "Search and analytics.", line: "doze add opensearch", src: B },
+  { k: "search", name: "Mailpit", what: "Catches every email your app sends.", line: "doze add mailpit", src: B },
+  { k: "cloud", name: "doze AWS", what: "17 AWS services and a console.", line: "doze add aws", src: R },
+  { k: "cloud", name: "MinIO", what: "S3-compatible object storage.", line: "doze add minio", src: B },
+  { k: "ext", name: "pgvector", what: "Vector search for embeddings.", line: 'extensions = ["vector"]', src: E },
+  { k: "ext", name: "PostGIS", what: "Geographic types and indexes.", line: 'extensions = ["postgis"]', src: E },
+  { k: "ext", name: "TimescaleDB", what: "Hypertables and time_bucket.", line: 'extensions = ["timescaledb"]', src: E },
+  { k: "ext", name: "pg_cron", what: "Scheduled jobs, preloaded for you.", line: 'extensions = ["pg_cron"]', src: E },
+  { k: "ext", name: "pgmq", what: "Message queues in Postgres tables.", line: 'extensions = ["pgmq"]', src: E },
+  {
+    k: "ext",
+    name: "pg_search",
+    what: "BM25 full-text search (ParadeDB).",
+    line: 'extensions = ["pg_search"]',
+    src: E,
+  },
+  {
+    k: "ext",
+    name: "pg_duckdb",
+    what: "DuckDB analytics inside Postgres.",
+    line: 'extensions = ["pg_duckdb"]',
+    src: E,
+  },
+];
+const labels = [
+  ["all", "All"],
+  ["db", "Databases"],
+  ["cache", "Caches"],
+  ["queue", "Queues and workflows"],
+  ["search", "Search and mail"],
+  ["cloud", "Cloud and storage"],
+  ["ext", "Postgres extensions"],
+] as const;
+const kinds = labels.map(([id, label]) => ({
+  id,
+  label,
+  count: id === "all" ? tools.length : tools.filter((t) => t.k === id).length,
+}));
+const hrefOf = (t: (typeof tools)[number]) =>
+  t.name === "PostgreSQL"
+    ? "/registry/doze/postgres/"
+    : t.src === R
+      ? "/registry/"
+      : t.src === B
+        ? `/registry/tools/${t.name === "MongoDB" ? "mongo" : t.name.toLowerCase()}/`
+        : t.name === "pgvector"
+          ? "/registry/doze/postgres/extensions/vector/"
+          : "/registry/extensions/";
+const badgeCls = { [R]: "pp-b-reg", [B]: "pp-b-byo", [E]: "pp-b-ext" };
+---
+<div class="pp" data-pp>
+  <div class="pp-chips" role="tablist" aria-label="Kinds of tool">
+    {kinds.map((k) => (
+      <button type="button" class="pp-chip" role="tab" aria-selected={k.id === "all" ? "true" : "false"} aria-controls="pp-grid" data-kind={k.id}>{k.label} <span class="pp-n">{k.count}</span></button>
+    ))}
+  </div>
+  <div class="pp-grid" id="pp-grid">
+    {tools.map((t, i) => (
+      <a class:list={["pp-card", { "pp-over": i >= 6 }]} href={hrefOf(t)} data-k={t.k}>
+        <div class="pp-top">
+          <b>{t.name}</b>
+          <span class:list={["pp-badge", badgeCls[t.src]]}>{t.src === E ? "extension · coming" : t.src}</span>
+        </div>
+        <span class="pp-what">{t.what}</span>
+        <code class="pp-line">{t.line}</code>
+      </a>
+    ))}
+  </div>
+  <button type="button" class="pp-more" data-more>Show all {tools.length}</button>
+  <p class="pp-note">From the registry: doze fetches it, checks its signature and pins it in doze.lock. Bring your own: <code>doze add</code> finds the program on your machine, or writes it as a container or a download. Every one gets a name, and sleeps and wakes like the rest. Postgres extensions by name are coming in postgres 0.3.</p>
+</div>
+
+<script>
+  // Chips filter the cards; on a phone, "Show all" lifts the six-card limit.
+  for (const root of document.querySelectorAll<HTMLElement>("[data-pp]")) {
+    const chips = [...root.querySelectorAll<HTMLButtonElement>(".pp-chip")];
+    const cards = [...root.querySelectorAll<HTMLElement>(".pp-card")];
+    const more = root.querySelector<HTMLButtonElement>("[data-more]");
+    const show = (kind: string) => {
+      let n = 0;
+      for (const c of cards) {
+        const on = kind === "all" || c.dataset.k === kind;
+        c.hidden = !on;
+        c.classList.toggle("pp-over", on && n >= 6);
+        if (on) n++;
+      }
+      for (const b of chips) b.setAttribute("aria-selected", String(b.dataset.kind === kind));
+      if (more) {
+        more.textContent = `Show all ${n}`;
+        more.hidden = n <= 6 || root.classList.contains("pp-all");
+      }
+    };
+    for (const b of chips) b.addEventListener("click", () => show(b.dataset.kind ?? "all"));
+    more?.addEventListener("click", () => {
+      root.classList.add("pp-all");
+      more.hidden = true;
+      cards.find((c) => c.classList.contains("pp-over") && !c.hidden)?.focus();
+    });
+  }
+</script>
+
+<style>
+  .pp{font-family:var(--font-text);color:#F4ECE4;background:#140C1B;display:flex;flex-direction:column;gap:22px;padding:8px 0}
+  .pp-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .pp-chip{min-height:44px;border:1px solid #34233F;border-radius:999px;padding:9px 16px;font:500 14px var(--font-text);color:#D6C8DF;background:transparent;cursor:pointer}
+  .pp-chip:hover{border-color:#5A4168;color:#F4ECE4}
+  .pp-chip:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+  .pp-chip[aria-selected="true"]{background:#F0A24B;border-color:#F0A24B;color:#2A1534;font-weight:600}
+  .pp-n{opacity:.7}
+  .pp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:12px}
+  .pp-card{text-decoration:none;color:#F4ECE4;background:#1E1328;border:1px solid #34233F;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+  .pp-card:hover{border-color:#5A4168;background:#221630}
+  .pp-card:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+  .pp-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .pp-top b{font-size:17px}
+  .pp-badge{font-size:12px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+  .pp-b-reg{color:#F0A24B}
+  .pp-b-byo{color:#B6A6C2}
+  .pp-b-ext{color:#8BE39B}
+  .pp-what{font-size:14px;line-height:1.45;color:#C9BAD3}
+  .pp-line{margin-top:auto;font:13px var(--font-mono);background:#120A18;border:1px solid #2E1F3A;border-radius:10px;padding:9px 11px;color:#E9DEEF;overflow-x:auto;white-space:pre;font-variant-ligatures:none}
+  .pp-more{display:none;align-self:stretch;height:48px;border-radius:12px;border:1px solid #4A3458;background:#1E1328;color:#F4ECE4;font:600 15px var(--font-text);cursor:pointer}
+  .pp-more:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+  .pp-note{margin:0;font-size:13px;color:#9C8AAB;line-height:1.6}
+  .pp-note code{font-family:var(--font-mono);font-variant-ligatures:none}
+  @media (max-width:600px){
+    .pp:not(.pp-all) .pp-card.pp-over{display:none}
+    .pp-more{display:block}
+  }
+</style>

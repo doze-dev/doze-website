@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Popular tools, one line each</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.pp-chip{min-height:44px;border:1px solid #34233F;border-radius:999px;padding:9px 16px;font:500 14px Geist,sans-serif;color:#D6C8DF;background:transparent;cursor:pointer}
+.pp-chip:hover{border-color:#5A4168;color:#F4ECE4}
+.pp-chip:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+.pp-card{text-decoration:none;color:#F4ECE4;background:#1E1328;border:1px solid #34233F;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pp-card:hover{border-color:#5A4168;background:#221630}
+.pp-card:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+.pp-more{display:none;align-self:stretch;height:48px;border-radius:12px;border:1px solid #4A3458;background:#1E1328;color:#F4ECE4;font:600 15px Geist,sans-serif;cursor:pointer}
+.pp-grid code{font-variant-ligatures:none}
+@media (max-width:600px){.pp-grid .pp-card:nth-child(n+7){display:none}.pp-more{display:block}}
+</style>
+</helmet>
+<div style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #F4ECE4; background: #140C1B; display: flex; flex-direction: column; gap: 22px; padding: 8px 0">
+  <div role="tablist" aria-label="Kinds of tool" style="display: flex; flex-wrap: wrap; gap: 8px">
+    <sc-for list="{{kinds}}" as="k" hint-placeholder-count="7">
+      <button type="button" class="pp-chip" role="tab" aria-selected="{{k.selected}}" onClick="{{k.pick}}" style="{{k.style}}">{{k.label}} <span style="opacity: 0.7">{{k.count}}</span></button>
+    </sc-for>
+  </div>
+  <div class="pp-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 12px">
+    <sc-for list="{{shown}}" as="t" hint-placeholder-count="12">
+      <a class="pp-card" href="{{t.href}}">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
+          <b style="font-size: 17px">{{t.name}}</b>
+          <span style="{{t.badgeStyle}}">{{t.badge}}</span>
+        </div>
+        <span style="font-size: 14px; line-height: 1.45; color: #C9BAD3">{{t.what}}</span>
+        <code style="margin-top: auto; font: 13px 'JetBrains Mono', monospace; background: #120A18; border: 1px solid #2E1F3A; border-radius: 10px; padding: 9px 11px; color: #E9DEEF; overflow-x: auto; white-space: pre">{{t.line}}</code>
+      </a>
+    </sc-for>
+  </div>
+  <button type="button" class="pp-more">Show all {{total}}</button>
+  <p style="margin: 0; font-size: 13px; color: #9C8AAB; line-height: 1.6">From the registry: doze fetches it, checks its signature and pins it in doze.lock. Bring your own: <code style="font-family: 'JetBrains Mono', monospace">doze add</code> finds the program on your machine, or writes it as a container or a download. Every one gets a name, and sleeps and wakes like the rest. Postgres extensions by name are coming in postgres 0.3.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":1090}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { kind: 'all' }; }
+  renderVals() {
+    const R = 'registry', B = 'bring your own', E = 'extension';
+    const tools = [
+      { k: 'db', name: 'PostgreSQL', what: 'Postgres 14–18, roles and schemas declared.', line: 'doze add postgres', src: R },
+      { k: 'db', name: 'MariaDB', what: "MariaDB 11, MySQL-compatible.", line: 'doze add mariadb', src: R },
+      { k: 'db', name: 'FerretDB', what: 'MongoDB-compatible, on Postgres.', line: 'doze add ferret', src: R },
+      { k: 'db', name: 'MongoDB', what: 'The real mongod, from your install.', line: 'doze add mongo', src: B },
+      { k: 'db', name: 'ClickHouse', what: 'Columnar analytics.', line: 'doze add clickhouse', src: B },
+      { k: 'cache', name: 'Valkey', what: 'Redis-compatible cache, 8 and 9.', line: 'doze add valkey', src: R },
+      { k: 'cache', name: 'Kvrocks', what: 'Redis API on disk: durable, low memory.', line: 'doze add kvrocks', src: R },
+      { k: 'cache', name: 'Memcached', what: 'The classic cache.', line: 'doze add memcached', src: B },
+      { k: 'queue', name: 'doze Kafka', what: 'Kafka without the JVM, schema registry built in.', line: 'doze add kafka', src: R },
+      { k: 'queue', name: 'Temporal', what: 'Durable workflows, the dev server.', line: 'doze add temporal', src: R },
+      { k: 'queue', name: 'NATS', what: 'Messaging and streams.', line: 'doze add nats', src: B },
+      { k: 'queue', name: 'RabbitMQ', what: 'AMQP broker.', line: 'doze add rabbitmq', src: B },
+      { k: 'search', name: 'Meilisearch', what: 'Instant search.', line: 'doze add meilisearch', src: B },
+      { k: 'search', name: 'OpenSearch', what: 'Search and analytics.', line: 'doze add opensearch', src: B },
+      { k: 'search', name: 'Mailpit', what: 'Catches every email your app sends.', line: 'doze add mailpit', src: B },
+      { k: 'cloud', name: 'doze AWS', what: '17 AWS services and a console.', line: 'doze add aws', src: R },
+      { k: 'cloud', name: 'MinIO', what: 'S3-compatible object storage.', line: 'doze add minio', src: B },
+      { k: 'ext', name: 'pgvector', what: 'Vector search for embeddings.', line: 'extensions = ["vector"]', src: E },
+      { k: 'ext', name: 'PostGIS', what: 'Geographic types and indexes.', line: 'extensions = ["postgis"]', src: E },
+      { k: 'ext', name: 'TimescaleDB', what: 'Hypertables and time_bucket.', line: 'extensions = ["timescaledb"]', src: E },
+      { k: 'ext', name: 'pg_cron', what: 'Scheduled jobs, preloaded for you.', line: 'extensions = ["pg_cron"]', src: E },
+      { k: 'ext', name: 'pgmq', what: 'Message queues in Postgres tables.', line: 'extensions = ["pgmq"]', src: E },
+      { k: 'ext', name: 'pg_search', what: 'BM25 full-text search (ParadeDB).', line: 'extensions = ["pg_search"]', src: E },
+      { k: 'ext', name: 'pg_duckdb', what: 'DuckDB analytics inside Postgres.', line: 'extensions = ["pg_duckdb"]', src: E },
+    ];
+    const labels = [['all', 'All'], ['db', 'Databases'], ['cache', 'Caches'], ['queue', 'Queues and workflows'], ['search', 'Search and mail'], ['cloud', 'Cloud and storage'], ['ext', 'Postgres extensions']];
+    const kind = this.state.kind;
+    const kinds = labels.map(([id, label]) => ({
+      label,
+      count: id === 'all' ? tools.length : tools.filter((t) => t.k === id).length,
+      selected: id === kind,
+      pick: () => this.setState({ kind: id }),
+      style: id === kind ? 'background: #F0A24B; border-color: #F0A24B; color: #2A1534; font-weight: 600' : ''
+    }));
+    const badgeColor = { registry: '#F0A24B', 'bring your own': '#B6A6C2', extension: '#8BE39B' };
+    const hrefOf = (t) => t.name === "PostgreSQL" ? "RegistryModule.dc.html" : t.src === R ? "Registry.dc.html" : t.src === B ? (t.name === "MongoDB" ? "RegistryTool.dc.html" : "RegistrySearch.dc.html") : t.name === "pgvector" ? "RegistryExtension.dc.html" : "RegistryExtensions.dc.html";
+    const shown = tools.filter((t) => kind === 'all' || t.k === kind).map((t) => ({
+      ...t,
+      href: hrefOf(t),
+      badge: t.src === E ? "extension · coming" : t.src,
+      badgeStyle: 'font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; color: ' + badgeColor[t.src]
+    }));
+    return { kinds, shown, total: tools.length };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PostgreSQL reference · doze registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.rr-page{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#140C1B;background:#FFFAF4}
+.rr-page a{color:#A85A0C;text-decoration:none}.rr-page code,.rr-page pre{font-variant-ligatures:none !important}
+.rr-page a:hover{text-decoration:underline}
+.rr-wrap{max-width:1240px;margin:0 auto;padding:36px 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px;align-items:start}
+.rr-toc{position:sticky;top:24px;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.rr-toc a{color:#4A3D55;padding:8px 10px;min-height:44px;box-sizing:border-box;align-items:center;border-radius:8px;display:flex;justify-content:space-between;gap:8px}
+.rr-toc a:hover{background:#FFF4E8;text-decoration:none}
+.rr-toc a[aria-current="true"]{background:#FFF4E8;color:#140C1B;font-weight:600}
+.rr-toc small{color:#6E5F79;font-variant-numeric:tabular-nums}
+.rr-toc .rr-hitn{color:#8A5300;font-weight:600}
+.rr-page h2{margin:0;font:700 30px/1.2 'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+.rr-search{display:flex;align-items:center;gap:10px;height:48px;padding:0 8px 0 14px;border:1.5px solid #A85A0C;border-radius:12px;background:#FFFFFF;box-shadow:0 0 0 3px #FDE6CB}
+.rr-search input{border:0;outline:0;flex:1;min-width:0;font:16px Geist,sans-serif;color:#140C1B;background:transparent}
+.rr-clear{height:34px;padding:0 12px;border-radius:8px;border:1px solid #DCCFC2;background:#FFFFFF;font:500 13px Geist,sans-serif;color:#4A3D55;cursor:pointer}
+.rr-results{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:14px;color:#4A3D55}
+.rr-jump{display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:999px;background:#FFF1D6;color:#6B3A06 !important;font:500 13px 'JetBrains Mono',monospace}
+.rr-grp{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px;overflow:hidden}
+.rr-grp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 20px;min-height:44px;box-sizing:border-box}
+.rr-grp>summary::-webkit-details-marker{display:none}
+.rr-grp>summary .rr-chev{transition:transform .15s;flex:none;color:#6E5F79}
+.rr-grp[open]>summary .rr-chev{transform:rotate(90deg)}
+.rr-grp>summary h3{margin:0;font:600 18px Geist,sans-serif}
+.rr-grp>summary h3 code{font:600 16px 'JetBrains Mono',monospace}
+.rr-grp>summary .rr-cnt{font-size:13.5px;color:#6E5F79}
+.rr-grp>summary .rr-hits{margin-left:auto;font:600 12.5px Geist,sans-serif;color:#8A5300;background:#FFF1D6;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.rr-grp .rr-blurb{margin:0;padding:0 20px 14px 52px;font-size:14px;line-height:1.55;color:#4A3D55}
+.rr-tbl{overflow-x:auto;border-top:1px solid #EADFD3}
+.rr-page table{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
+.rr-page th{font:600 11.5px Geist,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79;text-align:left;padding:10px 14px;background:#FFF9F2;border-bottom:1px solid #EADFD3;white-space:nowrap}
+.rr-page td{padding:11px 14px;border-top:1px solid #F1E8DE;vertical-align:top;color:#4A3D55;line-height:1.5}
+.rr-page tr:first-child td{border-top:0}
+.rr-page td code{font:13px 'JetBrains Mono',monospace;color:#140C1B}
+.rr-page td.rr-nm{white-space:nowrap;width:1%}
+.rr-page td.rr-nm code{font-weight:600}
+.rr-page td.rr-ty{white-space:nowrap;font:13px 'JetBrains Mono',monospace;color:#4A3D55;width:1%}
+.rr-page td.rr-since{white-space:nowrap;font:13px 'JetBrains Mono',monospace;color:#4A3D55;width:1%}
+.rr-none{color:#6E5F79;font-size:13px}
+.rr-req{display:inline-block;margin-left:6px;font:600 11px Geist,sans-serif;color:#8A5300;background:#FFF1D6;border-radius:999px;padding:1px 7px;vertical-align:1px}
+.rr-anc{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;margin-left:4px;vertical-align:middle;border-radius:6px;color:#6E5F79 !important}
+.rr-anc:hover{background:#FFF4E8;color:#A85A0C !important}
+.rr-page tr.rr-hit td{background:#FFFBF1}
+.rr-page tr.rr-hit td:first-child{box-shadow:inset 3px 0 0 #F0A24B}
+.rr-page mark{background:#FFE2A8;color:#140C1B;border-radius:3px;padding:0 1px}
+.rr-note{display:block;margin-top:6px;font-size:13px;color:#4A3D55}
+.rr-chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;font:600 11.5px Geist,sans-serif;white-space:nowrap}
+.rr-chip.rr-info{background:#E8EEFC;color:#2F62D9}
+.rr-code{margin:0;background:#1E1328;border-radius:10px;padding:14px 16px;font:13px/1.7 'JetBrains Mono',monospace;color:#F4ECE4;overflow-x:auto;white-space:pre}
+.rr-code .rr-k{color:#F0A24B}.rr-code .rr-s{color:#A8E0B4}
+.rr-foot{font-size:13px;line-height:1.55;color:#6E5F79;margin:0}
+@media (max-width:960px){.rr-wrap{grid-template-columns:minmax(0,1fr);gap:24px}.rr-toc{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px}.rr-toc a{white-space:nowrap;border:1px solid #EADFD3;background:#FFFFFF;min-height:44px;box-sizing:border-box;align-items:center}.rr-toc .rr-lbl{display:none}}
+@media (max-width:760px){.rr-page table{min-width:0}.rr-page thead{display:none}.rr-page table,.rr-page tbody{display:block}.rr-page tr{display:flex;flex-wrap:wrap;gap:4px 12px;padding:12px 16px;border-top:1px solid #F1E8DE}.rr-page tr:first-child{border-top:0}.rr-page td{display:block;width:auto !important;border:0 !important;padding:0;background:transparent !important}.rr-page td.rr-nm,.rr-page td.rr-ds{width:100% !important;box-shadow:none !important}.rr-page tr.rr-hit{background:#FFFBF1;box-shadow:inset 3px 0 0 #F0A24B}.rr-page td:nth-child(3)::before{content:"default ";color:#6E5F79;font:12.5px Geist,sans-serif}.rr-page td:nth-child(4)::before{content:"since ";color:#6E5F79;font:12.5px Geist,sans-serif}.rr-page td.rr-ds{width:100%}.rr-wrap{padding:24px 32px 72px}.rr-grp .rr-blurb{padding-left:20px}.rr-grp>summary{flex-wrap:wrap}.rr-grp>summary .rr-hits{margin-left:32px}}
+</style>
+</helmet>
+<div class="rr-page">
+  <dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+  <dc-import name="RegistryBar" section="modules" hint-size="100%,120px"></dc-import>
+  <dc-import name="RegistryModuleHead" tab="reference" newest="0.2.5" hint-size="100%,330px"></dc-import>
+
+  <div class="rr-wrap">
+    <nav class="rr-toc" aria-label="Reference sections">
+      <span class="rr-lbl" style="font: 600 12px Geist, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #6E5F79; padding: 0 10px 8px">On this page</span>
+      <a href="#args" aria-current="true">Arguments <small><span class="rr-hitn">3</span> / 18</small></a>
+      <a href="#role">role <small><span class="rr-hitn">1</span> / 13</small></a>
+      <a href="#schema">schema <small>1</small></a>
+      <a href="#grant">grant <small>5</small></a>
+      <a href="#extension">extension <small>5</small></a>
+      <a href="#common">Every module <small>7</small></a>
+    </nav>
+
+    <main style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap">
+          <h2>Reference</h2>
+          <span style="font-size: 13.5px; color: #6E5F79">For release <b style="color: #140C1B">0.2.5</b> · the module's own description</span>
+        </div>
+        <form class="rr-search" role="search" onsubmit="return false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <label for="ref-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search the postgres reference</label>
+          <input id="ref-q" type="search" value="connection" placeholder="Search 42 arguments: connection_limit, password, settings">
+          <button class="rr-clear" type="button">Clear</button>
+        </form>
+        <div class="rr-results" aria-live="polite">
+          <span><b style="color: #140C1B">4 matches</b> in 2 groups:</span>
+          <a class="rr-jump" href="#arg-connection_limit">connection_limit</a>
+          <a class="rr-jump" href="#arg-max_connections">max_connections</a>
+          <a class="rr-jump" href="#arg-allow_connections">allow_connections</a>
+          <a class="rr-jump" href="#role-connection_limit">role.connection_limit</a>
+        </div>
+      </div>
+
+      <details class="rr-grp" id="args" open>
+        <summary>
+          <svg class="rr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          <h3>Arguments</h3><span class="rr-cnt">18</span><span class="rr-hits">3 matches</span>
+        </summary>
+        <p class="rr-blurb">Set directly in <code style="font: 13px 'JetBrains Mono', monospace">module postgres "…" { }</code>. The database they describe is named after the instance.</p>
+        <div class="rr-tbl">
+          <table>
+            <thead><tr><th scope="col">Argument</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Since</th><th scope="col">Description</th></tr></thead>
+            <tbody>
+<tr id="arg-version"><td class="rr-nm"><code>version</code><a class="rr-anc" href="#arg-version" aria-label="Link to version"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">number <span class="rr-req">required</span></td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Engine major to run — 14, 15, 16, 17 or 18.</td></tr>
+<tr id="arg-owner"><td class="rr-nm"><code>owner</code><a class="rr-anc" href="#arg-owner" aria-label="Link to owner"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Owner role for the instance's default database.</td></tr>
+<tr id="arg-encoding"><td class="rr-nm"><code>encoding</code><a class="rr-anc" href="#arg-encoding" aria-label="Link to encoding"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><code>UTF8</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Character-set encoding for the database.</td></tr>
+<tr id="arg-locale"><td class="rr-nm"><code>locale</code><a class="rr-anc" href="#arg-locale" aria-label="Link to locale"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Locale (LC_COLLATE + LC_CTYPE) for the database.</td></tr>
+<tr id="arg-lc_collate"><td class="rr-nm"><code>lc_collate</code><a class="rr-anc" href="#arg-lc_collate" aria-label="Link to lc_collate"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Collation order, overriding locale.</td></tr>
+<tr id="arg-lc_ctype"><td class="rr-nm"><code>lc_ctype</code><a class="rr-anc" href="#arg-lc_ctype" aria-label="Link to lc_ctype"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Character classification, overriding locale.</td></tr>
+<tr id="arg-template"><td class="rr-nm"><code>template</code><a class="rr-anc" href="#arg-template" aria-label="Link to template"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Template database to create from.</td></tr>
+<tr id="arg-connection_limit" class="rr-hit"><td class="rr-nm"><code><mark>connection</mark>_limit</code><a class="rr-anc" href="#arg-connection_limit" aria-label="Link to connection_limit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">number</td><td class="rr-df"><code>-1</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Max concurrent <mark>connection</mark>s to the database.</td></tr>
+<tr id="arg-is_template"><td class="rr-nm"><code>is_template</code><a class="rr-anc" href="#arg-is_template" aria-label="Link to is_template"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Mark the database as a template.</td></tr>
+<tr id="arg-allow_connections" class="rr-hit"><td class="rr-nm"><code>allow_<mark>connection</mark>s</code><a class="rr-anc" href="#arg-allow_connections" aria-label="Link to allow_connections"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>true</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Whether the database accepts <mark>connection</mark>s.</td></tr>
+<tr id="arg-tablespace"><td class="rr-nm"><code>tablespace</code><a class="rr-anc" href="#arg-tablespace" aria-label="Link to tablespace"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Tablespace the database lives in.</td></tr>
+<tr id="arg-comment"><td class="rr-nm"><code>comment</code><a class="rr-anc" href="#arg-comment" aria-label="Link to comment"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">COMMENT applied to the database.</td></tr>
+<tr id="arg-shared_buffers"><td class="rr-nm"><code>shared_buffers</code><a class="rr-anc" href="#arg-shared_buffers" aria-label="Link to shared_buffers"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><code>16MB</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">shared_buffers server setting, e.g. "256MB".</td></tr>
+<tr id="arg-max_connections" class="rr-hit"><td class="rr-nm"><code>max_<mark>connection</mark>s</code><a class="rr-anc" href="#arg-max_connections" aria-label="Link to max_connections"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">number</td><td class="rr-df"><code>50</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">max_<mark>connection</mark>s server setting.</td></tr>
+<tr id="arg-fsync"><td class="rr-nm"><code>fsync</code><a class="rr-anc" href="#arg-fsync" aria-label="Link to fsync"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">fsync server setting (off for the dev tuning profile).</td></tr>
+<tr id="arg-autovacuum"><td class="rr-nm"><code>autovacuum</code><a class="rr-anc" href="#arg-autovacuum" aria-label="Link to autovacuum"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>true</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">autovacuum server setting.</td></tr>
+<tr id="arg-extensions"><td class="rr-nm"><code>extensions</code><a class="rr-anc" href="#arg-extensions" aria-label="Link to extensions"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">list(string)</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Shorthand list of extensions to CREATE (or use extension blocks).<span class="rr-note">Catalog names: <span class="rr-chip rr-info">coming in postgres 0.3</span></span></td></tr>
+<tr id="arg-settings"><td class="rr-nm"><code>settings</code><a class="rr-anc" href="#arg-settings" aria-label="Link to settings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">map(string)</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Arbitrary postgresql.conf settings, applied verbatim.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="rr-grp" id="role" open>
+        <summary>
+          <svg class="rr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          <h3><code>role "&lt;name&gt;"</code></h3><span class="rr-cnt">13 arguments · repeatable</span><span class="rr-hits">1 match</span>
+        </summary>
+        <p class="rr-blurb">A login role / user, converged on the server. With <code style="font: 13px 'JetBrains Mono', monospace">login = false</code>, a group role to hang grants on.</p>
+        <div class="rr-tbl">
+          <table>
+            <thead><tr><th scope="col">Argument</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Since</th><th scope="col">Description</th></tr></thead>
+            <tbody>
+<tr id="role-password"><td class="rr-nm"><code>password</code><a class="rr-anc" href="#role-password" aria-label="Link to password"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Login password.</td></tr>
+<tr id="role-login"><td class="rr-nm"><code>login</code><a class="rr-anc" href="#role-login" aria-label="Link to login"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>true</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Whether the role may log in.</td></tr>
+<tr id="role-superuser"><td class="rr-nm"><code>superuser</code><a class="rr-anc" href="#role-superuser" aria-label="Link to superuser"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Grant SUPERUSER.</td></tr>
+<tr id="role-createdb"><td class="rr-nm"><code>createdb</code><a class="rr-anc" href="#role-createdb" aria-label="Link to createdb"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Allow creating databases.</td></tr>
+<tr id="role-createrole"><td class="rr-nm"><code>createrole</code><a class="rr-anc" href="#role-createrole" aria-label="Link to createrole"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Allow creating other roles.</td></tr>
+<tr id="role-replication"><td class="rr-nm"><code>replication</code><a class="rr-anc" href="#role-replication" aria-label="Link to replication"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Allow streaming replication.</td></tr>
+<tr id="role-inherit"><td class="rr-nm"><code>inherit</code><a class="rr-anc" href="#role-inherit" aria-label="Link to inherit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>true</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Inherit privileges of member-of roles.</td></tr>
+<tr id="role-bypassrls"><td class="rr-nm"><code>bypassrls</code><a class="rr-anc" href="#role-bypassrls" aria-label="Link to bypassrls"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Bypass row-level security.</td></tr>
+<tr id="role-connection_limit" class="rr-hit"><td class="rr-nm"><code><mark>connection</mark>_limit</code><a class="rr-anc" href="#role-connection_limit" aria-label="Link to connection_limit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">number</td><td class="rr-df"><code>-1</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Per-role <mark>connection</mark> cap.</td></tr>
+<tr id="role-valid_until"><td class="rr-nm"><code>valid_until</code><a class="rr-anc" href="#role-valid_until" aria-label="Link to valid_until"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Password expiry timestamp.</td></tr>
+<tr id="role-member_of"><td class="rr-nm"><code>member_of</code><a class="rr-anc" href="#role-member_of" aria-label="Link to member_of"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">list(string)</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Roles this role is granted membership in.</td></tr>
+<tr id="role-comment"><td class="rr-nm"><code>comment</code><a class="rr-anc" href="#role-comment" aria-label="Link to comment"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">COMMENT applied to the role.</td></tr>
+<tr id="role-config"><td class="rr-nm"><code>config</code><a class="rr-anc" href="#role-config" aria-label="Link to config"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">map(string)</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Per-role ALTER ROLE … SET settings.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="rr-grp" id="schema">
+        <summary>
+          <svg class="rr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          <h3><code>schema "&lt;name&gt;"</code></h3><span class="rr-cnt">1 argument: owner · repeatable</span>
+        </summary>
+      </details>
+
+      <details class="rr-grp" id="grant" open>
+        <summary>
+          <svg class="rr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          <h3><code>grant "&lt;role&gt;"</code></h3><span class="rr-cnt">5 arguments · repeatable</span>
+        </summary>
+        <p class="rr-blurb">A privilege grant to a role. The label is the role that receives it: <code style="font: 13px 'JetBrains Mono', monospace">grant "orders" { privileges = ["ALL"], schema = "orders", objects = "tables" }</code>.</p>
+        <div class="rr-tbl">
+          <table>
+            <thead><tr><th scope="col">Argument</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Since</th><th scope="col">Description</th></tr></thead>
+            <tbody>
+<tr id="grant-privileges"><td class="rr-nm"><code>privileges</code><a class="rr-anc" href="#grant-privileges" aria-label="Link to privileges"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">list(string) <span class="rr-req">required</span></td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Privileges to grant (SELECT, INSERT, ALL, …).</td></tr>
+<tr id="grant-database"><td class="rr-nm"><code>database</code><a class="rr-anc" href="#grant-database" aria-label="Link to database"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Target database.</td></tr>
+<tr id="grant-schema"><td class="rr-nm"><code>schema</code><a class="rr-anc" href="#grant-schema" aria-label="Link to schema"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Target schema.</td></tr>
+<tr id="grant-objects"><td class="rr-nm"><code>objects</code><a class="rr-anc" href="#grant-objects" aria-label="Link to objects"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Object class the grant applies to (tables, sequences, …).</td></tr>
+<tr id="grant-with_grant_option"><td class="rr-nm"><code>with_grant_option</code><a class="rr-anc" href="#grant-with_grant_option" aria-label="Link to with_grant_option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Allow the grantee to re-grant.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="rr-grp" id="extension" open>
+        <summary>
+          <svg class="rr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          <h3><code>extension "&lt;name&gt;"</code></h3><span class="rr-cnt">5 arguments · repeatable</span>
+        </summary>
+        <p class="rr-blurb">A Postgres extension to install (pgvector, postgis, …).</p>
+        <div style="padding: 0 20px 16px 52px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px">
+<pre class="rr-code"><span class="rr-k">module</span> postgres <span class="rr-s">"postgres"</span> {
+  version = 18
+  extension <span class="rr-s">"vector"</span> { version = <span class="rr-s">"0.8.7"</span> }
+}</pre>
+          <p class="rr-foot" style="align-self: center"><span class="rr-chip rr-info">Coming in postgres 0.3</span><br>Catalog names such as <code style="font: 12.5px 'JetBrains Mono', monospace">vector</code> are fetched by doze from postgres 0.3. Today a name must ship with Postgres (contrib) or come with a <code style="font: 12.5px 'JetBrains Mono', monospace">source</code>.</p>
+        </div>
+        <div class="rr-tbl">
+          <table>
+            <thead><tr><th scope="col">Argument</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Since</th><th scope="col">Description</th></tr></thead>
+            <tbody>
+<tr id="extension-version"><td class="rr-nm"><code>version</code><a class="rr-anc" href="#extension-version" aria-label="Link to version"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Specific extension version.</td></tr>
+<tr id="extension-schema"><td class="rr-nm"><code>schema</code><a class="rr-anc" href="#extension-schema" aria-label="Link to schema"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Schema to install the extension into.</td></tr>
+<tr id="extension-source"><td class="rr-nm"><code>source</code><a class="rr-anc" href="#extension-source" aria-label="Link to source"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">string</td><td class="rr-df"><span class="rr-none">none</span></td><td class="rr-since">0.2.1</td><td class="rr-ds">Path to a local extension bundle to install from.</td></tr>
+<tr id="extension-optional"><td class="rr-nm"><code>optional</code><a class="rr-anc" href="#extension-optional" aria-label="Link to optional"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">Skip (don't fail) if the extension is unavailable.</td></tr>
+<tr id="extension-cascade"><td class="rr-nm"><code>cascade</code><a class="rr-anc" href="#extension-cascade" aria-label="Link to cascade"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a></td><td class="rr-ty">bool</td><td class="rr-df"><code>false</code></td><td class="rr-since">0.2.1</td><td class="rr-ds">CREATE EXTENSION … CASCADE for dependencies.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="rr-grp" id="common">
+        <summary>
+          <svg class="rr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          <h3>Fields every module takes</h3><span class="rr-cnt">7 from doze itself: port, listen, enabled, count, for_each, after, sleep</span>
+        </summary>
+      </details>
+
+      <p class="rr-foot"><b style="color: #4A3D55">Since</b> is the module release that added an argument. Every argument here is in 0.2.1, the oldest release in the index (from doze-modules history; releases do not yet record this, so the column is derived). Descriptions and defaults are the module's own (describe.go on main), so this page cannot drift from what doze accepts.</p>
+    </main>
+  </div>
+
+  <dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

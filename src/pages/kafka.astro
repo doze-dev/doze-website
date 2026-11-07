@@ -1,13 +1,247 @@
 ---
-import Hero from "../components/Hero.astro";
-import Base from "../layouts/Base.astro";
+import Page from "../layouts/Page.astro";
 ---
-<Base title="doze Kafka" theme="kafka" description="A real Kafka broker in one Go binary. No JVM, no ZooKeeper, no KRaft.">
-  <Hero
-    eyebrow="doze Kafka"
-    title="Kafka without the JVM."
-    lede="Speaks the Kafka wire protocol, versions 1 to 4, so your clients and tests hit a real broker. Consumer groups, transactions and a schema registry, on disk, in one small process."
-    cmd="doze add kafka"
-    docs="/docs/kafka/"
-  />
-</Base>
+<Page title="doze Kafka" theme="kafka" current="kafka">
+<div class="kf kf-s1 kf-root">
+
+  <div class="kf-sub kf-s2">
+    <nav class="kf-s3" aria-label="doze Kafka">
+      <span class="kf-s4"><span class="kf-s5"></span>doze Kafka</span>
+      <a href="#clients">Clients</a><a href="#features">What you get</a><a href="#not">What it isn't</a><a href="#install">Install</a><a href="/docs/kafka/">Docs</a><a href="/changelog/">Changelog</a>
+    </nav>
+  </div>
+
+  <section class="kf-s6">
+    <div class="kf-s7">
+      <img class="kf-s8" src="/brand/doze-kafka.svg" alt="doze Kafka">
+      <span class="kf-s9">One Go binary · single node · disk-backed</span>
+    </div>
+    <h1 class="kf-hero-title kf-s10">Kafka for your laptop. Hold the JVM.</h1>
+    <p class="kf-s11">A native broker that boots in milliseconds, sits quiet until a client connects, keeps your data on disk, and shuts down cleanly. No JVM, no ZooKeeper, no KRaft quorum, no Docker.</p>
+    <div class="kf-s12"><span class="kf-s13">-Xmx1G</span><span class="kf-s13">waiting for controller quorum…</span><span class="kf-s13">all you wanted was one topic</span></div>
+    <div class="kf-stack-sm kf-s14">
+      <a class="kf-btn kf-btn-sun" href="#install">Install doze Kafka</a>
+      <a class="kf-btn kf-btn-ghost" href="/docs/kafka/">Getting started</a>
+    </div>
+  </section>
+
+  <!-- Clients -->
+  <section class="kf-s15" id="clients">
+    <div class="kf-s16">
+      <h2 class="kf-s17">If your client can't tell, it's Kafka.</h2>
+      <p class="kf-s18">Built to behave like Kafka to any client on the socket. These are tested against it in CI on every change:</p>
+      <div class="kf-s19">
+        <span class="kf-pill">franz-go</span><span class="kf-pill">Sarama</span><span class="kf-pill">Java client</span><span class="kf-pill">Kafka Streams</span><span class="kf-pill">Spring Kafka</span><span class="kf-pill">librdkafka · kcat · confluent-kafka</span><span class="kf-pill">KafkaJS</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- The real console -->
+  <section class="kf-s20">
+    <div class="kf-s21">
+      <span class="kf-s9">The console</span>
+      <h2 class="kf-s22">See every record. And why it's there.</h2>
+      <p class="kf-s23">Topics, the tape of records on disk, messages decoded, and underneath, the requests that touched them. On by default.</p>
+    </div>
+    <div class="kf-s24">
+      <div class="kf-s25"></div>
+      <div class="kf-s26">
+        <div class="kf-s27"><span class="kf-s28"></span><span class="kf-s29"></span><span class="kf-s30"></span><span class="kf-s31">doze Kafka · console</span></div>
+        <img class="kf-s32" src="/media/kafka-orders.webp" alt="The doze Kafka console: a topic, its tape of 40 records on disk, the messages, and the requests underneath">
+      </div>
+    </div>
+    <p class="kf-s33">The real console, from its demo stack: 40 records produced with kcat. <span class="kf-recap">[re-capture with Larder]</span></p>
+    <div class="kf-s34">
+      <div class="kf-s35">
+        <h3 class="kf-s36">Live, as it lands.</h3>
+        <p class="kf-s37">kcat produces records; each request shows up in the traffic, then on the topic's tape, newest on the right.</p>
+      </div>
+      <div class="kf-s38">
+        <video class="kf-s39" src="/media/kafka-live.webm" autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline" controls="controls" aria-label="Records produced with kcat appear in doze Kafka's traffic and on the topic's tape"></video>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quickstart -->
+  <section class="kf-s40">
+    <div class="kf-s41">
+      <h2 class="kf-s42">It's a name, not a port</h2>
+      <p class="kf-s23">Each broker answers on its own loopback address with a name, so nothing on your network can reach it and two projects can both use 9092. Stop it with Ctrl-C: topics, messages and committed offsets are all there next time.</p>
+    </div>
+    <pre class="kf-s43"><span class="kf-s44">$</span> cd ~/code/larder &amp;&amp; doze-kafka
+  broker   <span class="kf-s45">kafka.larder.doze:9092</span>
+  console  <span class="kf-s45">http://kafka.larder.doze</span>
+
+<span class="kf-s44">$</span> kcat -b kafka.larder.doze:9092 -t orders.placed -P
+<span class="kf-s44">$</span> kcat -b kafka.larder.doze:9092 -t orders.placed -C -e
+&#123;"order_id": "[id]", "total": "[amount]"&#125;</pre>
+  </section>
+
+  <!-- In Larder -->
+  <section class="kf-s46">
+    <div class="kf-s47">
+      <div class="kf-s48">
+        <span class="kf-s9">Inside a doze stack</span>
+        <h2 class="kf-s49">The topics are the contracts.</h2>
+        <p class="kf-s37">In Larder, the example grocer, services in Go, Python and TypeScript talk through four topics, declared in doze.hcl rather than created by whichever client writes first. franz-go, confluent-kafka and KafkaJS, all on one broker.</p>
+        <div class="kf-s12"><span class="kf-topic">users.signed-up</span><span class="kf-topic">orders.placed</span><span class="kf-topic">payments.settled</span><span class="kf-topic">payments.failed</span></div>
+        <a class="kf-s50" href="/examples/">See Larder →</a>
+      </div>
+      <pre class="kf-s51"><span class="kf-s44"># doze.hcl, from Larder</span>
+module kafka "kafka" &#123;
+  version            = 4
+  port               = 9092
+  auto_create_topics = false
+
+  topic "users.signed-up"  &#123; partitions = 3 &#125;
+  topic "orders.placed"    &#123; partitions = 3 &#125;
+  topic "payments.settled" &#123; partitions = 3 &#125;
+  topic "payments.failed"  &#123; partitions = 3 &#125;
+&#125;</pre>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="kf-s52" id="features">
+    <div class="kf-s53">
+      <h2 class="kf-s54">What you get</h2>
+      <div class="kf-s55">
+        <div class="kf-feat"><h3 class="kf-s56">Wire protocol Kafka 1–4</h3><p>One binary speaks Kafka 1 to 4; pick which with <code class="kf-s57">--kafka-version</code> (default 4).</p></div>
+        <div class="kf-feat"><h3 class="kf-s56">Consumer groups</h3><p>The classic protocol and KIP-848, chosen by the client.</p></div>
+        <div class="kf-feat"><h3 class="kf-s56">A schema registry, built in</h3><p>Confluent-compatible: Avro, JSON Schema and Protobuf. Stock serializers need only schema.registry.url.</p></div>
+        <div class="kf-feat"><h3 class="kf-s56">A console that explains</h3><p>Topics, messages, lag, and why a group keeps rebalancing, with the Kafka error names.</p></div>
+        <div class="kf-feat"><h3 class="kf-s56">Transactions, SASL and TLS</h3><p>Transactional producers and read-committed consumers. SASL/PLAIN, SCRAM-256/512 and TLS when you want them.</p></div>
+        <div class="kf-feat"><h3 class="kf-s56">Durable</h3><p>With acks=all an acknowledged write is fsynced before the ack.</p></div>
+        <div class="kf-feat"><h3 class="kf-s56">Flat memory</h3><p>Idle memory stays in the tens of MB however much data sits on disk.</p></div>
+        <div class="kf-feat"><h3 class="kf-s56">Embeddable in Go tests</h3><p><code class="kf-s57">server.New(...)</code> starts a broker on a free port, nothing to clean up.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What it isn't -->
+  <section class="kf-s58" id="not">
+    <div class="kf-s48">
+      <h2 class="kf-s59">What it isn't, on purpose</h2>
+      <p class="kf-s37">A single node for development, not production. Anything a client can't observe through the socket is left out.</p>
+    </div>
+    <ul class="kf-s60">
+      <li>No replication, ISR or controller quorum</li>
+      <li>No byte-for-byte on-disk segment compatibility</li>
+      <li>No tiered storage or quotas</li>
+    </ul>
+  </section>
+
+  <!-- Install -->
+  <section class="kf-s61" id="install">
+    <div class="kf-stack-sm kf-inst kf-s62">
+      <div class="kf-s63">
+        <h2 class="kf-s64">Run it inside doze, or alone</h2>
+        <span class="kf-s65">In a doze stack</span>
+        <div class="kf-cmd"><code>doze add kafka</code><button data-copy="doze add kafka" type="button" class="kf-copy" aria-label="Copy doze add kafka">Copy</button></div>
+        <span class="kf-s65">On its own: Linux and macOS, amd64 and arm64</span>
+        <span class="kf-s66">The standalone broker runs on Intel Macs too. doze itself, and so <code class="kf-s57">doze add kafka</code>, needs Apple silicon on a Mac.</span>
+        <div class="kf-cmd"><code>curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh</code><button data-copy="curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh" type="button" class="kf-copy" aria-label="Copy the install command">Copy</button></div>
+        <span class="kf-s67">More ways, and doze itself: <a class="kf-s68" href="/download/">Download</a></span>
+      </div>
+      <img class="kf-s69" src="/brand/doze-kafka.svg" alt="">
+    </div>
+  </section>
+
+  <p class="kf-s70">Apache Kafka is a trademark of the Apache Software Foundation. doze Kafka is not affiliated with it.</p>
+  </div>
+</Page>
+
+<style>
+*{box-sizing:content-box}
+button,select,input[type=button],input[type=submit],input[type=reset],input[type=search]{box-sizing:border-box}
+.kf-root{line-height:normal}
+
+body{margin:0;background:#12110C}
+.kf a{color:#FFD60A;text-decoration:none}.kf a:hover{color:#FFE65C}
+.kf .kf-sub a{color:#BDB8A0;font-size:14px;display:inline-flex;align-items:center;min-height:44px}.kf .kf-sub a:hover{color:#F7F3E3}
+.kf-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 22px;border-radius:12px;font-weight:600;font-size:16px}
+.kf .kf-btn-sun{background:#FFD60A;color:#16150F}.kf .kf-btn-sun:hover{background:#FFE34D;color:#16150F}
+.kf .kf-btn-ghost{border:1px solid #3D3A26;color:#F7F3E3}.kf .kf-btn-ghost:hover{border-color:#6A6440;color:#FFFFFF}
+.kf-pill{background:#16150F;color:#FFD60A;border-radius:999px;padding:10px 18px;font-weight:600}
+.kf-feat{background:#1D1B12;border:1px solid #332F1E;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px}
+.kf-feat p{margin:0;color:#BDB8A0;line-height:1.6}
+.kf-topic{font-family:var(--font-mono);font-size:13px;color:#F7F3E3;background:#1D1B12;border:1px solid #3D3A26;border-radius:8px;padding:6px 10px}
+.kf code,.kf pre{font-variant-ligatures:none}
+.kf pre{white-space:pre}
+.kf-cmd{display:flex;align-items:center;gap:8px;background:#0C0B07;border-radius:10px;padding:6px 6px 6px 16px;min-width:0}
+.kf-cmd code{font:15px var(--font-mono);color:#F7F3E3;white-space:pre;overflow-x:auto;flex:1;min-width:0}
+.kf-copy{height:36px;padding:0 12px;border-radius:8px;border:1px solid #3D3A26;background:#1D1B12;color:#F7F3E3;font:600 13px var(--font-text);cursor:pointer;flex:none}
+.kf-recap{display:inline-block;font-family:var(--font-mono);font-size:11px;color:#BDB8A0;background:#1D1B12;border:1px dashed #5A5536;border-radius:6px;padding:2px 7px;white-space:nowrap}
+@media (max-width:760px){.kf-hero-title{font-size:44px !important}.kf-stack-sm{flex-direction:column !important;align-items:stretch !important}.kf-inst{padding:28px !important}.kf-inst h2{font-size:30px !important}.kf-inst > div{flex:none !important;width:100%}.kf-inst img{display:none}}
+/* one-off layout from the board's inline styles */
+.kf-s1.kf-s1.kf-s1{font-family:var(--font-text);color:#F7F3E3;background:#12110C;min-height:100%}
+.kf-s2.kf-s2.kf-s2{border-bottom:1px solid #22201A;background:#15140E}
+.kf-s3.kf-s3.kf-s3{max-width:1240px;margin:0 auto;padding:6px 32px;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+.kf-s4.kf-s4.kf-s4{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:#FFD60A}
+.kf-s5.kf-s5.kf-s5{width:8px;height:8px;border-radius:4px;background:#FFD60A}
+.kf-s6.kf-s6.kf-s6{max-width:1240px;margin:0 auto;padding:96px 32px 56px;display:flex;flex-direction:column;gap:28px}
+.kf-s7.kf-s7.kf-s7{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.kf-s8.kf-s8.kf-s8{width:96px;height:96px}
+.kf-s9.kf-s9.kf-s9{font-family:var(--font-mono);font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#FFD60A}
+.kf-s10.kf-s10.kf-s10{margin:0;font-family:var(--font-display);font-weight:800;font-size:84px;line-height:0.98;letter-spacing:-0.035em;max-width:16ch;text-wrap:balance}
+.kf-s11.kf-s11.kf-s11{margin:0;font-size:20px;line-height:1.55;color:#D8D2B8;max-width:42rem}
+.kf-s12.kf-s12.kf-s12{display:flex;flex-wrap:wrap;gap:8px}
+.kf-s13.kf-s13.kf-s13{font-family:var(--font-mono);font-size:13px;color:#FF9AA8;background:#2A1520;border:1px solid #4A2230;border-radius:8px;padding:6px 10px}
+.kf-s14.kf-s14.kf-s14{display:flex;gap:14px;flex-wrap:wrap}
+.kf-s15.kf-s15.kf-s15{background:#FFD60A;color:#16150F}
+.kf-s16.kf-s16.kf-s16{max-width:1240px;margin:0 auto;padding:56px 32px;display:flex;flex-direction:column;gap:22px}
+.kf-s17.kf-s17.kf-s17{margin:0;font-family:var(--font-display);font-weight:800;font-size:36px;letter-spacing:-0.02em}
+.kf-s18.kf-s18.kf-s18{margin:0;font-size:17px;max-width:46rem;line-height:1.6}
+.kf-s19.kf-s19.kf-s19{display:flex;flex-wrap:wrap;gap:10px}
+.kf-s20.kf-s20.kf-s20{max-width:1240px;margin:0 auto;padding:96px 32px 24px;display:flex;flex-direction:column;gap:28px}
+.kf-s21.kf-s21.kf-s21{display:flex;flex-direction:column;gap:12px;max-width:46rem}
+.kf-s22.kf-s22.kf-s22{margin:0;font-family:var(--font-display);font-weight:800;font-size:48px;letter-spacing:-0.025em;text-wrap:balance}
+.kf-s23.kf-s23.kf-s23{margin:0;font-size:18px;line-height:1.6;color:#BDB8A0}
+.kf-s24.kf-s24.kf-s24{position:relative}
+.kf-s25.kf-s25.kf-s25{position:absolute;left:10%;right:10%;top:5%;height:80%;border-radius:50%;background:radial-gradient(closest-side, rgba(255,214,10,0.18), rgba(255,214,10,0))}
+.kf-s26.kf-s26.kf-s26{position:relative;border-radius:16px;overflow:hidden;border:1px solid #4A4426;box-shadow:0 50px 120px rgba(0,0,0,0.55)}
+.kf-s27.kf-s27.kf-s27{height:32px;background:#0D0C08;display:flex;align-items:center;gap:7px;padding:0 14px}
+.kf-s28.kf-s28.kf-s28{width:11px;height:11px;border-radius:6px;background:#FF5F57}
+.kf-s29.kf-s29.kf-s29{width:11px;height:11px;border-radius:6px;background:#FEBC2E}
+.kf-s30.kf-s30.kf-s30{width:11px;height:11px;border-radius:6px;background:#28C840}
+.kf-s31.kf-s31.kf-s31{margin:0 auto;font:13px var(--font-mono);color:#A39E7E}
+.kf-s32.kf-s32.kf-s32{display:block;width:100%;height:auto}
+.kf-s33.kf-s33.kf-s33{margin:0;font-size:13px;color:#8F8A70}
+.kf-s34.kf-s34.kf-s34{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(320px, 100%), 1fr));gap:28px;align-items:center;margin-top:32px}
+.kf-s35.kf-s35.kf-s35{display:flex;flex-direction:column;gap:12px}
+.kf-s36.kf-s36.kf-s36{margin:0;font-family:var(--font-display);font-weight:800;font-size:34px;letter-spacing:-0.02em}
+.kf-s37.kf-s37.kf-s37{margin:0;font-size:17px;line-height:1.6;color:#BDB8A0}
+.kf-s38.kf-s38.kf-s38{border-radius:14px;overflow:hidden;border:1px solid #4A4426;box-shadow:0 40px 100px rgba(0,0,0,0.5)}
+.kf-s39.kf-s39.kf-s39{display:block;width:100%;height:auto;aspect-ratio:16 / 10;background:#0D0C08}
+.kf-s40.kf-s40.kf-s40{max-width:1240px;margin:0 auto;padding:88px 32px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap:48px;align-items:center}
+.kf-s41.kf-s41.kf-s41{display:flex;flex-direction:column;gap:16px}
+.kf-s42.kf-s42.kf-s42{margin:0;font-family:var(--font-display);font-weight:700;font-size:44px;letter-spacing:-0.02em;text-wrap:balance}
+.kf-s43.kf-s43.kf-s43{margin:0;min-width:0;font-family:var(--font-mono);font-size:14px;line-height:1.8;background:#0C0B07;border:1px solid #2A281B;border-radius:18px;padding:26px;color:#D8D2B8;overflow-x:auto}
+.kf-s44.kf-s44.kf-s44{color:#8A8466}
+.kf-s45.kf-s45.kf-s45{color:#FFD60A}
+.kf-s46.kf-s46.kf-s46{background:#17160F;border-top:1px solid #2A281B}
+.kf-s47.kf-s47.kf-s47{max-width:1240px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(380px, 100%), 1fr));gap:48px;align-items:center}
+.kf-s48.kf-s48.kf-s48{display:flex;flex-direction:column;gap:14px}
+.kf-s49.kf-s49.kf-s49{margin:0;font-family:var(--font-display);font-weight:700;font-size:40px;letter-spacing:-0.02em;text-wrap:balance}
+.kf-s50.kf-s50.kf-s50{font-weight:600;align-self:flex-start;padding:10px 0}
+.kf-s51.kf-s51.kf-s51{margin:0;min-width:0;font:14px/1.8 var(--font-mono);background:#0C0B07;border:1px solid #2A281B;border-radius:18px;padding:24px;color:#E8E4D2;overflow-x:auto}
+.kf-s52.kf-s52.kf-s52{background:#17160F;border-top:1px solid #2A281B;border-bottom:1px solid #2A281B}
+.kf-s53.kf-s53.kf-s53{max-width:1240px;margin:0 auto;padding:88px 32px;display:flex;flex-direction:column;gap:28px}
+.kf-s54.kf-s54.kf-s54{margin:0;font-family:var(--font-display);font-weight:700;font-size:44px;letter-spacing:-0.02em}
+.kf-s55.kf-s55.kf-s55{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(260px, 100%), 1fr));gap:16px}
+.kf-s56.kf-s56.kf-s56{margin:0;font-size:19px}
+.kf-s57.kf-s57.kf-s57{font-family:var(--font-mono)}
+.kf-s58.kf-s58.kf-s58{max-width:1240px;margin:0 auto;padding:88px 32px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(340px, 100%), 1fr));gap:40px}
+.kf-s59.kf-s59.kf-s59{margin:0;font-family:var(--font-display);font-weight:700;font-size:36px;letter-spacing:-0.02em;text-wrap:balance}
+.kf-s60.kf-s60.kf-s60{margin:0;padding-left:20px;color:#D8D2B8;line-height:2;font-size:17px}
+.kf-s61.kf-s61.kf-s61{max-width:1240px;margin:0 auto;padding:0 32px 104px}
+.kf-s62.kf-s62.kf-s62{background:#1D1B12;border:1px solid #FFD60A;border-radius:28px;padding:48px;display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
+.kf-s63.kf-s63.kf-s63{display:flex;flex-direction:column;gap:14px;min-width:0;flex:1 1 520px}
+.kf-s64.kf-s64.kf-s64{margin:0;font-family:var(--font-display);font-weight:800;font-size:40px;letter-spacing:-0.02em}
+.kf-s65.kf-s65.kf-s65{font-size:15px;font-weight:600;color:#E8E4D2}
+.kf-s66.kf-s66.kf-s66{font-size:14px;color:#BDB8A0;margin-top:-6px}
+.kf-s67.kf-s67.kf-s67{font-size:15px;color:#BDB8A0}
+.kf-s68.kf-s68.kf-s68{font-weight:600}
+.kf-s69.kf-s69.kf-s69{width:120px;height:120px}
+.kf-s70.kf-s70.kf-s70{max-width:1240px;margin:0 auto;padding:0 32px 28px;font-size:13px;color:#8F8A70}
+</style>

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doze docs · Your first stack</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.dd a{color:#A85A0C;text-decoration:none}.dd a:hover{text-decoration:underline}
+.dd-side{flex:0 0 268px;padding:28px 0 48px;display:flex;flex-direction:column;gap:22px;border-right:1px solid #EADFD3;padding-right:20px}
+.dd-sw-box{display:flex;flex-direction:column;gap:4px;background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px;padding:6px}
+.dd-sw-h{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79;padding:4px 8px 2px}
+.dd a.dd-sw{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;color:#140C1B;border:1px solid transparent;min-height:44px;box-sizing:border-box}
+.dd a.dd-sw:hover{background:#FFF4E8;text-decoration:none}
+.dd a.dd-sw b{font-size:14px;font-weight:600}
+.dd-sw-path{font:12px 'JetBrains Mono',monospace;color:#6E5F79}
+.dd a.dd-sw-on{background:#FFF4E8;border-color:#F0A24B}
+.dd-srch{display:flex;align-items:center;gap:8px;border:1px solid #DCCFC2;background:#FFFFFF;border-radius:10px;padding:0 12px;height:42px}
+.dd-srch input{border:0;background:transparent;outline:none;font:14px Geist,sans-serif;color:#140C1B;flex:1;min-width:0}
+.dd-srch input::placeholder{color:#6E5F79}
+.dd-grp{display:flex;flex-direction:column;gap:1px}
+.dd-grp-h{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79;padding:0 12px 6px}
+.dd .dd-grp a{color:#4A3D55;font-size:14px;display:block;padding:6px 12px;border-radius:8px}
+.dd .dd-grp a:hover{background:#FFF4E8;color:#140C1B;text-decoration:none}
+.dd .dd-grp a.dd-on{background:#FFF4E8;color:#140C1B;font-weight:600;box-shadow:inset 3px 0 0 #F0A24B}
+.dd-side-menu{display:none}
+.dd-art{flex:1 1 560px;min-width:0;max-width:760px;padding:36px 0 96px;display:flex;flex-direction:column;gap:20px}
+.dd-art h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:46px;letter-spacing:-0.025em;line-height:1.08}
+.dd-art h2{margin:20px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:30px;letter-spacing:-0.015em;scroll-margin-top:24px}
+.dd-art p{margin:0;font-size:17px;line-height:1.7;color:#140C1B}
+.dd-art p.dd-lede{font-size:19px;line-height:1.6;color:#4A3D55}
+.dd-crumbs{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:#6E5F79}
+.dd-urlpath{font:12px 'JetBrains Mono',monospace;color:#6E5F79;background:#FFF4E8;border:1px solid #EADFD3;border-radius:6px;padding:2px 8px;align-self:flex-start}
+.dd-ic{font-family:'JetBrains Mono',monospace;font-size:.88em;background:#FFF4E8;border:1px solid #EADFD3;border-radius:6px;padding:1px 6px;color:#140C1B;overflow-wrap:anywhere}
+.dd-cb{border-radius:14px;overflow:hidden;border:1px solid #2E1F3A;background:#1E1328}
+.dd-cb-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 8px 6px 16px;border-bottom:1px solid #2E1F3A;font:13px 'JetBrains Mono',monospace;color:#C9BAD3}
+.dd-cb-copy{height:32px;padding:0 12px;border-radius:8px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 12px Geist,sans-serif;cursor:pointer}
+.dd-cb-tab{height:32px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:#C9BAD3;font:500 13px Geist,sans-serif;cursor:pointer}
+.dd-cb-tab.dd-on{background:#34233F;color:#F4ECE4}
+.dd-cb pre{margin:0;background:#1E1328;color:#F4ECE4;font:14px/1.75 'JetBrains Mono',monospace;padding:16px 20px;overflow-x:auto}
+.dd-pr{color:#9C8AAB}.dd-cm{color:#9C8AAB}.dd-dim{color:#9C8AAB}.dd-ok{color:#8BE39B}
+.dd-co{display:flex;gap:14px;align-items:flex-start;border-radius:14px;padding:16px 18px}
+.dd-co p{font-size:16px !important;line-height:1.6 !important}
+.dd-co-info{background:#E8EEFC;border:1px solid #C9D6F6;color:#2F62D9}.dd-co-info p{color:#1B2F66 !important}
+.dd-co-tip{background:#FFF1D6;border:1px solid #F1D9A6;color:#8A5300}.dd-co-tip p{color:#4A2E05 !important}
+.dd-chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;white-space:nowrap}
+.dd-chip-good{background:#E6F4EA;color:#1D7A45}.dd-chip-warn{background:#FFF1D6;color:#8A5300}
+.dd-tbl{overflow-x:auto;border:1px solid #EADFD3;border-radius:14px;background:#FFFFFF}
+.dd-tbl table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+.dd-tbl th{text-align:left;padding:12px 16px;font-weight:600;color:#4A3D55;background:#FFF4E8}
+.dd-tbl td{padding:12px 16px;border-top:1px solid #EADFD3}
+.dd-tbl td.dd-sec{color:#4A3D55}
+.dd a.dd-more{font-weight:600;align-self:flex-start;padding:8px 0}
+.dd-pn{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:14px;margin-top:28px}
+.dd .dd-pn a{border:1px solid #EADFD3;background:#FFFFFF;border-radius:14px;padding:16px 18px;color:#140C1B;display:flex;flex-direction:column;gap:2px}
+.dd .dd-pn a:hover{border-color:#F0A24B;text-decoration:none}
+.dd-pn span{font-size:13px;color:#6E5F79}.dd-pn b{font-weight:600;color:#A85A0C}
+.dd-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:#6E5F79;border-top:1px solid #EADFD3;padding-top:16px}
+.dd-toc{flex:0 0 200px;padding:40px 0;display:flex;flex-direction:column;gap:10px;align-self:flex-start}
+.dd-toc-h{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.dd .dd-toc a{color:#4A3D55;font-size:13px;padding:2px 0}.dd .dd-toc a:hover{color:#140C1B}
+@media (max-width:1180px){.dd-toc{display:none !important}}
+@media (max-width:900px){.dd-wrap{flex-direction:column !important;gap:0 !important}.dd-side{flex:none;border-right:0;border-bottom:1px solid #EADFD3;padding:20px 0;gap:14px}.dd-grp{display:none !important}.dd-side-menu{display:flex !important}.dd-art{padding-top:24px}.dd-art h1{font-size:38px}.dd-sw-box,.dd-srch{display:none !important}.dd-mbar{display:flex !important}.dd-side-menu{flex:1}.dd-side{padding:12px 0 !important}.dd-tbl{border:0;background:transparent}.dd-tbl table{min-width:0}.dd-tbl thead{display:none}.dd-tbl table,.dd-tbl tbody,.dd-tbl tr,.dd-tbl td{display:block}.dd-tbl tr{background:#FFFFFF;border:1px solid #EADFD3;border-radius:12px;padding:12px 14px;margin-bottom:10px}.dd-tbl td{border:0;padding:3px 0;display:flex;gap:12px}.dd-tbl td::before{content:attr(data-l);flex:0 0 110px;color:#6E5F79;font-size:13px}.dd-tbl td:first-child{font-weight:600}.dd-tbl td:first-child::before{display:none}}
+.dd-vchip{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:#FFF4E8;border:1px solid #EADFD3;color:#140C1B;font-weight:600}
+.dd-mbar{display:none;gap:8px;align-items:center}
+.dd-mbar-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid #DCCFC2;background:#FFFFFF;color:#140C1B;font:600 14px Geist,sans-serif;cursor:pointer}
+.dd code,.dd pre{font-variant-ligatures:none}
+.dd pre{white-space:pre;overflow-x:auto}
+</style>
+</helmet>
+<div class="dd" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #140C1B; background: #FFFAF4; min-height: 100%">
+  <dc-import name="SiteHeader" theme="light" current="docs" hint-size="100%,72px"></dc-import>
+
+  <div class="dd-wrap" style="max-width: 1240px; margin: 0 auto; padding: 0 32px; display: flex; gap: 44px">
+
+    <nav class="dd-side" aria-label="doze docs">
+      <div class="dd-sw-box" role="group" aria-label="Choose a product's docs">
+        <span class="dd-sw-h">Docs for</span>
+          <a class="dd-sw dd-sw-on" href="DozeDocs.dc.html" aria-current="true">
+            <img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 28px; height: 28px; flex: none">
+            <span style="display: flex; flex-direction: column; min-width: 0"><b>doze</b><span class="dd-sw-path">/docs/doze</span></span>
+          </a>
+          <a class="dd-sw" href="AwsDocs.dc.html">
+            <img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 28px; height: 28px; flex: none">
+            <span style="display: flex; flex-direction: column; min-width: 0"><b>doze AWS</b><span class="dd-sw-path">/docs/aws</span></span>
+          </a>
+          <a class="dd-sw" href="KafkaDocs.dc.html">
+            <img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 28px; height: 28px; flex: none">
+            <span style="display: flex; flex-direction: column; min-width: 0"><b>doze Kafka</b><span class="dd-sw-path">/docs/kafka</span></span>
+          </a>
+      </div>
+      <label class="dd-srch" for="docsSearch">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        <span style="position: absolute; left: -9999px">Search the doze docs</span>
+        <input id="docsSearch" type="search" placeholder="Search the doze docs">
+        <kbd style="font: 12px 'JetBrains Mono', monospace; color: #6E5F79">/</kbd>
+      </label>
+      <div class="dd-mbar"><button type="button" class="dd-mbar-btn" aria-label="Switch product docs" aria-expanded="false"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 22px; height: 22px">doze<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><button type="button" class="dd-mbar-btn" aria-label="Search the doze docs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
+      <button type="button" class="dd-side-menu" aria-expanded="false" style="align-items: center; justify-content: space-between; height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #DCCFC2; background: #FFFFFF; color: #140C1B; font: 600 14px Geist, sans-serif">Pages <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+        <div class="dd-grp">
+          <span class="dd-grp-h">Start</span><a href="DozeDocs.dc.html#install"  title="/docs/doze/start/install">Install</a><a href="DozeDocs.dc.html#your-first-stack"  title="/docs/doze/start/your-first-stack" aria-current="page" class="dd-on">Your first stack</a><a href="DozeDocs.dc.html#how-sleeping-works"  title="/docs/doze/start/how-sleeping-works">How sleeping works</a><a href="DozeDocs.dc.html#from-docker-compose"  title="/docs/doze/start/from-docker-compose">From docker compose</a><a href="Examples.dc.html" >Try it on Larder</a>
+        </div>
+        <div class="dd-grp">
+          <span class="dd-grp-h">doze.hcl</span><a href="DozeDocs.dc.html#modules"  title="/docs/doze/doze-hcl/modules">Modules</a><a href="DozeDocs.dc.html#apps-services-tasks"  title="/docs/doze/doze-hcl/apps-services-tasks">Apps, services, tasks</a><a href="DozeDocs.dc.html#references-and-after"  title="/docs/doze/doze-hcl/references-and-after">References and after</a><a href="DozeDocs.dc.html#postgres-extensions"  title="/docs/doze/doze-hcl/postgres-extensions">Postgres extensions</a><a href="DozeDocs.dc.html#your-own-domains"  title="/docs/doze/doze-hcl/your-own-domains">Your own domains</a><a href="DozeDocs.dc.html#overrides"  title="/docs/doze/doze-hcl/overrides">Overrides</a>
+        </div>
+        <div class="dd-grp">
+          <span class="dd-grp-h">Use it</span><a href="DozeDocs.dc.html#the-app"  title="/docs/doze/use-it/the-app">The app</a><a href="DozeDocs.dc.html#the-cli"  title="/docs/doze/use-it/the-cli">The CLI</a><a href="DozeDocs.dc.html#teams-and-ci"  title="/docs/doze/use-it/teams-and-ci">Teams and CI</a><a href="DozeDocs.dc.html#troubleshooting"  title="/docs/doze/use-it/troubleshooting">Troubleshooting</a>
+        </div>
+        <div class="dd-grp">
+          <span class="dd-grp-h">Reference</span><a href="DozeDocs.dc.html#configuration"  title="/docs/doze/reference/configuration">Configuration</a><a href="DozeDocs.dc.html#cli-commands"  title="/docs/doze/reference/cli-commands">CLI commands</a><a href="DozeDocs.dc.html#doze-lock"  title="/docs/doze/reference/doze-lock">doze.lock</a><a href="RegistryPublish.dc.html" >Write a module</a>
+        </div>
+    </nav>
+
+    <main class="dd-art">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+        <nav class="dd-crumbs" aria-label="Breadcrumb"><a href="DocsHome.dc.html">Docs</a><span aria-hidden="true">›</span><a href="DozeDocs.dc.html">doze</a><span aria-hidden="true">›</span><a href="DozeDocs.dc.html#start">Start</a><span aria-hidden="true">›</span><span aria-current="page" style="color: #140C1B">Your first stack</span></nav>
+        <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 13px"><span class="dd-vchip">doze 0.2</span><a href="DozeDocs.dc.html#versions">0.1 docs</a></span>
+      </div>
+      <span class="dd-urlpath">/docs/doze/start/your-first-stack</span>
+
+      <h1>Your first stack</h1>
+      <p class="dd-lede">In five minutes: a Postgres your app reaches by name, which starts when your app connects and sleeps when it stops.</p>
+
+      <h2 id="declare">1. Declare it</h2>
+      <p>In your project's folder, run <code class="dd-ic">doze init</code>. It reads what your project uses and writes <code class="dd-ic">doze.hcl</code>. Here the project is Larder, the example grocer:</p>
+      
+      <div class="dd-cb">
+        <div class="dd-cb-bar"><span>doze.hcl</span><button type="button" class="dd-cb-copy" aria-label="Copy doze.hcl">Copy</button></div>
+        <pre>stack = "larder"
+
+module postgres "postgres" {
+  version = 18
+}</pre>
+      </div>
+
+      <h2 id="connect">2. Connect</h2>
+      <p>Bring the stack up, then connect as your app would. Postgres was asleep; the connection wakes it.</p>
+      
+      <div class="dd-cb">
+        <div class="dd-cb-bar"><span>Terminal</span><button type="button" class="dd-cb-copy" aria-label="Copy Terminal">Copy</button></div>
+        <pre><span class="dd-pr">$</span> doze up
+<span class="dd-dim">○</span> postgres  asleep, wakes on a connection
+<span class="dd-pr">$</span> psql postgres://postgres@postgres.larder.doze/postgres -c 'select 1'
+<span class="dd-ok">●</span> postgres  awake in [time]</pre>
+      </div>
+      
+      <div class="dd-co dd-co-info">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex: none; margin-top: 2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+        <p>Your app reads <code class="dd-ic">DATABASE_URL</code>? <code class="dd-ic">doze run -- go run ./services/catalog</code> sets it for you, and stops the stack when your command ends.</p>
+      </div>
+
+      <h2 id="sleep">3. Walk away</h2>
+      <p>After two minutes with no connection, postgres goes back to sleep. Its data stays in <code class="dd-ic">~/.doze</code>. Change the time with <code class="dd-ic">sleep = "10m"</code>, or keep it on with <code class="dd-ic">sleep = "never"</code>.</p>
+
+      <h2 id="more">A bigger stack</h2>
+      <p>Larder itself runs nine services in Go, Python and TypeScript on postgres, redis, kafka, aws and mailpit, from one file. Clone it to see every piece of doze.hcl in use.</p>
+      
+      <div class="dd-cb">
+        <div class="dd-cb-bar"><span>Terminal</span><button type="button" class="dd-cb-copy" aria-label="Copy Terminal">Copy</button></div>
+        <pre><span class="dd-pr">$</span> git clone https://github.com/doze-dev/doze-examples
+<span class="dd-pr">$</span> cd doze-examples/larder &amp;&amp; doze up</pre>
+      </div>
+      <a class="dd-more" href="Examples.dc.html">Walk through Larder →</a>
+
+      <div class="dd-pn">
+        <a href="DozeDocs.dc.html#install" title="/docs/doze/start/install"><span>Previous</span><b>Install</b></a>
+        <a href="DozeDocs.dc.html#how-sleeping-works" title="/docs/doze/start/how-sleeping-works" style="text-align: right"><span>Next</span><b>How sleeping works</b></a>
+      </div>
+      <div class="dd-meta"><span>Updated [date from git]</span><a href="https://github.com/doze-dev/doze">Edit this page on GitHub</a></div>
+    </main>
+
+    <aside class="dd-toc" aria-label="On this page">
+      <span class="dd-toc-h">On this page</span><a href="#declare">1. Declare it</a><a href="#connect">2. Connect</a><a href="#sleep">3. Walk away</a><a href="#more">A bigger stack</a>
+    </aside>
+  </div>
+
+  <dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+---
+// Starlight Footer override (the end of the article, not the site footer):
+// previous/next cards, then the edit link (boards: dd-pn, dd-meta).
+import EditLink from "./EditLink.astro";
+import Pagination from "./Pagination.astro";
+
+const { editUrl, entry } = Astro.locals.starlightRoute;
+---
+{!entry.data.hero && <Pagination />}
+{editUrl && (
+  <div class="dz-meta">
+    <EditLink />
+  </div>
+)}

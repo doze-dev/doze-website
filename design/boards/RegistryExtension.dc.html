@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vector (pgvector) · PostgreSQL extensions · doze registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.rx-page{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#140C1B;background:#FFFAF4}
+.rx-page a{color:#A85A0C;text-decoration:none}.rx-page code,.rx-page pre{font-variant-ligatures:none !important}
+.rx-page a:hover{text-decoration:underline}
+.rx-wrap{max-width:1240px;margin:0 auto;padding:32px 32px 96px;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:44px;align-items:start}
+.rx-main{display:flex;flex-direction:column;gap:48px;min-width:0}
+.rx-rail{position:sticky;top:24px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.rx-page h1{margin:0;font:800 44px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-0.03em}
+.rx-page h2{margin:0;font:700 30px/1.2 'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+.rx-page h3{margin:0;font:600 16px/1.3 Geist,sans-serif}
+.rx-lede{margin:0;font-size:17px;line-height:1.6;color:#4A3D55;max-width:46rem}
+.rx-p{margin:0;font-size:15px;line-height:1.6;color:#4A3D55;max-width:46rem}
+.rx-sec{display:flex;flex-direction:column;gap:16px}
+.rx-chip{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:999px;font:600 12.5px Geist,sans-serif;white-space:nowrap}
+.rx-chip.rx-info{background:#E8EEFC;color:#2F62D9}.rx-chip.good{background:#E6F4EA;color:#1D7A45}.rx-chip.rx-dim{background:#F3ECE4;color:#4A3D55}.rx-chip.rx-warn{background:#FFF1D6;color:#8A5300}
+.rx-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.rx-codebox{background:#1E1328;border-radius:12px;overflow:hidden;min-width:0}
+.rx-codebar{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-bottom:1px solid #34233F}
+.rx-codebar span{font:500 12.5px Geist,sans-serif;color:#C9BAD3;flex:1;min-width:0}
+.rx-code{margin:0;padding:14px 16px;font:13px/1.7 'JetBrains Mono',monospace;color:#F4ECE4;overflow-x:auto;white-space:pre;font-variant-ligatures:none}
+.rx-code .rx-k{color:#F0A24B}.rx-code .rx-s{color:#A8E0B4}.rx-code .c{color:#B3A2C2}.rx-code .rx-p{color:#9C8AAB}
+.rx-copy{display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 12px Geist,sans-serif;cursor:pointer;flex:none}
+.rx-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border-top:1px solid #EADFD3;border-bottom:1px solid #EADFD3}
+.rx-facts div{padding:14px 16px 14px 0;display:flex;flex-direction:column;gap:3px}
+.rx-facts span{font:600 11.5px Geist,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79}
+.rx-facts b{font-size:15px;font-weight:600}
+.rx-tw{overflow-x:auto;border:1px solid #EADFD3;border-radius:12px;background:#FFFFFF}
+.rx-page table{width:100%;border-collapse:collapse;font-size:14px}
+.rx-page th{font:600 11.5px Geist,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79;text-align:left;padding:10px 14px;background:#FFF9F2;border-bottom:1px solid #EADFD3;white-space:nowrap}
+.rx-page td{padding:12px 14px;border-top:1px solid #F1E8DE;color:#4A3D55;vertical-align:middle}
+.rx-page tbody tr:first-child td{border-top:0}
+.rx-page td.rx-pl{color:#140C1B;font-weight:600;white-space:nowrap}.rx-page td code{font:12px "JetBrains Mono",monospace;color:#140C1B;white-space:nowrap}
+.rx-mx td{text-align:center;white-space:nowrap}
+.rx-mx td:first-child,.rx-mx th:first-child{text-align:left}
+.rx-mx th{text-align:center}
+.cell{display:inline-flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:8px;background:#E8EEFC;color:#2F62D9;min-width:62px}
+.cell b{font:600 13px 'JetBrains Mono',monospace;color:#1F3F8F}
+.cell small{font-size:11.5px;font-weight:600}
+.rx-langs{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.rx-rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.rx-rel a.rx-panel{display:flex;flex-direction:column;gap:8px;padding:18px;color:#140C1B !important;text-decoration:none !important}
+.rx-rel a.rx-panel:hover{border-color:#A85A0C}
+.rx-rel p{margin:0;font-size:14px;line-height:1.5;color:#4A3D55}
+.rx-lbl{font:600 12.5px Geist,sans-serif;color:#4A3D55}
+.rx-railbox{padding:18px;display:flex;flex-direction:column;gap:14px}
+.rx-kv{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:8px 0;border-top:1px solid #F1E8DE}
+.rx-kv:first-of-type{border-top:0}
+.rx-kv span{color:#6E5F79}
+@media (max-width:1040px){.rx-wrap{grid-template-columns:minmax(0,1fr)}.rx-rail{position:static}}
+@media (max-width:760px){.rx-wrap{padding:24px 32px 72px;gap:40px}.rx-main{gap:40px}.rx-copy{height:44px;padding:0 14px}.rx-page h2{font-size:26px}}
+@media (max-width:600px){.rx-page .rx-tw{overflow:visible}.rx-page table{min-width:0 !important}.rx-page thead{display:none}.rx-page table,.rx-page tbody{display:block}.rx-page tr{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-top:1px solid #F1E8DE}.rx-page tbody tr:first-child{border-top:0}.rx-page td{display:block;border:0;padding:0;text-align:left !important}.rx-page td code{white-space:normal;word-break:break-all}.rx-mx tr{flex-direction:row !important;flex-wrap:wrap}.rx-mx th[scope="row"]{width:100%;padding:0 !important}.rx-mx td::before{content:attr(data-pg) " ";font:600 12.5px Geist,sans-serif;color:#6E5F79}}
+</style>
+</helmet>
+<div class="rx-page">
+  <dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+  <dc-import name="RegistryBar" section="modules" hint-size="100%,120px"></dc-import>
+  <dc-import name="RegistryModuleHead" tab="extensions" newest="0.2.5" hint-size="100%,330px"></dc-import>
+
+  <div class="rx-wrap">
+    <main class="rx-main">
+      <header class="rx-sec" style="gap: 14px">
+        <nav aria-label="Breadcrumb" style="font-size: 13.5px; color: #6E5F79"><a href="RegistryExtensions.dc.html">Extensions</a> / vector</nav>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+          <h2 style="font: 600 40px/1 'JetBrains Mono', monospace; letter-spacing: -0.02em">vector</h2>
+          <span style="font-size: 17px; color: #4A3D55">pgvector</span>
+          <span class="rx-chip rx-info">Coming with postgres 0.3</span>
+        </div>
+        <p class="rx-lede">Store embeddings next to the rows they describe and ask for the nearest ones: a <code style="font: 15px 'JetBrains Mono', monospace">vector</code> column type, exact search, and approximate search with HNSW and IVFFlat indexes, by L2, inner product or cosine distance.</p>
+        <div class="rx-facts">
+          <div><span>Version</span><b>0.8.7</b></div>
+          <div><span>Postgres</span><b>14 – 18</b></div>
+          <div><span>Preload</span><b>No</b></div>
+          <div><span>Licence</span><b>PostgreSQL</b></div>
+          <div><span>Also called</span><b><code style="font: 600 14px 'JetBrains Mono', monospace">pgvector</code></b></div>
+          <div><span>Upstream</span><b><a href="https://github.com/pgvector/pgvector">pgvector/pgvector</a></b></div>
+        </div>
+      </header>
+
+      <section class="rx-sec" aria-labelledby="use">
+        <h2 id="use">Add it</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+            <span class="rx-lbl">One line: the newest 0.8.x</span>
+            <div class="rx-codebox">
+              <div class="rx-codebar"><span>doze.hcl</span><button class="rx-copy" type="button" aria-label="Copy the one-line snippet">Copy</button></div>
+<pre class="rx-code"><span class="rx-k">module</span> postgres <span class="rx-s">"postgres"</span> {
+  version    = 18
+  extensions = [<span class="rx-s">"vector"</span>]
+}</pre>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+            <span class="rx-lbl">Pinned to an exact version</span>
+            <div class="rx-codebox">
+              <div class="rx-codebar"><span>doze.hcl</span><button class="rx-copy" type="button" aria-label="Copy the pinned snippet">Copy</button></div>
+<pre class="rx-code"><span class="rx-k">module</span> postgres <span class="rx-s">"postgres"</span> {
+  version = 18
+  extension <span class="rx-s">"vector"</span> { version = <span class="rx-s">"0.8.7"</span> }
+}</pre>
+            </div>
+          </div>
+        </div>
+        <p class="rx-p">doze fetches the build for your Postgres major and platform once, checks its sha256, pins it in doze.lock and runs <code style="font: 13.5px 'JetBrains Mono', monospace">CREATE EXTENSION vector</code>. Nothing to install, the same on a Mac and on Linux. A newer pin later runs <code style="font: 13.5px 'JetBrains Mono', monospace">ALTER EXTENSION vector UPDATE</code> for you.</p>
+      </section>
+
+      <section class="rx-sec" aria-labelledby="mx">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+          <h2 id="mx">Postgres majors</h2>
+          <a href="RegistryExtensions.dc.html" style="font-size: 14px; font-weight: 600">Every extension × every major</a>
+        </div>
+        <div class="rx-tw">
+          <table class="rx-mx" style="min-width: 560px">
+            <thead><tr><th scope="col">Extension</th><th scope="col">PG 14</th><th scope="col">PG 15</th><th scope="col">PG 16</th><th scope="col">PG 17</th><th scope="col">PG 18</th></tr></thead>
+            <tbody>
+              <tr>
+                <th scope="row" style="background: transparent; border: 0; text-transform: none; letter-spacing: 0; font: 600 13.5px 'JetBrains Mono', monospace; color: #140C1B; padding: 12px 14px">vector</th>
+                <td data-pg="PG 14"><span class="rx-chip rx-info">0.8.7 · coming</span></td>
+                <td data-pg="PG 15"><span class="rx-chip rx-info">0.8.7 · coming</span></td>
+                <td data-pg="PG 16"><span class="rx-chip rx-info">0.8.7 · coming</span></td>
+                <td data-pg="PG 17"><span class="rx-chip rx-info">0.8.7 · coming</span></td>
+                <td data-pg="PG 18"><span class="rx-chip rx-info">0.8.7 · coming</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; font-size: 13.5px; color: #6E5F79">Coming with postgres 0.3, which needs doze 0.2.0 or newer.</p>
+      </section>
+
+      <section class="rx-sec" aria-labelledby="bundles">
+        <h2 id="bundles">Builds per platform</h2>
+        <p class="rx-p">One bundle per extension version, Postgres major and platform, built against doze's own Postgres. Once published, each one's sha256 is pinned in doze.lock on first use. Below: Postgres 18.</p>
+        <div class="rx-tw">
+          <table class="rx-bt" style="min-width: 760px">
+            <thead><tr><th scope="col">Platform</th><th scope="col">Bundle</th><th scope="col">State</th></tr></thead>
+            <tbody>
+              <tr><td class="rx-pl">macOS arm64</td><td><code>pgext-vector-pg18-0.8.7-aarch64-apple-darwin.tar.gz</code></td><td><span class="rx-chip rx-info">Built · not published yet</span></td></tr>
+              <tr><td class="rx-pl">Linux x86_64</td><td><code>pgext-vector-pg18-0.8.7-x86_64-unknown-linux-gnu.tar.gz</code></td><td><span class="rx-chip rx-dim">Not built yet</span></td></tr>
+              <tr><td class="rx-pl">Linux arm64</td><td><code>pgext-vector-pg18-0.8.7-aarch64-unknown-linux-gnu.tar.gz</code></td><td><span class="rx-chip rx-dim">Not built yet</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="rx-sec" aria-labelledby="query">
+        <h2 id="query">Use it from your code</h2>
+        <p class="rx-p">CREATE EXTENSION is done for you. Make a vector column, then order by distance: <code style="font: 13.5px 'JetBrains Mono', monospace">&lt;-&gt;</code> is L2, <code style="font: 13.5px 'JetBrains Mono', monospace">&lt;=&gt;</code> cosine, <code style="font: 13.5px 'JetBrains Mono', monospace">&lt;#&gt;</code> inner product.</p>
+        <div class="rx-codebox">
+          <div class="rx-codebar"><span>SQL, in your migration</span><button class="rx-copy" type="button" aria-label="Copy the SQL">Copy</button></div>
+<pre class="rx-code"><span class="rx-k">create table</span> items (id bigserial primary key, embedding vector(3));
+<span class="rx-k">create index on</span> items <span class="rx-k">using</span> hnsw (embedding vector_l2_ops);
+
+<span class="rx-k">select</span> id <span class="rx-k">from</span> items <span class="rx-k">order by</span> embedding &lt;-&gt; <span class="rx-s">'[3,1,2]'</span> <span class="rx-k">limit</span> 5;</pre>
+        </div>
+        <div class="rx-langs">
+          <div class="rx-codebox">
+            <div class="rx-codebar"><span>Python · pgvector + psycopg</span><button class="rx-copy" type="button" aria-label="Copy the Python snippet">Copy</button></div>
+<pre class="rx-code"><span class="rx-k">from</span> pgvector.psycopg <span class="rx-k">import</span> register_vector
+<span class="rx-k">import</span> numpy <span class="rx-k">as</span> np, os, psycopg
+
+conn = psycopg.connect(os.environ[<span class="rx-s">"DATABASE_URL"</span>])
+register_vector(conn)
+conn.execute(
+  <span class="rx-s">"select id from items order by embedding &lt;-&gt; %s limit 5"</span>,
+  (np.array([3, 1, 2]),))</pre>
+          </div>
+          <div class="rx-codebox">
+            <div class="rx-codebar"><span>Node · pgvector + pg</span><button class="rx-copy" type="button" aria-label="Copy the Node snippet">Copy</button></div>
+<pre class="rx-code"><span class="rx-k">import</span> pg <span class="rx-k">from</span> <span class="rx-s">"pg"</span>;
+<span class="rx-k">import</span> pgvector <span class="rx-k">from</span> <span class="rx-s">"pgvector/pg"</span>;
+
+<span class="rx-k">const</span> client = <span class="rx-k">new</span> pg.Client(process.env.DATABASE_URL);
+<span class="rx-k">await</span> client.connect();
+<span class="rx-k">await</span> pgvector.registerTypes(client);
+<span class="rx-k">await</span> client.query(
+  <span class="rx-s">"select id from items order by embedding &lt;-&gt; $1 limit 5"</span>,
+  [pgvector.toSql([3, 1, 2])]);</pre>
+          </div>
+          <div class="rx-codebox">
+            <div class="rx-codebar"><span>Go · pgvector-go + pgx</span><button class="rx-copy" type="button" aria-label="Copy the Go snippet">Copy</button></div>
+<pre class="rx-code"><span class="rx-k">import</span> (
+  <span class="rx-s">"github.com/pgvector/pgvector-go"</span>
+  pgxvec <span class="rx-s">"github.com/pgvector/pgvector-go/pgx"</span>
+)
+
+pgxvec.RegisterTypes(ctx, conn)
+rows, err := conn.Query(ctx,
+  <span class="rx-s">"select id from items order by embedding &lt;-&gt; $1 limit 5"</span>,
+  pgvector.NewVector([]<span class="rx-k">float32</span>{3, 1, 2}))</pre>
+          </div>
+        </div>
+      </section>
+
+
+    </main>
+
+    <aside class="rx-rail" aria-label="Details">
+      <section class="rx-panel rx-railbox" aria-labelledby="lock">
+        <h2 id="lock" style="font-size: 19px">What doze.lock records</h2>
+        <p style="margin: 0; font-size: 13.5px; line-height: 1.55; color: #4A3D55">A bundle is pinned like a Postgres build: version and one sha256 per platform, written the first time each platform fetches it.</p>
+        <div class="rx-codebox">
+<pre class="rx-code" style="font-size: 11.5px; padding: 12px"><span class="rx-k">engines:</span>
+    pgext-vector-pg18:
+        <span class="rx-s">"0.8"</span>:
+            resolved: 0.8.7
+            source: mirror
+            hashes:
+                aarch64-apple-darwin: sha256:…</pre>
+        </div>
+        <p style="margin: 0; font-size: 13px; color: #6E5F79">… is each platform's sha256, written on its first fetch. The module pin above it moves to postgres 0.3; <code style="font: 12.5px 'JetBrains Mono', monospace">doze modules upgrade</code> moves both on purpose.</p>
+      </section>
+      <section class="rx-panel rx-railbox" aria-labelledby="facts2">
+        <h2 id="facts2" style="font-size: 19px">At a glance</h2>
+        <div>
+          <div class="rx-kv"><span>CREATE EXTENSION name</span><b style="font: 600 13.5px 'JetBrains Mono', monospace">vector</b></div>
+          <div class="rx-kv"><span>Default line</span><b>0.8</b></div>
+          <div class="rx-kv"><span>Preload</span><b>No, no restart</b></div>
+          <div class="rx-kv"><span>Licence</span><b>PostgreSQL</b></div>
+          <div class="rx-kv"><span>Built from</span><a href="https://github.com/pgvector/pgvector/tree/v0.8.7">pgvector v0.8.7</a></div>
+          <div class="rx-kv"><span>Recipe</span><a href="https://github.com/doze-dev/doze-binaries/tree/main/recipes/pgext">doze-binaries</a></div>
+          <div class="rx-kv"><span>Needs</span><b>postgres 0.3 · doze 0.2.0</b></div>
+        </div>
+      </section>
+      <p style="margin: 0 4px; font-size: 13px; line-height: 1.55; color: #4A3D55">Until postgres 0.3, on 0.2.5: only extensions that ship with Postgres (pg_trgm, uuid-ossp, hstore…) work by name.</p>
+      <section class="rx-sec" style="gap: 12px" aria-labelledby="related">
+        <h2 id="related" style="font-size: 20px">Often used with</h2>
+        <div class="rx-rel">
+          <a class="rx-panel" href="RegistryExtensions.dc.html">
+            <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center"><code style="font: 600 14.5px 'JetBrains Mono', monospace">vectorscale</code><span class="rx-chip rx-dim">PG 18 only</span></div>
+            <p>pgvectorscale: DiskANN indexes for pgvector at scale. Brings vector in with it.</p>
+          </a>
+          <a class="rx-panel" href="RegistryExtensions.dc.html">
+            <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap"><code style="font: 600 14.5px 'JetBrains Mono', monospace">pg_search</code><span style="display: flex; gap: 6px"><span class="rx-chip rx-dim">PG 15–18</span><span class="rx-chip rx-warn">Preloads</span></span></div>
+            <p>BM25 full-text search (ParadeDB). With vector, hybrid search: keywords and meaning in one query. AGPL-3.0.</p>
+          </a>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -14,10 +14,10 @@ bun run dev        # http://localhost:4321, docs pulled from the sibling repos
 
 ## How it fits together
 
-| Path | What | Where it comes from |
-|---|---|---|
-| `/`, `/doze/`, `/aws/`, `/kafka/` | marketing pages | `src/pages/*.astro` |
-| `/registry/` | the registry | `src/pages/registry/` |
+| Path                                        | What             | Where it comes from                       |
+| ------------------------------------------- | ---------------- | ----------------------------------------- |
+| `/`, `/doze/`, `/aws/`, `/kafka/`           | marketing pages  | `src/pages/*.astro`                       |
+| `/registry/`                                | the registry     | `src/pages/registry/`                     |
 | `/docs/doze/`, `/docs/aws/`, `/docs/kafka/` | docs (Starlight) | each product's repo, pulled at build time |
 
 Docs live beside the code they describe, so a change and its docs land in one

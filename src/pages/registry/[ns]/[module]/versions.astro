@@ -1,0 +1,315 @@
+---
+// A module's releases (design: RegistryVersions), for every module in the index:
+// grouped by minor line, with the doze each needs, its engines and platforms.
+// The board's design-example rows (yanked, advisory, deprecated) are left out:
+// none of those happened, and a live page shouldn't show events that didn't.
+import "../../../../components/module/versions.css";
+import ModuleHead from "../../../../components/ModuleHead.astro";
+import {
+  byLine,
+  display,
+  dozeHistory,
+  engineName,
+  lockEntry,
+  modulePaths,
+  numberWord,
+  plat,
+  relHref,
+  sortTriples,
+  tagPage,
+  triShort,
+} from "../../../../components/module/lib";
+import RegistryBar from "../../../../components/RegistryBar.astro";
+import { extrasFor } from "../../../../data/module-extras";
+import Page from "../../../../layouts/Page.astro";
+import { fmtDate, getModule } from "../../../../lib/registry";
+
+export const getStaticPaths = modulePaths;
+
+const m = getModule(Astro.params.module as string)!;
+const x = extrasFor(m.name);
+const rels = m.releases;
+const newest = rels[0];
+const eName = engineName(m, x.engineLabel);
+const majors = [...new Set(rels.flatMap((r) => r.engines))].sort((a, b) => Number(b) - Number(a));
+
+// Which doze each run of releases needs.
+const hist = dozeHistory(rels);
+const span = (a: string | null, b: string | null) => {
+  if (!a || !b) return "";
+  const f = (d: string, o: Intl.DateTimeFormatOptions) =>
+    new Date(`${d}T00:00:00Z`).toLocaleDateString("en-GB", { ...o, timeZone: "UTC" });
+  const ma = f(a, { month: "short" }),
+    mb = f(b, { month: "short" }),
+    y = f(b, { year: "numeric" });
+  return ma === mb ? `${mb} ${y}` : `${ma}–${mb} ${y}`;
+};
+const vr = (h: (typeof hist)[number]) => (h.from === h.to ? h.from.version : `${h.from.version} – ${h.to.version}`);
+const headline =
+  hist.length === 1 && !hist[0].doze
+    ? "Any doze, every release"
+    : hist
+        .map((h, i) =>
+          h.doze
+            ? `doze ${h.doze} from ${h.from.version}`
+            : `Any doze ${i === hist.length - 1 ? "" : `up to ${h.to.version}`}`.trim(),
+        )
+        .join(" · ");
+
+// Filters: the doze versions people run, and engine majors.
+const dozeOpts = [
+  ["", "any"],
+  ["0.2.0", "0.2.0 and newer"],
+  ["0.1.1", "0.1.1"],
+];
+const pms = (ts: string[]) => sortTriples(ts).map((t) => ({ t, s: triShort[t] ?? t, title: plat(t) }));
+const groups = byLine(rels);
+
+// Upgrading: from the release before the newest.
+const prev = rels[1];
+const diffLines = (() => {
+  if (!prev) return "";
+  // A plain line diff (LCS): hunks of removed lines, then added ones.
+  const a = lockEntry(m, prev).split("\n"),
+    b = lockEntry(m, newest).split("\n");
+  const L = a.map(() => new Array(b.length + 1).fill(0));
+  L.push(new Array(b.length + 1).fill(0));
+  for (let i = a.length - 1; i >= 0; i--)
+    for (let j = b.length - 1; j >= 0; j--)
+      L[i][j] = a[i] === b[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const out: string[] = [];
+  let i = 0,
+    j = 0,
+    del: string[] = [],
+    add: string[] = [];
+  const flush = () => {
+    out.push(...del.map((l) => `-${l}`), ...add.map((l) => `+${l}`));
+    del = [];
+    add = [];
+  };
+  while (i < a.length || j < b.length) {
+    if (i < a.length && j < b.length && a[i] === b[j]) {
+      flush();
+      out.push(` ${a[i]}`);
+      i++;
+      j++;
+    } else if (j < b.length && (i >= a.length || L[i][j + 1] >= L[i + 1][j])) add.push(b[j++]);
+    else del.push(a[i++]);
+  }
+  flush();
+  return out.join("\n");
+})();
+const diffHtml = diffLines
+  .split("\n")
+  .map((l) =>
+    l.startsWith("-") ? `<span class="rv-del">${l}</span>` : l.startsWith("+") ? `<span class="rv-add">${l}</span>` : l,
+  )
+  .join("\n");
+const row = (eng: string, src: string, pinned: string, sel: string, status: string) =>
+  `${eng.padEnd(9)} ${src.padEnd(14)} ${pinned.padEnd(7)} ${sel.padEnd(9)} ${status}`;
+const head = `<span class="rv-c">${row("ENGINE", "SOURCE", "PINNED", "SELECTED", "STATUS")}</span>`;
+const srcName = `${m.namespace}/${m.name}`;
+const info =
+  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>';
+---
+<Page title={`${display(m)} versions · registry`} description={`Every release of ${m.namespace}/${m.name} in the signed index.`} theme="light" current="registry">
+  <RegistryBar section="modules" />
+  <ModuleHead module={m} tab="versions" />
+
+  <div class="rv-pg">
+    <section class="rv-wrap rv-sec">
+      <div class="rv-top">
+        <div class="rv-col8">
+          <h2 class="rv-h2">Versions</h2>
+          <p class="rv-lead">{numberWord(rels.length)} release{rels.length === 1 ? "" : "s"} resolve{rels.length === 1 ? "s" : ""}{rels.length > 1 && ", newest first"}. Nothing is ever taken down: a project pinned to any of them keeps working, and <code class="rv-mono rv-14">doze modules upgrade</code> is the only thing that moves a pin.</p>
+        </div>
+        <a class="rv-ext" href={`https://registry.doze-dev.com/${m.namespace}/${m.name}/index.yaml`}>The signed index.yaml
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg></a>
+      </div>
+
+      <div class="rv-panel rv-histbox">
+        <div class="rv-histhead">
+          <span class="rv-eyebrow">Oldest doze, by release</span>
+          <p>{headline}</p>
+        </div>
+        <ol class="rv-hist" aria-label="Which doze each release needs">
+          {hist.map((h) => {
+            const now = h.releases.includes(newest);
+            return (
+              <li class:list={[now && "rv-now"]}>
+                <span class="rv-mono rv-hv">{m.name} {vr(h)}{now && <span class="rv-chip rv-c-good rv-chip-s">Current</span>}</span>
+                <b>{h.doze ? `doze ${h.doze} or newer` : "any doze"}</b>
+                <span class="rv-small">{h.doze ? <>The index carries <code class="rv-mono">doze: {h.doze}</code> for {h.from === h.to ? "it" : "them"}.</> : <>{span(h.from.date, h.to.date)}{span(h.from.date, h.to.date) && ". "}No oldest-doze field, so {h.from === h.to ? "it runs" : "they run"} on every doze, 0.1.0 and up.</>}</span>
+              </li>
+            );
+          })}
+          {x.coming && (
+            <li>
+              <span class="rv-mono rv-hv">{m.name} {x.coming.short}<span class="rv-chip rv-c-info rv-chip-s">Coming</span></span>
+              <b>doze {x.coming.doze} or newer</b>
+              <span class="rv-small">{x.coming.what}</span>
+            </li>
+          )}
+        </ol>
+        <div class="rv-notes2">
+          <p class="rv-small rv-note"><Fragment set:html={info} /><span>The release tool writes the field from the SDK the module was built with, always as three numbers. A doze older than a release's minimum skips it and takes the newest release that fits.</span></p>
+          <p class="rv-small rv-note"><Fragment set:html={info} /><span>doze 0.1.1 can't read a release's minimum doze. Update doze first, with <code class="rv-mono">brew upgrade doze</code>, then run <code class="rv-mono">doze modules upgrade</code>.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rv-wrap rv-sec" aria-labelledby="rel-h">
+      <h2 id="rel-h" class="sr-only">All releases</h2>
+      <form class="rv-filters" aria-label="Filter releases" data-filters>
+        <div class="rv-sel"><label for="f-doze">Runs on doze</label>
+          <select id="f-doze">{dozeOpts.map(([v, l]) => <option value={v}>{l}</option>)}</select></div>
+        {majors.length > 0 && (
+          <div class="rv-sel"><label for="f-eng">Engine</label>
+            <select id="f-eng"><option value="">any</option>{majors.map((e) => <option value={e}>{eName ? `${eName} ${e}` : e}</option>)}</select></div>
+        )}
+        <span class="rv-grow"></span>
+        <span class="rv-small rv-legend">Platforms:
+          <span class="rv-pm">mac</span> macOS arm64 <span class="rv-pm">arm</span> Linux arm64 <span class="rv-pm">x86</span> Linux x86_64</span>
+      </form>
+
+      <div class="rv-tbox rv-mt16" role="region" aria-label={`Releases of ${m.namespace}/${m.name}`} tabindex="0">
+        <table class="rv-t rv-wide-t">
+          <thead><tr>
+            <th class="rv-stick rv-w128" scope="col">Version</th><th scope="col">Released</th><th scope="col">Status</th><th scope="col">Needs doze</th><th scope="col">Protocol</th><th scope="col">{eName ?? "Engines"}</th><th scope="col">Platforms</th><th scope="col" class="rv-end rv-w100">Notes</th>
+          </tr></thead>
+          <tbody>
+            {x.coming && (
+              <>
+                <tr class="rv-grp" data-group><th data-label="Version" class="rv-stick" scope="rowgroup">{x.coming.short}</th><td data-label="Released" colspan="7"><span class="rv-gl">Coming. Not in the index yet, so doze can't resolve it.</span></td></tr>
+                <tr data-doze={x.coming.doze} data-engines={x.coming.engines.join(" ")}>
+                  <td data-label="Version" class="rv-stick"><b class="rv-mono rv-145">{x.coming.version}</b></td>
+                  <td data-label="Released">not released</td>
+                  <td data-label="Status"><span class="rv-chip rv-c-info">Coming · extensions by name</span></td>
+                  <td data-label="Needs doze">doze {x.coming.doze}</td>
+                  <td data-label="Protocol" class="rv-mono">1</td>
+                  <td data-label={eName ?? "Engines"}><span class="rv-engs">{x.coming.engines.map((e) => <span class="rv-eng">{e}</span>)}</span></td>
+                  <td data-label="Platforms"><span class="rv-pms">{pms(newest.platforms.map((p) => p.triple)).map((p) => <span class="rv-pm" title={p.title}>{p.s}</span>)}</span></td>
+                  <td data-label="Notes" class="rv-wide rv-end rv-nt"><span set:html={x.coming.note} /></td>
+                </tr>
+              </>
+            )}
+            {groups.map((g) => (
+              <>
+                <tr class="rv-grp" data-group><th data-label="Version" class="rv-stick" scope="rowgroup">{g.line}</th><td data-label="Released" colspan="7"><span class="rv-gl">{g.releases.length} in the index · newest {g.releases[0].version}</span></td></tr>
+                {g.releases.map((r) => {
+                  const cur = r === newest;
+                  return (
+                    <tr data-doze={r.doze ?? ""} data-engines={r.engines.join(" ")}>
+                      <td data-label="Version" class:list={["rv-stick", cur && "rv-cur"]}><a href={relHref(m, r.version)} class="rv-mono rv-145 rv-b">{r.version}</a></td>
+                      <td data-label="Released">{fmtDate(r.date)}</td>
+                      <td data-label="Status">{cur ? <span class="rv-chip rv-c-good">Current</span> : <span class="rv-chip rv-c-line">Superseded</span>}</td>
+                      <td data-label="Needs doze">{r.doze ? <b>doze {r.doze}</b> : "any doze"}</td>
+                      <td data-label="Protocol" class="rv-mono">{r.protocol}</td>
+                      <td data-label={eName ?? "Engines"}>{r.engines.length ? <span class="rv-engs">{r.engines.map((e) => <span class="rv-eng">{e}</span>)}</span> : "—"}</td>
+                      <td data-label="Platforms"><span class="rv-pms">{pms(r.platforms.map((p) => p.triple)).map((p) => <span class="rv-pm" title={p.title}>{p.s}</span>)}</span></td>
+                      <td data-label="Notes" class="rv-wide rv-end rv-nt">{x.notes?.[r.version] && <span set:html={x.notes[r.version]} />}</td>
+                    </tr>
+                  );
+                })}
+              </>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="rv-small rv-empty" data-empty hidden>No release matches these filters.</p>
+
+      <div class="rv-mt14"><p class="rv-small rv-note"><Fragment set:html={info} /><span>No download counts here: doze sends no telemetry, so nobody, including us, knows how often a release is fetched. Security advisories: none known for any release.</span></p></div>
+    </section>
+
+    {x.notInIndex && (
+      <section class="rv-wrap rv-sec" aria-labelledby="nii-h">
+        <div class="rv-sunk rv-nibox">
+          <div class="rv-col8">
+            <h2 id="nii-h" class="rv-h3">Not in the index</h2>
+            <p class="rv-nip">GitHub has older {m.name} builds than the registry lists. doze only resolves what the signed index names, so these can't land in a doze.lock.</p>
+          </div>
+          <ul class="rv-nii">
+            {x.notInIndex.map((n) => <li><span class="rv-mono">{n.versions}</span><span>{n.what}</span></li>)}
+            <li><a class="rv-gh" href={tagPage(newest, m)}>All files on GitHub</a></li>
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <section class="rv-wrap rv-sec rv-last" aria-labelledby="up-h">
+      <div class="rv-col8 rv-mb20">
+        <h2 id="up-h" class="rv-h2">Upgrading a project</h2>
+        <p class="rv-lead">A project stays on the release in its doze.lock until you move it. Check first; the upgrade takes the newest release your doze can run, verifies it, and rewrites the pin.</p>
+      </div>
+      <div class="rv-col20">
+        <div class="rv-upg">
+          <div class="rv-code">
+            <div class="rv-code-bar"><span>1. See what would move (changes nothing; exits 1 if anything would)</span><button class="rv-copy" type="button" aria-label="Copy doze modules upgrade --check" data-copy="doze modules upgrade --check">Copy</button></div>
+            {prev ? (
+              <pre><span class="rv-p">$</span> doze modules upgrade --check
+<Fragment set:html={head} />
+{row(m.name, srcName, prev.version, newest.version, "")}<span class="rv-k">upgrade available</span>
+
+1 module upgrade(s) available — run doze modules upgrade</pre>
+            ) : <pre><span class="rv-p">$</span> doze modules upgrade --check</pre>}
+          </div>
+          <div class="rv-code">
+            <div class="rv-code-bar"><span>2. Move the pin</span><button class="rv-copy" type="button" aria-label={`Copy doze modules upgrade ${m.name}`} data-copy={`doze modules upgrade ${m.name}`}>Copy</button></div>
+            {prev ? (
+              <pre><span class="rv-p">$</span> doze modules upgrade {m.name}
+<Fragment set:html={head} />
+{row(m.name, srcName, prev.version, newest.version, "")}<span class="rv-add">upgraded</span>
+
+doze.lock updated — commit it so the team and CI pick up the same builds</pre>
+            ) : <pre><span class="rv-p">$</span> doze modules upgrade {m.name}</pre>}
+          </div>
+          <div class="rv-span"><p class="rv-small rv-note"><Fragment set:html={info} /><span>On doze 0.1.1, update doze first: it can't read a release's minimum doze.{m.name === "postgres" && <> Engine pins (<code class="rv-mono">postgres "17"</code>) never move with a module upgrade.</>}{m.name !== "postgres" && majors.length > 0 && " Engine pins never move with a module upgrade."}</span></p></div>
+        </div>
+        {prev && (
+          <div class="rv-code rv-min0">
+            <div class="rv-code-bar"><span>3. The doze.lock diff to commit</span><button class="rv-copy" type="button" aria-label="Copy the doze.lock diff" data-copy={diffLines}>Copy</button></div>
+            <pre set:html={diffHtml} />
+          </div>
+        )}
+      </div>
+    </section>
+  </div>
+</Page>
+
+<script>
+  // Filters: hide releases that don't run on the chosen doze or don't support the chosen engine.
+  const older = (a: string, b: string) => {
+    const pa = a.split(".").map(Number), pb = b.split(".").map(Number);
+    for (let i = 0; i < 3; i++) if (pa[i] !== pb[i]) return pa[i] < pb[i];
+    return false;
+  };
+  const form = document.querySelector<HTMLFormElement>("[data-filters]");
+  if (form) {
+    const fd = form.querySelector<HTMLSelectElement>("#f-doze")!;
+    const fe = form.querySelector<HTMLSelectElement>("#f-eng");
+    const rows = [...document.querySelectorAll<HTMLTableRowElement>(".rv-t tbody tr")];
+    const empty = document.querySelector<HTMLElement>("[data-empty]")!;
+    const apply = () => {
+      const d = fd.value, e = fe?.value ?? "";
+      let shown = 0;
+      let group: HTMLTableRowElement | null = null, groupHas = false;
+      const close = () => { if (group) group.hidden = !groupHas; };
+      for (const r of rows) {
+        if (r.hasAttribute("data-group")) { close(); group = r; groupHas = false; continue; }
+        const need = r.dataset.doze ?? "";
+        const ok = (!d || !need || !older(d, need)) && (!e || (r.dataset.engines ?? "").split(" ").includes(e));
+        r.hidden = !ok;
+        if (ok) { groupHas = true; shown++; }
+      }
+      close();
+      empty.hidden = shown > 0;
+    };
+    // Start from the doze the reader is checking against, if it is one of the options.
+    const mine = document.documentElement.dataset.doze;
+    if (mine && [...fd.options].some((o) => o.value === mine)) fd.value = mine;
+    fd.addEventListener("change", apply);
+    fe?.addEventListener("change", apply);
+    form.addEventListener("submit", (ev) => ev.preventDefault());
+    apply();
+  }
+</script>

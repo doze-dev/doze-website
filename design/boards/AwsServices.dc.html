@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doze AWS services gallery</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.as-svc{min-height:44px;display:flex;flex-direction:column;gap:3px;text-align:left;padding:13px 16px;border-radius:12px;border:1px solid transparent;background:transparent;color:#AFC0D4;font-family:Geist,sans-serif;cursor:pointer;width:100%}
+.as-svc:hover{background:#13203A;color:#EEF4FA}
+.as-svc:focus-visible{outline:2px solid #5BB8E8;outline-offset:2px}
+.as-recap{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;color:#AFC0D4;background:#13203A;border:1px dashed #3A5675;border-radius:6px;padding:2px 7px;white-space:nowrap}
+@media (max-width:900px){.as-tabs{flex-direction:row !important;overflow-x:auto;flex:1 1 100% !important;max-width:none !important;-webkit-mask-image:linear-gradient(90deg,#000 80%,transparent);mask-image:linear-gradient(90deg,#000 80%,transparent);padding-right:48px}.as-svc{min-width:200px}.as-cue{display:block !important}}
+</style>
+</helmet>
+<div style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #EEF4FA; background: #0C1320; padding: 8px 0">
+  <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+    <div class="as-tabs" role="tablist" aria-label="doze AWS services" style="flex: 1 1 260px; max-width: 320px; display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{items}}" as="s" hint-placeholder-count="8">
+        <button type="button" class="as-svc" role="tab" aria-selected="{{s.selected}}" onClick="{{s.pick}}" style="{{s.tabStyle}}">
+          <span style="font-weight: 600; font-size: 16px; color: #EEF4FA">{{s.name}}</span>
+          <span style="font-size: 13px; line-height: 1.45">{{s.line}}</span>
+        </button>
+      </sc-for>
+    </div>
+    <span class="as-cue" aria-hidden="true" style="display: none; flex: 1 1 100%; margin: -16px 0 0; font-size: 13px; color: #9DB0C6">Swipe for more services →</span>
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+      <div style="position: relative">
+        <div style="position: absolute; left: 10%; right: 10%; top: 5%; height: 80%; border-radius: 50%; background: radial-gradient(closest-side, rgba(91,184,232,0.22), rgba(91,184,232,0))"></div>
+        <div style="position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #2E4560; box-shadow: 0 50px 120px rgba(0,0,0,0.55); background: #0B0F15">
+          <div style="height: 32px; background: #0B0F15; display: flex; align-items: center; gap: 7px; padding: 0 14px"><span style="width: 11px; height: 11px; border-radius: 6px; background: #FF5F57"></span><span style="width: 11px; height: 11px; border-radius: 6px; background: #FEBC2E"></span><span style="width: 11px; height: 11px; border-radius: 6px; background: #28C840"></span><span style="margin: 0 auto; font: 13px 'JetBrains Mono', monospace; color: #8EA3BB; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">doze AWS · /_console/{{current.path}}</span></div>
+          <sc-for list="{{items}}" as="s" hint-placeholder-count="1">
+            <sc-if value="{{s.selected}}" hint-placeholder-val="{{true}}">
+              <img src="{{s.img}}" alt="{{s.alt}}" style="display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: left top">
+            </sc-if>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap">
+        <b style="font-size: 18px">{{current.headline}}</b>
+        <span style="font-size: 13px; color: #8EA3BB">The real console, from its demo stack. <span class="as-recap">[re-capture with Larder]</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":762}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { at: 0 }; }
+  renderVals() {
+    const list = [
+      { name: 'The map', line: 'Every resource wired to another, and the wire between.', img: '/_blob/c959612ecd18a5cc80a6f9f166391644', path: 'map', headline: 'See how your stack is wired: a topic feeding a queue, its dead-letter queue, a rule targeting a function.', alt: 'The doze AWS map: order-events feeds jobs, which redrives to jobs-dlq; the receipts rule targets the resize function' },
+      { name: 'Lambda', line: 'Real host processes. Invoke, see the response and the log tail.', img: '/_blob/3356d0272f5333009cc8cb496427945a', path: 'lambda/resize', headline: 'A Node function invoked: the response, 2.32 ms, and its logs. Warm, and it sleeps after 10 idle minutes.', alt: 'The resize Lambda: triggers, warm state, a successful invoke with its response and log tail' },
+      { name: 'DynamoDB', line: 'Scan, query, get, PartiQL. GSIs, transactions, TTL.', img: '/_blob/379a0a9054af6ccb5eead927cdf6e75e', path: 'ddb/orders', headline: 'Browse and query tables the way you would on AWS.', alt: 'The orders table: six items with scan, query, get and PartiQL' },
+      { name: 'S3', line: 'Buckets and objects on your disk. Upload, browse, notify.', img: '/_blob/807f4ca8512d711b57a54318b818d1df', path: 's3/uploads', headline: 'Buckets you can browse and upload to, with event notifications.', alt: 'The uploads bucket with three receipts' },
+      { name: 'SQS', line: 'Peek without consuming. FIFO, DLQ redrive, long polling.', img: '/_blob/d8abfe289d16b3fd3001870ccd3f2a6e', path: 'sqs/jobs', headline: 'Live peek at a queue: what feeds it, where dead letters go, every message.', alt: 'The jobs queue: five messages, fed by order-events, dead letters to jobs-dlq' },
+      { name: 'EventBridge', line: 'Patterns, schedules, targets, input transformers.', img: '/_blob/b8e0f3b9fe9441eaa98e8392b00713fc', path: 'eb/default/rule/receipts', headline: 'A rule, its pattern, and what it drains to.', alt: 'The receipts rule with its event pattern and its Lambda target' },
+      { name: 'Step Functions', line: 'Standard and Express, JSONata, task tokens, Map runs.', img: '/_blob/e1fc4e29142b0f9e4a9f8749220b9979', path: 'sfn', headline: 'State machines and their executions, succeeded and failed.', alt: 'The checkout state machine with a succeeded and a failed execution' },
+      { name: 'IAM', line: 'Real policy evaluation. Generate the policy your tests needed.', img: '/_blob/c8ad27725cf97e7c013389be5327a20e', path: 'iam', headline: 'Run your tests, then generate the least-privilege policy they actually used.', alt: 'The IAM access log: every action recorded, a policy generator and a simulator' }
+    ];
+    const at = Math.min(this.state.at, list.length - 1);
+    const items = list.map((s, i) => ({ ...s, selected: i === at, pick: () => this.setState({ at: i }), tabStyle: i === at ? 'background: #13203A; border-color: #2E4560; color: #DCE6F2' : '' }));
+    return { items, current: items[at] };
+  }
+}
+</script>
+</body>
+</html>

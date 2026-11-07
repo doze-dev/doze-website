@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Publish a module · Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.pb code,.pb pre,.pb .pb-mono,.pb .pb-ic{font-variant-ligatures:none}
+.pb{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#140C1B;background:#FFFAF4}
+.pb a{color:#A85A0C;text-decoration:underline;text-underline-offset:2px}
+.pb-wrap{max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px}
+.pb h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;letter-spacing:-0.025em;line-height:1.1;margin:0;text-wrap:balance}
+.pb h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.01em;margin:0;line-height:1.25}
+.pb p{margin:0;line-height:1.6}
+.pb-body{font-size:15.5px;color:#4A3D55;max-width:70ch}
+.pb-kick{font:600 13px Geist,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#6E5F79}
+.pb-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font:600 13px Geist,sans-serif;white-space:nowrap}
+.pb-c-good{background:#E6F4EA;color:#1D7A45}.pb-c-warn{background:#FFF1D6;color:#8A5300}.pb-c-info{background:#E8EEFC;color:#2F62D9}.pb-c-dim{background:#F3ECE4;color:#5A4B66}.pb-c-amb{background:#FDE6CB;color:#6B3A06}
+.pb-mono{font-family:'JetBrains Mono',monospace}
+.pb-ic{font:13px 'JetBrains Mono',monospace;background:#FFF4E8;border:1px solid #EADFD3;border-radius:5px;padding:1px 5px;color:#140C1B;overflow-wrap:anywhere}
+.pb-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.pb-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px;align-items:start}
+.pb-toc{position:sticky;top:20px;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.pb-toc a{color:#4A3D55;text-decoration:none;padding:7px 0 7px 12px;border-left:2px solid #EADFD3}
+.pb-toc a:hover{color:#140C1B;border-left-color:#F0A24B}
+.pb-toc a.pb-cur{color:#140C1B;font-weight:600;border-left-color:#F0A24B}
+.pb-sec{padding-top:56px;display:flex;flex-direction:column;gap:16px}
+.pb-num{font:700 13px 'Bricolage Grotesque',sans-serif;color:#A85A0C}
+.pb-code{background:#1E1328;color:#F4ECE4;border-radius:12px;font:13.5px/1.7 'JetBrains Mono',monospace;overflow:hidden}
+.pb-code pre{margin:0;padding:16px 18px;overflow-x:auto;white-space:pre}
+.pb-code .pb-p{color:#9C8AAB}.pb-code .pb-c{color:#9C8AAB}.pb-code .pb-hl{color:#F0A24B}.pb-code .pb-er{color:#FF9AA8}.pb-code .pb-ok{color:#8BE39B}
+.pb-code-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 16px;border-bottom:1px solid #34233F;font:12px Geist,sans-serif;color:#C9BAD3}
+.pb-copy{height:30px;padding:0 12px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer}
+.pb-tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+.pb-tbl th{text-align:left;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79;padding:11px 16px;border-bottom:1px solid #DCCFC2;background:#FFF4E8}
+.pb-tbl td{padding:13px 16px;border-bottom:1px solid #EADFD3;vertical-align:top;line-height:1.5;color:#4A3D55}
+.pb-tbl td:first-child{color:#140C1B;font-weight:600}
+.pb-tbl tr:last-child td{border-bottom:0}
+.pb-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px, 100%), 1fr));gap:14px}
+.pb-card{background:#FFFFFF;border:1px solid #EADFD3;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.pb-card p{font-size:14.5px;color:#4A3D55}
+.pb-planned{border:1.5px dashed #2F62D9;border-radius:16px;padding:28px;background:#FFFFFF;display:flex;flex-direction:column;gap:20px}
+.pb-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px, 100%), 1fr));gap:12px;counter-reset:f}
+.pb-flow li{list-style:none;background:#F7F9FF;border:1px solid #D6E0F7;border-radius:12px;padding:14px 16px;font-size:14px;color:#4A3D55;line-height:1.5;display:flex;flex-direction:column;gap:6px}
+.pb-flow li b{color:#140C1B;font-size:14.5px}
+.pb-flow li::before{counter-increment:f;content:counter(f);font:700 13px 'Bricolage Grotesque',sans-serif;color:#2F62D9}
+.pb-tier{border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;border:1px solid #EADFD3;background:#FFFAF4}
+.pb-tier p{font-size:14px;color:#4A3D55}
+.pb-print{background:#FFFFFF;border:1.5px solid #140C1B;border-radius:16px;padding:28px 30px;display:flex;flex-direction:column;gap:14px}
+.pb-print ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px, 100%), 1fr));gap:4px 32px}
+.pb-print li label{display:flex;gap:12px;align-items:flex-start;padding:9px 0;font-size:14.5px;color:#140C1B;line-height:1.45;border-bottom:1px dotted #DCCFC2;min-height:44px;box-sizing:border-box;cursor:pointer}
+.pb-print input{width:20px;height:20px;margin:1px 0 0;accent-color:#A85A0C;flex:none}
+.pb-print small{display:block;color:#6E5F79;font-size:13px;margin-top:2px}
+.pb-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;font:600 14px Geist,sans-serif;text-decoration:none !important;cursor:pointer}
+.pb-btn-p{background:#F0A24B;color:#2A1534 !important;border:0}
+.pb-btn-s{background:#FFFFFF;color:#140C1B !important;border:1px solid #DCCFC2}
+@media (max-width:980px){.pb-layout{grid-template-columns:1fr;gap:0}.pb-toc{display:none}}
+@media (max-width:700px){.pb-wrap{padding-left:32px;padding-right:32px}.pb h2{font-size:25px}.pb-h1{font-size:38px !important}.pb-tbl-stack thead{display:none}.pb-tbl-stack tr{display:block;border-bottom:1px solid #EADFD3;padding:6px 0}.pb-tbl-stack td{display:block;border:0;padding:5px 16px}.pb-tbl-stack td[data-l]::before{content:attr(data-l);display:block;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79;margin-bottom:2px}.pb-print{padding:22px 18px}.pb-print li label{min-height:44px;align-items:center}.pb-planned{padding:20px 18px}.pb-btn{height:44px}.pb-copy{height:44px}}
+</style>
+</helmet>
+<div class="pb">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="publish" hint-size="100%,120px"></dc-import>
+
+<main>
+<section class="pb-wrap" style="padding-top: 40px">
+  <nav aria-label="Breadcrumb" style="font-size: 13px; color: #6E5F79; margin-bottom: 18px"><a href="Registry.dc.html">Registry</a> / Publish a module</nav>
+  <h1 class="pb-h1" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 46px; letter-spacing: -0.03em; line-height: 1.02">Publish a module</h1>
+  <p class="pb-body" style="font-size: 18px; margin-top: 14px">A module teaches doze to run one more engine. Here is what it takes to write one, release it, and get it signed, with the rules the registry enforces.</p>
+
+  <div style="margin-top: 26px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 0; border: 1px solid #E0A458; border-radius: 16px; overflow: hidden; background: #FFFFFF">
+    <div style="padding: 22px 24px; display: flex; flex-direction: column; gap: 10px; background: #FFF4E8">
+      <span class="pb-kick" style="color: #6B3A06">Status, honestly</span>
+      <p style="font-size: 17px; color: #140C1B; font-weight: 600; line-height: 1.45">Today the registry publishes doze-dev's own modules. Outside publishers: <span class="pb-chip pb-c-info" style="vertical-align: 2px">planned</span></p>
+      <p style="font-size: 14.5px; color: #4A3D55">doze has one registry and one namespace, <span class="pb-mono">doze</span>. Any other namespace is refused: <span class="pb-mono" style="font-size: 13px; color: #B4233C">module namespace "acme": doze has one registry, and its modules are all under "doze"</span></p>
+    </div>
+    <div style="padding: 22px 24px; display: flex; flex-direction: column; gap: 12px">
+      <span class="pb-kick">What you can do today</span>
+      <div style="display: flex; gap: 12px"><span class="pb-chip pb-c-good" style="flex: none">works</span><p style="font-size: 14.5px; color: #4A3D55"><b style="color: #140C1B">Run your own module, unpublished.</b> <span class="pb-ic">DOZE_HTTPD_PLUGIN=./bin/httpd-plugin doze up</span> skips the registry and the lock for that type. Teams run private modules this way.</p></div>
+      <div style="display: flex; gap: 12px"><span class="pb-chip pb-c-good" style="flex: none">works</span><p style="font-size: 14.5px; color: #4A3D55"><b style="color: #140C1B">Contribute it to doze-modules.</b> A pull request to <a href="https://github.com/doze-dev/doze-modules">doze-modules</a>; once merged, CI builds it and the registry signs it as an official module.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="pb-wrap pb-layout" style="padding-bottom: 80px">
+  <nav class="pb-toc" aria-label="On this page" style="padding-top: 56px">
+    <span class="pb-kick" style="padding: 0 0 8px 0">On this page</span>
+    <a class="pb-cur" href="#what">What a module is</a>
+    <a href="#template">Start from the template</a>
+    <a href="#describe">Describe: your page</a>
+    <a href="#testing">Testing</a>
+    <a href="#release">Releasing</a>
+    <a href="#oldest">The oldest doze it needs</a>
+    <a href="#review">The review checklist</a>
+    <a href="#outside">Outside publishing</a>
+    <a href="#checklist">Release checklist</a>
+  </nav>
+
+  <div style="min-width: 0">
+    <!-- 1 -->
+    <section class="pb-sec" id="what" aria-labelledby="h-what">
+      <span class="pb-num">01</span>
+      <h2 id="h-what">What a module is</h2>
+      <p class="pb-body">A plugin binary, written in Go with <a href="https://github.com/doze-dev/doze-sdk">doze-sdk</a>, that speaks the doze plugin protocol over gRPC. doze is an engine-blind host: proxy, supervisor, config, lockfile. Everything engine-specific lives in the module: how to find the engine binary, set up its data directory, start it, tell when it is ready, and what its config block accepts. Official modules get no special path; this is the Terraform provider model.</p>
+      <div class="pb-grid2">
+        <div class="pb-card"><h3>Self-contained</h3><p>The plugin is the server. doze AWS and doze Kafka work this way, as does the template's <span class="pb-mono">httpd</span>. No <span class="pb-mono">version =</span>.</p></div>
+        <div class="pb-card"><h3>Real upstream engine</h3><p>The module fetches a real binary (Postgres, Valkey) from doze-binaries and declares the engine majors it supports.</p></div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="pb-sec" id="template" aria-labelledby="h-template">
+      <span class="pb-num">02</span>
+      <h2 id="h-template">Start from module-template</h2>
+      <p class="pb-body">A complete working engine with tests, docs generated from code and release CI. On GitHub: <a href="https://github.com/doze-dev/module-template">doze-dev/module-template</a> → Use this template.</p>
+      <div class="pb-code"><div class="pb-code-bar"><span>What you get</span></div><pre>httpd/httpd.go       <span class="pb-c"># the driver: Type, Resolve, Provision, Plan, DecodeConfig, ConnString</span>
+httpd/describe.go    <span class="pb-c"># Describe(): docs and engine support, from code</span>
+httpd/httpd_test.go  <span class="pb-c"># decode tests + the Describe/Config drift guard</span>
+plugin/main.go       <span class="pb-c"># the plugin binary</span>
+cmd/release/main.go  <span class="pb-c"># archives, index.yaml and meta.yaml via modtool</span></pre></div>
+      <div class="pb-code"><div class="pb-code-bar"><span>The whole inner loop, no registry</span><button class="pb-copy" type="button">Copy</button></div><pre><span class="pb-p">$</span> go build -o /tmp/httpd-plugin ./plugin
+<span class="pb-p">$</span> DOZE_HTTPD_PLUGIN=/tmp/httpd-plugin doze up
+<span class="pb-p">$</span> curl localhost:8080</pre></div>
+    </section>
+
+    <!-- 3 -->
+    <section class="pb-sec" id="describe" aria-labelledby="h-describe">
+      <span class="pb-num">03</span>
+      <h2 id="h-describe">Describe: what your page shows comes from code</h2>
+      <p class="pb-body">Hand-written module docs rot, so everything a user sees is generated from your driver's <span class="pb-ic">Describe()</span>. The release tool refuses to package a module without it, and the template's drift-guard test fails when it disagrees with what your config decoder accepts.</p>
+      <div class="pb-panel" style="overflow: hidden">
+        <table class="pb-tbl pb-tbl-stack">
+          <thead><tr><th style="width: 30%">On the module page</th><th style="width: 30%">From</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td>Name, one line, paragraph</td><td data-l="From" class="pb-mono" style="font-size: 13px">Title · Tagline · Description</td><td data-l="Note">Shown on the card in search and in the header.</td></tr>
+            <tr><td>Category and port</td><td data-l="From" class="pb-mono" style="font-size: 13px">Category · Port</td><td data-l="Note">database, cache, queue, storage, workflow, other.</td></tr>
+            <tr><td>Engines, and the gate</td><td data-l="From" class="pb-mono" style="font-size: 13px">Versions</td><td data-l="Note"><b style="color: #140C1B">Signed.</b> Becomes the index's <span class="pb-mono">engines</span>; a user declaring an unlisted major is stopped before your code runs.</td></tr>
+            <tr><td>The example block</td><td data-l="From" class="pb-mono" style="font-size: 13px">Example · ExampleLabel</td><td data-l="Note">Must run as written: it is the first thing people paste.</td></tr>
+            <tr><td>Reference tab</td><td data-l="From" class="pb-mono" style="font-size: 13px">Config · Blocks</td><td data-l="Note"><span class="pb-mono">Since</span>/<span class="pb-mono">Until</span> render "engine ≥ 18" badges and need a matching check in your decoder.</td></tr>
+            <tr><td>Start, recipes, env, connect</td><td data-l="From" class="pb-mono" style="font-size: 13px">[Start · Recipes · Env · Connect]</td><td data-l="Note"><span class="pb-chip pb-c-info">new</span> Snippets for the Overview tab: first start, common setups, the variables it exports, how to connect. Not fields in <span class="pb-mono">engine.Description</span> yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="pb-sec" id="testing" aria-labelledby="h-testing">
+      <span class="pb-num">04</span>
+      <h2 id="h-testing">Testing, per engine major</h2>
+      <p class="pb-body">Three layers, each catching what the one before cannot. The registry's "tested on every listed engine major" tick means the third layer ran green on each major in <span class="pb-mono">Versions</span>.</p>
+      <div class="pb-grid2">
+        <div class="pb-card"><span class="pb-chip pb-c-dim" style="align-self: flex-start">every go test</span><h3>Decode tests</h3><p>Defaults, error messages, version gates, and that an unknown attribute is an error.</p></div>
+        <div class="pb-card"><span class="pb-chip pb-c-dim" style="align-self: flex-start">-tags acceptance</span><h3>enginetest</h3><p>Boots a real engine from your driver and checks that declared roles, buckets and extensions converge, twice. Skips without <span class="pb-mono">DOZE_&lt;ENGINE&gt;_BINDIR</span>.</p></div>
+        <div class="pb-card"><span class="pb-chip pb-c-dim" style="align-self: flex-start">before release</span><h3>The real thing</h3><p><span class="pb-mono">DOZE_&lt;TYPE&gt;_PLUGIN=… doze up</span>, then <span class="pb-mono">doze lint</span>, <span class="pb-mono">doze status</span> and a real client. Ten seconds.</p></div>
+      </div>
+      <div class="pb-code"><div class="pb-code-bar"><span>Acceptance, once per engine major</span><button class="pb-copy" type="button">Copy</button></div><pre><span class="pb-p">$</span> export DOZE_POSTGRES_BINDIR=$PWD/backend/bin   <span class="pb-c"># Postgres 17 here; repeat for 14 … 18</span>
+<span class="pb-p">$</span> go test -tags acceptance -timeout 20m ./...</pre></div>
+    </section>
+
+    <!-- 5 -->
+    <section class="pb-sec" id="release" aria-labelledby="h-release">
+      <span class="pb-num">05</span>
+      <h2 id="h-release">Releasing: archives, hashes, signatures</h2>
+      <p class="pb-body">The SDK's <span class="pb-mono">modtool</span> builds a release the same way for you as for the official modules. You build; the registry signs, because the key lives there.</p>
+      <div class="pb-code"><div class="pb-code-bar"><span>Terminal</span><button class="pb-copy" type="button">Copy</button></div><pre><span class="pb-p">$</span> go run ./cmd/release --version 0.1.0
+<span class="pb-c">dist/httpd/</span>
+  httpd-plugin-0.1.0-aarch64-apple-darwin.tar.gz
+  httpd-plugin-0.1.0-aarch64-unknown-linux-gnu.tar.gz
+  httpd-plugin-0.1.0-x86_64-unknown-linux-gnu.tar.gz
+  index.yaml   <span class="pb-c"># protocol, engines, doze, sha256 per archive; unsigned</span>
+  meta.yaml    <span class="pb-c"># the docs, from Describe()</span></pre></div>
+      <div class="pb-grid2">
+        <div class="pb-card"><h3>Bump for every change</h3><p>Users' locks pin your releases. A fix, a new argument, a new engine major: each is a new version.</p></div>
+        <div class="pb-card"><h3>Never rebuild a release</h3><p>Rebuilding a published version with different bytes is refused:</p><code class="pb-mono" style="font-size: 13px; color: #B4233C; overflow-wrap: anywhere">httpd 0.1.0 (aarch64-apple-darwin) is already published with a different sha256 — bump the module version instead of rebuilding it</code></div>
+        <div class="pb-card"><h3>Keep every old release</h3><p>Merge your previous <span class="pb-mono">index.yaml</span> before building, so last year's locks and older doze versions keep resolving. The registry's CI refuses to drop one.</p></div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="pb-sec" id="oldest" aria-labelledby="h-oldest">
+      <span class="pb-num">06</span>
+      <h2 id="h-oldest">Declaring the oldest doze your release needs</h2>
+      <p class="pb-body">The plugin protocol number says the wire is the same. It does not say which doze has everything your module leans on. Each release can carry a <span class="pb-ic">doze</span> field: the oldest doze that runs it.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start">
+        <div class="pb-code"><div class="pb-code-bar"><span>index.yaml · one release</span></div><pre>releases:
+  "0.2.5":
+    protocol: 1
+    engines: ["14", "15", "16", "17", "18"]
+    <span class="pb-hl">doze: "0.2.0"</span>        <span class="pb-c"># oldest doze that runs it</span>
+    artifacts: …</pre></div>
+        <div class="pb-card" style="gap: 10px">
+          <h3>Where the value comes from</h3>
+          <p>You don't type it. <span class="pb-mono">modtool</span> stamps it from the SDK you built with (<span class="pb-mono">proto.MinHost</span>). doze-sdk v0.11.0 and later stamp <span class="pb-mono">"0.2.0"</span>: modules built with it leave fetching engine binaries to doze, which only doze 0.2.0 and later do.</p>
+          <p style="font-size: 13px; color: #6E5F79">Format is three numbers. <span class="pb-mono">npm run validate</span> rejects anything else: <span class="pb-mono">doze must be the oldest doze version that runs it, as "0.2.0"</span></p>
+        </div>
+      </div>
+      <h3 style="margin-top: 6px">How doze uses it</h3>
+      <div class="pb-grid2">
+        <div class="pb-card"><span class="pb-chip pb-c-dim" style="align-self: flex-start">choosing a release</span><p>Releases that need a newer doze are skipped; an older release that fits is chosen instead. If none fits, doze says so:</p><code class="pb-mono" style="font-size: 13px; color: #140C1B; background: #FFF4E8; border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere">postgres 17 needs doze 0.3.0 or newer; this doze is 0.2.0. Update doze (in the app: Settings › About), then run the command again</code><span style="font-size: 13px; color: #6E5F79">doze 0.2 and later. The 0.3.0 release is an example, to show the shape.</span></div>
+        <div class="pb-card"><span class="pb-chip pb-c-dim" style="align-self: flex-start">reading doze.lock</span><p>The pin keeps the field, so a teammate on an older doze is told why rather than failing at launch:</p><code class="pb-mono" style="font-size: 13px; color: #140C1B; background: #FFF4E8; border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere">module doze/postgres 0.3.1 (pinned in doze.lock) needs doze 0.3.0 or newer; this doze is 0.2.0. Update doze (in the app: Settings › About); the lock was written by a newer doze</code><span style="font-size: 13px; color: #6E5F79">doze 0.2 and later. doze 0.1.1 cannot read the field: update doze before <span class="pb-mono">doze modules upgrade</span>.</span></div>
+      </div>
+      <h3 style="margin-top: 6px">When to raise it</h3>
+      <ul style="margin: 0; padding-left: 20px; font-size: 15px; color: #4A3D55; line-height: 1.7; max-width: 70ch">
+        <li>You move to a doze-sdk whose <span class="pb-mono">MinHost</span> is higher: it rises on its own. Say so in your release notes.</li>
+        <li>Your module starts using a newer protocol feature or SDK field that an older doze ignores or lacks. [An override in <span class="pb-mono">modtool.Module</span> for this case does not exist yet] <span class="pb-chip pb-c-info">new</span></li>
+        <li>Never lower it on a published release; it is part of the release, like its bytes.</li>
+      </ul>
+      <p style="font-size: 13.5px; color: #6E5F79">postgres 0.2.5 and the other 3 Nov 2026 releases are the first to carry it ("0.2.0"); earlier releases have no field and run on any doze. Today it sits outside the signed part of the index; the design moves it inside (<a href="RegistryTrust.dc.html#gaps">known gaps</a>).</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="pb-sec" id="review" aria-labelledby="h-review">
+      <span class="pb-num">07</span>
+      <h2 id="h-review">The review checklist</h2>
+      <p class="pb-body">Each module page shows these as ticks. Some are enforced by tooling today; the rest are checked by a maintainer in review until CI can do it.</p>
+      <div class="pb-panel" style="overflow: hidden">
+        <table class="pb-tbl pb-tbl-stack">
+          <thead><tr><th style="width: 28%">Check</th><th>How</th><th style="width: 20%">Today</th></tr></thead>
+          <tbody>
+            <tr><td>Signed</td><td data-l="How">Every archive and the index verify against the registry key. <span class="pb-mono">npm run validate</span> on every PR and push.</td><td data-l="Today"><span class="pb-chip pb-c-good">enforced</span></td></tr>
+            <tr><td>Never rebuilt, never dropped</td><td data-l="How">modtool refuses changed bytes; <span class="pb-mono">validate --against</span> refuses a removed or edited release.</td><td data-l="Today"><span class="pb-chip pb-c-good">enforced</span></td></tr>
+            <tr><td>Three platforms</td><td data-l="How">macOS arm64, Linux arm64, Linux x86_64. Built by default; not yet a gate in validate.</td><td data-l="Today"><span class="pb-chip pb-c-warn">built, not gated</span></td></tr>
+            <tr><td>Conformance on each engine major</td><td data-l="How">Acceptance tests green on every major in <span class="pb-mono">Versions</span>. Official modules run them weekly; not yet tied to a release.</td><td data-l="Today"><span class="pb-chip pb-c-info">new gate</span></td></tr>
+            <tr><td>Examples parse</td><td data-l="How">Every example on the page parsed by the current doze in CI.</td><td data-l="Today"><span class="pb-chip pb-c-info">new</span></td></tr>
+            <tr><td>Describe matches config</td><td data-l="How">The template's drift-guard test.</td><td data-l="Today"><span class="pb-chip pb-c-good">in the template</span></td></tr>
+            <tr><td>Licence</td><td data-l="How">An OSI licence in the repo. All 8 official modules are Apache-2.0.</td><td data-l="Today"><span class="pb-chip pb-c-dim">review</span></td></tr>
+            <tr><td>Source</td><td data-l="How">Public source, linked from the page [to the exact commit of each release: new].</td><td data-l="Today"><span class="pb-chip pb-c-dim">review</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="pb-sec" id="outside" aria-labelledby="h-outside">
+      <span class="pb-num">08</span>
+      <div class="pb-planned">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><span class="pb-chip pb-c-info">planned</span><span style="font-size: 13px; color: #6E5F79">Not built. The shape, so you can plan for it.</span></div>
+        <h2 id="h-outside">How outside publishing will work</h2>
+        <p class="pb-body">Your modules under your name, signed with your key, with the same checks doze applies to its own. doze-dev never holds your key.</p>
+        <ol class="pb-flow" style="margin: 0; padding: 0">
+          <li><b>Claim a namespace</b>Prove you control a GitHub user or org of the same name. Modules live at <span style="white-space: nowrap"><span class="pb-mono">yourname/module</span>.</span></li>
+          <li><b>Make your key</b><span><span class="pb-mono">npm run keygen yourname</span> already exists in doze-registry. The private half stays in your CI.</span></li>
+          <li><b>Sign in your CI</b>Release with modtool as above; your CI signs each archive and the index.</li>
+          <li><b>Pinned on first use</b>A user's first resolve records your key in their doze.lock. A later change is a hard error until they clear the pin.</li>
+          <li><b>Get verified</b>Optional: prove a domain with a DNS TXT record naming your key.</li>
+          <li style="background: #FFFFFF; border-style: dashed"><b>What users see</b>Nothing new: your module resolves, verifies and pins like an official one, and moves only on <span class="pb-mono">doze modules upgrade</span>.</li>
+        </ol>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start">
+          <div class="pb-code"><div class="pb-code-bar"><span>doze.hcl [syntax to decide]</span></div><pre>module <span class="pb-hl">"yourname/httpd"</span> "site" {
+  port = 8080
+  root = "./public"
+}</pre></div>
+          <div class="pb-code"><div class="pb-code-bar"><span>doze.lock [format to decide]</span></div><pre><span class="pb-hl">keys</span>:
+  yourname: ed25519:[your public key]   <span class="pb-c"># first use</span>
+modules:
+  yourname/httpd:
+    version: 0.1.0
+    …</pre></div>
+        </div>
+        <h3>Three tiers</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px">
+          <div class="pb-tier" style="background: #FFF4E8; border-color: #E0A458"><span class="pb-chip pb-c-amb" style="align-self: flex-start">Official</span><p><b style="color: #140C1B">Namespace doze.</b> Built from doze-dev repos, key compiled into doze. The only tier that exists today.</p></div>
+          <div class="pb-tier"><span class="pb-chip pb-c-good" style="align-self: flex-start">Verified</span><p><b style="color: #140C1B">A proven publisher.</b> Namespace tied to a domain by DNS. Key pinned on first use. <span class="pb-chip pb-c-info">planned</span></p></div>
+          <div class="pb-tier"><span class="pb-chip pb-c-dim" style="align-self: flex-start">Community</span><p><b style="color: #140C1B">Anyone with a namespace.</b> Signed and pinned like the others; no identity claim beyond GitHub. <span class="pb-chip pb-c-info">planned</span></p></div>
+        </div>
+        <p style="font-size: 13.5px; color: #6E5F79">Open: [who reviews a Community namespace], [how a namespace changes hands, and how that shows in its history], [whether doze asks before trusting a new key].</p>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="pb-sec" id="checklist" aria-labelledby="h-checklist">
+      <span class="pb-num">09</span>
+      <div class="pb-print">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+          <div style="display: flex; flex-direction: column; gap: 4px"><span class="pb-kick">Print me</span><h2 id="h-checklist">Release checklist</h2></div>
+          <button class="pb-btn pb-btn-s" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"/></svg>Print</button>
+        </div>
+        <ul>
+          <li><label><input type="checkbox"><span>Module version bumped<small>Every change is a new release.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Previous index.yaml merged into dist/<small>Old releases stay resolvable.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Describe() updated with the change<small>Drift-guard test green.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Example runs as written<small>Paste it into a scratch doze.hcl.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Decode tests green<small><span class="pb-mono">go test ./...</span></small></span></label></li>
+          <li><label><input type="checkbox"><span>Acceptance green on every listed engine major<small><span class="pb-mono">go test -tags acceptance</span></small></span></label></li>
+          <li><label><input type="checkbox"><span>Smoke: DOZE_&lt;TYPE&gt;_PLUGIN doze up, lint, status, connect<small>The real path, minus the registry.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Oldest doze is right<small>Check the stamped <span class="pb-mono">doze</span> field; note a rise in release notes.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Three archives built<small>macOS arm64, Linux arm64, Linux x86_64.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Release notes written<small>Shown on the release page.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Signed, and validate is green<small><span class="pb-mono">npm run validate</span>, then <span class="pb-mono">validate:remote</span> once uploaded.</small></span></label></li>
+          <li><label><input type="checkbox"><span>Fresh project resolves it<small><span class="pb-mono">doze modules upgrade --check</span> in a fixture project.</small></span></label></li>
+        </ul>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px">
+        <a class="pb-btn pb-btn-p" href="https://github.com/doze-dev/module-template">Use module-template</a>
+        <a class="pb-btn pb-btn-s" href="RegistryTrust.dc.html">How signing works</a>
+        <a class="pb-btn pb-btn-s" href="DozeDocs.dc.html">Module docs</a>
+      </div>
+    </section>
+  </div>
+</div>
+</main>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7341}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

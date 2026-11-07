@@ -1,0 +1,24 @@
+---
+// The table of bring-your-own tools (design: RegistryTool, "The other tools doze add knows").
+import { runsFrom, type Tool } from "../../data/tools";
+
+interface Props {
+  list: Tool[];
+}
+const { list } = Astro.props;
+---
+<div class="rg-panel rt-tablewrap">
+  <table class="rt-tools rg-tc">
+    <thead><tr><th scope="col">Name</th><th scope="col">What it is</th><th scope="col" class="rg-hide-sm">Runs from</th><th scope="col">Port</th></tr></thead>
+    <tbody>
+      {list.map((t) => (
+        <tr>
+          <td data-l=""><a href={`/registry/tools/${t.name}/`}>{t.name}</a></td>
+          <td data-l="What">{t.tagline}</td>
+          <td class="w rg-hide-sm" data-l="Runs from">{runsFrom(t)}</td>
+          <td data-l="Port">{t.port}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,35 @@
+---
+// A doze.hcl block as the boards colour it: keywords, strings, comments.
+interface Props {
+  code: string;
+}
+const { code } = Astro.props;
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function line(l: string): string {
+  let out = "";
+  let i = 0;
+  const kw = l.match(/^(\s*)(service|module|app|task)\b/);
+  if (kw) {
+    out += `${kw[1]}<span class="k">${kw[2]}</span>`;
+    i = kw[0].length;
+  }
+  while (i < l.length) {
+    const ch = l[i];
+    if (ch === '"') {
+      const end = l.indexOf('"', i + 1);
+      const j = end < 0 ? l.length : end + 1;
+      out += `<span class="s">${esc(l.slice(i, j))}</span>`;
+      i = j;
+    } else if (ch === "#") {
+      out += `<span class="c">${esc(l.slice(i))}</span>`;
+      break;
+    } else {
+      out += esc(ch);
+      i++;
+    }
+  }
+  return out;
+}
+const html = code.split("\n").map(line).join("\n");
+---
+<pre set:html={html} />

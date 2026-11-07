@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Postgres extensions · doze Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.rg-wrap *{box-sizing:border-box}
+.rg a{color:#A85A0C;text-decoration:none}
+.rg a:hover{text-decoration:underline}
+.rg-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.rg-eyebrow{font:600 13px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#A85A0C}
+.rg-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-0.03em;text-wrap:balance}
+.rg-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:30px;line-height:1.15;letter-spacing:-0.02em}
+.rg-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-0.01em}
+.rg-lead{margin:0;font-size:18px;line-height:1.55;color:#4A3D55;max-width:44rem}
+.rg-p{margin:0;font-size:15px;line-height:1.6;color:#4A3D55}
+.rg-small{font-size:13px;line-height:1.5;color:#6E5F79}
+.rg-mono{font-family:'JetBrains Mono',monospace}
+.rg-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.rg-sunk{background:#FFF4E8;border:1px solid #EADFD3;border-radius:14px}
+.rg-card{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.rg-card:hover{border-color:#DCCFC2;box-shadow:0 2px 10px rgba(20,12,27,.05)}
+.rg-card.dim{background:#FFFCF8}
+.rg-tile{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font:800 21px 'Bricolage Grotesque',sans-serif;flex:none}
+.rg-tile.sm{width:32px;height:32px;border-radius:8px;font-size:15px}
+.rg-tile img{width:100%;height:100%;border-radius:inherit}
+.rg-name{font:700 18px 'Bricolage Grotesque',sans-serif;letter-spacing:-0.01em;color:#140C1B}
+.rg-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font:600 13px Geist,sans-serif;white-space:nowrap}
+.rg-chip.ok{background:#E6F4EA;color:#1D7A45}
+.rg-chip.warn{background:#FFF1D6;color:#8A5300}
+.rg-chip.bad{background:#FCE8EC;color:#B4233C}
+.rg-chip.info{background:#E8EEFC;color:#2F62D9}
+.rg-chip.dim{background:#F3ECE4;color:#5E5068}
+.rg-chip.off{background:#FDE6CB;color:#6B3A06}
+.rg-chip.line{background:#FFFFFF;color:#4A3D55;border:1px solid #DCCFC2}
+.rg-facts{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:0;font-size:13.5px}
+.rg-facts dt{color:#6E5F79}
+.rg-facts dd{margin:0;color:#140C1B;font-weight:500;min-width:0}
+.rg-snip{display:flex;align-items:center;gap:8px;background:#1E1328;border-radius:9px;height:40px;padding:0 5px 0 12px;min-width:0}
+.rg-snip code{font:13px 'JetBrains Mono',monospace;color:#F4ECE4;flex:1;white-space:pre;overflow-x:auto;min-width:0;scrollbar-width:none}
+.rg-snip code i{font-style:normal;color:#9C8AAB}
+.rg-copy{height:30px;padding:0 11px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer;flex:none}
+.rg-code{background:#1E1328;border-radius:12px;overflow:hidden;min-width:0}
+.rg-code-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-bottom:1px solid #34233F}
+.rg-code-top span{font:13px 'JetBrains Mono',monospace;color:#C9BAD3}
+.rg-code pre{margin:0;padding:14px 16px;font:13px/1.65 'JetBrains Mono',monospace;color:#F4ECE4;overflow-x:auto;white-space:pre !important}
+.rg code,.rg pre,.rg .rg-mono{font-variant-ligatures:none}
+.rg-code .c{color:#A796B5}
+.rg-code .k{color:#FFC27A}
+.rg-code .s{color:#B8E6C1}
+.rg-code .p{color:#9C8AAB}
+.rg-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 16px;border-radius:10px;font:600 14px Geist,sans-serif;cursor:pointer;white-space:nowrap}
+.rg-btn.pri{background:#F0A24B;color:#2A1534;border:1px solid #F0A24B}
+.rg-btn.sec{background:#FFFFFF;color:#140C1B;border:1px solid #DCCFC2}
+.rg .rg-btn:hover{text-decoration:none}
+.rg-btn.pri:hover{background:#FFB866}
+.rg-facet{display:flex;flex-direction:column;gap:2px;padding:16px 0;border-top:1px solid #EADFD3}
+.rg-facet h3{margin:0 0 6px;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.rg-opt{display:flex;align-items:center;gap:10px;min-height:34px;font-size:14.5px;color:#140C1B;cursor:pointer}
+.rg-opt input{width:16px;height:16px;margin:0;accent-color:#A85A0C;flex:none}
+.rg-opt span:first-of-type{flex:1}
+.rg-opt .n{font:13px 'JetBrains Mono',monospace;color:#6E5F79}
+.rg-switch{display:inline-flex;align-items:center;width:38px;height:22px;border-radius:999px;background:#DCCFC2;padding:2px;flex:none}
+.rg-switch::after{content:"";width:18px;height:18px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.rg-switch.on{background:#A85A0C;justify-content:flex-end}
+.rg-select{height:44px;border:1px solid #DCCFC2;border-radius:9px;background:#FFFFFF;padding:0 10px;font:500 14px Geist,sans-serif;color:#140C1B}
+.rg-why{font-size:13px;color:#4A3D55;background:#FFF4E8;border-radius:7px;padding:5px 9px;align-self:flex-start}
+.rg-why b{color:#6B3A06;font-weight:600}
+.rg-mark{background:#FDE6CB;color:#140C1B;border-radius:3px;padding:0 2px}
+.rg-hr{height:1px;background:#EADFD3;border:0;margin:0}
+.rg-filters-btn{display:none}
+.rg-note{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:#4A3D55;padding:12px 14px;border-radius:10px;background:#FFF4E8;border:1px dashed #DCCFC2}
+.rg-tag-new{font:600 13px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#2F62D9;background:#E8EEFC;border-radius:4px;padding:2px 5px}
+@media (max-width:760px){
+
+  .rg-h1{font-size:36px}
+  .rg-h2{font-size:26px}
+  .rg-lead{font-size:16.5px}
+  .rg-filters-btn{display:inline-flex}
+  .rg-hide-sm{display:none !important}
+  .rg-stack-sm{flex-direction:column !important;align-items:stretch !important}
+  .rg-copy{height:44px;padding:0 14px}
+  .rg-snip{height:54px}
+  .rg-opt{min-height:44px}
+}
+
+/* tables become stacked row cards on phones: each td carries data-l */
+@media (max-width:600px){
+  .rg-tc thead{display:none}
+  .rg-tc,.rg-tc tbody,.rg-tc tr,.rg-tc td{display:block;width:100%}
+  .rg-tc tr{padding:12px 16px;border-bottom:1px solid #EADFD3}
+  .rg-tc td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 !important;border:0 !important;white-space:normal !important;text-align:right}
+  .rg-tc td::before{content:attr(data-l);font-size:13px;color:#6E5F79;text-align:left;flex:none}
+  .rg-tc td:first-child{font-weight:600;text-align:left}
+  .rg-tc td.rg-tc-empty{display:none}
+  .rg-tc .rg-hide-sm{display:flex !important}
+}
+.x-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center;padding:40px 0 30px}
+.x-body{display:grid;grid-template-columns:220px minmax(0,1fr);gap:36px;align-items:start;padding-bottom:72px}
+.x-box{overflow-x:auto;border:1px solid #EADFD3;border-radius:14px;background:#FFFFFF}
+.x-tbl{border-collapse:separate;border-spacing:0;width:100%;min-width:880px;font-size:13.5px}
+.x-tbl thead th{position:sticky;top:0;background:#FFF4E8;text-align:left;font:600 13px Geist,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#4A3D55;padding:11px 12px;border-bottom:1px solid #EADFD3;white-space:nowrap}
+.x-tbl thead th.pg{text-align:center;width:66px}
+.x-tbl tbody th{position:sticky;left:0;z-index:1;background:#FFFFFF;text-align:left;font-weight:400;padding:10px 14px;border-bottom:1px solid #F1E8DE;border-right:1px solid #EADFD3;white-space:nowrap;min-width:150px}
+.x-tbl thead th:first-child{position:sticky;left:0;z-index:2;border-right:1px solid #EADFD3}
+.x-tbl td{padding:10px 12px;border-bottom:1px solid #F1E8DE;vertical-align:middle}
+.x-n{font:600 13.5px 'JetBrains Mono',monospace;color:#140C1B !important;display:block}
+.x-sub{display:block;font-size:13px;color:#6E5F79;margin-top:2px}
+.x-c{text-align:center;font:500 13px 'JetBrains Mono',monospace;white-space:nowrap;border-left:1px solid #F7F1EA}
+.x-c.coming{color:#2F62D9;background:#F4F7FE}
+.x-c.planned{color:#2F62D9;background:#FFFFFF;font-style:italic;outline:1px dashed #AFC2F2;outline-offset:-5px}
+.x-cue{display:none;align-items:center;gap:6px;font-size:13px;color:#4A3D55}
+.x-box{background:linear-gradient(to right,#FFFFFF 30%,rgba(255,255,255,0)),linear-gradient(to left,#FFFFFF 30%,rgba(255,255,255,0)) 100% 0,radial-gradient(farthest-side at 100% 50%,rgba(20,12,27,.16),rgba(20,12,27,0)) 100% 0;background-repeat:no-repeat;background-size:40px 100%,40px 100%,14px 100%;background-attachment:local,local,scroll}
+.x-c.none{color:#6E5F79}
+.x-c.no{color:#B4233C;background:repeating-linear-gradient(135deg,#FCF1F3 0 6px,#FFFFFF 6px 12px);font-weight:700;font-size:15px}
+.x-c.unv{color:#8A5300;background:#FFF8EA;font-weight:700}
+.x-dim{color:#6E5F79;font-size:13px;white-space:nowrap}
+.x-lic{white-space:nowrap;color:#4A3D55}
+.x-what{color:#4A3D55;font-size:13px;line-height:1.4}
+.x-wave td{background:#FFFAF4;font:600 13px Geist,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6E5F79;padding:9px 14px}
+.x-wave th{background:#FFFAF4 !important;font:600 13px Geist,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#4A3D55 !important}
+.x-legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:#4A3D55}
+.x-legend span{display:inline-flex;align-items:center;gap:7px}
+.x-legend i{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:22px;border-radius:5px;font:500 13px 'JetBrains Mono',monospace;font-style:normal;border:1px solid #EADFD3}
+.x-contrib{display:flex;flex-wrap:wrap;gap:6px}
+.x-contrib code{font:13px 'JetBrains Mono',monospace;background:#FFFFFF;border:1px solid #EADFD3;border-radius:6px;padding:4px 8px;color:#140C1B}
+@media (max-width:1000px){.x-hero{grid-template-columns:1fr;gap:22px}}
+@media (max-width:760px){.x-cue{display:flex}.x-body{grid-template-columns:1fr;gap:0}.x-hero{padding:26px 0 20px}.x-tbl tbody th{min-width:132px;padding:10px}}
+</style>
+</helmet>
+<div class="rg" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; background: #FFFAF4; color: #140C1B; min-height: 100%">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="extensions" hint-size="100%,120px"></dc-import>
+
+<div class="rg-wrap">
+  <section class="x-hero">
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <span class="rg-eyebrow">Postgres extensions · 16</span>
+      <h1 class="rg-h1">Write a name. doze fetches the build for your Postgres and your machine.</h1>
+      <p class="rg-lead">Each extension is built per version, per Postgres major and per platform, checked against its digest and pinned in doze.lock, like the engine itself. Ones that must be preloaded are added to <code class="rg-mono" style="font-size: 15px">shared_preload_libraries</code> for you.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+      <div class="rg-code"><div class="rg-code-top"><span>doze.hcl</span><button class="rg-copy" type="button">Copy</button></div><pre><span class="k">module</span> postgres <span class="s">"postgres"</span> {
+  version    = 17
+  extensions = [<span class="s">"vector"</span>, <span class="s">"pg_cron"</span>]
+}
+
+<span class="k">module</span> postgres <span class="s">"metrics"</span> {
+  version = 17
+  <span class="k">extension</span> <span class="s">"timescaledb"</span> { version = <span class="s">"2.31"</span> } <span class="c"># pinned</span>
+}</pre></div>
+      <div class="rg-note" style="border-style: solid; border-color: #C9D6F7; background: #F4F7FE"><span class="rg-chip info" style="flex: none">Coming</span><span>Arrives with <b>postgres 0.3</b> [date]; built and tested on a branch today. Ten extensions (50 bundles) built on macOS arm64 and checked against each major's x.0 and newest minor. The six in wave 2 are planned and not built yet; their versions are to confirm.</span></div>
+    </div>
+  </section>
+
+  <div class="x-body">
+    <aside aria-label="Filters" class="rg-hide-sm" style="position: sticky; top: 16px">
+      <div class="rg-facet" style="border-top: 0; padding-top: 0">
+        <h3>Use</h3>
+        <label class="rg-opt"><input type="checkbox"><span>Vectors / AI</span><span class="n">2</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Time series</span><span class="n">2</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Geo</span><span class="n">1</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Queues and jobs</span><span class="n">2</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Search</span><span class="n">1</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Analytics</span><span class="n">2</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Performance</span><span class="n">3</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Audit</span><span class="n">1</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Graph</span><span class="n">1</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Validation</span><span class="n">1</span></label>
+      </div>
+      <div class="rg-facet">
+        <h3>Preload</h3>
+        <label class="rg-opt"><span>Needs preload</span><span class="rg-switch" aria-hidden="true"></span></label>
+        <span class="rg-small">7 do. Adding or removing one restarts the instance once; doze up says so.</span>
+      </div>
+      <div class="rg-facet">
+        <h3>Licence</h3>
+        <label class="rg-opt"><input type="checkbox"><span>PostgreSQL</span><span class="n">8</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>Apache-2.0</span><span class="n">3</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>BSD-3</span><span class="n">2</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>MIT</span><span class="n">1</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>GPL-2.0</span><span class="n">1</span></label>
+        <label class="rg-opt"><input type="checkbox"><span>AGPL-3.0</span><span class="n">1</span></label>
+        <span class="rg-small">GPL and AGPL bundles link the exact upstream source and the recipe that built them.</span>
+      </div>
+    </aside>
+
+    <div style="display: flex; flex-direction: column; gap: 40px; min-width: 0">
+      <section aria-labelledby="matrix" style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+          <h2 class="rg-h2" id="matrix">By Postgres version</h2>
+          <button class="rg-btn sec rg-filters-btn" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters</button>
+        </div>
+        <div class="x-legend" aria-label="Legend">
+          <span><i style="color: #2F62D9; background: #F4F7FE">0.8.7</i>Coming in postgres 0.3: built and tested on a branch</span>
+          <span><i style="color: #2F62D9; background: #FFFFFF; font-style: italic; border: 1px dashed #AFC2F2">3.6</i>planned line [to confirm]: not built yet</span>
+          <span><i style="color: #6E5F79">—</i>not built</span>
+          <span><i style="color: #B4233C; background: repeating-linear-gradient(135deg,#FCF1F3 0 6px,#FFFFFF 6px 12px); font-weight: 700">×</i>not possible: upstream doesn't support it</span>
+          <span><i style="color: #8A5300; background: #FFF8EA; font-weight: 700">?</i>unverified upstream</span>
+        </div>
+        <span class="x-cue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Scroll the table sideways for PG 15 – 18, preload and licence</span>
+        <div class="x-box" role="region" aria-label="Extensions by Postgres version" tabindex="0">
+          <table class="x-tbl">
+            <thead><tr><th scope="col">Extension</th><th scope="col" class="pg">PG 14</th><th scope="col" class="pg">PG 15</th><th scope="col" class="pg">PG 16</th><th scope="col" class="pg">PG 17</th><th scope="col" class="pg">PG 18</th><th scope="col">Preload</th><th scope="col">Licence</th><th scope="col">What it's for</th></tr></thead>
+            <tbody>
+<tr class="x-wave"><th scope="rowgroup">Wave 1</th><td colspan="8">Coming in postgres 0.3 · built and tested on a branch</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">vector</a><span class="x-sub">pgvector</span></th><td class="x-c coming">0.8.7</td><td class="x-c coming">0.8.7</td><td class="x-c coming">0.8.7</td><td class="x-c coming">0.8.7</td><td class="x-c coming">0.8.7</td><td><span class="x-dim">no</span></td><td class="x-lic">PostgreSQL</td><td class="x-what">Vector similarity search for embeddings (HNSW, IVFFlat)</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pg_cron</a></th><td class="x-c coming">1.6.8</td><td class="x-c coming">1.6.8</td><td class="x-c coming">1.6.8</td><td class="x-c coming">1.6.8</td><td class="x-c coming">1.6.8</td><td><span class="rg-chip warn">preloads</span></td><td class="x-lic">PostgreSQL</td><td class="x-what">Cron-style jobs run inside the database</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pg_partman</a></th><td class="x-c coming">5.5.0</td><td class="x-c coming">5.5.0</td><td class="x-c coming">5.5.0</td><td class="x-c coming">5.5.0</td><td class="x-c coming">5.5.0</td><td><span class="x-dim">bgw, off</span></td><td class="x-lic">PostgreSQL</td><td class="x-what">Time- and serial-based partition management</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pgmq</a></th><td class="x-c coming">1.13.1</td><td class="x-c coming">1.13.1</td><td class="x-c coming">1.13.1</td><td class="x-c coming">1.13.1</td><td class="x-c coming">1.13.1</td><td><span class="x-dim">no</span></td><td class="x-lic">PostgreSQL</td><td class="x-what">Lightweight message queues, like SQS, in tables</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">hypopg</a></th><td class="x-c coming">1.4.5</td><td class="x-c coming">1.4.5</td><td class="x-c coming">1.4.5</td><td class="x-c coming">1.4.5</td><td class="x-c coming">1.4.5</td><td><span class="x-dim">no</span></td><td class="x-lic">PostgreSQL</td><td class="x-what">Hypothetical indexes: see what an index would do</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pg_hint_plan</a></th><td class="x-c coming">1.4.5</td><td class="x-c coming">1.5.4</td><td class="x-c coming">1.6.3</td><td class="x-c coming">1.7.2</td><td class="x-c coming">1.8.1</td><td><span class="rg-chip warn">preloads</span></td><td class="x-lic">BSD-3</td><td class="x-what">Steer the planner with hints in SQL comments</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pg_repack</a><span class="x-sub">+ CLI</span></th><td class="x-c coming">1.5.3</td><td class="x-c coming">1.5.3</td><td class="x-c coming">1.5.3</td><td class="x-c coming">1.5.3</td><td class="x-c coming">1.5.3</td><td><span class="x-dim">no</span></td><td class="x-lic">BSD-3</td><td class="x-what">Rebuild bloated tables and indexes online</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pgaudit</a></th><td class="x-c coming">1.6.3</td><td class="x-c coming">1.7.1</td><td class="x-c coming">16.1</td><td class="x-c coming">17.1</td><td class="x-c coming">18.0</td><td><span class="rg-chip warn">preloads</span></td><td class="x-lic">PostgreSQL</td><td class="x-what">Session and object audit logging</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pg_ivm</a></th><td class="x-c coming">1.17</td><td class="x-c coming">1.17</td><td class="x-c coming">1.17</td><td class="x-c coming">1.17</td><td class="x-c coming">1.17</td><td><span class="rg-chip warn">preloads</span></td><td class="x-lic">PostgreSQL</td><td class="x-what">Incrementally maintained materialized views</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pg_jsonschema</a></th><td class="x-c coming">0.3.4</td><td class="x-c coming">0.3.4</td><td class="x-c coming">0.3.4</td><td class="x-c coming">0.3.4</td><td class="x-c coming">0.3.4</td><td><span class="x-dim">no</span></td><td class="x-lic">Apache-2.0</td><td class="x-what">JSON Schema validation for json and jsonb</td></tr>
+<tr class="x-wave"><th scope="rowgroup">Wave 2</th><td colspan="8">planned [to confirm] · not in doze-binaries' catalog yet</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">postgis</a><span class="x-sub">+ h3 4.2, pgrouting 3.8</span></th><td class="x-c planned">3.6</td><td class="x-c planned">3.6</td><td class="x-c planned">3.6</td><td class="x-c planned">3.6</td><td class="x-c planned">3.6</td><td><span class="x-dim">no</span></td><td class="x-lic">GPL-2.0</td><td class="x-what">Geographic objects, spatial indexes and functions</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">timescaledb</a><span class="x-sub">timescale</span></th><td class="x-c no" title="Not possible: upstream does not support this Postgres"><span aria-label="not possible">×</span></td><td class="x-c planned">2.31</td><td class="x-c planned">2.31</td><td class="x-c planned">2.31</td><td class="x-c planned">2.31</td><td><span class="rg-chip warn">preloads</span></td><td class="x-lic">Apache-2.0</td><td class="x-what">Hypertables and time_bucket (Apache-only build)</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pg_search</a><span class="x-sub">ParadeDB</span></th><td class="x-c no" title="Not possible: upstream does not support this Postgres"><span aria-label="not possible">×</span></td><td class="x-c planned">0.20</td><td class="x-c planned">0.20</td><td class="x-c planned">0.20</td><td class="x-c planned">0.20</td><td><span class="rg-chip warn">preloads</span></td><td class="x-lic">AGPL-3.0</td><td class="x-what">BM25 full-text search</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">pg_duckdb</a></th><td class="x-c planned">1.1</td><td class="x-c planned">1.1</td><td class="x-c planned">1.1</td><td class="x-c planned">1.1</td><td class="x-c planned">1.1</td><td><span class="rg-chip warn">preloads</span></td><td class="x-lic">MIT</td><td class="x-what">DuckDB inside Postgres: analytics, Parquet, Iceberg</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">vectorscale</a><span class="x-sub">pgvectorscale</span></th><td class="x-c unv" title="Unverified upstream">?</td><td class="x-c unv" title="Unverified upstream">?</td><td class="x-c unv" title="Unverified upstream">?</td><td class="x-c unv" title="Unverified upstream">?</td><td class="x-c planned">0.9</td><td><span class="x-dim">no</span></td><td class="x-lic">PostgreSQL</td><td class="x-what">DiskANN indexes for pgvector at scale</td></tr>
+<tr><th scope="row"><a href="RegistryExtension.dc.html" class="x-n">age</a><span class="x-sub">Apache AGE</span></th><td class="x-c planned">1.5</td><td class="x-c planned">1.5</td><td class="x-c planned">1.5</td><td class="x-c planned">1.6</td><td class="x-c planned">1.6</td><td><span class="x-dim">optional</span></td><td class="x-lic">Apache-2.0</td><td class="x-what">Graph database with openCypher queries</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="rg-small" style="margin: 0">Versions are each extension's own, from doze-binaries' catalog. pg_hint_plan and pgaudit cut one line per Postgres major, so the version changes across the row. TimescaleDB and pg_search start at 15 upstream; pgvectorscale is verified on 18 only. Postgres 14 reaches end of life upstream on 12 Nov 2026; pinned 14 builds stay served.</p>
+        <div class="rg-sunk" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 6px">
+          <b style="font-size: 14px">A name doze doesn't have</b>
+          <code class="rg-mono" style="font-size: 13px; color: #140C1B; white-space: normal">doze has no extension vectr for Postgres 17; did you mean vector?</code>
+          <span class="rg-small">Aliases work too: pgvector → vector, timescale → timescaledb, pgvectorscale → vectorscale. Names PostGIS provides (postgis_topology, postgis_raster…) resolve to its bundle.</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="contrib" style="display: flex; flex-direction: column; gap: 12px">
+        <h2 class="rg-h2" id="contrib">Ships with Postgres <span style="color: #6E5F79; font-weight: 500">44</span></h2>
+        <p class="rg-p">The contrib extensions are inside every Postgres doze runs: nothing to fetch, nothing to pin. List them the same way: <code class="rg-mono" style="font-size: 13.5px">extensions = ["pg_trgm", "citext"]</code>.</p>
+        <div class="x-contrib">
+          <code>pg_trgm</code><code>uuid-ossp</code><code>hstore</code><code>citext</code><code>pgcrypto</code><code>btree_gin</code><code>btree_gist</code><code>pg_stat_statements</code><code>postgres_fdw</code><code>ltree</code><code>unaccent</code><code>fuzzystrmatch</code><code>tablefunc</code><code>intarray</code><code>cube</code><code>earthdistance</code><code>dblink</code><code>amcheck</code><code>bloom</code><code>pg_buffercache</code><code>pg_prewarm</code><code>pageinspect</code><code>pgstattuple</code><code>pgrowlocks</code><code>pg_visibility</code><code>pg_freespacemap</code><code>pg_surgery</code><code>file_fdw</code><code>isn</code><code>lo</code><code>seg</code><code>intagg</code><code>moddatetime</code><code>autoinc</code><code>insert_username</code><code>refint</code><code>tcn</code><code>sslinfo</code><code>tsm_system_rows</code><code>tsm_system_time</code><code>dict_int</code><code>dict_xsyn</code><code>xml2</code><code>plpgsql</code>
+        </div>
+        <p class="rg-small" style="margin: 0">By version: <code class="rg-mono">pg_walinspect</code> from 15, <code class="rg-mono">pg_logicalinspect</code> from 18; <code class="rg-mono">adminpack</code> and <code class="rg-mono">old_snapshot</code> up to 16.</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2706}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

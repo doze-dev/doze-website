@@ -1,114 +1,65 @@
-/* The marketing pages: dark, the night the bat sleeps in. */
+/* Base for every non-docs page. Pages own their look in scoped styles; this
+   holds only what every page shares. */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 html {
-  background: var(--night);
   color: var(--text);
   font-family: var(--font-text);
   -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
 }
 body {
   margin: 0;
   line-height: 1.55;
 }
-a {
-  color: inherit;
-}
 img,
 svg,
 video {
   max-width: 100%;
-  display: block;
 }
 code,
 kbd,
-pre {
+pre,
+samp {
   font-family: var(--font-mono);
+  font-variant-ligatures: none;
 }
-:focus-visible {
-  outline: 2px solid var(--amber);
-  outline-offset: 3px;
-  border-radius: 4px;
+a {
+  color: inherit;
 }
-
-.wrap {
-  width: min(var(--wrap), 100% - 48px);
-  margin-inline: auto;
+[hidden] {
+  display: none !important;
 }
-.display {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.02;
-  margin: 0;
-}
-.lede {
-  font-size: clamp(18px, 2vw, 21px);
-  color: var(--text-2);
-  max-width: 46rem;
-}
-.eyebrow {
-  font: 600 13px var(--font-text);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--amber);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1px solid var(--line);
-}
-.btn.primary {
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  z-index: 100;
   background: var(--amber);
   color: var(--amber-ink);
-  border-color: var(--amber);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
 }
-.btn:hover {
-  filter: brightness(1.08);
+.skip:focus {
+  left: 8px;
 }
-.cmd {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: #0f0914;
-  border: 1px solid var(--line);
-  font: 15px var(--font-mono);
-  color: var(--text);
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
-.cmd::before {
-  content: "$";
-  color: var(--text-3);
-}
-
-.cards {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-.card {
-  background: var(--night-2);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 24px;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-a.card:hover {
-  border-color: #5a4168;
-}
-section {
-  padding-block: clamp(56px, 9vw, 112px);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

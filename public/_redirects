@@ -7,5 +7,3 @@
 /modules/*    /docs/doze/modules/:splat    301
 /operate/*    /docs/doze/operate/:splat    301
 /cli/*        /docs/doze/cli/:splat        301
-/docs         /docs/doze/                  302
-/docs/        /docs/doze/                  302

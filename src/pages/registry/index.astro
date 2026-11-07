@@ -1,13 +1,412 @@
 ---
-import Hero from "../../components/Hero.astro";
-import Base from "../../layouts/Base.astro";
+// The catalog (design: Registry) and, when the reader picks their doze, the same
+// page checked against it (design: RegistryForYourDoze). Both states render here;
+// html[data-doze] (doze-check) decides which shows, and registry-catalog.ts fills
+// in the per-version words and runs the facets and sort.
+import "../../components/registry/FindBase.css";
+import RegistryBar from "../../components/RegistryBar.astro";
+import {
+  categories,
+  categoryOf,
+  copyFor,
+  moduleHref,
+  platformKeys,
+  platformsLine,
+  runsLine,
+} from "../../components/registry/FindCopy";
+import { extensions } from "../../data/extensions";
+import { tools } from "../../data/tools";
+import Page from "../../layouts/Page.astro";
+import {
+  display,
+  fmtDate,
+  look,
+  type Module,
+  modules,
+  needs,
+  platformLabel,
+  type Release,
+  runsOn,
+} from "../../lib/registry";
+
+const byTitle = [...modules].sort((a, b) => (a.meta.title ?? a.name).localeCompare(b.meta.title ?? b.name));
+const newest = (m: Module) => m.releases[0];
+const catCount = (id: string) => modules.filter((m) => categoryOf(m) === id).length;
+const platforms = ["aarch64-apple-darwin", "x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu"];
+const platCount = (t: string) => modules.filter((m) => platformKeys(m).includes(t)).length;
+const featured = ["vector", "pg_cron", "timescaledb", "postgis"]
+  .map((n) => extensions.find((e) => e.name === n))
+  .filter((e) => !!e);
+
+// Every release, newest upload first.
+const releases = modules
+  .flatMap((m) => m.releases.map((r, i) => ({ m, r, current: i === 0 })))
+  .sort(
+    (a, b) =>
+      (b.r.date ?? "").localeCompare(a.r.date ?? "") ||
+      b.r.version.localeCompare(a.r.version, undefined, { numeric: true }) ||
+      a.m.name.localeCompare(b.m.name),
+  );
+
+// "every module still has a release that runs on 0.1.1"
+const OLD = "0.1.1";
+const stuck = modules.filter((m) => !m.releases.some((r) => runsOn(r, OLD))).length;
+
+// Oldest doze per release: the newest alone, then runs of releases stamped alike.
+type Row = { m: Module; rs: Release[]; first: boolean };
+const oldestRows: Row[] = [...modules]
+  .sort((a, b) => (newest(b)?.date ?? "").localeCompare(newest(a)?.date ?? "") || a.name.localeCompare(b.name))
+  .flatMap((m) => {
+    const rows: Row[] = [];
+    m.releases.forEach((r, i) => {
+      const last = rows[rows.length - 1];
+      if (i <= 1 || !last || last.rs[0].doze !== r.doze) rows.push({ m, rs: [r], first: i === 0 });
+      else last.rs.push(r);
+    });
+    return rows;
+  });
+const shortDates = (rs: Release[]) => {
+  const ds = [...new Set(rs.map((r) => r.date))];
+  if (ds.length === 1) return fmtDate(ds[0]);
+  const years = new Set(ds.map((d) => d?.slice(0, 4)));
+  return years.size === 1
+    ? `${ds.map((d) => fmtDate(d).replace(/ \d{4}$/, "")).join(" · ")} ${[...years][0]}`
+    : ds.map(fmtDate).join(" · ");
+};
+const stamped = releases.filter((x) => x.r.doze);
+const firstStamp = stamped.length ? stamped.reduce((a, b) => ((a.r.date ?? "") < (b.r.date ?? "") ? a : b)) : null;
+
+const data = modules.map((m) => ({
+  name: m.name,
+  display: display(m),
+  releases: m.releases.map((r) => ({ v: r.version, doze: r.doze })),
+}));
+const releaseHref = (m: Module, r: Release) =>
+  m.name === "postgres" ? `${moduleHref(m)}${r.version}/` : moduleHref(m);
+const shield = '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>';
 ---
-<Base title="Registry" description="Every module doze can run: signed, pinned, one line each.">
-  <Hero
-    eyebrow="Registry"
-    title="Everything your stack uses. One line each."
-    lede="Signed modules doze fetches and pins in doze.lock: Postgres, MariaDB, Valkey, Kvrocks, FerretDB, Temporal, doze Kafka and doze AWS. The browsable registry moves here from doze.nerdmenot.in."
-    cmd="doze add postgres"
-    docs="/docs/doze/guides/engines/"
-  />
-</Base>
+<Page title="Registry" description="Every engine doze can run: signed modules, Postgres extensions and bring-your-own tools." theme="light" current="registry">
+  <script is:inline>
+    // Show the right state before first paint: ?doze= or the version kept in this browser.
+    (() => {
+      const ok = (v) => !!v && /^\d+\.\d+\.\d+$/.test(v);
+      let v = new URLSearchParams(location.search).get("doze");
+      if (!ok(v)) { try { v = localStorage.getItem("doze-version"); } catch { v = null; } }
+      if (ok(v)) document.documentElement.dataset.doze = v;
+    })();
+  </script>
+  <RegistryBar section="modules" />
+  <div class="rg">
+
+    <!-- ===== the catalog (no doze picked) ===== -->
+    <div class="rg-wrap rc-unset">
+      <section class="rh-hero">
+        <div class="rc-col" style="gap: 14px">
+          <span class="rg-eyebrow">The registry</span>
+          <h1 class="rg-h1">Every engine doze can run. Signed, pinned, one line each.</h1>
+          <p class="rg-lead">Modules are the plugins that run Postgres, Valkey, Kafka and the rest. Add one to doze.hcl and doze fetches it for your machine, checks it, and pins it in doze.lock, so the next fetch is the same bytes.</p>
+        </div>
+        <nav class="rh-trust" aria-label="How the registry is trusted">
+          <a href="/registry/trust/">
+            <span class="rh-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={shield} /></span>
+            <span class="rc-col" style="gap: 4px"><b>Signed by one key</b><span>Every file and the index are signed with one ed25519 key; its public half is compiled into doze.</span></span>
+          </a>
+          <a href="/registry/trust/">
+            <span class="rh-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg></span>
+            <span class="rc-col" style="gap: 4px"><b>Pinned in doze.lock</b><span>Version and sha256 per platform. Only <code class="rg-mono" style="font-size: 13px">doze modules upgrade</code> moves a pin.</span></span>
+          </a>
+          <a href="/registry/trust/">
+            <span class="rh-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span>
+            <span class="rc-col" style="gap: 4px"><b>Verified on every fetch</b><span>A file that doesn't match its signature and hash is not run. How it works →</span></span>
+          </a>
+        </nav>
+      </section>
+
+      <div class="rh-body">
+        <aside class="rc-aside" id="rc-filters" aria-label="Filters" data-rc-filters>
+          <div class="rg-facet" style="border-top: 0; padding-top: 0">
+            <h3>Show</h3>
+            <label class="rg-opt"><input type="checkbox" checked data-rc-show="mods" /><span>Modules</span><span class="n">{modules.length}</span></label>
+            <label class="rg-opt"><input type="checkbox" checked data-rc-show="exts" /><span>Postgres extensions</span><span class="n">{extensions.length}</span></label>
+            <label class="rg-opt"><input type="checkbox" checked data-rc-show="byo" /><span>Bring your own</span><span class="n">{tools.length}</span></label>
+          </div>
+          <div class="rg-facet">
+            <h3>Category</h3>
+            {categories.map((c) => <label class="rg-opt"><input type="checkbox" data-rc-cat={c.id} /><span>{c.label}</span><span class="n">{catCount(c.id)}</span></label>)}
+          </div>
+          <div class="rg-facet">
+            <h3>Platform</h3>
+            {platforms.map((p) => <label class="rg-opt"><input type="checkbox" data-rc-plat={p} /><span>{platformLabel[p]}</span><span class="n">{platCount(p)}</span></label>)}
+            <span class="rg-small" style="padding-top: 4px">Every module ships all three. No Intel Mac, no Windows (WSL2 runs the Linux build).</span>
+          </div>
+          <div class="rg-facet">
+            <h3>Your doze</h3>
+            <button class="rg-opt rc-switch-btn" type="button" aria-pressed="false" data-rc-runs><span>Runs on my doze</span><span class="rg-switch" aria-hidden="true"></span></button>
+            <span class="rg-small">Set your version in the bar above to hide releases your doze can't run.</span>
+          </div>
+          <div class="rg-facet">
+            <h3>Tier</h3>
+            <label class="rg-opt"><input type="checkbox" checked data-rc-tier="official" /><span>Official</span><span class="n">{modules.length}</span></label>
+            <span class="rg-small">Published by doze-dev. Outside publishers are not open yet: <a href="/registry/publish/">how it will work</a>.</span>
+          </div>
+        </aside>
+
+        <div class="rc-col" style="gap: 44px; min-width: 0">
+          <section aria-labelledby="mods" class="rc-col" style="gap: 16px" data-rc-section="mods">
+            <div class="rh-sec">
+              <h2 class="rg-h2" id="mods">Modules <span class="rc-count" data-rc-count>{modules.length}</span></h2>
+              <div class="rc-tools">
+                <button class="rg-btn sec rg-filters-btn" type="button" aria-controls="rc-filters" aria-expanded="false" data-rc-filters-btn><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" /></svg>Filters</button>
+                <label for="sort" class="rg-small">Sort</label>
+                <select id="sort" class="rg-select" data-rc-sort><option value="name">Name</option><option value="recent">Recently released</option></select>
+              </div>
+            </div>
+            <p class="rg-small" style="margin: -6px 0 0">No "most downloaded" sort: doze sends no telemetry, so nobody counts downloads. <a href="/registry/trust/">Why</a></p>
+            <div class="rh-grid" data-rc-grid>
+              {byTitle.map((m) => {
+                const r = newest(m);
+                const c = copyFor(m);
+                const logo = look[m.name]?.logo;
+                return (
+                  <article class="rg-card" data-rc-mod={m.name} data-cat={categoryOf(m)} data-plat={platformKeys(m).join(" ")} data-date={r?.date ?? ""} data-title={m.meta.title ?? m.name}>
+                    <div class="rc-row" style="gap: 12px"><div class="rg-tile" style={`background: ${c.tile}`} aria-hidden="true">{logo ? <img src={logo} alt="" /> : (m.meta.title ?? m.name)[0]}</div>
+                      <div style="flex: 1; min-width: 0"><a class="rg-name" href={moduleHref(m)}>{m.meta.title ?? display(m)}</a><div class="rg-small rg-mono">{m.namespace}/{m.name}</div></div>
+                    </div>
+                    <div class="rc-chips"><span class="rg-chip off">Official</span><span class="rg-chip ok">Signed</span></div>
+                    <p class="rg-p">{c.blurb}</p>
+                    <dl class="rg-facts"><dt>Runs</dt><dd>{runsLine(m)}</dd><dt>Newest</dt><dd>{r?.version} · {fmtDate(r?.date ?? null)}</dd><dt>Needs</dt><dd>{r ? (r.doze ? needs(r) : "any doze (0.1.0 and up)") : ""}</dd><dt>Platforms</dt><dd>{platformsLine(m)}</dd></dl>
+                    <div class="rg-snip"><code><i>$</i> doze add {m.name}</code><button class="rg-copy" type="button" aria-label={`Copy doze add ${m.name}`} data-copy={`doze add ${m.name}`}>Copy</button></div>
+                  </article>
+                );
+              })}
+            </div>
+            <div class="rg-note" data-rc-empty hidden><span>No module matches these filters. <button type="button" class="rc-link" data-rc-reset>Clear the filters</button></span></div>
+            <p class="rg-small" style="margin: 0">"Needs" is the oldest doze each release is stamped with. On an older doze? <a href={`/registry/?doze=${OLD}`} data-doze-pick={OLD}>Check the catalog against it</a>: {stuck === 0 ? `every module still has a release that runs on ${OLD}.` : `${stuck} of ${modules.length} modules have nothing that runs on ${OLD}.`}</p>
+          </section>
+
+          <section aria-labelledby="exts" class="rc-col" style="gap: 14px" data-rc-section="exts">
+            <div class="rh-sec">
+              <h2 class="rg-h2" id="exts">Postgres extensions <span class="rc-count">{extensions.length}</span></h2>
+              <a href="/registry/extensions/" class="rc-more">All {extensions.length}, by Postgres version →</a>
+            </div>
+            <p class="rg-p" style="margin-top: -6px">Write a name in doze.hcl; doze fetches the build for your Postgres and your machine. <span class="rg-chip info" style="vertical-align: 1px">Coming in postgres 0.3</span></p>
+            <div class="rh-ext">
+              {featured.map((e) => (
+                <a class="rg-card rc-ext" href={e.name === "vector" ? "/registry/doze/postgres/extensions/vector/" : "/registry/extensions/"}>
+                  <div class="rc-row" style="justify-content: space-between; align-items: baseline; gap: 8px"><b class="rg-mono" style="font-size: 15px">{e.name}</b><span class="rg-small">{e.majors}</span></div>
+                  <span class="rg-small" style="color: #4A3D55">{e.title.toLowerCase() !== e.name ? `${e.title}. ` : ""}{e.what}.</span>
+                  <span class="rg-small">{e.version} · {e.preloads ? "preloads" : "no preload"} · {e.licenceLabel}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+
+          <section aria-labelledby="byo" class="rc-col" style="gap: 14px" data-rc-section="byo">
+            <div class="rh-sec">
+              <h2 class="rg-h2" id="byo">Bring your own <span class="rc-count">{tools.length}</span></h2>
+              <a href="/registry/tools/" class="rc-more">How bring-your-own works →</a>
+            </div>
+            <p class="rg-p" style="margin-top: -6px">Not modules. <code class="rg-mono" style="font-size: 13.5px">doze add mongo</code> writes a <code class="rg-mono" style="font-size: 13.5px">service</code> block that runs your installed binary, a container or a pinned download. doze gives it a name, a port, sleep and wake; doze does not sign it.</p>
+            <div class="rh-byo">
+              {tools.map((t) => <a href={`/registry/tools/${t.name}/`}><b>{t.name}</b><span>{t.blurb}</span><em>port {t.port} · {t.sources.join(" · ")}</em></a>)}
+            </div>
+          </section>
+
+          <section aria-labelledby="recent" class="rc-col" style="gap: 12px">
+            <div class="rh-sec">
+              <h2 class="rg-h2" id="recent">Recently released</h2>
+              <span class="rg-small">From the signed index</span>
+            </div>
+            <div class="rg-panel" style="overflow: hidden">
+              <table class="rh-rel rg-tc">
+                <thead><tr><th scope="col">Date</th><th scope="col">Release</th><th scope="col">Runs</th><th scope="col">Needs</th></tr></thead>
+                <tbody>
+                  {releases.map(({ m, r, current }) => (
+                    <tr>
+                      <td data-l="Date">{fmtDate(r.date)}</td>
+                      <td data-l="Release"><span><a class="rg-mono" href={releaseHref(m, r)} style="font-size: 13.5px">{m.name} {r.version}</a>{current && <> <span class="rg-chip ok">Current</span></>}</span></td>
+                      <td data-l="Runs">{runsLine(m, false)}</td>
+                      <td data-l="Needs">{r.doze ? <span class="rg-chip warn">doze {r.doze}</span> : "any doze"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="rg-small" style="margin: 0">Dates are when each build was uploaded: doze-dev/doze-modules for six modules, doze AWS and doze Kafka from their own repositories. <a href="https://github.com/doze-dev/doze-modules/releases">Older releases on GitHub</a></p>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== checked against the reader's doze ===== -->
+    <div class="rg-wrap rc-set" style="padding-top: 32px; padding-bottom: 72px; flex-direction: column; gap: 40px">
+      <section class="fy-banner" aria-labelledby="yours">
+        <div class="rc-col" style="gap: 12px">
+          <span class="rg-eyebrow">Checked against your doze</span>
+          <h1 class="rg-h1" id="yours">You're on doze <span data-doze-text></span>. <span data-fy-headline></span></h1>
+          <p class="rg-p" style="font-size: 16px" data-fy-summary></p>
+          <p class="rg-small" style="margin: 0">Remembered in this browser. <a href="/registry/" data-doze-pick="">Stop checking</a> · set by the picker above, or from the terminal with <code class="rg-mono">doze modules docs postgres --web</code> <span class="rg-tag-new">New: --web (docs returns)</span></p>
+        </div>
+        <div class="rg-sunk fy-update" data-needs="0.2.0">
+          <b style="font-size: 15px">Update to doze 0.2</b>
+          <div class="rg-snip"><code><i>$</i> brew upgrade doze</code><button class="rg-copy" type="button" aria-label="Copy brew upgrade doze" data-copy="brew upgrade doze">Copy</button></div>
+          <span class="rg-small" style="color: #4A3D55">Or get the Mac app: <code class="rg-mono">brew install --cask doze-dev/tap/doze</code>. It updates itself from Settings › About. <a href="/changelog/">What changed in 0.2</a></span>
+        </div>
+      </section>
+
+      <section aria-labelledby="cards" class="rc-col" style="gap: 14px">
+        <div class="rc-row" style="justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+          <h2 class="rg-h2" id="cards">Modules, for doze <span data-doze-text></span></h2>
+          <span class="rc-row" style="gap: 8px; flex-wrap: wrap"><span class="rg-chip ok"><span data-fy-n="runs">0</span> run their newest</span><span class="rg-chip warn"><span data-fy-n="part">0</span> use an older release</span><span class="rg-chip dim"><span data-fy-n="none">0</span> nothing runs</span></span>
+        </div>
+        <div class="fy-grid">
+          {byTitle.map((m) => {
+            const c = copyFor(m);
+            const logo = look[m.name]?.logo;
+            return (
+              <article class="fy-card" data-fy-mod={m.name}>
+                <div class="rc-row" style="gap: 10px"><div class="rg-tile sm" style={`background: ${c.tile}`} aria-hidden="true">{logo ? <img src={logo} alt="" /> : (m.meta.title ?? m.name)[0]}</div><a class="rg-name" href={moduleHref(m)}>{m.meta.title ?? display(m)}</a>
+                  <span class="rg-chip ok fy-chip" data-fy-chip="runs">Runs</span><span class="rg-chip warn fy-chip" data-fy-chip="part" hidden>Older release</span><span class="rg-chip dim fy-chip" data-fy-chip="none" hidden>Nothing runs</span></div>
+                <div class="fy-rel">
+                  {m.releases.map((r) => <div data-fy-rel={r.version} data-fy-needs={r.doze ?? ""} hidden><b>{r.version}</b><span data-fy-say>runs on yours</span><span class="rg-small">· {fmtDate(r.date)}</span></div>)}
+                  <div data-fy-nothing hidden><span>No release runs on yours: update doze.</span></div>
+                </div>
+                <div class="rg-snip"><code><i>$</i> doze add {m.name}</code><button class="rg-copy" type="button" aria-label={`Copy doze add ${m.name}`} data-copy={`doze add ${m.name}`}>Copy</button></div>
+              </article>
+            );
+          })}
+        </div>
+        <div class="rg-note fy-old" data-needs="0.2.0"><span class="rg-tag-new" style="flex: none">On <span data-doze-text></span></span><span>doze 0.1.1 can't check a release's oldest doze: on a fresh project it takes the newest release regardless, which is why this page tells you. Update doze before <code class="rg-mono">doze modules upgrade</code>; a doze.lock already pinned keeps working until you do. 0.1.1 also has no <code class="rg-mono">doze add</code> and uses the old syntax (<code class="rg-mono">postgres "orders" {"{}"}</code>).</span></div>
+        <p class="rg-small" style="margin: 0">{firstStamp ? `Before doze 0.2 launched, every release in the index ran on 0.1.1; the ${fmtDate(firstStamp.r.date)} builds are the first stamped with an oldest doze.` : "No release in the index is stamped with an oldest doze yet, so every release runs on every doze. The first stamped builds need doze 0.2.0; this page checks them as soon as they are published."}</p>
+      </section>
+
+      <section aria-labelledby="say" class="fy-say-sec">
+        <div class="rc-col" style="gap: 10px">
+          <h2 class="rg-h2" id="say">What doze says when a release needs a newer doze</h2>
+          <p class="rg-p">From 0.2, doze reads each release's oldest doze itself: it skips releases it can't run and picks the newest one that fits. Only when none fits does it stop, with one of these. Shown for a future release that needs 0.3.0, on doze 0.2.0; doze 0.1.1 can't print them. (The lines wrap here; doze prints each on one line.)</p>
+        </div>
+        <div class="rg-code"><div class="rg-code-top"><span>a fetch, when no release fits</span></div><pre>postgres 17 needs doze 0.3.0 or newer; this doze is 0.2.0.
+Update doze (in the app: Settings › About), then run the
+command again</pre></div>
+        <div class="rg-code"><div class="rg-code-top"><span>a doze.lock written by a newer doze</span></div><pre>module doze/postgres 0.3.1 (pinned in doze.lock) needs doze
+0.3.0 or newer; this doze is 0.2.0. Update doze (in the app:
+Settings › About); the lock was written by a newer doze</pre></div>
+      </section>
+
+      <section aria-labelledby="table" class="rc-col" style="gap: 12px">
+        <div class="rc-row" style="justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+          <h2 class="rg-h2" id="table">Oldest doze, per release</h2>
+          <span class="rg-chip info">From the signed index</span>
+        </div>
+        <p class="rg-p">The release tool stamps each release with the oldest doze it needs, from the module SDK, always as three numbers: <code class="rg-mono">doze: "0.2.0"</code>. A release without the field runs on every doze. Today the field sits outside the signed part of the index; the design moves it inside.</p>
+        <div class="rg-panel" style="overflow-x: auto">
+          <table class="fy-tbl rg-tc">
+            <thead><tr><th scope="col">Module</th><th scope="col">Release</th><th scope="col">Uploaded</th><th scope="col">Oldest doze</th><th scope="col">On doze <span data-doze-text></span></th></tr></thead>
+            <tbody>
+              {oldestRows.map(({ m, rs, first }) => (
+                <tr class={first ? "grp" : undefined}>
+                  <td class={first ? "m" : "m rg-tc-empty"} data-l="Module">{first ? m.name : ""}</td>
+                  <td data-l="Release">{first ? rs.map((r) => r.version).join(" · ") : <span><span class="fy-mod">{m.name} </span>{rs.map((r) => r.version).join(" · ")}</span>}</td>
+                  <td data-l="Uploaded">{shortDates(rs)}</td>
+                  <td data-l="Oldest doze">{rs[0].doze ? <b>{rs[0].doze}</b> : <span style="color: #6E5F79">any (no field)</span>}</td>
+                  <td data-l="On doze" data-needs={rs[0].doze ?? "0.0.0"}><span class="rg-chip ok fy-yes">Runs</span><span class="rg-chip warn fy-no">Needs newer doze</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script type="application/json" id="rc-data" set:html={JSON.stringify(data)} />
+</Page>
+
+<script>import "../../scripts/registry-catalog.ts";</script>
+
+<style>
+  :global(html[data-doze]) .rc-unset { display: none; }
+  :global(html:not([data-doze])) .rc-set { display: none; }
+  .rc-set { display: flex; }
+  .rc-col { display: flex; flex-direction: column; }
+  .rc-row { display: flex; align-items: center; }
+  .rc-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: -2px; }
+  .rc-count { color: #6e5f79; font-weight: 500; }
+  .rc-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .rc-more { font-weight: 600; font-size: 14.5px; }
+  .rc-ext { color: #140c1b !important; gap: 8px; }
+  .rc-ext:hover { text-decoration: none !important; }
+  .rc-aside { position: sticky; top: 16px; }
+  .rc-switch-btn { width: 100%; border: 0; background: none; padding: 0; font: inherit; font-size: 14.5px; text-align: left; }
+  .rc-switch-btn[aria-pressed="true"] .rg-switch { background: #a85a0c; justify-content: flex-end; }
+  .rc-switch-btn:focus-visible, .rc-link:focus-visible { outline: 2px solid #a85a0c; outline-offset: 2px; border-radius: 6px; }
+  .rc-link { border: 0; background: none; padding: 0; font: inherit; color: #a85a0c; font-weight: 600; cursor: pointer; }
+  /* RegistryForYourDoze */
+  .fy-banner { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 28px; padding: 24px; border-radius: 16px; background: #fff; border: 1px solid #eadfd3; border-left: 5px solid #f0a24b; }
+  .fy-update { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; align-self: start; }
+  .fy-update:not(:global(.dz-too-old)), .fy-old:not(:global(.dz-too-old)) { display: none; }
+  .fy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(270px, 100%), 1fr)); gap: 14px; }
+  .fy-card { background: #fff; border: 1px solid #eadfd3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 11px; }
+  .fy-card:global(.part) { border-color: #f3d29a; }
+  .fy-card:global(.none) { background: #fffcf8; }
+  .fy-card:global(.none) .rg-name, .fy-card:global(.none) .rg-tile { opacity: 0.6; }
+  .fy-chip { margin-left: auto; }
+  .fy-rel { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; }
+  .fy-rel div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .fy-rel div[hidden] { display: none; }
+  .fy-rel :global(.old) { color: #6e5f79; }
+  .fy-rel :global(.old) b { text-decoration: line-through; text-decoration-color: #b9afc0; }
+  .fy-say-sec { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; max-width: 760px; }
+  .fy-tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .fy-tbl th { text-align: left; font: 600 13px var(--font-text); letter-spacing: 0.06em; text-transform: uppercase; color: #6e5f79; padding: 10px 14px; border-bottom: 1px solid #eadfd3; white-space: nowrap; }
+  .fy-tbl td { padding: 10px 14px; border-bottom: 1px solid #f1e8de; white-space: nowrap; }
+  .fy-mod { display: none; }
+  .fy-tbl td.m { font: 600 13.5px var(--font-mono); }
+  .fy-tbl tr.grp td { border-top: 1px solid #eadfd3; }
+  td:global(.dz-too-old) .fy-yes, td:not(:global(.dz-too-old)) .fy-no { display: none; }
+  /* Registry */
+  .rh-hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: end; padding: 44px 0 34px; }
+  .rh-trust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; background: #fff; border: 1px solid #eadfd3; border-radius: 14px; }
+  .rh-trust a { display: flex; flex-direction: column; gap: 6px; padding: 16px; color: #140c1b; border-left: 1px solid #eadfd3; }
+  .rh-trust a:first-child { border-left: 0; }
+  .rh-trust a:hover { background: #fffcf8; text-decoration: none; }
+  .rh-trust b { font-size: 14px; font-weight: 600; }
+  .rh-trust span span { font-size: 13px; line-height: 1.45; color: #4a3d55; }
+  .rh-ico { width: 30px; height: 30px; border-radius: 8px; background: #e6f4ea; color: #1d7a45; display: flex; align-items: center; justify-content: center; flex: none; }
+  .rh-body { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 40px; align-items: start; padding-bottom: 72px; }
+  .rh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; }
+  .rh-grid > [hidden] { display: none; }
+  .rh-ext { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr)); gap: 12px; }
+  .rh-byo { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 10px; }
+  .rh-byo a { display: flex; flex-direction: column; gap: 4px; padding: 13px 14px; background: #fff; border: 1px solid #eadfd3; border-radius: 11px; color: #140c1b; }
+  .rh-byo a:hover { border-color: #dccfc2; text-decoration: none; }
+  .rh-byo b { font: 600 14.5px var(--font-mono); }
+  .rh-byo span { font-size: 13px; color: #4a3d55; line-height: 1.4; }
+  .rh-byo em { font-style: normal; font-size: 13px; color: #6e5f79; }
+  .rh-rel { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .rh-rel th { text-align: left; font: 600 13px var(--font-text); letter-spacing: 0.06em; text-transform: uppercase; color: #6e5f79; padding: 10px 12px; border-bottom: 1px solid #eadfd3; }
+  .rh-rel td:first-child { white-space: nowrap; }
+  .rh-rel td { padding: 11px 12px; border-bottom: 1px solid #f1e8de; vertical-align: middle; }
+  .rh-sec { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  [data-rc-section][hidden] { display: none; }
+  @media (max-width: 1000px) {
+    .rh-hero { grid-template-columns: 1fr; gap: 24px; }
+    .fy-banner { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 760px) {
+    .rh-hero { padding: 28px 0 22px; }
+    .rh-trust { grid-template-columns: 1fr; }
+    .rh-trust a { border-left: 0; border-top: 1px solid #eadfd3; flex-direction: row; align-items: flex-start; gap: 12px; }
+    .rh-trust a:first-child { border-top: 0; }
+    .rh-body { grid-template-columns: 1fr; gap: 0; }
+    .rh-grid { grid-template-columns: 1fr; }
+    .rc-aside { display: none; position: static; }
+    .rc-aside:global(.open) { display: block; margin-bottom: 24px; padding: 16px; background: #fff; border: 1px solid #eadfd3; border-radius: 14px; }
+    .rc-switch-btn { min-height: 44px; }
+    .fy-banner { padding: 18px; }
+    .fy-tbl th:nth-child(3), .fy-tbl td:nth-child(3) { display: none; }
+    .fy-tbl td, .fy-tbl th { padding: 10px; }
+  }
+  @media (max-width: 600px) {
+    .fy-mod { display: inline; }
+  }
+</style>

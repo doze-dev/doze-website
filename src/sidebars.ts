@@ -8,14 +8,13 @@ import { existsSync } from "node:fs";
 // are pulled from GitHub in CI). Leave it out with a warning instead of
 // failing the build.
 const docs = new URL("./content/docs/", import.meta.url).pathname;
-const has = (slug: string) =>
-  [".md", ".mdx", "/index.md", "/index.mdx"].some((ext) => existsSync(docs + slug + ext));
+const has = (slug: string) => [".md", ".mdx", "/index.md", "/index.mdx"].some((ext) => existsSync(docs + slug + ext));
 
 type Item = string | { slug: string; label?: string } | { label: string; collapsed?: boolean; items: Item[] };
 type Group = { label: string; collapsed?: boolean; items: Item[] };
 
 const under = (base: string, items: Item[]): unknown[] =>
-  items.flatMap((it) => {
+  items.flatMap((it): unknown[] => {
     if (typeof it !== "string" && !("slug" in it)) return [{ ...it, items: under(base, it.items) }];
     const entry = typeof it === "string" ? { slug: it } : it;
     const slug = `${base}/${entry.slug}`;

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The doze family</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#140C1B}
+.mn a{color:#F0A24B;text-decoration:none}.mn a:hover{color:#FFC27A}
+.mn-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px}
+.mn .mn-btn-lamp{background:#F0A24B;color:#2A1534}.mn .mn-btn-lamp:hover{background:#FFB866;color:#2A1534}
+.mn .mn-btn-ghost{border:1px solid #4A3458;color:#F4ECE4}.mn .mn-btn-ghost:hover{border-color:#7A5E8C;color:#FFFFFF}
+.mn-eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.mn-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:52px;line-height:1.02;letter-spacing:-0.03em;text-wrap:balance}
+.mn-pain{background:#1E1328;border:1px solid #34233F;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.mn-old{font-family:'JetBrains Mono',monospace;font-size:13px;color:#FF9AA8;background:#2A1520;border:1px solid #4A2230;border-radius:10px;padding:9px 12px;align-self:flex-start}
+.mn-win{border-radius:16px;overflow:hidden;border:1px solid #4A3458;box-shadow:0 50px 120px rgba(0,0,0,0.55)}
+.mn-bar{height:32px;background:#110F18;display:flex;align-items:center;gap:7px;padding:0 14px}
+.mn-dot{width:11px;height:11px;border-radius:6px}
+.mn-chk{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#E9DEEF;line-height:1.45}
+.mn-chk span:first-child{color:#8BE39B;flex:none}
+.mn-recap{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;color:#C9BAD3;background:#2A1C36;border:1px dashed #5A4168;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.mn details{background:#1E1328;border:1px solid #34233F;border-radius:14px;padding:6px 20px}
+.mn details p{margin-bottom:14px !important}
+.mn summary{cursor:pointer;font-weight:600;font-size:17px;padding:10px 0;line-height:28px}
+.mn-lang{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:#1A1022;border:1px solid #34233F}
+.mn-lang-h{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#F4ECE4}
+.mn-lang-dot{width:10px;height:10px;border-radius:3px;flex:none}
+.mn-svc{display:flex;flex-wrap:wrap;gap:6px}
+.mn-svc span{font-family:'JetBrains Mono',monospace;font-size:13px;color:#F4ECE4;background:#241830;border:1px solid #3A2848;border-radius:8px;padding:5px 9px}
+.mn-copy{height:36px;padding:0 12px;border-radius:8px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer}
+.mn code,.mn pre{font-variant-ligatures:none}
+.mn-term{margin:0;white-space:pre;font:14px/1.85 'JetBrains Mono',monospace;background:#120A18;border:1px solid #2E1F3A;border-radius:16px;padding:20px 22px;color:#D6C8DF;overflow-x:auto}
+@media (max-width:760px){.mn-hero-title{font-size:46px !important}.mn-hero-tag{font-size:24px !important}.mn-h2{font-size:38px !important}.mn-stack-sm{flex-direction:column !important;align-items:stretch !important}.mn-float{display:none !important}.mn-cta{padding:32px !important}.mn-cta h2{font-size:36px !important}.mn-install code{font-size:12px !important}}
+</style>
+</helmet>
+<div class="mn" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #F4ECE4; background: #140C1B; min-height: 100%">
+
+  <dc-import name="SiteHeader" theme="dark" current="home" news="Postgres extensions by name" newsHref="RegistryExtensions.dc.html" hint-size="100%,72px"></dc-import>
+
+  <!-- Hero: the claim, the brand line, the install line as the call -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 88px 32px 0; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center">
+    <h1 class="mn-hero-title" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 84px; line-height: 0.98; letter-spacing: -0.04em; max-width: 15ch; text-wrap: balance">Your laptop is a beast. Stop making it run a VM.</h1>
+    <p class="mn-hero-tag" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; color: #F0A24B; text-wrap: balance">Run your whole stack. Feel none of it.</p>
+    <p style="margin: 0; font-size: 20px; line-height: 1.55; color: #D6C8DF; max-width: 40rem">Real Postgres, Kafka and a whole local AWS, running natively on your Mac. Awake the moment your code calls. Asleep the moment it stops.</p>
+    <div class="mn-stack-sm mn-install" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; margin-top: 6px">
+      <a class="mn-btn mn-btn-lamp" href="Download.dc.html">Download for Mac</a>
+      <div style="display: flex; align-items: center; gap: 8px; background: #1E1328; border: 1px solid #4A3458; border-radius: 12px; height: 52px; padding: 0 8px 0 16px; min-width: 0">
+        <code style="font: 15px 'JetBrains Mono', monospace; color: #F4ECE4; white-space: pre; overflow-x: auto; min-width: 0"><span style="color: #9C8AAB">$</span> brew install --cask doze-dev/tap/doze</code>
+        <button type="button" aria-label="Copy the install command" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid #4A3458; background: #2A1C36; color: #F4ECE4; font: 600 13px Geist, sans-serif; flex: none">Copy</button>
+      </div>
+    </div>
+    <span style="font-size: 14px; color: #9C8AAB; text-wrap: balance; max-width: 40rem">Free and open source · Apple silicon and Linux · no account, no telemetry · <a href="Download.dc.html">other ways to install</a></span>
+  </section>
+
+  <!-- The real app, staged -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 96px; position: relative">
+    <div style="position: absolute; left: 15%; right: 15%; top: 10%; height: 70%; border-radius: 50%; background: radial-gradient(closest-side, rgba(240,162,75,0.28), rgba(240,162,75,0))"></div>
+    <div class="mn-win" style="position: relative">
+      <div class="mn-bar"><span class="mn-dot" style="background: #FF5F57"></span><span class="mn-dot" style="background: #FEBC2E"></span><span class="mn-dot" style="background: #28C840"></span><span style="margin: 0 auto; font-size: 13px; color: #8A85A8">doze</span></div>
+      <img src="/_blob/f2be955545a79717a7a18ce777640195" alt="The doze app's map of a demo stack: some services awake, some dozing, some asleep" style="display: block; width: 100%; height: auto">
+    </div>
+    <div class="mn-float" style="position: absolute; left: -8px; bottom: 56px; width: 420px; border-radius: 18px; padding: 10px; background: rgba(30,19,40,0.94); border: 1px solid #5A4168; box-shadow: 0 30px 80px rgba(0,0,0,0.55)">
+      <div style="position: relative; width: 400px; height: 134px; overflow: hidden; border-radius: 12px">
+        <img src="/_blob/fed6afecf6252da163570107c1a0c7c3" alt="A database tile from the demo stack: awake, with its open connections" style="position: absolute; left: -888px; top: -673px; width: 1758px; max-width: none">
+      </div>
+      <div style="padding: 10px 8px 4px; font-size: 14px; color: #C9BAD3"><b style="color: #8BE39B">asleep → awake</b> on the first connection</div>
+    </div>
+    <div class="mn-float" style="position: absolute; right: -8px; top: 24px; width: 268px; background: rgba(243,238,246,0.97); border-radius: 12px; padding: 6px; box-shadow: 0 30px 80px rgba(0,0,0,0.55); color: #2B2232; font-size: 14px">
+      <div style="padding: 6px 12px 2px; font-size: 12px; font-weight: 600; color: #6A5E76">Stacks</div>
+      <div style="display: flex; justify-content: space-between; padding: 6px 12px; border-radius: 6px; background: #E9DFF0"><span>●&#160;&#160;larder</span><span style="color: #6A5E76">›</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 6px 12px"><span>○&#160;&#160;acme</span><span style="color: #6A5E76">›</span></div>
+      <div style="height: 1px; background: #DDD3E3; margin: 6px 8px"></div>
+      <div style="padding: 6px 12px">Quit doze · stacks keep running</div>
+    </div>
+    <p style="position: relative; margin: 18px 0 0; text-align: center; font-size: 13px; color: #9C8AAB">The doze app, from its demo stack. Quit it and your stacks keep running. <span class="mn-recap">[re-capture with Larder]</span></p>
+  </section>
+
+  <!-- The family, live -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 24px 32px 96px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+      <span class="mn-eyebrow">Live, not mocked</span>
+      <h2 class="mn-h2">Watch all three work.</h2>
+    </div>
+    <dc-import name="Tour" set="family" hint-size="100%,745px"></dc-import>
+  </section>
+
+  <!-- Sound familiar? -->
+  <section id="familiar" style="max-width: 1240px; margin: 0 auto; padding: 24px 32px 96px; display: flex; flex-direction: column; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 48rem">
+      <span class="mn-eyebrow">Sound familiar?</span>
+      <h2 class="mn-h2" style="font-size: 56px">Local development is a mess nobody signed up for.</h2>
+      <p style="margin: 0; font-size: 19px; line-height: 1.6; color: #C9BAD3">Containers, brew services, half-remembered ports and a setup doc that worked once. You didn't choose it. It just grew.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr)); gap: 16px">
+      <div class="mn-pain"><span class="mn-old">fans: full tilt · battery: 31%</span><h3 style="margin: 0; font-size: 21px">Your laptop sounds like it's leaving.</h3><p style="margin: 0; color: #C9BAD3; line-height: 1.6">A VM full of databases runs all day, used or not. doze runs nothing until something connects.</p></div>
+      <div class="mn-pain"><span class="mn-old">breakpoint never hit</span><h3 style="margin: 0; font-size: 21px">Debugging through a wall.</h3><p style="margin: 0; color: #C9BAD3; line-height: 1.6">No VM, no volume mounts, no forwarded debug ports. Real processes on your machine. Attach and go.</p></div>
+      <div class="mn-pain"><span class="mn-old">port 5432 is already allocated</span><h3 style="margin: 0; font-size: 21px">Port roulette.</h3><p style="margin: 0; color: #C9BAD3; line-height: 1.6">Every service gets a name and an address of its own. Two projects, both on 5432, no clash.</p></div>
+      <div class="mn-pain"><span class="mn-old">localhost:3000? :3001? :8080?</span><h3 style="margin: 0; font-size: 21px">Which one was the gateway again?</h3><p style="margin: 0; color: #C9BAD3; line-height: 1.6"><code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">gateway.larder.doze</code>. And https on your own domain when OAuth refuses localhost.</p></div>
+      <div class="mn-pain"><span class="mn-old">README.md · last updated 2023</span><h3 style="margin: 0; font-size: 21px">Onboarding takes a day.</h3><p style="margin: 0; color: #C9BAD3; line-height: 1.6">One doze.hcl in the repo. A new teammate clones it and runs <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">doze up</code>.</p></div>
+      <div class="mn-pain"><span class="mn-old">docker ps -a · 23 exited</span><h3 style="margin: 0; font-size: 21px">The graveyard of forgotten stacks.</h3><p style="margin: 0; color: #C9BAD3; line-height: 1.6">The menu bar shows every stack and what's awake, and cleans up what was left behind.</p></div>
+    </div>
+    <a href="Story.dc.html" style="font-weight: 600; align-self: flex-start; padding: 10px 0; min-height: 24px">Walk through a Tuesday →</a>
+  </section>
+
+  <!-- Instead of -->
+  <section style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: flex; flex-direction: column; gap: 32px">
+      <h2 class="mn-h2">Three tools. Three things you can uninstall.</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 20px">
+        <a href="Doze.dc.html" style="background: #1E1328; border: 1px solid #34233F; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; color: #F4ECE4">
+          <div style="aspect-ratio: 16 / 10; overflow: hidden; background: #15131D"><img src="/_blob/fed6afecf6252da163570107c1a0c7c3" alt="The doze app's tiles, from its demo stack" style="width: 100%; height: 100%; object-fit: cover; object-position: left top"></div>
+          <div style="padding: 24px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; align-items: center; gap: 12px"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 40px; height: 40px"><b style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 26px">doze</b></div>
+            <span style="font-size: 14px; color: #9C8AAB">Instead of <s>Docker Desktop for your databases</s></span>
+            <p style="margin: 0; font-size: 18px; font-weight: 600; color: #F0A24B">Your whole stack, on demand.</p>
+          </div>
+        </a>
+        <a href="Aws.dc.html" style="background: #1E1328; border: 1px solid #34233F; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; color: #F4ECE4">
+          <div style="aspect-ratio: 16 / 10; overflow: hidden; background: #0B0F15"><img src="/_blob/8236daf36d4bf7a3349e823b4f17743b" alt="The doze AWS console's wire: every call the app made" style="width: 100%; height: 100%; object-fit: cover; object-position: left top"></div>
+          <div style="padding: 24px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; align-items: center; gap: 12px"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 40px; height: 40px"><b style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 26px">doze AWS</b></div>
+            <span style="font-size: 14px; color: #9C8AAB">Instead of <s>an emulator in a container, or the shared dev account</s></span>
+            <p style="margin: 0; font-size: 18px; font-weight: 600; color: #5BB8E8">All of AWS. None of the account.</p>
+          </div>
+        </a>
+        <a href="Kafka.dc.html" style="background: #1E1328; border: 1px solid #34233F; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; color: #F4ECE4">
+          <div style="aspect-ratio: 16 / 10; overflow: hidden; background: #0D0C08"><img src="/_blob/768e901f5c730fde039a1b5c597a54bf" alt="The doze Kafka console: a topic and its messages" style="width: 100%; height: 100%; object-fit: cover; object-position: left top"></div>
+          <div style="padding: 24px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; align-items: center; gap: 12px"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 40px; height: 40px"><b style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 26px">doze Kafka</b></div>
+            <span style="font-size: 14px; color: #9C8AAB">Instead of <s>a JVM, ZooKeeper and a quorum in containers</s></span>
+            <p style="margin: 0; font-size: 18px; font-weight: 600; color: #FFD60A">Kafka. Hold the JVM.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Larder: a real project, not a toy -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 48px; align-items: center">
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <span class="mn-eyebrow">Try it on Larder</span>
+      <h2 class="mn-h2">A real project, not a toy.</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #C9BAD3">Larder is a made-up online grocer: groceries at your door within the hour. It is built the way real backends end up: a monorepo split by domain, each team in the language it knows, held together by Kafka topics and HTTP. Nine services, three languages, five shared backing services, one <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">doze.hcl</code>. No Docker, no compose file, no scripts.</p>
+      <div style="position: relative"><button type="button" class="mn-copy" aria-label="Copy the two commands" style="position: absolute; top: 10px; right: 10px">Copy</button><pre class="mn-term" style="padding-top: 54px"><span style="color: #9C8AAB">$</span> git clone https://github.com/doze-dev/doze-examples
+<span style="color: #9C8AAB">$</span> cd doze-examples/larder &amp;&amp; doze up
+<span style="color: #9C8AAB"># postgres, redis, kafka, aws, mailpit, then nine services</span></pre></div>
+      <div class="mn-stack-sm" style="display: flex; gap: 12px; flex-wrap: wrap">
+        <a class="mn-btn mn-btn-lamp" href="Examples.dc.html">Walk through Larder</a>
+        <a class="mn-btn mn-btn-ghost" href="https://github.com/doze-dev/doze-examples/blob/main/larder/doze.hcl">Read the doze.hcl on GitHub</a>
+      </div>
+    </div>
+    <div style="background: #1E1328; border: 1px solid #34233F; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap"><b style="font-family: 'JetBrains Mono', monospace; font-size: 15px">larder/</b><span style="font-size: 13px; color: #9C8AAB">services by domain</span></div>
+      <div class="mn-lang"><div class="mn-lang-h"><span class="mn-lang-dot" style="background: #5BB8E8"></span>Go<span style="font-weight: 400; color: #9C8AAB; font-size: 13px">the core and the gateway</span></div><div class="mn-svc"><span>gateway</span><span>identity</span><span>catalog</span><span>orders</span><span>payments</span></div></div>
+      <div class="mn-lang"><div class="mn-lang-h"><span class="mn-lang-dot" style="background: #FFD60A"></span>Python<span style="font-weight: 400; color: #9C8AAB; font-size: 13px">uv, boto3</span></div><div class="mn-svc"><span>fulfilment</span><span>recommendations</span></div></div>
+      <div class="mn-lang"><div class="mn-lang-h"><span class="mn-lang-dot" style="background: #F0A24B"></span>TypeScript<span style="font-weight: 400; color: #9C8AAB; font-size: 13px">bun, Vite + React</span></div><div class="mn-svc"><span>notifications</span><span>storefront</span></div></div>
+      <div class="mn-lang" style="background: transparent; border-style: dashed"><div class="mn-lang-h"><span class="mn-lang-dot" style="background: #8BE39B"></span>Shared<span style="font-weight: 400; color: #9C8AAB; font-size: 13px">one each, for every service</span></div><div class="mn-svc"><span>postgres</span><span>redis</span><span>kafka</span><span>aws</span><span>mailpit</span></div></div>
+      <span style="font-size: 13px; color: #9C8AAB; line-height: 1.55">Each service owns its own Postgres schema and connects as its own role. Every one gets a name: <code style="font-family: 'JetBrains Mono', monospace; color: #D6C8DF">gateway.larder.doze</code>, <code style="font-family: 'JetBrains Mono', monospace; color: #D6C8DF">catalog.larder.doze</code>.</span>
+    </div>
+  </section>
+
+  <!-- Popular tools, one line each -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 0 32px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 48rem">
+      <span class="mn-eyebrow">The registry</span>
+      <h2 class="mn-h2" style="font-size: 56px">Everything your stack uses. One line each.</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #C9BAD3">Postgres with pgvector. Kafka. MongoDB. Mailpit. A whole AWS. No Dockerfiles, no compose YAML, no setup doc: <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">doze add</code> writes the block, and it sleeps until you need it.</p>
+    </div>
+    <dc-import name="Popular" hint-size="100%,1090px"></dc-import>
+    <a href="Registry.dc.html" style="font-weight: 600; align-self: flex-start; padding: 10px 0">Browse the registry →</a>
+  </section>
+
+  <!-- Check it yourself (benchmark with its method; numbers pending) -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 48px; align-items: start">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <span class="mn-eyebrow">Don't take our word for it</span>
+      <h2 class="mn-h2">Check it on your own machine.</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #C9BAD3">Every number we publish says the machine, the versions and the date, with the command to run it yourself. Asleep means asleep: go look.</p>
+      <pre class="mn-term"><span style="color: #9C8AAB">$</span> doze status
+  <span style="color: #9C8AAB">○</span> postgres  asleep · wakes on a connection
+  <span style="color: #9C8AAB">○</span> redis     asleep · wakes on a connection
+<span style="color: #9C8AAB">$</span> pgrep -l postgres
+<span style="color: #9C8AAB"># nothing. it's asleep.</span></pre>
+    </div>
+    <figure style="margin: 0; background: #1E1328; border: 1px solid #34233F; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px"><b style="font-size: 18px">Memory: Postgres, Valkey and Kafka, after 10 minutes untouched</b><span style="font-size: 13px; color: #9C8AAB">lower is better</span></div>
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 15px">
+        <div style="display: grid; grid-template-columns: minmax(90px, 140px) minmax(0, 1fr) 64px; gap: 12px; align-items: center"><span style="color: #F0A24B; font-weight: 600">doze</span><span style="height: 26px; width: 100%; border-radius: 6px; background: repeating-linear-gradient(135deg, #7A5528 0 8px, #5A3F22 8px 16px)"></span><span style="color: #F4ECE4; font-variant-numeric: tabular-nums">[MB]</span></div>
+        <div style="display: grid; grid-template-columns: minmax(90px, 140px) minmax(0, 1fr) 64px; gap: 12px; align-items: center"><span style="color: #C9BAD3">Docker Desktop</span><span style="height: 26px; width: 100%; border-radius: 6px; background: repeating-linear-gradient(135deg, #4A3458 0 8px, #3A2848 8px 16px)"></span><span style="color: #C9BAD3; font-variant-numeric: tabular-nums">[MB]</span></div>
+        <div style="display: grid; grid-template-columns: minmax(90px, 140px) minmax(0, 1fr) 64px; gap: 12px; align-items: center"><span style="color: #C9BAD3">OrbStack</span><span style="height: 26px; width: 100%; border-radius: 6px; background: repeating-linear-gradient(135deg, #4A3458 0 8px, #3A2848 8px 16px)"></span><span style="color: #C9BAD3; font-variant-numeric: tabular-nums">[MB]</span></div>
+      </div>
+      <figcaption style="font-size: 13px; color: #9C8AAB; line-height: 1.6; border-top: 1px solid #34233F; padding-top: 14px">Bars are drawn equal until measured; none of these numbers exist yet. Method to publish with them: [Mac model, macOS version], [each tool's version], same three engines, median of 5 runs, [date], and the script to reproduce it.</figcaption>
+    </figure>
+  </section>
+
+  <!-- Everything it does: a long, real checklist -->
+  <section style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: flex; flex-direction: column; gap: 32px">
+      <h2 class="mn-h2" style="font-size: 48px">The small things, all done.</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px 28px">
+        <div class="mn-chk"><span>✓</span><span>Wakes on the first connection</span></div>
+        <div class="mn-chk"><span>✓</span><span>Sleeps after 2 idle minutes, data kept</span></div>
+        <div class="mn-chk"><span>✓</span><span>A .doze name for every service</span></div>
+        <div class="mn-chk"><span>✓</span><span>Your own domain over https</span></div>
+        <div class="mn-chk"><span>✓</span><span>Postgres 14 to 18, built from source</span></div>
+        <div class="mn-chk"><span>✓</span><span>pgvector, PostGIS, pg_cron by name <em style="font-style: normal; color: #9C8AAB">(coming in postgres 0.3)</em></span></div>
+        <div class="mn-chk"><span>✓</span><span>doze migrate between Postgres majors</span></div>
+        <div class="mn-chk"><span>✓</span><span>doze.lock pins every byte</span></div>
+        <div class="mn-chk"><span>✓</span><span>Signed modules, checked on fetch</span></div>
+        <div class="mn-chk"><span>✓</span><span>Migrations run once, before the app</span></div>
+        <div class="mn-chk"><span>✓</span><span>Connection strings wire themselves</span></div>
+        <div class="mn-chk"><span>✓</span><span>Restarts your app when files change</span></div>
+        <div class="mn-chk"><span>✓</span><span>Names whoever is holding your port</span></div>
+        <div class="mn-chk"><span>✓</span><span>Config mistakes show the line and the fix</span></div>
+        <div class="mn-chk"><span>✓</span><span>Spots an app ignoring $PORT</span></div>
+        <div class="mn-chk"><span>✓</span><span>Crash loops stop and tell you</span></div>
+        <div class="mn-chk"><span>✓</span><span>Logs per run, searchable</span></div>
+        <div class="mn-chk"><span>✓</span><span>⌘K: type a verb and a name</span></div>
+        <div class="mn-chk"><span>✓</span><span>Menu bar: every stack, one click</span></div>
+        <div class="mn-chk"><span>✓</span><span>Quit the app, stacks keep running</span></div>
+        <div class="mn-chk"><span>✓</span><span>Per-developer overrides, gitignored</span></div>
+        <div class="mn-chk"><span>✓</span><span>doze run for CI, same file</span></div>
+        <div class="mn-chk"><span>✓</span><span>One admin prompt, then never again</span></div>
+        <div class="mn-chk"><span>✓</span><span>Sends nothing home</span></div>
+      </div>
+      <a href="Changelog.dc.html" style="font-weight: 600; align-self: flex-start; padding: 10px 0">What changed in each release →</a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section style="max-width: 900px; margin: 0 auto; padding: 96px 32px; display: flex; flex-direction: column; gap: 14px">
+    <h2 class="mn-h2" style="margin: 0 0 12px; font-size: 48px">Straight answers</h2>
+    <details open><summary>Do I have to give up Docker?</summary><p style="margin: 12px 0 0; color: #C9BAD3; line-height: 1.6">No. Keep containers for building and shipping. doze is for the databases and services you run while you write code.</p></details>
+    <details><summary>Is it for production?</summary><p style="margin: 12px 0 0; color: #C9BAD3; line-height: 1.6">No. It is built for your laptop and your CI. That's why it can sleep everything.</p></details>
+    <details><summary>What does "asleep" cost me?</summary><p style="margin: 12px 0 0; color: #C9BAD3; line-height: 1.6">The engine's process is stopped and its data stays on disk. One small doze daemon keeps listening and wakes it on the next connection.</p></details>
+    <details><summary>Windows?</summary><p style="margin: 12px 0 0; color: #C9BAD3; line-height: 1.6">Not yet. macOS on Apple silicon and Linux today; WSL2 works.</p></details>
+    <details><summary>Does it phone home?</summary><p style="margin: 12px 0 0; color: #C9BAD3; line-height: 1.6">No telemetry, no account. It talks to the internet to fetch the engines you declare, and checks their signatures. <a href="Security.dc.html">How we handle security</a>.</p></details>
+    <details><summary>What does it cost?</summary><p style="margin: 12px 0 0; color: #C9BAD3; line-height: 1.6">Nothing. Apache-2.0, on GitHub.</p></details>
+  </section>
+
+  <!-- Closing call -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 0 32px 96px">
+    <div class="mn-stack-sm mn-cta" style="background: #F0A24B; color: #2A1534; border-radius: 28px; padding: 56px; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap">
+      <div class="mn-stack-sm" style="display: flex; align-items: center; gap: 24px">
+        <img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 96px; height: 96px; border-radius: 24px; box-shadow: 0 0 0 3px #2A1534">
+        <div>
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 48px; letter-spacing: -0.03em">Put your stack to bed.</h2>
+          <p style="margin: 6px 0 0; font-size: 18px; color: #4A2A3E">One file in your repo. One command: doze up.</p>
+        </div>
+      </div>
+      <a class="mn-btn" href="Download.dc.html" style="background: #2A1534; color: #F4ECE4">Download for Mac</a>
+    </div>
+  </section>
+
+  <dc-import name="SiteFooter" theme="dark" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

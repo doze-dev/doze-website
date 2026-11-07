@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Brand</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+.br-pg{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#F4ECE4;background:#140C1B;min-height:100%}
+.br-pg a{color:#F0A24B;text-decoration:none}.br-pg a:hover{color:#FFC27A}
+.br-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.br-eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.br-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:80px;line-height:0.98;letter-spacing:-0.04em;text-wrap:balance}
+.br-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:50px;line-height:1.04;letter-spacing:-0.03em;text-wrap:balance}
+.br-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px;line-height:1.2;letter-spacing:-0.01em}
+.br-lede{margin:0;font-size:20px;line-height:1.55;color:#D6C8DF;max-width:44rem}
+.br-p{margin:0;font-size:16px;line-height:1.6;color:#C9BAD3}
+.br-dim{color:#9C8AAB}
+.br-card{background:#1E1328;border:1px solid #34233F;border-radius:20px;padding:28px;box-sizing:border-box}
+.br-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px;box-sizing:border-box}
+.br-pg a.br-btn-lamp{background:#F0A24B;color:#2A1534}.br-pg a.br-btn-lamp:hover{background:#FFB866;color:#2A1534}
+.br-pg a.br-btn-ghost{border:1px solid #4A3458;color:#F4ECE4;background:transparent}.br-pg a.br-btn-ghost:hover{border-color:#7A5E8C;color:#fff}
+.br-chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid #4A3458;color:#D6C8DF;white-space:nowrap}
+.br-chip-good{color:#8BE39B;border-color:#2F5A3A;background:#14251A}
+.br-chip-bad{color:#FF9AA8;border-color:#5A2A35;background:#2A1520}
+.br-grid{display:grid;gap:20px}
+.br-sec{padding:96px 0}.br-wrap.br-sec{padding:96px 32px}
+.br-pg :focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+/* board-specific */
+.br-icon-card{background:#1E1328;border:1px solid #34233F;border-radius:24px;overflow:hidden;display:flex;flex-direction:column}
+.br-icon-stage{display:flex;align-items:center;justify-content:center;padding:44px 24px}
+.br-sizes{display:grid;grid-template-columns:1fr 1fr}
+.br-sizes>div{display:flex;align-items:flex-end;justify-content:center;gap:18px;padding:22px 12px 16px}
+.br-pg code,.br-pg pre{font-variant-ligatures:none}
+.br-off{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1px dashed #4A3458;border-radius:10px;font-size:14px;font-weight:600;color:#9C8AAB;cursor:not-allowed;box-sizing:border-box}
+.br-sizes span{font:13px 'JetBrains Mono',monospace}
+.br-sw{border-radius:16px;overflow:hidden;border:1px solid #34233F;background:#1E1328;display:flex;flex-direction:column}
+.br-sw-fill{height:96px;display:flex;align-items:flex-end;padding:10px 12px;box-sizing:border-box;font:600 13px 'JetBrains Mono',monospace}
+.br-sw-txt{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px}
+.br-sw-txt b{font-size:15px}
+.br-sw-txt code{font:13px 'JetBrains Mono',monospace;color:#F4ECE4}
+.br-sw-txt span{font-size:13px;color:#9C8AAB;line-height:1.45}
+.br-spec{background:#1A1022;border:1px solid #2E1F3A;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px}
+.br-meta{font:13px 'JetBrains Mono',monospace;color:#9C8AAB}
+.br-rule-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.br-say{border-radius:14px;padding:16px 18px;font-size:16px;line-height:1.5}
+.br-say-yes{background:#14251A;border:1px solid #2F5A3A}
+.br-say-no{background:#2A1520;border:1px solid #5A2A35}
+.br-say small{display:block;font:600 13px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.br-say-yes small{color:#8BE39B}.br-say-no small{color:#FF9AA8}
+.br-dd{background:#1E1328;border:1px solid #34233F;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.br-dd-stage{height:150px;display:flex;align-items:center;justify-content:center;background:#140C1B;border-bottom:1px solid #34233F;overflow:hidden}
+.br-dd-cap{padding:14px 16px;display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45;color:#D6C8DF}
+.br-dd-cap svg{flex:none;margin-top:2px}
+.br-asset{display:grid;grid-template-columns:48px 1fr auto;gap:16px;align-items:center;padding:16px 20px;border-top:1px solid #2E1F3A}
+.br-asset:first-child{border-top:0}
+.br-asset-links{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.br-asset-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1px solid #4A3458;border-radius:10px;font-size:14px;font-weight:600}
+.br-word{display:inline-flex;align-items:center;gap:12px}
+.br-word b{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;letter-spacing:-0.01em}
+@media (max-width:760px){.br-h1{font-size:46px}.br-h2{font-size:34px}.br-lede{font-size:18px}.br-sec{padding:64px 0}.br-wrap{padding:0 32px}.br-wrap.br-sec{padding:64px 32px}.br-hero-art{min-height:220px !important}.br-hero-row{gap:14px !important}.br-tile-sm{width:72px !important;height:72px !important;border-radius:18px !important}.br-tile-lg{width:112px !important;height:112px !important;border-radius:26px !important}.br-sizes>div{gap:10px;padding:18px 6px 14px}.br-card{padding:22px}.br-stack-sm{flex-direction:column !important;align-items:stretch !important}.br-asset{grid-template-columns:40px 1fr}.br-asset-links{grid-column:1/-1;justify-content:flex-start}.br-big-word{font-size:56px !important}}
+</style>
+</helmet>
+<div class="br-pg">
+  <dc-import name="SiteHeader" theme="dark" current="none" hint-size="100%,72px"></dc-import>
+
+  <main>
+  <!-- Hero -->
+  <section class="br-wrap" style="padding-top: 88px; padding-bottom: 72px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 48px; align-items: center">
+    <div style="display: flex; flex-direction: column; gap: 22px">
+      <span class="br-eyebrow">Brand</span>
+      <h1 class="br-h1">Writing about doze? Here is how it looks and talks.</h1>
+      <p class="br-lede">The bats, the colours, the type and the words, in one place, so a slide, a blog post or a README looks like the rest of the family. Take what you need; no permission form.</p>
+      <div class="br-stack-sm" style="display: flex; gap: 12px; flex-wrap: wrap">
+        <a class="br-btn br-btn-lamp" href="#assets">Download the icons</a>
+        <a class="br-btn br-btn-ghost" href="#voice">How we write</a>
+      </div>
+    </div>
+    <div class="br-hero-art" style="position: relative; display: flex; justify-content: center; align-items: center; min-height: 340px">
+      <div style="position: absolute; inset: 8% 10%; border-radius: 50%; background: radial-gradient(closest-side, rgba(240,162,75,0.30), rgba(240,162,75,0))"></div>
+      <div class="br-hero-row" style="position: relative; display: flex; gap: 24px; align-items: flex-end">
+        <img class="br-tile-sm" src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 112px; height: 112px; border-radius: 26px">
+        <img class="br-tile-lg" src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="The doze icon: a sleeping bat hanging from a branch on an amber tile" style="width: 176px; height: 176px; border-radius: 40px">
+        <img class="br-tile-sm" src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 112px; height: 112px; border-radius: 26px">
+      </div>
+    </div>
+  </section>
+
+  <!-- Names -->
+  <section style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div class="br-wrap br-sec" style="display: flex; flex-direction: column; gap: 36px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+        <span class="br-eyebrow">The names</span>
+        <h2 class="br-h2">doze is lower case. Always, even first in a sentence.</h2>
+        <p class="br-p" style="font-size: 18px">It is a word, not an acronym, and it is the command you type. The two products beside it keep the name of the thing they stand in for.</p>
+      </div>
+      <div class="br-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr))">
+        <div class="br-card" style="display: flex; flex-direction: column; gap: 14px">
+          <div class="br-word"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 44px; height: 44px"><b style="font-size: 36px">doze</b></div>
+          <p class="br-p">The local-development tool: the app, the CLI and doze.hcl. Repo <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">doze-dev/doze</code>.</p>
+          <div class="br-say br-say-no"><small>Not</small>Doze, DOZE, Doze.dev, the Doze CLI</div>
+        </div>
+        <div class="br-card" style="display: flex; flex-direction: column; gap: 14px">
+          <div class="br-word"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 44px; height: 44px"><b style="font-size: 36px">doze AWS</b></div>
+          <p class="br-p">The local AWS emulator. Repo and binary keep the hyphen: <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">doze-aws</code>.</p>
+          <div class="br-say br-say-no"><small>Not</small>doze-aws in prose, Doze AWS, doze aws, dozeAWS</div>
+        </div>
+        <div class="br-card" style="display: flex; flex-direction: column; gap: 14px">
+          <div class="br-word"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 44px; height: 44px"><b style="font-size: 36px">doze Kafka</b></div>
+          <p class="br-p">The Kafka broker in one Go binary. Repo and binary: <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">doze-kafka</code>.</p>
+          <div class="br-say br-say-no"><small>Not</small>doze-kafka in prose, Doze Kafka, doze kafka</div>
+        </div>
+      </div>
+      <p class="br-p br-dim" style="font-size: 15px">Hyphens belong to code: repos, binaries, package names. In a sentence, write the name with a space. AWS and Kafka are trademarks of their owners; doze AWS and doze Kafka speak their protocols and are not affiliated with them.</p>
+    </div>
+  </section>
+
+  <!-- Icons -->
+  <section class="br-wrap br-sec" style="display: flex; flex-direction: column; gap: 36px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 48rem">
+      <span class="br-eyebrow">The icons</span>
+      <h2 class="br-h2">A sleeping bat on a tile, one colour per product.</h2>
+      <p class="br-p" style="font-size: 18px">Asleep until something needs it: that is the product, and the bat is the whole joke. All three are traced from one bat, so they sit together in a dock or a row of tabs. What it hangs from tells you which one it is.</p>
+    </div>
+    <div class="br-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(330px, 100%), 1fr))">
+      <figure class="br-icon-card" style="margin: 0">
+        <div class="br-icon-stage" style="background: radial-gradient(closest-side, rgba(240,162,75,0.22), rgba(240,162,75,0)) , #1A1022"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="The doze icon at large size: a bat asleep on a branch with z's, on an amber tile" style="width: 200px; height: 200px"></div>
+        <div class="br-sizes" aria-label="doze icon at 64, 32 and 16 pixels">
+          <div style="background: #FFFAF4"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 64px; height: 64px; min-height: 0"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 32px; height: 32px; min-height: 0"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 16px; height: 16px; min-height: 0"></div>
+          <div style="background: #140C1B"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 64px; height: 64px; min-height: 0"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 32px; height: 32px; min-height: 0"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 16px; height: 16px; min-height: 0"></div>
+        </div>
+        <figcaption style="padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #34233F">
+          <b class="br-h3" style="font-size: 22px">doze</b>
+          <span class="br-p" style="font-size: 15px">Hangs from a branch, with z's. Bat <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">#3A2448</code> on tile <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">#F0A24B</code>.</span>
+          <span class="br-meta">64 · 32 · 16 px, on daylight and night</span>
+        </figcaption>
+      </figure>
+      <figure class="br-icon-card" style="margin: 0">
+        <div class="br-icon-stage" style="background: radial-gradient(closest-side, rgba(91,184,232,0.20), rgba(91,184,232,0)), #0C1320"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="The doze AWS icon at large size: a bat asleep on a cloud marked AWS, on a sky-blue tile" style="width: 200px; height: 200px"></div>
+        <div class="br-sizes" aria-label="doze AWS icon at 64, 32 and 16 pixels">
+          <div style="background: #FFFAF4"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 64px; height: 64px; min-height: 0"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 32px; height: 32px; min-height: 0"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 16px; height: 16px; min-height: 0"></div>
+          <div style="background: #140C1B"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 64px; height: 64px; min-height: 0"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 32px; height: 32px; min-height: 0"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 16px; height: 16px; min-height: 0"></div>
+        </div>
+        <figcaption style="padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #34233F">
+          <b class="br-h3" style="font-size: 22px">doze AWS</b>
+          <span class="br-p" style="font-size: 15px">Hangs from a cloud marked AWS; the letters are Poppins Bold turned to outlines, so no font is needed. Bat <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">#1F2A44</code> on <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">#5BB8E8</code>.</span>
+          <span class="br-meta">64 · 32 · 16 px, on daylight and night</span>
+        </figcaption>
+      </figure>
+      <figure class="br-icon-card" style="margin: 0">
+        <div class="br-icon-stage" style="background: radial-gradient(closest-side, rgba(255,214,10,0.16), rgba(255,214,10,0)), #16150F"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="The doze Kafka icon at large size: a bat asleep on a branch grown ring nodes, on a yellow tile" style="width: 200px; height: 200px"></div>
+        <div class="br-sizes" aria-label="doze Kafka icon at 64, 32 and 16 pixels">
+          <div style="background: #FFFAF4"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 64px; height: 64px; min-height: 0"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 32px; height: 32px; min-height: 0"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 16px; height: 16px; min-height: 0"></div>
+          <div style="background: #140C1B"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 64px; height: 64px; min-height: 0"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 32px; height: 32px; min-height: 0"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 16px; height: 16px; min-height: 0"></div>
+        </div>
+        <figcaption style="padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #34233F">
+          <b class="br-h3" style="font-size: 22px">doze Kafka</b>
+          <span class="br-p" style="font-size: 15px">The branch has grown ring nodes: a log of messages. Bat <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">#16150F</code> on <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">#FFD60A</code>.</span>
+          <span class="br-meta">64 · 32 · 16 px, on daylight and night</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Logo do / don't -->
+  <section style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div class="br-wrap br-sec" style="display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+        <span class="br-eyebrow">Using the icon</span>
+        <h2 class="br-h2">Use it as it comes. The tile is part of it.</h2>
+        <p class="br-p" style="font-size: 18px">The bat is drawn to read at 16 px on its tile. Take it off the tile, recolour it or squash it and it stops reading as ours.</p>
+      </div>
+      <div class="br-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 16px">
+        <div class="br-dd">
+          <div class="br-dd-stage"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 84px; height: 84px; outline: 1px dashed #7A5E8C; outline-offset: 21px"></div>
+          <div class="br-dd-cap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8BE39B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b style="color: #8BE39B">Do</b> leave a quarter of its width clear on every side.</span></div>
+        </div>
+        <div class="br-dd">
+          <div class="br-dd-stage" style="gap: 12px"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 40px; height: 40px; min-height: 0"><b style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 30px; letter-spacing: -0.01em">doze</b></div>
+          <div class="br-dd-cap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8BE39B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b style="color: #8BE39B">Do</b> set the name beside it in Bricolage Grotesque 700, lower case, as the site header does.</span></div>
+        </div>
+        <div class="br-dd">
+          <div class="br-dd-stage" style="background: #FFFAF4"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 84px; height: 84px"></div>
+          <div class="br-dd-cap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8BE39B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b style="color: #8BE39B">Do</b> use the same file on light and dark. It carries its own tile.</span></div>
+        </div>
+        <div class="br-dd">
+          <div class="br-dd-stage"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 84px; height: 84px; filter: hue-rotate(150deg)"></div>
+          <div class="br-dd-cap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9AA8" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b style="color: #FF9AA8">Don't</b> recolour it. Each colour means a product.</span></div>
+        </div>
+        <div class="br-dd">
+          <div class="br-dd-stage"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 132px; height: 70px"></div>
+          <div class="br-dd-cap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9AA8" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b style="color: #FF9AA8">Don't</b> stretch, squash or rotate it. A bat hangs straight down.</span></div>
+        </div>
+        <div class="br-dd">
+          <div class="br-dd-stage" style="gap: 12px"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 40px; height: 40px; min-height: 0; box-shadow: 0 0 0 4px #FFFFFF, 0 10px 30px rgba(240,162,75,0.8)"><b style="font-family: Georgia, serif; font-size: 30px; letter-spacing: 0.08em">DOZE</b></div>
+          <div class="br-dd-cap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF9AA8" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b style="color: #FF9AA8">Don't</b> add outlines, glows or shadows, or set the name in capitals or another face.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Colour -->
+  <section class="br-wrap br-sec" style="display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 48rem">
+      <span class="br-eyebrow">Colour</span>
+      <h2 class="br-h2">Night and a lamp. Daylight where you read and copy.</h2>
+      <p class="br-p" style="font-size: 18px">Marketing pages are dark: a room at night with one amber lamp on. The docs and the registry are daylight, because you read them for an hour and copy from them.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <h3 class="br-h3" style="font-size: 20px">Night <span class="br-dim" style="font-family: Geist, sans-serif; font-weight: 400; font-size: 15px">marketing pages</span></h3>
+      <div class="br-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 12px">
+        <div class="br-sw"><div class="br-sw-fill" style="background: #140C1B; color: #C9BAD3; border-bottom: 1px solid #34233F">Aa</div><div class="br-sw-txt"><b>Ground</b><code>#140C1B</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #1E1328; color: #C9BAD3; border-bottom: 1px solid #34233F">Aa</div><div class="br-sw-txt"><b>Raised</b><code>#1A1022 · #1E1328</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #4A3458; color: #F4ECE4">Aa</div><div class="br-sw-txt"><b>Lines</b><code>#2E1F3A · #34233F · #4A3458</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #F4ECE4; color: #140C1B">Aa</div><div class="br-sw-txt"><b>Text</b><code>#F4ECE4</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #C9BAD3; color: #140C1B">Aa</div><div class="br-sw-txt"><b>Secondary</b><code>#C9BAD3 · #D6C8DF</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #9C8AAB; color: #140C1B">Aa</div><div class="br-sw-txt"><b>Dim</b><code>#9C8AAB</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #F0A24B; color: #2A1534">Aa</div><div class="br-sw-txt"><b>Lamp</b><code>#F0A24B</code><span>Buttons, with ink #2A1534</span></div></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <h3 class="br-h3" style="font-size: 20px">Daylight <span class="br-dim" style="font-family: Geist, sans-serif; font-weight: 400; font-size: 15px">docs and the registry</span></h3>
+      <div class="br-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 12px">
+        <div class="br-sw"><div class="br-sw-fill" style="background: #FFFAF4; color: #4A3D55">Aa</div><div class="br-sw-txt"><b>Ground</b><code>#FFFAF4</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #FFF4E8; color: #4A3D55">Aa</div><div class="br-sw-txt"><b>Panel · sunk</b><code>#FFFFFF · #FFF4E8</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #DCCFC2; color: #140C1B">Aa</div><div class="br-sw-txt"><b>Lines</b><code>#EADFD3 · #DCCFC2</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #140C1B; color: #FFFAF4">Aa</div><div class="br-sw-txt"><b>Ink</b><code>#140C1B</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #4A3D55; color: #FFFAF4">Aa</div><div class="br-sw-txt"><b>Secondary · dim</b><code>#4A3D55 · #6E5F79</code></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #A85A0C; color: #FFFFFF">Aa</div><div class="br-sw-txt"><b>Link amber</b><code>#A85A0C</code><span>Text on white. Plain lamp is for fills.</span></div></div>
+        <div class="br-sw"><div class="br-sw-fill" style="background: #1E1328; color: #F4ECE4">$ doze up</div><div class="br-sw-txt"><b>Code</b><code>#1E1328 · #F4ECE4</code><span>Code stays dark in daylight</span></div></div>
+      </div>
+    </div>
+
+    <div class="br-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <h3 class="br-h3" style="font-size: 20px">Products</h3>
+        <div class="br-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px">
+          <div class="br-sw"><div class="br-sw-fill" style="background: #F0A24B; color: #3A2448">doze</div><div class="br-sw-txt"><code>#F0A24B</code><span>bat #3A2448</span></div></div>
+          <div class="br-sw"><div class="br-sw-fill" style="background: #5BB8E8; color: #0C1320">AWS</div><div class="br-sw-txt"><code>#5BB8E8</code><span>on navy #0C1320</span></div></div>
+          <div class="br-sw"><div class="br-sw-fill" style="background: #FFD60A; color: #16150F">Kafka</div><div class="br-sw-txt"><code>#FFD60A</code><span>on #16150F</span></div></div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <h3 class="br-h3" style="font-size: 20px">Status</h3>
+        <div class="br-grid" style="grid-template-columns: repeat(auto-fill, minmax(min(170px, 100%), 1fr)); gap: 12px">
+          <div class="br-sw"><div class="br-sw-fill" style="height: 64px; background: #E6F4EA; color: #1D7A45">Current</div><div class="br-sw-txt"><b>Good, daylight</b><code>#1D7A45 on #E6F4EA</code></div></div>
+          <div class="br-sw"><div class="br-sw-fill" style="height: 64px; background: #FFF1D6; color: #8A5300">Deprecated</div><div class="br-sw-txt"><b>Warn, daylight</b><code>#8A5300 on #FFF1D6</code></div></div>
+          <div class="br-sw"><div class="br-sw-fill" style="height: 64px; background: #FCE8EC; color: #B4233C">Yanked</div><div class="br-sw-txt"><b>Bad, daylight</b><code>#B4233C on #FCE8EC</code></div></div>
+          <div class="br-sw"><div class="br-sw-fill" style="height: 64px; background: #E8EEFC; color: #2F62D9">Coming</div><div class="br-sw-txt"><b>Info, daylight</b><code>#2F62D9 on #E8EEFC</code></div></div>
+          <div class="br-sw"><div class="br-sw-fill" style="height: 64px; background: #140C1B; color: #8BE39B">awake</div><div class="br-sw-txt"><b>Good, night</b><code>#8BE39B on #140C1B</code></div></div>
+          <div class="br-sw"><div class="br-sw-fill" style="height: 64px; background: #140C1B; color: #FF9AA8">crashed</div><div class="br-sw-txt"><b>Bad, night</b><code>#FF9AA8 on #140C1B</code></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Type -->
+  <section style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div class="br-wrap br-sec" style="display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+        <span class="br-eyebrow">Type</span>
+        <h2 class="br-h2">Three faces, all free, all from Google Fonts.</h2>
+      </div>
+      <div class="br-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(480px, 100%), 1fr)); gap: 16px">
+        <div class="br-spec" style="grid-column: 1 / -1">
+          <span class="br-meta">Bricolage Grotesque · 800 · −0.04em at display sizes · headlines</span>
+          <p class="br-big-word" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 84px; line-height: 0.98; letter-spacing: -0.04em; text-wrap: balance">Asleep until your code calls.</p>
+          <p style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.01em; color: #D6C8DF">700 for card titles and the name: doze, doze AWS, doze Kafka</p>
+        </div>
+        <div class="br-spec">
+          <span class="br-meta">Geist · 400 / 500 / 600 · body, UI</span>
+          <p style="margin: 0; font-size: 20px; line-height: 1.55; color: #D6C8DF">Every service gets a name and an address of its own. Two projects, both on 5432, no clash.</p>
+          <p style="margin: 0; font-size: 16px; font-weight: 600">600 for buttons and labels. Body text 15 px and up; small text never under 13 px.</p>
+        </div>
+        <div class="br-spec">
+          <span class="br-meta">JetBrains Mono · 400 / 600 · code, commands, eyebrows</span>
+          <pre style="margin: 0; font: 15px/1.75 'JetBrains Mono', monospace; color: #D6C8DF; background: #120A18; border: 1px solid #2E1F3A; border-radius: 12px; padding: 16px 18px; overflow-x: auto; white-space: pre"><span style="color: #9C8AAB">$</span> doze up
+<span style="color: #9C8AAB">○</span> gateway  asleep</pre>
+          <span class="br-eyebrow">Eyebrows: mono, 13 px, +0.14em</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voice -->
+  <section id="voice" class="br-wrap br-sec" style="display: flex; flex-direction: column; gap: 36px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 48rem">
+      <span class="br-eyebrow">Voice</span>
+      <h2 class="br-h2">Say the problem first. Then the fix, plainly.</h2>
+      <p class="br-p" style="font-size: 18px">People come to doze because something hurts: fans, ports, a setup doc that worked once. Name that, then say what doze does about it, in the fewest exact words.</p>
+    </div>
+    <div class="br-rule-row">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <b style="font-size: 17px">1. Problem first</b>
+        <div class="br-say br-say-yes"><small>Write</small>Port 5432 is already taken. Every service gets an address of its own, so two projects can both use it.</div>
+        <div class="br-say br-say-no"><small>Not</small>doze offers a revolutionary, seamless networking experience.</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <b style="font-size: 17px">2. Numbers over adjectives</b>
+        <div class="br-say br-say-yes"><small>Write</small>Services go to sleep after 2 minutes with nothing connected.</div>
+        <div class="br-say br-say-no"><small>Not</small>Blazing fast, incredibly lightweight, ultra efficient.</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <b style="font-size: 17px">3. Only what is true</b>
+        <div class="br-say br-say-yes"><small>Write</small>No telemetry, so we can't tell you how many people use it.</div>
+        <div class="br-say br-say-no"><small>Not</small>Trusted by thousands of teams. (Unknown numbers stay in brackets until they are known.)</div>
+      </div>
+    </div>
+    <div class="br-card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 28px; align-items: start">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <h3 class="br-h3">The sleep words</h3>
+        <p class="br-p">doze has one metaphor and keeps to it. A service is <b style="color: #F4ECE4">asleep</b>, <b style="color: #F4ECE4">dozing</b> or <b style="color: #F4ECE4">awake</b>; it <b style="color: #F4ECE4">wakes</b> on a connection and goes to <b style="color: #F4ECE4">sleep</b> when nothing needs it.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <span class="br-meta">Use</span>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="br-chip br-chip-good">wake</span><span class="br-chip br-chip-good">awake</span><span class="br-chip br-chip-good">dozing</span><span class="br-chip br-chip-good">asleep</span><span class="br-chip br-chip-good">sleep</span></div>
+        <span class="br-meta" style="margin-top: 8px">Never</span>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="br-chip br-chip-bad"><s>reap</s></span><span class="br-chip br-chip-bad"><s>idle timeout</s></span><span class="br-chip br-chip-bad"><s>spin up</s></span></div>
+      </div>
+    </div>
+    <p class="br-p br-dim" style="font-size: 15px">And: no invented customers, quotes, logos, download or star counts, or benchmark numbers. A benchmark we publish names the machine, the versions, the date and the command to run it yourself.</p>
+  </section>
+
+  <!-- Assets -->
+  <section id="assets" style="background: #1A1022; border-top: 1px solid #2E1F3A">
+    <div class="br-wrap br-sec" style="display: flex; flex-direction: column; gap: 28px">
+      <div class="br-stack-sm" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 40rem">
+          <span class="br-eyebrow">Downloads</span>
+          <h2 class="br-h2">The files.</h2>
+          <p class="br-p" style="font-size: 18px">SVG for anything that scales; PNG where SVG isn't allowed. The source lives in the website repo, under <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">brand/</code>.</p>
+        </div>
+        <span class="br-off" aria-disabled="true" style="min-height: 52px; padding: 0 20px">Source on GitHub [not public yet]</span>
+      </div>
+      <div class="br-card" style="padding: 4px 0">
+        <div class="br-asset">
+          <img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 44px; height: 44px; min-height: 0">
+          <div><b style="font-size: 16px">doze</b><div class="br-meta">doze.svg · PNG 512, 256, 64</div></div>
+          <div class="br-asset-links"><a href="/brand/doze.svg" download="">SVG</a><span class="br-off" aria-disabled="true">PNG [not built yet]</span></div>
+        </div>
+        <div class="br-asset">
+          <img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt="" style="width: 44px; height: 44px; min-height: 0">
+          <div><b style="font-size: 16px">doze AWS</b><div class="br-meta">doze-aws.svg · PNG 512, 256, 64</div></div>
+          <div class="br-asset-links"><a href="/brand/doze-aws.svg" download="">SVG</a><span class="br-off" aria-disabled="true">PNG [not built yet]</span></div>
+        </div>
+        <div class="br-asset">
+          <img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt="" style="width: 44px; height: 44px; min-height: 0">
+          <div><b style="font-size: 16px">doze Kafka</b><div class="br-meta">doze-kafka.svg · PNG 512, 256, 64</div></div>
+          <div class="br-asset-links"><a href="/brand/doze-kafka.svg" download="">SVG</a><span class="br-off" aria-disabled="true">PNG [not built yet]</span></div>
+        </div>
+        <div class="br-asset">
+          <div aria-hidden="true" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid #4A3458; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9BAD3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></div>
+          <div><b style="font-size: 16px">Everything</b><div class="br-meta">All three icons, SVG and PNG, with this page's colours</div></div>
+          <div class="br-asset-links"><span class="br-off" aria-disabled="true">doze-brand.zip [not built yet]</span></div>
+        </div>
+      </div>
+      <p class="br-p br-dim" style="font-size: 15px">The code is Apache-2.0. Use of the name and the bats: [trademark policy, to be written]. Questions: [brand contact address].</p>
+    </div>
+  </section>
+  </main>
+
+  <dc-import name="SiteFooter" theme="dark" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7610}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

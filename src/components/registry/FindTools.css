@@ -1,0 +1,254 @@
+/* Bring-your-own tool pages (design: RegistryTool). The shared rg-* classes come
+   from FindBase.css; these are the page's own (the board's t-*), prefixed rt-. */
+.rt {
+  font-family: var(--font-text);
+  background: #fffaf4;
+  color: #140c1b;
+}
+.rt-main {
+  padding-top: 28px;
+  padding-bottom: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.rt-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.rt-sec.tight {
+  gap: 14px;
+}
+.rt-sec.tighter {
+  gap: 12px;
+}
+.rt-head {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.rt-head-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 260px;
+}
+.rt-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.rt-tile-lg {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  font-size: 28px;
+}
+.rt-lead-code {
+  font-size: 15.5px;
+}
+.rt-note {
+  border-style: solid;
+  background: #fff;
+  border-color: #dccfc2;
+  font-size: 15px;
+  padding: 16px 18px;
+}
+.rt-note svg {
+  flex: none;
+  margin-top: 1px;
+}
+.rt-note b {
+  color: #140c1b;
+}
+.rt-note code {
+  font-size: 13.5px;
+}
+.rt-ways {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.rt-way {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+  grid-auto-rows: min-content;
+  gap: 10px 24px;
+  padding: 18px;
+  min-width: 0;
+}
+.rt-way > * {
+  grid-column: 1;
+}
+.rt-way > .rg-code {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  align-self: start;
+}
+.rt-way h3 {
+  margin: 0;
+  font: 700 17px var(--font-display);
+}
+.rt-way-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+.rt-way .rg-small {
+  margin: 0;
+  color: #4a3d55;
+}
+.rt-way .rg-small .rg-mono {
+  font-size: 13px;
+}
+.rt-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.rt-two > .rg-panel {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.rt-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rt-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: #4a3d55;
+}
+.rt-list li b {
+  color: #140c1b;
+  font-weight: 600;
+}
+.rt-list code {
+  font-size: 13px;
+}
+.rt-ico {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  margin-top: 1px;
+}
+.rt-ico.ok {
+  background: #e6f4ea;
+  color: #1d7a45;
+}
+.rt-ico.bad {
+  background: #fce8ec;
+  color: #b4233c;
+}
+.rt-alt {
+  padding: 22px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-color: #dccfc2;
+}
+.rt-alt-main {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rt-alt-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 240px;
+}
+.rt-alt-side a {
+  font-weight: 600;
+  font-size: 14px;
+}
+.rt-m0 {
+  margin: 0;
+}
+.rt-tablewrap {
+  overflow: hidden;
+}
+.rt-tools {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.rt-tools th {
+  text-align: left;
+  font: 600 13px var(--font-text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6e5f79;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eadfd3;
+}
+.rt-tools td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #f1e8de;
+  vertical-align: top;
+}
+.rt-tools tr:last-child td {
+  border-bottom: 0;
+}
+.rt-tools td:first-child {
+  font: 600 13.5px var(--font-mono);
+  white-space: nowrap;
+}
+.rt-tools td.w {
+  white-space: nowrap;
+  color: #4a3d55;
+  font-size: 13px;
+}
+.rg .rg-copy:focus-visible,
+.rg a:focus-visible {
+  outline: 2px solid #a85a0c;
+  outline-offset: 2px;
+}
+@media (max-width: 900px) {
+  .rt-way {
+    grid-template-columns: 1fr;
+  }
+  .rt-way > .rg-code {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+@media (max-width: 760px) {
+  .rt-two {
+    grid-template-columns: 1fr;
+  }
+  .rt-tools .rg-hide-sm {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .rt-tools tr:last-child {
+    border-bottom: 0;
+  }
+  .rt-tools td:first-child a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}

@@ -1,0 +1,280 @@
+---
+// One module release (design: RegistryRelease for the newest, RegistryReleaseOld
+// for the ones before it), for every release in the index: artifacts, signing,
+// the doze.lock entry. Release notes come only from src/data/module-extras.ts;
+// a release without any says so.
+import "../../../../components/module/release.css";
+import ModuleHead from "../../../../components/ModuleHead.astro";
+import {
+  display,
+  downloadDir,
+  engineLabel,
+  engineOf,
+  esc,
+  fileName,
+  lockEntry,
+  plat,
+  relHref,
+  sortTriples,
+  tagPage,
+} from "../../../../components/module/lib";
+import RegistryBar from "../../../../components/RegistryBar.astro";
+import { extrasFor } from "../../../../data/module-extras";
+import Page from "../../../../layouts/Page.astro";
+import { fmtDate, modules, registry } from "../../../../lib/registry";
+import { hrefFor } from "../../../../routes";
+
+export function getStaticPaths() {
+  return modules.flatMap((m) =>
+    m.releases.map((r) => ({
+      params: { ns: m.namespace, module: m.name, version: r.version },
+      props: { name: m.name, version: r.version },
+    })),
+  );
+}
+
+const { name, version } = Astro.props as { name: string; version: string };
+const m = modules.find((x) => x.name === name)!;
+const x = extrasFor(m.name);
+const rels = m.releases;
+const r = rels.find((y) => y.version === version)!;
+const newest = rels[0];
+const isNewest = r === newest;
+const idx = rels.indexOf(r);
+const newer = rels.slice(0, idx);
+const prevRel = rels[idx + 1];
+const eng = (y: typeof r) => engineLabel(m, y, x.engineLabel);
+const firstMin = [...rels].reverse().find((y) => y.doze);
+const notes = x.releaseNotes?.[r.version];
+const ghTag = tagPage(r, m);
+const platforms = sortTriples(r.platforms.map((p) => p.triple)).map((t) => r.platforms.find((p) => p.triple === t)!);
+const mac = r.platforms.find((p) => p.triple === "aarch64-apple-darwin") ?? r.platforms[0];
+const key = registry.key.key;
+const sig8 = (s: string) => `${s.slice(0, 8)}…${s.slice(-6)}`;
+const lock = lockEntry(m, r);
+const lockComment = r.doze
+  ? ""
+  : `        # no doze: line; ${r.version} sets no oldest doze${firstMin && firstMin !== r ? ` (${firstMin.version} writes doze: "${firstMin.doze}")` : ""}`;
+const verify = mac
+  ? `# 1. download and hash; compare with the table above
+$ curl -LO ${mac.url}
+$ shasum -a 256 ${fileName(mac.url)}
+${mac.sha256}  ${fileName(mac.url)}
+
+# 2. the signature is over that hex string, with doze's public key
+$ printf %s ${mac.sha256} > digest.txt
+$ echo '${mac.sig}' | base64 -d > sig.bin
+$ (printf '\\x30\\x2a\\x30\\x05\\x06\\x03\\x2b\\x65\\x70\\x03\\x21\\x00'; echo '${key}' | base64 -d) > doze-key.der
+$ openssl pkeyutl -verify -pubin -keyform DER -inkey doze-key.der -rawin -in digest.txt -sigfile sig.bin
+Signature Verified Successfully`
+  : "";
+const verifyHtml = verify
+  .split("\n")
+  .map((l) =>
+    l.startsWith("#")
+      ? `<span class="rr-c">${esc(l)}</span>`
+      : l.startsWith("$ ")
+        ? `<span class="rr-p">$</span> ${esc(l.slice(2))}`
+        : l.startsWith("Signature")
+          ? `<span class="rr-add">${l}</span>`
+          : esc(l),
+  )
+  .join("\n");
+const verifyCopy = verify
+  .split("\n")
+  .filter((l) => l.startsWith("$ "))
+  .map((l) => l.slice(2))
+  .join("\n");
+const pkgHead = `${m.namespace}/${m.name}`;
+const info14 =
+  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>';
+---
+<Page title={`${display(m)} ${r.version} · registry`} description={`${pkgHead} ${r.version}: artifacts, checksums, signatures and the doze.lock entry.`} theme="light" current="registry">
+  <RegistryBar section="modules" />
+  <ModuleHead module={m} tab="versions" crumb={r.version} />
+
+  <div class="rr-pg">
+    {!isNewest && (
+      <section class="rr-wrap rr-pt32">
+        <div role="note" aria-label="Not the newest release" class="rr-banner">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A5300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+          <div class="rr-bt">
+            <b>Not the newest: {newest.version} is current.{newest.doze && <> It needs doze {newest.doze}.</>}</b>
+            <span>You are looking at {r.version} from {fmtDate(r.date)}{!r.doze && newest.doze && ", which runs on any doze"}. <a href="#changed">What changed since</a></span>
+          </div>
+          <a class="rr-btn rr-btn-a" href={relHref(m, newest.version)}>Go to {newest.version}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a>
+        </div>
+      </section>
+    )}
+
+    <section class="rr-wrap rr-pt28">
+      <div class="rr-hrow">
+        <div class="rr-hl">
+          <h2 class="rr-h2 rr-36">{m.name} <span class="rr-mono rr-hv">{r.version}</span></h2>
+          {isNewest ? <span class="rr-chip rr-c-good rr-chip28">Current</span> : <span class="rr-chip rr-c-line rr-chip28">Superseded</span>}
+        </div>
+        <div class="rr-sel"><label for="rel-pick">Release</label>
+          <select id="rel-pick" data-nav>
+            {rels.map((y) => <option value={relHref(m, y.version)} selected={y === r}>{y.version} · {y === newest ? "Current" : fmtDate(y.date)}</option>)}
+          </select></div>
+      </div>
+      <dl class="rr-facts">
+        <div class="rr-fact"><dt>Released</dt><dd>{fmtDate(r.date)}</dd></div>
+        <div class="rr-fact"><dt>Needs</dt><dd>{r.doze ? `doze ${r.doze} or newer` : "any doze"}</dd></div>
+        <div class="rr-fact"><dt>Plugin protocol</dt><dd>{r.protocol}</dd></div>
+        <div class="rr-fact"><dt>Engines</dt><dd>{eng(r)}</dd></div>
+        <div class="rr-fact"><dt>Platforms</dt><dd>{r.platforms.length} of {registry.platforms.length}</dd></div>
+        <div class="rr-fact"><dt>Advisories</dt><dd class="rr-good">None known</dd></div>
+      </dl>
+      <p class="rr-m12"><span class="rr-small rr-note"><Fragment set:html={info14} /><span>{r.doze ? <>{r.version} needs doze {r.doze} or newer: its signed index entry carries <code class="rr-mono">doze: {r.doze}</code>. An older doze skips it.</> : <>{r.version} sets no oldest doze, so it runs on every doze (0.1.0 and up).{firstMin && <> The first release that sets one is {firstMin.version}: doze {firstMin.doze}.</>}</>}</span></span></p>
+    </section>
+
+    <section class="rr-wrap rr-sec">
+      <div class="rr-split">
+        <div class="rr-left">
+          {!isNewest && (
+            <article id="changed" class="rr-panel rr-pad" aria-labelledby="chg-h">
+              <div class="rr-ph">
+                <h3 id="chg-h" class="rr-h3">What changed between {r.version} and {newest.version}</h3>
+                <span class="rr-small">From doze-modules history</span>
+              </div>
+              <ol class="rr-chg">
+                {newer.map((y) => (
+                  <li><span class="rr-mono">{y.version}</span><span class="rr-small">{y.date ? fmtDate(y.date).replace(/ \d{4}$/, "") : "[date]"}</span><div>{y.doze && <b class="rr-warnb">Needs doze {y.doze} or newer. </b>}{x.notes?.[y.version] ? <span class="rr-dim" set:html={x.notes[y.version].replaceAll("rv-mono", "rr-mono")} /> : <span class="rr-dim">No notes for this release.</span>}</div></li>
+                ))}
+              </ol>
+              <p class="rr-small rr-chgfoot">{newer.every((y) => y.protocol === r.protocol) && newer.every((y) => eng(y) === eng(r)) ? <>Same plugin protocol ({r.protocol}) and the same engines ({eng(r)}) throughout, so the upgrade needs no change to doze.hcl.</> : <>Check the protocol and engines of each release above before you upgrade.</>}{firstMin && <> {rels[rels.indexOf(firstMin) + 1]?.version ?? r.version} is the last release that runs on any doze; {firstMin.version} needs doze {firstMin.doze}.</>}</p>
+            </article>
+          )}
+          {!isNewest && (
+            <div class="rr-sunk rr-keep">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3D55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+              <div class="rr-keept">
+                <p><b>Projects pinned to {r.version} keep using it</b> until someone runs <code class="rr-mono rr-14">doze modules upgrade</code>. Nothing moves on its own: not <code class="rr-mono rr-14">doze up</code>, not time, not a new release.</p>
+                <div class="rr-code rr-560">
+                  <div class="rr-code-bar"><span>From doze 0.2: the newest release your doze can run</span><button class="rr-copy" type="button" aria-label={`Copy doze modules upgrade ${m.name}`} data-copy={`doze modules upgrade ${m.name}`}>Copy</button></div>
+                  <pre><span class="rr-p">$</span> doze modules upgrade {m.name}</pre>
+                </div>
+              </div>
+            </div>
+          )}
+          <article class:list={["rr-panel", isNewest ? "rr-pad" : "rr-pad2"]} aria-labelledby="notes-h">
+            <div class="rr-ph">
+              <h3 id="notes-h" class:list={["rr-h3", !isNewest && "rr-18"]}>{isNewest ? "Release notes" : `Release notes for ${r.version}`}</h3>
+              <span class="rr-small"><a href={ghTag}>View on GitHub</a></span>
+            </div>
+            {notes ? (
+              <>
+                {notes.lead && <p class="rr-lead1">{notes.lead}</p>}
+                <ul class="rr-ul">{notes.items.map((i) => <li set:html={i} />)}</ul>
+              </>
+            ) : <p class="rr-none">No notes for this release.</p>}
+            {isNewest && prevRel && <p class="rr-small rr-since">Since {prevRel.version} ({fmtDate(prevRel.date)}). Upgrading from an older release: <code class="rr-mono">doze modules upgrade {m.name}</code>. Your engine pins and data stay as they are.</p>}
+          </article>
+        </div>
+        <aside class="rr-aside">
+          <div class="rr-sunk rr-box">
+            <h3 class="rr-eyebrow rr-m0">Other releases</h3>
+            <ul class="rr-olist">
+              {rels.map((y) =>
+                y === r ? (
+                  <li class="rr-orow rr-here" aria-current="page"><b class="rr-mono">{y.version}</b><span>{fmtDate(y.date)}</span><span class="rr-small">viewing</span></li>
+                ) : (
+                  <li class="rr-orow"><a class="rr-mono" href={relHref(m, y.version)}>{y.version}</a><span>{fmtDate(y.date)}</span>{y === newest ? <span class="rr-chip rr-c-good rr-chip20">Current</span> : <span class="rr-small">{y.doze ? `doze ${y.doze}` : "any doze"}</span>}</li>
+                ),
+              )}
+            </ul>
+            <a class="rr-all" href={`/registry/${m.namespace}/${m.name}/versions/`}>All versions, with what each needs</a>
+          </div>
+          <div class="rr-panel rr-box rr-g8">
+            <h3 class="rr-eyebrow rr-m0">Security</h3>
+            <p class="rr-ok"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>No known advisories</p>
+            <p class="rr-small rr-m0">Advisories would be listed here and on every affected release. <a href={hrefFor("Security.dc.html")}>Report a problem</a></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="rr-wrap rr-sec" aria-labelledby="art-h">
+      <div class="rr-ah">
+        <h3 id="art-h" class="rr-h3">Artifacts</h3>
+        <span class="rr-small">One signed archive per platform. Files live on GitHub; the registry lists them and signs their checksums.</span>
+      </div>
+      <div class="rr-tbox" role="region" aria-label={`Artifacts for ${m.name} ${r.version}`} tabindex="0">
+        <table class="rr-t rr-tight rr-art">
+          <thead><tr>
+            <th class="rr-stick" scope="col">Platform</th>
+            <th scope="col">File (downloads from GitHub)</th>
+            <th scope="col">SHA-256</th>
+            <th scope="col">Signature (ed25519)</th>
+          </tr></thead>
+          <tbody>
+            {platforms.map((p) => (
+              <tr>
+                <td data-label="Platform" class="rr-stick"><b>{plat(p.triple)}</b><br /><span class="rr-mono rr-small">{p.triple}</span></td>
+                <td data-label="File (downloads from GitHub)" class="rr-wide"><a class="rr-mono rr-12" href={p.url}>{fileName(p.url)}</a></td>
+                <td data-label="SHA-256" class="rr-wide"><div class="rr-hash"><code>{p.sha256}</code><button class="rr-lcopy" type="button" aria-label={`Copy SHA-256 for ${plat(p.triple)}`} data-copy={p.sha256}>Copy</button></div></td>
+                <td data-label="Signature (ed25519)" class="rr-wide"><div class="rr-hash"><code class="rr-sig" title={p.sig}>{sig8(p.sig)}</code><button class="rr-lcopy" type="button" aria-label={`Copy signature for ${plat(p.triple)}`} data-copy={p.sig}>Copy</button></div></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="rr-small rr-m10">Every file is under <span class="rr-mono rr-ba">{downloadDir(r)}</span>. Intel Macs and Windows have no build; WSL2 uses the Linux x86_64 file.</p>
+    </section>
+
+    <section class="rr-wrap rr-sec" aria-labelledby="sign-h">
+      <div class="rr-signwrap">
+        <div class="rr-panel rr-signbox">
+          <h3 id="sign-h" class="rr-h3">Signing</h3>
+          <p class="rr-m0 rr-dim">The index is signed as a whole, and each archive is signed. doze checks both before anything runs, and refuses a module whose checksum or signature doesn't match.</p>
+          <dl class="rr-kv rr-two">
+            <div><dt>Key</dt><dd><code class="rr-mono" title={key}>{key.slice(0, 8)}…{key.slice(-4)}</code> <button class="rr-lcopy" type="button" aria-label="Copy the doze signing key" data-copy={key}>Copy</button></dd></div>
+            <div><dt>Where the key lives</dt><dd>Compiled into doze. doze never fetches or trusts a key on first use.</dd></div>
+            <div><dt>Namespace</dt><dd class="rr-mono">{m.namespace}</dd></div>
+            <div><dt>Publisher</dt><dd>doze-dev <span class="rr-chip rr-off">Official</span></dd></div>
+            {m.signature && <div><dt>Index signature</dt><dd><code class="rr-mono" title={m.signature}>{m.signature.slice(0, 8)}…{m.signature.slice(-4)}</code> <button class="rr-lcopy" type="button" aria-label="Copy the index signature" data-copy={m.signature}>Copy</button></dd></div>}
+            <div><dt>What is signed</dt><dd>Each archive: its lowercase-hex SHA-256. The index: module, namespace, releases and channels as canonical JSON.</dd></div>
+            <div><dt>Not yet signed</dt><dd>The <code class="rr-mono">doze</code> (oldest doze) field sits beside the signed part today. <span class="rr-new">new</span> The design moves it inside.</dd></div>
+          </dl>
+          <a class="rr-all" href={hrefFor("RegistryTrust.dc.html")}>How signing works</a>
+        </div>
+
+        {mac && (
+          <div class="rr-verify">
+            <div class="rr-vh">
+              <h3 class="rr-h3">Verify it yourself</h3>
+              <p class="rr-small rr-m0 rr-vp">[planned: <code class="rr-mono">doze modules verify</code>] Today doze runs these checks itself on every download. The same checks by hand, for {plat(mac.triple)}. Needs OpenSSL 3: the <code class="rr-mono">openssl</code> that ships with macOS has no ed25519 (<code class="rr-mono">brew install openssl@3</code>).</p>
+            </div>
+            <div class="rr-code">
+              <div class="rr-code-bar"><span>Checksum, then signature</span><button class="rr-copy" type="button" aria-label="Copy the verification commands" data-copy={verifyCopy}>Copy</button></div>
+              <pre set:html={verifyHtml} />
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <section class="rr-wrap rr-sec rr-last" aria-labelledby="lock-h">
+      <div class="rr-lockwrap">
+        <div class="rr-lh">
+          <h3 id="lock-h" class="rr-h3">What doze.lock records for {r.version}</h3>
+          <p class="rr-m0 rr-dim">A project pinned to {r.version} carries this entry.{!isNewest && <> <code class="rr-mono rr-14">doze modules upgrade</code> replaces it whole: release, engines and checksums move together in one reviewable diff.</>} Every platform's checksum goes in, so a teammate on Linux verifies against the same pin you made on a Mac. Pinned and cached means no network at all.</p>
+          {r.engines.length > 0 && engineOf(m) && <p class="rr-small rr-m0">The engine itself is pinned separately, under <code class="rr-mono">engines:</code>. <a href={`/registry/${m.namespace}/${m.name}/engines/`}>Engine versions</a></p>}
+        </div>
+        <div class="rr-code rr-min0">
+          <div class="rr-code-bar"><span>doze.lock</span><button class="rr-copy" type="button" aria-label="Copy the doze.lock entry" data-copy={lock}>Copy</button></div>
+          <pre>{lock}{lockComment && <><Fragment set:html={"\n"} /><span class="rr-c">{lockComment}</span></>}</pre>
+        </div>
+      </div>
+    </section>
+  </div>
+</Page>
+
+<script>
+  // The release select goes to that release's page.
+  for (const sel of document.querySelectorAll<HTMLSelectElement>("select[data-nav]")) {
+    sel.addEventListener("change", () => { location.href = sel.value; });
+  }
+</script>

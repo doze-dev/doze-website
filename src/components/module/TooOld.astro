@@ -1,0 +1,191 @@
+---
+import { extrasFor } from "../../data/module-extras";
+// "Your doze is too old for the newest release" (design: RegistryTooOld), for a
+// reader whose doze falls in [lo, hi). The overview renders one per range and
+// shows the one that matches <html data-doze>; the version itself is filled in
+// by doze-check.ts ([data-doze-text]). `old` = a doze before 0.2 (old syntax,
+// and it can't read a release's minimum).
+import type { Module, Release } from "../../lib/registry";
+import { fmtDate, runsOn } from "../../lib/registry";
+import { base, engineLabel, esc, lockEntry, lockHtml, relHref, short, startBlock, versionValue } from "./lib";
+
+interface Props {
+  module: Module;
+  lo: string;
+  hi: string;
+  pick: Release | null;
+  old: boolean;
+}
+const { module: m, lo, hi, pick, old } = Astro.props;
+const x = extrasFor(m.name);
+const rels = m.releases;
+const newest = rels[0];
+const firstMin = [...rels].reverse().find((r) => r.doze);
+const eng = (r: Release) => engineLabel(m, r, x.engineLabel);
+const sameEngines = pick && eng(pick) === eng(newest);
+const v = versionValue(m);
+const major = newest.engines[newest.engines.length - 1];
+const what = major ? `${m.name} ${major}` : m.name;
+
+// doze 0.1.1's own syntax: a modules block holds the release.
+const oldHold = `modules {\n  module "${m.name}" { version = "${pick?.version ?? ""}" }\n}\n\n${m.name} "${m.name}" {${v ? `\n  version = ${v}\n` : ""}}`;
+const oldHoldHtml = esc(oldHold)
+  .replace(/("[^"]*")/g, '<span class="to-s">$1</span>')
+  .replace(/^(\s*)(modules|module)\b/gm, '$1<span class="to-k">$2</span>')
+  .replace(new RegExp(`^${m.name}\\b`, "m"), `<span class="to-k">${m.name}</span>`);
+const diff = startBlock(m).split("\n");
+const diffHtml = [
+  `<span class="to-del">- ${esc(diff[0].replace(/^module /, ""))}</span>`,
+  `<span class="to-add">+ ${esc(diff[0])}</span>`,
+  ...diff.slice(1).map((l) => `  ${esc(l)}`),
+].join("\n");
+---
+<div class="to-page" data-lo={lo} data-hi={hi} hidden>
+  <div class="to-wrap">
+    {old && <p class="to-lead">The <code class="to-ic">doze add {m.name}</code> in the header is doze 0.2. On <span data-doze-text></span>, write the block by hand (below).</p>}
+
+    <section class="to-alert" aria-labelledby={`answer-${lo}`}>
+      <span class="to-alert-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z" /><path d="M12 10v4M12 17.5v.01" /></svg></span>
+      <div class="to-alert-t">
+        <h2 id={`answer-${lo}`}>The newest release, {newest.version}, needs doze {newest.doze}. {pick ? <>{pick.version} runs on your <span data-doze-text></span>.</> : <>No release runs on your <span data-doze-text></span>.</>}</h2>
+        <p class="to-p to-alert-p">{sameEngines && <>Both run {eng(newest).replace(/(\d+)–(\d+)/, "$1 to $2")}. </>}{newest.version} is the newest{pick && <>; {pick.version} is the newest your doze can run</>}. Pick a path below. Neither touches your data.</p>
+        {firstMin && <p class="to-cap to-alert-c">{firstMin.version} carries <code class="to-ic2">doze: "{firstMin.doze}"</code> in its signed index entry{rels.indexOf(firstMin) < rels.length - 1 && <>; every release before it sets no minimum</>}.</p>}
+      </div>
+    </section>
+
+    <section class="to-sec" aria-label="Two ways forward">
+      <div class="to-paths">
+        <article class="to-panel to-path" aria-labelledby={`up-${lo}`}>
+          <div class="to-ph"><h3 id={`up-${lo}`}>Update doze</h3><span class="to-chip to-good">Recommended</span></div>
+          <div class="to-step">
+            <h4><span class="to-n">1</span>Update</h4>
+            <div class="to-codebox">
+              <div class="to-codebar"><span>doze <span data-doze-text></span> is the CLI: update it with Homebrew</span><button class="to-copy" type="button" aria-label="Copy brew upgrade doze" data-copy="brew upgrade doze">Copy</button></div>
+              <pre class="to-code"><span class="to-p">$</span> brew upgrade doze</pre>
+            </div>
+            <p class="to-cap">{old && <>Update doze first, then move the pin: <span data-doze-text></span> can't check a release's minimum, so its <code class="to-ic2">doze modules upgrade</code> would take {newest.version} anyway. </>}Want the Mac app too? <code class="to-ic2">brew install --cask doze-dev/tap/doze</code>; it updates itself from Settings › About.</p>
+          </div>
+          {old && (
+            <div class="to-step">
+              <h4><span class="to-n">2</span>Update doze.hcl</h4>
+              <p class="to-p">doze 0.2 names every line to change. Each block gains <code class="to-ic3">module</code>; <code class="to-ic3">idle_timeout</code> becomes <code class="to-ic3">sleep</code>, and the default sleep is 2 minutes (was 5).</p>
+              <div class="to-codebox">
+                <div class="to-codebar"><span>doze.hcl</span></div>
+                <pre class="to-code" set:html={diffHtml} />
+              </div>
+            </div>
+          )}
+          <div class="to-step">
+            <h4>What you get</h4>
+            <ul class="to-gets">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg><span>{m.name} {newest.version}{x.coming && <>, and {x.coming.short} with extensions by name when it lands</>}. <a href={relHref(m, newest.version)}>What changed in {newest.version}</a></span></li>
+              {old && <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg><span><code class="to-ic3">doze add</code>, <code class="to-ic3">doze migrate</code>{m.name === "postgres" && " between Postgres majors"}, and the desktop app.</span></li>}
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg><span>From then on, doze picks a release your doze can run, by itself.</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg><span>Every example on the overview works as written.</span></li>
+            </ul>
+          </div>
+          <div class="to-step">
+            <div class="to-codebox">
+              <div class="to-codebar"><span>then, in your project</span><button class="to-copy" type="button" aria-label={`Copy doze modules upgrade ${m.name}`} data-copy={`doze modules upgrade ${m.name}`}>Copy</button></div>
+              <pre class="to-code"><span class="to-p">$</span> doze modules upgrade {m.name}
+<span class="to-c">  moves {m.namespace}/{m.name} {pick?.version ?? "[your pin]"} → {newest.version} in doze.lock; commit it</span></pre>
+            </div>
+          </div>
+        </article>
+
+        {pick && (
+          <article class="to-panel to-path" aria-labelledby={`stay-${lo}`}>
+            <div class="to-ph"><h3 id={`stay-${lo}`}>Stay on <span data-doze-text></span></h3><span class="to-chip to-dim">Use {m.name} {pick.version}</span></div>
+            {old ? (
+              <>
+                <p class="to-p to-p145">From doze 0.2 this happens on its own: doze skips releases that need a newer doze and pins the newest one that runs. doze <span data-doze-text></span> came before releases carried a minimum, so it would fetch {newest.version}. Hold {m.name} at {pick.version} yourself, in <span data-doze-text></span>'s own syntax:</p>
+                <div class="to-if"><h4>If you don't: doze <span data-doze-text></span> fetches {newest.version} anyway</h4><p class="to-p">[what happens then: to test]</p></div>
+                <div class="to-step">
+                  <h4><span class="to-n">1</span>Hold the release in doze.hcl</h4>
+                  <div class="to-codebox">
+                    <div class="to-codebar"><span>doze.hcl, as doze <span data-doze-text></span> reads it</span><button class="to-copy" type="button" aria-label="Copy the old-syntax block" data-copy={oldHold}>Copy</button></div>
+                    <pre class="to-code" set:html={oldHoldHtml} />
+                  </div>
+                </div>
+                <div class="to-step">
+                  <h4><span class="to-n">2</span>doze writes this to doze.lock</h4>
+                  <div class="to-codebox">
+                    <div class="to-codebar"><span>doze.lock</span><button class="to-copy" type="button" aria-label="Copy the doze.lock entry" data-copy={lockEntry(m, pick)}>Copy</button></div>
+                    <pre class="to-code to-sm" set:html={lockHtml(lockEntry(m, pick, { hash: (h) => short(h) }), "to-s")} />
+                  </div>
+                  <div class="to-codebox">
+                    <pre class="to-code to-sm">pinned {m.namespace}/{m.name} {pick.version} in doze.lock — commit the lockfile
+so your team and CI get this exact build</pre>
+                  </div>
+                </div>
+                <p class="to-cap to-last">When you do update: delete the <code class="to-ic2">modules</code> block. doze 0.2 refuses it ("the modules block is gone") and pins releases itself.</p>
+              </>
+            ) : (
+              <p class="to-p to-p145">Nothing to do: doze skips releases that need a newer doze and pins the newest one that runs on yours, {pick.version}. A doze.lock that already names {newest.version} stops with the message below until you update.</p>
+            )}
+          </article>
+        )}
+      </div>
+    </section>
+
+    <section class="to-sec" aria-labelledby={`stops-${lo}`}>
+      <div class="to-hd">
+        <h2 id={`stops-${lo}`}>What doze 0.2 and later print</h2>
+        <p class="to-p to-w50">From 0.2 on, doze checks each release's minimum. When the next minimum arrives, say a future release that needs doze 0.3.0 while you are on 0.2.0, it says so in one of two ways, word for word:</p>
+      </div>
+      <div class="to-fails">
+        <article class="to-panel to-fail" aria-labelledby={`f1-${lo}`}>
+          <div class="to-codebox">
+            <div class="to-codebar"><span id={`f1-${lo}`}>Nothing in the registry runs on this doze</span></div>
+            <pre class="to-code to-wrapc"><span class="to-p">$</span> doze up
+<span class="to-e">error:</span> {what} needs doze 0.3.0 or newer; this doze is 0.2.0. Update doze (in the app: Settings › About), then run the command again</pre>
+          </div>
+          <dl>
+            <dt>Why</dt><dd>doze looked for a {m.name} release that {major ? <>supports {eng(newest).replace(/ [\d–, ]+$/, "")} {major}</> : "fits"} and runs on your doze, and none does. It names the oldest doze that would work.</dd>
+            <dt>Fix</dt><dd>Update doze: <code class="to-ic3">brew upgrade doze</code>, or Settings › About in the app. Run the same command again; nothing else to undo.</dd>
+          </dl>
+        </article>
+        <article class="to-panel to-fail" aria-labelledby={`f2-${lo}`}>
+          <div class="to-codebox">
+            <div class="to-codebar"><span id={`f2-${lo}`}>doze.lock was written by a newer doze</span></div>
+            <pre class="to-code to-wrapc"><span class="to-p">$</span> doze up
+<span class="to-e">error:</span> module {m.namespace}/{m.name} [0.x.y] (pinned in doze.lock) needs doze 0.3.0 or newer; this doze is 0.2.0. Update doze (in the app: Settings › About); the lock was written by a newer doze</pre>
+          </div>
+          <dl>
+            <dt>Why</dt><dd>A teammate on a newer doze committed doze.lock with a release that needs it. The pin is the team's agreement, so doze will not quietly run something older.</dd>
+            <dt>Fix</dt><dd>Update doze to match your team. Don't edit the pin down: the next commit would move everyone else back too.</dd>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="to-sec" aria-labelledby={`compat-${lo}`}>
+      <div class="to-ch">
+        <h2 id={`compat-${lo}`}>Every release against doze <span data-doze-text></span></h2>
+        <a href={`${base(m)}versions/`}>All versions and release notes</a>
+      </div>
+      <div class="to-tw">
+        <table>
+          <thead><tr><th scope="col">Release</th><th scope="col">Released</th><th scope="col">Needs doze</th><th scope="col">Engines</th><th scope="col">On your <span data-doze-text></span></th></tr></thead>
+          <tbody>
+            {x.coming && <tr class="to-no"><td><b>{x.coming.short}</b></td><td>[coming]</td><td>{x.coming.doze}</td><td>{engineLabel(m, { ...newest, engines: x.coming.engines }, x.engineLabel)} + extensions</td><td>{runsOn({ ...newest, doze: x.coming.doze }, lo) ? <span class="to-chip to-good">Runs</span> : <span class="to-chip to-warn">Needs newer doze</span>}</td></tr>}
+            {rels.map((r, i) => {
+              const ok = runsOn(r, lo);
+              const isPick = r === pick;
+              return (
+                <tr class:list={[!ok && "to-no", isPick && "to-pick"]}>
+                  <td><b>{r.version}</b>{i === 0 && <span class="to-chip to-dim to-ml">newest</span>}</td>
+                  <td>{fmtDate(r.date)}</td>
+                  <td>{r.doze ?? "any"}</td>
+                  <td>{eng(r)}</td>
+                  <td>{ok ? <span class="to-chip to-good">{isPick && old ? <>Runs · hold it yourself on <span data-doze-text></span></> : "Runs"}</span> : <span class="to-chip to-warn">Needs newer doze</span>}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p class="to-cap">"any": no minimum set, runs on doze 0.1.0 and up. Checking against <span data-doze-text></span> because you chose it above. <a href="?" data-doze-pick="">Stop checking</a></p>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,173 @@
+---
+// The doze AWS console, service by service: a tab list on the left, the
+// screenshot on the right. Every panel is rendered; the script only flips
+// which one shows (without script the first stays visible).
+const list = [
+  {
+    id: "map",
+    name: "The map",
+    line: "Every resource wired to another, and the wire between.",
+    img: "/media/aws-map.webp",
+    path: "map",
+    headline:
+      "See how your stack is wired: a topic feeding a queue, its dead-letter queue, a rule targeting a function.",
+    alt: "The doze AWS map: order-events feeds jobs, which redrives to jobs-dlq; the receipts rule targets the resize function",
+  },
+  {
+    id: "lambda",
+    name: "Lambda",
+    line: "Real host processes. Invoke, see the response and the log tail.",
+    img: "/media/aws-lambda.webp",
+    path: "lambda/resize",
+    headline:
+      "A Node function invoked: the response, 2.32 ms, and its logs. Warm, and it sleeps after 10 idle minutes.",
+    alt: "The resize Lambda: triggers, warm state, a successful invoke with its response and log tail",
+  },
+  {
+    id: "dynamodb",
+    name: "DynamoDB",
+    line: "Scan, query, get, PartiQL. GSIs, transactions, TTL.",
+    img: "/media/aws-dynamodb.webp",
+    path: "ddb/orders",
+    headline: "Browse and query tables the way you would on AWS.",
+    alt: "The orders table: six items with scan, query, get and PartiQL",
+  },
+  {
+    id: "s3",
+    name: "S3",
+    line: "Buckets and objects on your disk. Upload, browse, notify.",
+    img: "/media/aws-s3.webp",
+    path: "s3/uploads",
+    headline: "Buckets you can browse and upload to, with event notifications.",
+    alt: "The uploads bucket with three receipts",
+  },
+  {
+    id: "sqs",
+    name: "SQS",
+    line: "Peek without consuming. FIFO, DLQ redrive, long polling.",
+    img: "/media/aws-sqs.webp",
+    path: "sqs/jobs",
+    headline: "Live peek at a queue: what feeds it, where dead letters go, every message.",
+    alt: "The jobs queue: five messages, fed by order-events, dead letters to jobs-dlq",
+  },
+  {
+    id: "eventbridge",
+    name: "EventBridge",
+    line: "Patterns, schedules, targets, input transformers.",
+    img: "/media/aws-eventbridge.webp",
+    path: "eb/default/rule/receipts",
+    headline: "A rule, its pattern, and what it drains to.",
+    alt: "The receipts rule with its event pattern and its Lambda target",
+  },
+  {
+    id: "stepfunctions",
+    name: "Step Functions",
+    line: "Standard and Express, JSONata, task tokens, Map runs.",
+    img: "/media/aws-stepfunctions.webp",
+    path: "sfn",
+    headline: "State machines and their executions, succeeded and failed.",
+    alt: "The checkout state machine with a succeeded and a failed execution",
+  },
+  {
+    id: "iam",
+    name: "IAM",
+    line: "Real policy evaluation. Generate the policy your tests needed.",
+    img: "/media/aws-iam.webp",
+    path: "iam",
+    headline: "Run your tests, then generate the least-privilege policy they actually used.",
+    alt: "The IAM access log: every action recorded, a policy generator and a simulator",
+  },
+];
+---
+<div class="as-root" data-as>
+  <div class="as-row">
+    <div class="as-tabs" role="tablist" aria-label="doze AWS services">
+      {list.map((s, i) => (
+        <button type="button" class="as-svc" role="tab" id={`as-tab-${s.id}`} aria-controls={`as-panel-${s.id}`} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1} data-as-tab={s.id}>
+          <span class="as-name">{s.name}</span>
+          <span class="as-line">{s.line}</span>
+        </button>
+      ))}
+    </div>
+    <span class="as-cue" aria-hidden="true">Swipe for more services →</span>
+    <div class="as-main">
+      {list.map((s, i) => (
+        <div class="as-panel" role="tabpanel" id={`as-panel-${s.id}`} aria-labelledby={`as-tab-${s.id}`} hidden={i !== 0}>
+          <div class="as-shot">
+            <div class="as-glow"></div>
+            <div class="as-frame">
+              <div class="as-bar"><span class="as-dot as-r"></span><span class="as-dot as-y"></span><span class="as-dot as-g"></span><span class="as-url">doze AWS · /_console/{s.path}</span></div>
+              <img src={s.img} alt={s.alt} class="as-img" loading={i === 0 ? "eager" : "lazy"} width="1600" height="1000" />
+            </div>
+          </div>
+          <div class="as-cap">
+            <b>{s.headline}</b>
+            <span class="as-note">The real console, from its demo stack. <span class="as-recap">[re-capture with Larder]</span></span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tabs: click or arrow keys pick a service; only the picked panel shows.
+  for (const root of document.querySelectorAll<HTMLElement>("[data-as]")) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-as-tab]")];
+    const pick = (t: HTMLButtonElement, focus = false) => {
+      for (const o of tabs) {
+        const on = o === t;
+        o.setAttribute("aria-selected", String(on));
+        o.tabIndex = on ? 0 : -1;
+        const panel = root.querySelector<HTMLElement>(`#as-panel-${o.dataset.asTab}`);
+        if (panel) panel.hidden = !on;
+      }
+      if (focus) t.focus();
+    };
+    for (const t of tabs) {
+      t.addEventListener("click", () => pick(t));
+      t.addEventListener("keydown", (e) => {
+        const i = tabs.indexOf(t);
+        const next = { ArrowDown: i + 1, ArrowRight: i + 1, ArrowUp: i - 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        pick(tabs[(next + tabs.length) % tabs.length], true);
+      });
+    }
+  }
+</script>
+
+<style>
+  *{box-sizing:content-box}
+  button{box-sizing:border-box}
+  .as-root{line-height:normal;font-family:var(--font-text);color:#EEF4FA;background:#0C1320;padding:8px 0}
+  .as-row{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+  .as-tabs{flex:1 1 260px;max-width:320px;display:flex;flex-direction:column;gap:4px}
+  .as-svc{min-height:44px;display:flex;flex-direction:column;gap:3px;text-align:left;padding:13px 16px;border-radius:12px;border:1px solid transparent;background:transparent;color:#AFC0D4;font-family:var(--font-text);cursor:pointer;width:100%}
+  .as-svc:hover{background:#13203A;color:#EEF4FA}
+  .as-svc:focus-visible{outline:2px solid #5BB8E8;outline-offset:2px}
+  .as-svc[aria-selected="true"]{background:#13203A;border-color:#2E4560;color:#DCE6F2}
+  .as-name{font-weight:600;font-size:16px;color:#EEF4FA}
+  .as-line{font-size:13px;line-height:1.45}
+  .as-cue{display:none;flex:1 1 100%;margin:-16px 0 0;font-size:13px;color:#9DB0C6}
+  .as-main{flex:999 1 560px;min-width:0}
+  .as-panel{display:flex;flex-direction:column;gap:14px}
+  .as-panel[hidden]{display:none}
+  .as-shot{position:relative}
+  .as-glow{position:absolute;left:10%;right:10%;top:5%;height:80%;border-radius:50%;background:radial-gradient(closest-side,rgba(91,184,232,0.22),rgba(91,184,232,0))}
+  .as-frame{position:relative;border-radius:16px;overflow:hidden;border:1px solid #2E4560;box-shadow:0 50px 120px rgba(0,0,0,0.55);background:#0B0F15}
+  .as-bar{height:32px;background:#0B0F15;display:flex;align-items:center;gap:7px;padding:0 14px}
+  .as-dot{width:11px;height:11px;border-radius:6px;flex:none}
+  .as-r{background:#FF5F57}.as-y{background:#FEBC2E}.as-g{background:#28C840}
+  .as-url{margin:0 auto;font:13px var(--font-mono);color:#8EA3BB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .as-img{display:block;width:100%;height:auto;aspect-ratio:16 / 10;object-fit:cover;object-position:left top}
+  .as-cap{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+  .as-cap b{font-size:18px}
+  .as-note{font-size:13px;color:#8EA3BB}
+  .as-recap{display:inline-block;font-family:var(--font-mono);font-size:11px;color:#AFC0D4;background:#13203A;border:1px dashed #3A5675;border-radius:6px;padding:2px 7px;white-space:nowrap}
+  @media (max-width:900px){
+    .as-tabs{flex-direction:row;overflow-x:auto;flex:1 1 100%;max-width:none;-webkit-mask-image:linear-gradient(90deg,#000 80%,transparent);mask-image:linear-gradient(90deg,#000 80%,transparent);padding-right:48px}
+    .as-svc{min-width:200px}
+    .as-cue{display:block}
+  }
+</style>

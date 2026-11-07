@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Versions · doze/postgres · Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.rv-pg{font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:#FFFAF4;color:#140C1B;font-size:15px;line-height:1.5}
+.rv-pg a{color:#A85A0C;text-decoration:none}
+.rv-pg a:hover{text-decoration:underline}
+.rv-wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+.rv-sec{padding:40px 0 0}
+.rv-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;line-height:1.1;letter-spacing:-0.025em}
+.rv-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-0.015em}
+.rv-lead{margin:0;font-size:16px;line-height:1.55;color:#4A3D55;max-width:72ch}
+.rv-small{font-size:13px;color:#6E5F79;line-height:1.5}
+.rv-eyebrow{font:600 12px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.rv-mono{font-family:'JetBrains Mono',monospace;font-variant-ligatures:none}
+.rv-code,.rv-code pre{font-variant-ligatures:none}
+.rv-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font:600 12.5px Geist,sans-serif;white-space:nowrap;line-height:1}
+.rv-c-good{background:#E6F4EA;color:#1D7A45}
+.rv-c-warn{background:#FFF1D6;color:#8A5300}
+.rv-c-bad{background:#FCE8EC;color:#B4233C}
+.rv-c-info{background:#E8EEFC;color:#2F62D9}
+.rv-c-dim{background:#F1EAE2;color:#5E5068}
+.rv-c-line{background:#FFFFFF;color:#4A3D55;border:1px solid #DCCFC2}
+.rv-eng{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:22px;padding:0 4px;border-radius:6px;border:1px solid #DCCFC2;background:#FFFFFF;font:600 12px 'JetBrains Mono',monospace;color:#4A3D55;box-sizing:border-box}
+.rv-eng.rv-off{border-style:dashed;color:#6E5F79;background:transparent}
+.rv-engs{display:inline-flex;gap:4px}
+.rv-pm{display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 6px;border-radius:6px;background:#F1EAE2;color:#4A3D55;font:600 11px 'JetBrains Mono',monospace}
+.rv-pms{display:inline-flex;gap:4px}
+.rv-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:16px}
+.rv-sunk{background:#FFF4E8;border:1px solid #EADFD3;border-radius:16px}
+.rv-tbox{position:relative;overflow-x:auto;border:1px solid #EADFD3;border-radius:14px;background:#FFFFFF;-webkit-overflow-scrolling:touch}
+.rv-t{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}
+.rv-t th{text-align:left;font:600 11.5px Geist,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#6E5F79;padding:12px 14px;border-bottom:1px solid #EADFD3;background:#FFF4E8;white-space:nowrap}
+.rv-t td{padding:13px 14px;border-bottom:1px solid #F1E8DE;vertical-align:middle;white-space:nowrap;background:#FFFFFF}
+.rv-t tr:last-child td{border-bottom:0}
+.rv-t .rv-stick{position:sticky;left:0;z-index:1;box-shadow:inset -1px 0 0 #EADFD3}
+.rv-t .rv-grp th,.rv-t .rv-grp td{background:#FFFAF4;padding:10px 14px;font:600 13px Geist,sans-serif;letter-spacing:0;text-transform:none;color:#140C1B;border-bottom:1px solid #EADFD3;border-top:1px solid #EADFD3}
+.rv-code{background:#1E1328;border-radius:12px;color:#F4ECE4;font:13px/1.75 'JetBrains Mono',monospace;margin:0;overflow-x:auto}
+.rv-code-bar{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-bottom:1px solid #34233F}
+.rv-code-bar span{font:500 12px Geist,sans-serif;color:#C9BAD3;flex:1}
+.rv-code pre{margin:0;padding:14px 18px;white-space:pre;font:inherit}
+.rv-code .rv-p{color:#9C8AAB}
+.rv-code .rv-c{color:#9C8AAB}
+.rv-code .rv-add{color:#8BE39B}
+.rv-code .rv-del{color:#FF9AA8}
+.rv-code .rv-k{color:#F0A24B}
+.rv-copy{height:30px;padding:0 12px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 12.5px Geist,sans-serif;cursor:pointer}
+.rv-lcopy{height:28px;padding:0 10px;border-radius:7px;border:1px solid #DCCFC2;background:#FFFFFF;color:#4A3D55;font:600 12px Geist,sans-serif;cursor:pointer;white-space:nowrap}
+.rv-designed{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#2F62D9;background:#E8EEFC;border-radius:8px;padding:6px 10px}
+.rv-new{display:inline-block;font:700 10.5px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#2F62D9;border:1px solid #9DB5F0;border-radius:5px;padding:1px 5px;vertical-align:2px}
+.rv-dx{outline:2px dashed #B4233C;outline-offset:-2px;border-radius:14px}
+.rv-dxtag{display:inline-flex;align-items:center;gap:6px;font:700 12px Geist,sans-serif;color:#B4233C;background:#FFFFFF;border:1px solid #F3B7C2;border-radius:6px;padding:3px 8px}
+.rv-btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:10px;font:600 14px Geist,sans-serif;white-space:nowrap;box-sizing:border-box}
+.rv-btn-a{background:#F0A24B;color:#2A1534 !important}
+.rv-btn-l{background:#FFFFFF;border:1px solid #DCCFC2;color:#140C1B !important}
+.rv-sel{display:inline-flex;align-items:center;gap:8px}
+.rv-sel label{font-size:14px;color:#4A3D55;white-space:nowrap}
+.rv-sel select{height:44px;padding:0 34px 0 12px;border-radius:10px;border:1px solid #DCCFC2;background:#FFFFFF;font:500 14px Geist,sans-serif;color:#140C1B;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#4A3D55 50%),linear-gradient(135deg,#4A3D55 50%,transparent 50%);background-position:calc(100% - 17px) 19px,calc(100% - 12px) 19px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.rv-t td.rv-end,.rv-t th.rv-end{padding-right:20px}
+@media (max-width:760px){.rv-h2{font-size:26px}.rv-sec{padding-top:32px}}
+@media (max-width:600px){
+.rv-copy,.rv-lcopy,.rv-btn{min-height:44px}
+.rv-tbox{border:0;background:transparent;overflow:visible;border-radius:0}
+.rv-t,.rv-t tbody,.rv-t tr,.rv-t td,.rv-t tbody th{display:block}
+.rv-t{min-width:0 !important}
+.rv-t thead{display:none}
+.rv-t tr{background:#FFFFFF;border:1px solid #EADFD3;border-radius:12px;margin-bottom:10px;padding:4px 16px}
+.rv-t tr.rv-dim{background:#FCF8F3}
+.rv-t td,.rv-t tbody th{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:7px 0 !important;border-bottom:1px solid #F1E8DE;white-space:normal;min-width:0 !important;width:auto !important;text-align:right;position:static;box-shadow:none !important;background:transparent !important}
+.rv-t td:last-child,.rv-t tbody th:last-child{border-bottom:0}
+.rv-t td[data-label]::before,.rv-t tbody th[data-label]::before{content:attr(data-label);font:600 11.5px Geist,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#6E5F79;text-align:left;flex:none}
+.rv-t td.rv-wide,.rv-t th.rv-wide{flex-direction:column;align-items:flex-start;text-align:left;gap:6px}
+.rv-t td:empty{display:none}
+.rv-t td.rv-stick{justify-content:flex-start;font-size:17px;padding:12px 0 8px !important}
+.rv-t td.rv-stick::before,.rv-t tbody th.rv-stick::before{content:none !important}
+.rv-t tbody th.rv-stick{justify-content:flex-start;font-size:16px;padding:12px 0 8px !important}
+.rv-t td.rv-end{justify-content:flex-end;padding:0 !important}
+.rv-t td.rv-end::before{content:none !important}
+.rv-t tr.rv-grp{background:transparent;border:0;padding:6px 0 0;margin:14px 0 6px}
+.rv-t tr.rv-grp th,.rv-t tr.rv-grp td{display:inline;border:0;padding:0 8px 0 0 !important;background:transparent !important}
+.rv-t tr.rv-grp th::before,.rv-t tr.rv-grp td::before{content:none !important}
+}
+.rv-hist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));border:1px solid #EADFD3;border-radius:12px;overflow:hidden}
+.rv-hist li{padding:14px 16px;background:#FFFAF4;display:flex;flex-direction:column;gap:6px;border-right:1px solid #EADFD3;border-bottom:1px solid #EADFD3;margin:0 -1px -1px 0}
+.rv-hist li.rv-now{background:#FFFFFF;box-shadow:inset 0 3px 0 #F0A24B}
+.rv-filters{display:flex;gap:12px 22px;align-items:center;flex-wrap:wrap}
+.rv-nii{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:15px}
+.rv-nii li{display:flex;gap:12px}
+.rv-nii li>.rv-mono{flex:none;width:110px;font-weight:600}
+.rv-nii li>span:last-child{color:#4A3D55}
+@media (max-width:600px){.rv-nii li{flex-direction:column;gap:2px}.rv-filters .rv-sel{width:100%;justify-content:space-between}.rv-filters select{flex:1}}
+</style>
+</helmet>
+<div class="rv-pg">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="modules" hint-size="100%,120px"></dc-import>
+<dc-import name="RegistryModuleHead" tab="versions" newest="0.2.5" hint-size="100%,330px"></dc-import>
+
+<main>
+  <section class="rv-wrap rv-sec">
+    <div style="display: flex; gap: 16px 32px; align-items: flex-end; justify-content: space-between; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h2 class="rv-h2">Versions</h2>
+        <p class="rv-lead">Five releases resolve, newest first. Nothing is ever taken down: a project pinned to any of them keeps working, and <code class="rv-mono" style="font-size: 14px">doze modules upgrade</code> is the only thing that moves a pin.</p>
+      </div>
+      <a href="https://registry.doze-dev.com/doze/postgres/index.yaml" style="font-size: 15px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; min-height: 44px">The signed index.yaml
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+    </div>
+
+    <div class="rv-panel" style="margin-top: 24px; padding: 22px 24px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; gap: 6px 18px; align-items: baseline; flex-wrap: wrap">
+        <span class="rv-eyebrow">Oldest doze, by release</span>
+        <p style="margin: 0; font: 700 20px/1.3 'Bricolage Grotesque', sans-serif; letter-spacing: -0.01em">Any doze up to 0.2.4 · doze 0.2.0 from 0.2.5</p>
+      </div>
+      <ol class="rv-hist" aria-label="Which doze each release needs">
+        <li>
+          <span class="rv-mono" style="font-size: 13px; color: #4A3D55">postgres 0.2.1 – 0.2.4</span>
+          <b style="font-size: 16px">any doze</b>
+          <span class="rv-small">Jul–Nov 2026. No oldest-doze field, so they run on every doze, 0.1.0 and up.</span>
+        </li>
+        <li class="rv-now">
+          <span class="rv-mono" style="font-size: 13px; color: #4A3D55">postgres 0.2.5 <span class="rv-chip rv-c-good" style="height: 20px; font-size: 12px; margin-left: 4px">Current</span></span>
+          <b style="font-size: 16px">doze 0.2.0 or newer</b>
+          <span class="rv-small">The index carries <code class="rv-mono">doze: 0.2.0</code> for it.</span>
+        </li>
+        <li>
+          <span class="rv-mono" style="font-size: 13px; color: #4A3D55">postgres 0.3 <span class="rv-chip rv-c-info" style="height: 20px; font-size: 12px; margin-left: 4px">Coming</span></span>
+          <b style="font-size: 16px">doze 0.2.0 or newer</b>
+          <span class="rv-small">Extensions by name. Built on a branch, not released.</span>
+        </li>
+      </ol>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 10px 28px">
+        <p class="rv-small" style="margin: 0; display: flex; gap: 8px; align-items: flex-start; color: #4A3D55"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span>The release tool writes the field from the SDK the module was built with, always as three numbers. A doze older than a release's minimum skips it and takes the newest release that fits.</span></p>
+        <p class="rv-small" style="margin: 0; display: flex; gap: 8px; align-items: flex-start; color: #4A3D55"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span>doze 0.1.1 can't read a release's minimum doze. Update doze first, with <code class="rv-mono">brew upgrade doze</code>, then run <code class="rv-mono">doze modules upgrade</code>.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="rv-wrap rv-sec" aria-labelledby="rel-h">
+    <h2 id="rel-h" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">All releases</h2>
+    <form class="rv-filters" aria-label="Filter releases">
+      <div class="rv-sel"><label for="f-doze">Runs on doze</label>
+        <select id="f-doze"><option>any</option><option>0.2.0 and newer</option><option>0.1.1</option></select></div>
+      <div class="rv-sel"><label for="f-eng">Engine</label>
+        <select id="f-eng"><option>any</option><option>Postgres 18</option><option>Postgres 17</option><option>Postgres 16</option><option>Postgres 15</option><option>Postgres 14</option></select></div>
+      <label for="f-yank" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px; color: #4A3D55; cursor: pointer">
+        <input id="f-yank" type="checkbox" checked style="width: 20px; height: 20px; accent-color: #A85A0C; margin: 0">Show yanked</label>
+      <span style="flex: 1"></span>
+      <span class="rv-small" style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap">Platforms:
+        <span class="rv-pm">mac</span> macOS arm64 <span class="rv-pm">arm</span> Linux arm64 <span class="rv-pm">x86</span> Linux x86_64</span>
+    </form>
+
+    <div class="rv-tbox" style="margin-top: 16px" role="region" aria-label="Releases of doze/postgres" tabindex="0">
+      <table class="rv-t" style="min-width: 1120px">
+        <thead><tr>
+            <th class="rv-stick" scope="col" style="width: 128px">Version</th><th scope="col">Released</th><th scope="col">Status</th><th scope="col">Needs doze</th><th scope="col">Protocol</th><th scope="col">Postgres</th><th scope="col">Platforms</th><th scope="col" class="rv-end" style="width: 100%">Notes</th>
+          </tr></thead>
+        <tbody>
+          <tr class="rv-grp"><th data-label="Version" class="rv-stick" scope="rowgroup">0.3</th><td data-label="Released" colspan="7"><span style="color: #4A3D55; font-weight: 500">Coming. Not in the index yet, so doze can't resolve it.</span></td></tr>
+          <tr>
+            <td data-label="Version" class="rv-stick"><b class="rv-mono" style="font-size: 14.5px">0.3.0</b></td>
+            <td data-label="Released">not released</td>
+            <td data-label="Status"><span class="rv-chip rv-c-info">Coming · extensions by name</span></td>
+            <td data-label="Needs doze">doze 0.2.0</td>
+            <td data-label="Protocol" class="rv-mono">1</td>
+            <td data-label="Postgres"><span class="rv-engs"><span class="rv-eng">14</span><span class="rv-eng">15</span><span class="rv-eng">16</span><span class="rv-eng">17</span><span class="rv-eng">18</span></span></td>
+            <td data-label="Platforms"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; color: #4A3D55"><span><code class="rv-mono" style="font-size: 13px">extensions = ["vector", "pg_cron"]</code>, each bundle pinned in doze.lock. <a href="RegistryExtensions.dc.html">Preview the catalog</a></span></td>
+          </tr>
+          <tr class="rv-grp"><th data-label="Version" class="rv-stick" scope="rowgroup">0.2</th><td data-label="Released" colspan="7"><span style="color: #4A3D55; font-weight: 500">5 in the index · newest 0.2.5</span></td></tr>
+          <tr>
+            <td data-label="Version" class="rv-stick" style="box-shadow: inset 3px 0 0 #F0A24B, inset -1px 0 0 #EADFD3"><a href="RegistryRelease.dc.html" class="rv-mono" style="font-size: 14.5px; font-weight: 600">0.2.5</a></td>
+            <td data-label="Released">[0.2 release date]</td>
+            <td data-label="Status"><span class="rv-chip rv-c-good">Current</span></td>
+            <td data-label="Needs doze"><b>doze 0.2.0</b></td>
+            <td data-label="Protocol" class="rv-mono">1</td>
+            <td data-label="Postgres"><span class="rv-engs"><span class="rv-eng">14</span><span class="rv-eng">15</span><span class="rv-eng">16</span><span class="rv-eng">17</span><span class="rv-eng">18</span></span></td>
+            <td data-label="Platforms"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; color: #4A3D55"><span>The first release that needs doze 0.2.0. [notes]</span></td>
+          </tr>
+          <tr>
+            <td data-label="Version" class="rv-stick"><a href="RegistryRelease.dc.html" class="rv-mono" style="font-size: 14.5px; font-weight: 600">0.2.4</a></td>
+            <td data-label="Released">2 Nov 2026</td>
+            <td data-label="Status"><span class="rv-chip rv-c-line">Superseded</span></td>
+            <td data-label="Needs doze">any doze</td>
+            <td data-label="Protocol" class="rv-mono">1</td>
+            <td data-label="Postgres"><span class="rv-engs"><span class="rv-eng">14</span><span class="rv-eng">15</span><span class="rv-eng">16</span><span class="rv-eng">17</span><span class="rv-eng">18</span></span></td>
+            <td data-label="Platforms"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; color: #4A3D55"><span>A console: an Activity tab (sessions, their queries, Cancel or Terminate) and a databases table.</span></td>
+          </tr>
+          <tr>
+            <td data-label="Version" class="rv-stick"><a href="RegistryReleaseOld.dc.html" class="rv-mono" style="font-size: 14.5px; font-weight: 600">0.2.3</a></td>
+            <td data-label="Released">3 Jul 2026</td>
+            <td data-label="Status"><span class="rv-chip rv-c-line">Superseded</span></td>
+            <td data-label="Needs doze">any doze</td>
+            <td data-label="Protocol" class="rv-mono">1</td>
+            <td data-label="Postgres"><span class="rv-engs"><span class="rv-eng">14</span><span class="rv-eng">15</span><span class="rv-eng">16</span><span class="rv-eng">17</span><span class="rv-eng">18</span></span></td>
+            <td data-label="Platforms"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; color: #4A3D55"><span>[notes]</span></td>
+          </tr>
+          <tr>
+            <td data-label="Version" class="rv-stick"><a href="RegistryReleaseOld.dc.html" class="rv-mono" style="font-size: 14.5px; font-weight: 600">0.2.2</a></td>
+            <td data-label="Released">3 Jul 2026</td>
+            <td data-label="Status"><span class="rv-chip rv-c-line">Superseded</span></td>
+            <td data-label="Needs doze">any doze</td>
+            <td data-label="Protocol" class="rv-mono">1</td>
+            <td data-label="Postgres"><span class="rv-engs"><span class="rv-eng">14</span><span class="rv-eng">15</span><span class="rv-eng">16</span><span class="rv-eng">17</span><span class="rv-eng">18</span></span></td>
+            <td data-label="Platforms"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; color: #4A3D55"><span>The readiness check connects as <code class="rv-mono" style="font-size: 13px; white-space: nowrap">-U postgres</code>, not your OS user.</span></td>
+          </tr>
+          <tr>
+            <td data-label="Version" class="rv-stick"><a href="RegistryReleaseOld.dc.html" class="rv-mono" style="font-size: 14.5px; font-weight: 600">0.2.1</a></td>
+            <td data-label="Released">2 Jul 2026</td>
+            <td data-label="Status"><span class="rv-chip rv-c-line">Superseded</span></td>
+            <td data-label="Needs doze">any doze</td>
+            <td data-label="Protocol" class="rv-mono">1</td>
+            <td data-label="Postgres"><span class="rv-engs"><span class="rv-eng">14</span><span class="rv-eng">15</span><span class="rv-eng">16</span><span class="rv-eng">17</span><span class="rv-eng">18</span></span></td>
+            <td data-label="Platforms"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; color: #4A3D55"><span>The first release in the signed index (protocol 1).</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rv-dx" style="margin-top: 22px; padding: 18px; display: flex; flex-direction: column; gap: 14px; background: #FFFFFF">
+      <div style="display: flex; gap: 8px 14px; align-items: center; flex-wrap: wrap">
+        <span class="rv-dxtag"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 4h16v16H4z" stroke-dasharray="3 3"/></svg>Design example: no such event happened</span>
+        <span class="rv-small">How the table shows a yanked release, a security advisory and a deprecated engine major. No postgres release has been yanked, there are no known advisories, and doze has deprecated nothing.</span>
+      </div>
+      <div class="rv-tbox" role="region" aria-label="Design example rows" tabindex="0">
+        <table class="rv-t" style="min-width: 1120px">
+          <thead><tr>
+            <th class="rv-stick" scope="col" style="width: 128px">Version</th><th scope="col">Released</th><th scope="col">Status</th><th scope="col">Needs doze</th><th scope="col">Protocol</th><th scope="col">Postgres</th><th scope="col">Platforms</th><th scope="col" class="rv-end" style="width: 100%">Notes</th>
+          </tr></thead>
+          <tbody>
+          <tr class="yank">
+            <td data-label="Version" class="rv-stick" style="background: #FFFAFB"><s class="rv-mono" style="font-size: 14.5px; color: #6E5F79">0.2.n</s></td>
+            <td data-label="Released" style="background: #FFFAFB; color: #6E5F79"><s>[date]</s></td>
+            <td data-label="Status" style="background: #FFFAFB"><span class="rv-chip rv-c-bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>Yanked</span></td>
+            <td data-label="Needs doze" style="background: #FFFAFB; color: #6E5F79">any doze</td><td data-label="Protocol" class="rv-mono" style="background: #FFFAFB; color: #6E5F79">1</td><td data-label="Postgres" style="background: #FFFAFB"><span class="rv-engs"><span class="rv-eng">14</span><span class="rv-eng">15</span><span class="rv-eng">16</span><span class="rv-eng">17</span><span class="rv-eng">18</span></span></td><td data-label="Platforms" style="background: #FFFAFB"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; background: #FFFAFB; color: #140C1B"><span><b style="color: #B4233C">Yanked: [reason].</b> Use <a href="RegistryRelease.dc.html" class="rv-mono">0.2.x</a> instead. Projects pinned to it keep working and see a warning. New resolves skip it; its files stay downloadable.</span></td>
+          </tr>
+          <tr>
+            <td data-label="Version" class="rv-stick"><span class="rv-mono" style="font-size: 14.5px; font-weight: 600">0.2.n</span></td>
+            <td data-label="Released">[date]</td><td data-label="Status"><span class="rv-chip rv-c-line">Superseded</span></td><td data-label="Needs doze">any doze</td><td data-label="Protocol" class="rv-mono">1</td><td data-label="Postgres"><span class="rv-engs"><span class="rv-eng">14</span><span class="rv-eng">15</span><span class="rv-eng">16</span><span class="rv-eng">17</span><span class="rv-eng">18</span></span></td><td data-label="Platforms"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; color: #140C1B"><span><span class="rv-chip rv-c-warn" style="margin-bottom: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg>Advisory DOZE-[id] · [severity]</span><br>[one line: what is affected]. Fixed in <a href="RegistryRelease.dc.html" class="rv-mono">0.2.x</a>. <a href="Security.dc.html">Read the advisory</a></span></td>
+          </tr>
+          <tr>
+            <td data-label="Version" class="rv-stick"><span style="font-weight: 600">Postgres 14</span></td>
+            <td data-label="Released">engine major</td><td data-label="Status"><span class="rv-chip rv-c-warn">Deprecated</span></td><td data-label="Needs doze">any doze</td><td data-label="Protocol" class="rv-mono">—</td><td data-label="Postgres"><span class="rv-engs"><span class="rv-eng">14</span></span></td><td data-label="Platforms"><span class="rv-pms"><span class="rv-pm" title="macOS arm64">mac</span><span class="rv-pm" title="Linux arm64">arm</span><span class="rv-pm" title="Linux x86_64">x86</span></span></td>
+            <td data-label="Notes" class="rv-wide rv-end" style="white-space: normal; min-width: 260px; color: #140C1B"><span>Deprecated [date] · new projects warned from [date] · still served to existing pins, forever. <a href="RegistryEngines.dc.html">Engine versions</a></span></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-top: 14px"><p class="rv-small" style="margin: 0; display: flex; gap: 8px; align-items: flex-start; color: #4A3D55"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span>No download counts here: doze sends no telemetry, so nobody, including us, knows how often a release is fetched. Security advisories: none known for any release.</span></p></div>
+  </section>
+
+  <section class="rv-wrap rv-sec" aria-labelledby="nii-h">
+    <div class="rv-sunk" style="padding: 22px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px 36px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h2 id="nii-h" class="rv-h3">Not in the index</h2>
+        <p style="margin: 0; font-size: 15px; color: #4A3D55">GitHub has older postgres builds than the registry lists. doze only resolves what the signed index names, so these can't land in a doze.lock.</p>
+      </div>
+      <ul class="rv-nii">
+        <li><span class="rv-mono">0.1.0, 0.1.1</span><span>27–28 Jun 2026. Built before protocol 1 and the signed index (2 Jul).</span></li>
+        <li><span class="rv-mono">0.2.0</span><span>2 Jul 2026. Replaced by 0.2.1 the same day, before it was listed. [why]</span></li>
+        <li><a href="https://github.com/doze-dev/doze-modules/releases/tag/postgres" style="font-weight: 600; display: inline-flex; min-height: 44px; align-items: center">All files on GitHub</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="rv-wrap rv-sec" aria-labelledby="up-h" style="padding-bottom: 72px">
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px">
+      <h2 id="up-h" class="rv-h2">Upgrading a project</h2>
+      <p class="rv-lead">A project stays on the release in its doze.lock until you move it. Check first; the upgrade takes the newest release your doze can run, verifies it, and rewrites the pin.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 16px 20px; align-items: stretch; min-width: 0">
+        <div class="rv-code">
+          <div class="rv-code-bar"><span>1. See what would move (changes nothing; exits 1 if anything would)</span><button class="rv-copy" type="button" aria-label="Copy doze modules upgrade --check">Copy</button></div>
+<pre><span class="rv-p">$</span> doze modules upgrade --check
+<span class="rv-c">ENGINE    SOURCE         PINNED  SELECTED  STATUS</span>
+postgres  doze/postgres  0.2.4   0.2.5     <span class="rv-k">upgrade available</span>
+
+1 module upgrade(s) available — run doze modules upgrade</pre>
+        </div>
+        <div class="rv-code">
+          <div class="rv-code-bar"><span>2. Move the pin</span><button class="rv-copy" type="button" aria-label="Copy doze modules upgrade postgres">Copy</button></div>
+<pre><span class="rv-p">$</span> doze modules upgrade postgres
+<span class="rv-c">ENGINE    SOURCE         PINNED  SELECTED  STATUS</span>
+postgres  doze/postgres  0.2.4   0.2.5     <span class="rv-add">upgraded</span>
+
+doze.lock updated — commit it so the team and CI pick up the same builds</pre>
+        </div>
+        <div style="grid-column: 1 / -1"><p class="rv-small" style="margin: 0; display: flex; gap: 8px; align-items: flex-start; color: #4A3D55"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span>On doze 0.1.1, update doze first: it can't read a release's minimum doze. Engine pins (<code class="rv-mono">postgres "17"</code>) never move with a module upgrade.</span></p></div>
+      </div>
+      <div class="rv-code" style="min-width: 0">
+        <div class="rv-code-bar"><span>3. The doze.lock diff to commit</span><button class="rv-copy" type="button" aria-label="Copy the doze.lock diff">Copy</button></div>
+<pre> modules:
+     doze/postgres:
+<span class="rv-del">-        version: 0.2.4</span>
+<span class="rv-add">+        version: 0.2.5</span>
+         protocol: 1
+         engines:
+             - "14"
+             - "15"
+             - "16"
+             - "17"
+             - "18"
+         hashes:
+<span class="rv-del">-            aarch64-apple-darwin: sha256:a07134d07cf988862f5b2d1a288cc43a40ace5b96e88e190b5d66ca8b207b89a</span>
+<span class="rv-del">-            aarch64-unknown-linux-gnu: sha256:f29c48e5dab175d6f1b2991f274e2e5aedb55a9993eff90128feb423380fd2a2</span>
+<span class="rv-del">-            x86_64-unknown-linux-gnu: sha256:7c920599a5a52f4ed4306963797e88de7ed6beb0be130b8b1039f7c7d0354f68</span>
+<span class="rv-add">+            aarch64-apple-darwin: sha256:8f9a7c7806a315f974b78e93ecb22a494d4952ab958f524bda37f800c17721da</span>
+<span class="rv-add">+            aarch64-unknown-linux-gnu: sha256:a123558e1027ee9fc2a98c18c0854aac954ec4aa7ae6819c4214f62af61779a0</span>
+<span class="rv-add">+            x86_64-unknown-linux-gnu: sha256:32b0b9545865231beccc64d3ccb8efaa6434b256ff1ec41c13b1b1432ad9827d</span>
+<span class="rv-add">+        doze: 0.2.0</span></pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3680}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>A Tuesday, honestly · doze</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#140C1B}
+.st a{color:#F0A24B;text-decoration:none}
+.st-eyebrow{font:13px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.st-h{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-0.035em;line-height:.98;text-wrap:balance}
+.st-clock{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;position:relative}
+.st-stop{display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;padding:14px 14px 12px;border-radius:14px;border:1px solid #34233F;background:#1A1022;color:#C9BAD3;font:500 14px Geist,sans-serif;cursor:pointer;min-height:76px}
+.st-stop b{font:600 20px 'JetBrains Mono',monospace;color:#F4ECE4}
+.st-stop:hover{border-color:#7A5E8C}
+.st-stop.on{border-color:#F0A24B;background:#2A1A34;box-shadow:0 0 0 1px #F0A24B}
+.st-stop.done b{color:#9C8AAB}
+.st-stop:focus-visible,.st-seg button:focus-visible,.st-nav button:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+.st-seg{display:inline-flex;padding:4px;border-radius:12px;background:#1A1022;border:1px solid #34233F}
+.st-seg button{height:44px;padding:0 18px;border-radius:9px;border:0;background:transparent;color:#C9BAD3;font:600 15px Geist,sans-serif;cursor:pointer}
+.st-seg button.on{background:#F4ECE4;color:#140C1B}
+.st-seg button.on.d{background:#F0A24B;color:#2A1534}
+.st-scene{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:start}
+.st-tell{display:flex;flex-direction:column;gap:14px}
+.st-tell h2{margin:0;font:800 52px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-0.03em}
+.st-tell h2.st-calm{color:#F0A24B}
+.st-tell p{margin:0;font-size:19px;line-height:1.6;color:#D6C8DF}
+.st-tell .st-jab{font:600 18px Geist,sans-serif;color:#FF9AA8}
+.st-time{font:600 15px 'JetBrains Mono',monospace;color:#9C8AAB}
+.st-show{display:flex;flex-direction:column;gap:14px}
+.st-mess{display:flex;flex-direction:column;gap:12px;transform:rotate(-0.6deg)}
+.st-calmbox{display:flex;flex-direction:column;gap:12px}
+.st-win{border-radius:14px;overflow:hidden;border:1px solid #4A3458;box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.st-bar{height:30px;background:#0E0912;display:flex;align-items:center;gap:7px;padding:0 12px}
+.st-bar i{width:10px;height:10px;border-radius:5px;display:block}
+.st-bar span{margin:0 auto;font:12px 'JetBrains Mono',monospace;color:#8A85A8}
+.st pre,.st code{font-variant-ligatures:none}
+.st-pre{margin:0;padding:16px 18px;font:14px/1.75 'JetBrains Mono',monospace;color:#E9DEEF;white-space:pre-wrap;overflow-wrap:anywhere}
+.st-dim{color:#9C8AAB}.st-bad{color:#FF9AA8}.st-ok{color:#8BE39B}.st-amb{color:#F0A24B}
+.st-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.st-tab{font:12.5px 'JetBrains Mono',monospace;color:#C9BAD3;background:#1E1328;border:1px solid #34233F;border-radius:8px;padding:6px 10px;white-space:nowrap}
+.st-tab.on{border-color:#FF9AA8;color:#FFE0E5}
+.st-files{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.st-file{display:flex;flex-direction:column;gap:2px;background:#1E1328;border:1px solid #34233F;border-radius:10px;padding:9px 11px;min-width:0}
+.st-file b{font:600 13px 'JetBrains Mono',monospace;color:#F4ECE4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-file span{font-size:12.5px;color:#9C8AAB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-ports{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.st-port{background:#2A1520;border:1px solid #4A2230;border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:2px}
+.st-port b{font:600 15px 'JetBrains Mono',monospace;color:#FFE0E5}
+.st-port span{font-size:12.5px;color:#D6A9B3}
+.st-names{display:flex;flex-direction:column;gap:8px}
+.st-name{display:flex;align-items:center;gap:12px;background:#1E1328;border:1px solid #34233F;border-radius:12px;padding:12px 14px}
+.st-name i{width:9px;height:9px;border-radius:5px;background:#8BE39B;flex:none}
+.st-name b{font-size:15px;width:96px;flex:none}
+.st-name code{font:14px 'JetBrains Mono',monospace;color:#F0A24B;overflow-wrap:anywhere}
+.st-am{background:#F3EEF6;color:#2B2232;border-radius:12px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.st-am-h{display:flex;justify-content:space-between;padding:10px 14px;background:#E2D9E8;font-size:13px}
+.st-am-r{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:14px;border-top:1px solid #DDD3E3}
+.st-am-r b{font:600 13px 'JetBrains Mono',monospace;color:#6B2E3C}
+.st-am-r.hot{background:#FCE8EC}
+.st-heat{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;font-size:13px;color:#C9BAD3}
+.st-heat div{height:10px;border-radius:5px;background:#2E1F3A;overflow:hidden}
+.st-heat i{display:block;height:100%;background:#F0A24B}
+.st-chat{display:flex;flex-direction:column;gap:10px}
+.st-me,.st-ai{max-width:84%;padding:12px 15px;border-radius:16px;font-size:15.5px;line-height:1.5}
+.st-me{align-self:flex-end;background:#3A2448;color:#F4ECE4;border-bottom-right-radius:4px}
+.st-ai{align-self:flex-start;background:#1E1328;border:1px solid #34233F;color:#D6C8DF;border-bottom-left-radius:4px}
+.st-chat code{font:13.5px 'JetBrains Mono',monospace;color:#F4ECE4}
+.st-readme{display:flex;flex-direction:column;gap:6px;background:#F3EEF6;color:#2B2232;border-radius:12px;padding:14px 16px;font-size:15px;transform:rotate(1.2deg);align-self:flex-start;min-width:260px}
+.st-readme s{color:#8A7A92}
+.st-readme span{font-weight:600;color:#B4233C}
+.st-code{margin:0;padding:16px 18px;border-radius:14px;background:#120A18;border:1px solid #2E1F3A;font:14px/1.7 'JetBrains Mono',monospace;color:#E9DEEF;white-space:pre-wrap;overflow-wrap:anywhere}
+.st-k{color:#C792EA}.st-s{color:#F0A24B}.st-add{color:#8BE39B}
+.st-menu{align-self:flex-start;width:min(360px,100%);background:#F3EEF6;color:#2B2232;border-radius:12px;padding:6px;box-shadow:0 30px 70px rgba(0,0,0,.45);font-size:15px}
+.st-menu-h{padding:6px 12px 4px;font-size:12px;font-weight:600;color:#7A6E86}
+.st-menu-r{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:7px}
+.st-menu-r span{display:flex;align-items:center;gap:8px}
+.st-menu-r i{width:8px;height:8px;border-radius:4px;display:block}
+.st-menu-r b{font-weight:500;color:#6A5E76}
+.st-menu-r.on{background:#E9DFF0}
+.st-menu-sep{height:1px;background:#DDD3E3;margin:6px 8px}
+.st-meter{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.st-m{background:#1A1022;border:1px solid #34233F;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.st-m b{font:800 46px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-0.03em}
+.st-m span{font-size:14px;color:#C9BAD3;line-height:1.4}
+.st-m small{font:12.5px 'JetBrains Mono',monospace;color:#8BE39B}
+.st-nav{display:flex;gap:10px;align-items:center}
+.st-nav button{height:46px;padding:0 18px;border-radius:12px;border:1px solid #4A3458;background:transparent;color:#F4ECE4;font:600 15px Geist,sans-serif;cursor:pointer}
+.st-nav button.go{background:#F0A24B;border-color:#F0A24B;color:#2A1534}
+.st-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.st-col{border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:14px}
+.st-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px;font-size:16px}
+.st-row b{font:800 30px 'Bricolage Grotesque',sans-serif}
+@media (max-width:900px){.st-scene{grid-template-columns:1fr !important;gap:28px}.st-clock{grid-template-columns:repeat(4,minmax(0,1fr)) !important}.st-meter{grid-template-columns:repeat(2,minmax(0,1fr)) !important}.st-tell h2{font-size:38px}.st-sum{grid-template-columns:1fr !important}.st-files{grid-template-columns:repeat(2,minmax(0,1fr))}.st-ports{grid-template-columns:repeat(2,minmax(0,1fr))}.st-hero{font-size:52px !important}.st-mess{transform:none}}
+</style>
+</helmet>
+<div class="st" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #F4ECE4; background: #140C1B">
+  <dc-import name="SiteHeader" current="none" hint-size="100%,72px"></dc-import>
+
+  <section style="max-width: 1240px; margin: 0 auto; padding: 96px 32px 40px; display: flex; flex-direction: column; gap: 22px">
+    <span class="st-eyebrow">A story you already know</span>
+    <h1 class="st-h st-hero" style="font-size: 96px; max-width: 12ch">A Tuesday, honestly.</h1>
+    <p style="margin: 0; font-size: 22px; line-height: 1.5; color: #D6C8DF; max-width: 40rem">You don't call it a mess. It's just how the day goes: the tabs, the ports, the fan, the setup doc nobody trusts. Step through it, then flip each moment to see it with doze.</p>
+  </section>
+
+  <section aria-label="The day" style="max-width: 1240px; margin: 0 auto; padding: 0 32px 72px; display: flex; flex-direction: column; gap: 28px">
+    <nav class="st-clock" aria-label="Moments in the day">
+      <sc-for list="{{stops}}" as="t" hint-placeholder-count="7">
+        <button type="button" class="st-stop {{t.cls}}" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}"><b>{{t.time}}</b>{{t.label}}</button>
+      </sc-for>
+    </nav>
+
+    <sc-if value="{{v.inDay}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap">
+        <div class="st-seg" role="group" aria-label="How it is, or with doze">
+          <button type="button" class="{{v.segBefore}}" aria-pressed="{{v.before}}" onClick="{{toBefore}}">How it is</button>
+          <button type="button" class="{{v.segDoze}}" aria-pressed="{{v.doze}}" onClick="{{toDoze}}">With doze</button>
+        </div>
+        <div class="st-nav">
+          <button type="button" onClick="{{prev}}" aria-label="Earlier in the day">← Earlier</button>
+          <button type="button" class="go" onClick="{{next}}">{{nextLabel}}</button>
+        </div>
+      </div>
+
+      <sc-if value="{{v.s0}}" hint-placeholder-val="{{true}}">
+        <div class="st-scene">
+          <div class="st-tell">
+            <span class="st-time">9:02</span>
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}">
+              <h2>Which terminal was that?</h2>
+              <p>Coffee. Laptop open. Seven tabs from yesterday, and you don't know which ones are still running.</p><p>The web app starts from package.json. The API from pyproject.toml. The worker is a go run. The database is docker compose. Kafka is a script that needs a different Java. The README explains four of these.</p>
+              <p class="st-jab">You didn't design this. It grew.</p>
+            </sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}">
+              <h2 class="st-calm">One file. One command.</h2>
+              <p>The commands didn't go anywhere. They live in doze.hcl, the way you already type them, and doze starts them in the right order with the right addresses.</p>
+            </sc-if>
+          </div>
+          <div class="st-show">
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}"><div class="st-mess">
+<div class="st-tabs"><span class="st-tab">web · pnpm dev</span><span class="st-tab on">api · poetry run…</span><span class="st-tab">worker · go run</span><span class="st-tab">docker compose</span><span class="st-tab">kafka.sh</span><span class="st-tab">zsh</span><span class="st-tab">zsh (??)</span></div>
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>api — zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> poetry run uvicorn app.main:app --reload --port 8000
+<span class="st-bad">ERROR:    [Errno 48] Address already in use</span>
+<span class="st-dim">$</span> # was it 8000 or 8001 for this one</pre></div>
+<div class="st-files"><div class="st-file"><b>package.json</b><span>"dev": "vite --port 3001"</span></div><div class="st-file"><b>pyproject.toml</b><span>[tool.poetry.scripts]</span></div><div class="st-file"><b>Makefile</b><span>dev: ## TODO</span></div><div class="st-file"><b>docker-compose.yml</b><span>postgres, redis</span></div><div class="st-file"><b>docker-compose.override.yml</b><span>yours, not committed</span></div><div class="st-file"><b>Procfile.dev</b><span>nobody uses this</span></div><div class="st-file"><b>.env</b><span>DATABASE_URL=…5432</span></div><div class="st-file"><b>.env.local</b><span>DATABASE_URL=…5433</span></div><div class="st-file"><b>README.md</b><span>Getting started (2023)</span></div></div></div></sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}"><div class="st-calmbox">
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>larder — zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> doze up
+<span class="st-ok">✓</span> postgres     <span class="st-dim">asleep · wakes on the first connection</span>
+<span class="st-ok">✓</span> kafka        <span class="st-dim">asleep · wakes on the first connection</span>
+<span class="st-ok">✓</span> migrate-orders <span class="st-dim">done · 2 files</span>
+<span class="st-ok">✓</span> gateway      <span class="st-amb">http://gateway.larder.doze</span>
+<span class="st-ok">✓</span> storefront   <span class="st-amb">http://storefront.larder.doze</span>
+<span class="st-ok">✓</span> fulfilment   <span class="st-dim">awake · uv run python -m fulfilment</span>
+<span class="st-dim">  9 apps, 4 modules, 1 service from doze.hcl</span></pre></div>
+<pre class="st-code"><span class="st-k">app</span> <span class="st-s">"storefront"</span> { run = <span class="st-s">"bun run dev"</span> }
+<span class="st-k">app</span> <span class="st-s">"recommendations"</span> { run = <span class="st-s">"uv run python -m recommendations"</span> }
+<span class="st-k">app</span> <span class="st-s">"orders"</span> { run = <span class="st-s">"go run ./services/orders"</span> }</pre></div></sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{v.s1}}" hint-placeholder-val="{{false}}">
+        <div class="st-scene">
+          <div class="st-tell">
+            <span class="st-time">9:20</span>
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}">
+              <h2>Port roulette.</h2>
+              <p>Address already in use. Something has 8000. You check: it's Python. Which Python?</p><p>And 5432 is a Postgres, but not this project's. It's the one from the client thing last week, still up, holding the port with the wrong data in it.</p>
+              <p class="st-jab">You keep the ports in your head. Your head is full.</p>
+            </sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}">
+              <h2 class="st-calm">Names, not numbers. And it tells you who's in the way.</h2>
+              <p>Every service gets a name of its own, so two projects can both use 5432 without a clash. When a port is taken, doze says who holds it and offers to move them.</p>
+            </sc-if>
+          </div>
+          <div class="st-show">
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}"><div class="st-mess">
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> lsof -i :5432
+COMMAND   PID USER  NAME
+postgres 4121 you   localhost:postgresql (LISTEN)
+<span class="st-dim">$</span> # …which project is that
+<span class="st-dim">$</span> lsof -i :8000
+python3  5387 you   *:irdmi (LISTEN)</pre></div>
+<div class="st-ports"><div class="st-port"><b>:3000</b><span>web?</span></div><div class="st-port"><b>:3001</b><span>the other web</span></div><div class="st-port"><b>:5173</b><span>vite, somewhere</span></div><div class="st-port"><b>:8000</b><span>api (or billing)</span></div><div class="st-port"><b>:8080</b><span>???</span></div><div class="st-port"><b>:5432</b><span>db (which?)</span></div><div class="st-port"><b>:5433</b><span>db, project 2</span></div><div class="st-port"><b>:6379</b><span>redis, shared?</span></div></div></div></sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}"><div class="st-calmbox">
+<div class="st-names"><div class="st-name"><i></i><b>storefront</b><code>http://storefront.larder.doze</code></div><div class="st-name"><i></i><b>gateway</b><code>http://gateway.larder.doze</code></div><div class="st-name"><i></i><b>postgres</b><code>postgres.larder.doze:5432</code></div><div class="st-name"><i></i><b>postgres</b><code>postgres.billing.doze:5432</code></div></div>
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>larder — zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> doze up
+<span class="st-bad">✗</span> gateway  port 8000 is taken
+    held by python3 (pid 5387) on 127.0.0.1:8000
+    <span class="st-dim">from ~/code/billing · stop it, or give gateway another port</span></pre></div></div></sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{v.s2}}" hint-placeholder-val="{{false}}">
+        <div class="st-scene">
+          <div class="st-tell">
+            <span class="st-time">10:05</span>
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}">
+              <h2>The fan.</h2>
+              <p>You're reading code. Nothing is running a test. The fan is.</p><p>A VM is holding every database you've ever started, all day, whether anything talks to it or not. Your battery knows. Your lap knows.</p>
+              <p class="st-jab">Open Activity Monitor. We'll wait. We won't make up your numbers for you.</p>
+            </sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}">
+              <h2 class="st-calm">Asleep means asleep.</h2>
+              <p>No VM. Real processes, started when something connects and stopped two minutes after nothing does. The data stays on disk. Go and look: there's nothing there.</p>
+            </sc-if>
+          </div>
+          <div class="st-show">
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}"><div class="st-mess">
+<div class="st-am">
+  <div class="st-am-h"><b>Activity Monitor</b><span>Memory</span></div>
+  <div class="st-am-r hot"><span>Docker Desktop · VM</span><b>[your GB]</b></div><div class="st-am-r"><span>com.docker.backend</span><b>[your MB]</b></div><div class="st-am-r"><span>postgres (container)</span><b>[running since Friday]</b></div><div class="st-am-r"><span>redis (container)</span><b>[running since Friday]</b></div><div class="st-am-r"><span>kafka (container, JVM)</span><b>[your GB]</b></div><div class="st-am-r"><span>node · vite</span><b>[yours]</b></div>
+</div>
+<div class="st-heat"><span>Fan</span><div><i style="width:86%"></i></div><span>Battery</span><div><i style="width:31%;background:#FF9AA8"></i></div></div></div></sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}"><div class="st-calmbox">
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>larder — zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> doze status
+  <span class="st-dim">○</span> postgres   asleep <span class="st-dim">· wakes on a connection</span>
+  <span class="st-dim">○</span> redis      asleep <span class="st-dim">· wakes on a connection</span>
+  <span class="st-dim">○</span> kafka      asleep <span class="st-dim">· wakes on a connection</span>
+  <span class="st-ok">●</span> gateway    awake  <span class="st-dim">· sleeps in 1:40</span>
+<span class="st-dim">$</span> pgrep -l postgres
+<span class="st-dim"># nothing. it's asleep.</span></pre></div></div></sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{v.s3}}" hint-placeholder-val="{{false}}">
+        <div class="st-scene">
+          <div class="st-tell">
+            <span class="st-time">11:30</span>
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}">
+              <h2>Ask the AI.</h2>
+              <p>Orders can't reach the database. You ask your agent. It's quick, confident, and wrong.</p><p>It read every file in the repo. It still can't see your machine: which compose file is up, what's on which port, what you started yesterday and forgot.</p>
+              <p class="st-jab">It isn't stupid. Nobody told it what's running.</p>
+            </sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}">
+              <h2 class="st-calm">Give it the truth, not a guess.</h2>
+              <p>doze knows what's running, where, and why it stopped. Your agent asks doze instead of guessing from files: doze status --json is the same answer, for machines.</p>
+            </sc-if>
+          </div>
+          <div class="st-show">
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}"><div class="st-mess">
+<div class="st-chat">
+  <div class="st-me">orders can't reach the database. fix it?</div>
+  <div class="st-ai">Make sure Postgres is running on <code>localhost:5432</code> and that <code>DATABASE_URL</code> is set in your .env file.</div>
+  <div class="st-me">it is. it's… a different project's postgres</div>
+  <div class="st-ai">Apologies for the confusion! Try port <code>5433</code>.</div>
+  <div class="st-me">that's the other other one</div>
+</div></div></sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}"><div class="st-calmbox">
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>agent — zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> doze status
+  <span class="st-ok">●</span> postgres  awake  <span class="st-dim">postgres.larder.doze:5432</span>
+  <span class="st-bad">●</span> orders    crashing <span class="st-dim">· try 2 of 5</span>
+      <span class="st-bad">password authentication failed for user "orders"</span></pre></div>
+<div class="st-chat">
+  <div class="st-ai">orders is crashing on a password: <code>.env.local</code> overrides the <code>DATABASE_URL</code> doze gives it. Remove that line?</div>
+</div></div></sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{v.s4}}" hint-placeholder-val="{{false}}">
+        <div class="st-scene">
+          <div class="st-tell">
+            <span class="st-time">14:00</span>
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}">
+              <h2>Back after six months.</h2>
+              <p>Someone needs a fix in a repo you haven't opened since spring. You know this one. You wrote half of it.</p><p>make dev is gone. There's a TypeScript service you've never seen. .env.example is three variables short. Nothing is wrong, exactly. It just isn't familiar any more.</p>
+              <p class="st-jab">The setup doc rots the day after someone writes it.</p>
+            </sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}">
+              <h2 class="st-calm">The file that runs the stack can't go stale.</h2>
+              <p>If doze.hcl is wrong, nothing starts, so it never drifts from the truth. Pull, doze up, and the new service is simply there, wired to what it needs.</p>
+            </sc-if>
+          </div>
+          <div class="st-show">
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}"><div class="st-mess">
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>billing — zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> make dev
+<span class="st-bad">make: *** No rule to make target 'dev'.  Stop.</span>
+<span class="st-dim">$</span> git log --oneline -3 -- services/
+a41c9e0 add notifications service (TypeScript)
+7be20d1 move worker to Python
+19ff3a2 bump node to 22</pre></div>
+<div class="st-readme"><b>README.md</b><s>1. make dev</s><s>2. open localhost:3000</s><span>3. ask Priya</span></div></div></sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}"><div class="st-calmbox">
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>billing — zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> git pull && doze up
+<span class="st-ok">✓</span> install-notifications <span class="st-dim">done · bun install (lockfile changed)</span>
+<span class="st-ok">✓</span> notifications         awake</pre></div>
+<pre class="st-code"><span class="st-add">+ app "notifications" {
++   dir = "services/notifications"
++   run = "bun src/index.ts"
++   env = { KAFKA_BROKERS = module.kafka.address }
++ }</span></pre></div></sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{v.s5}}" hint-placeholder-val="{{false}}">
+        <div class="st-scene">
+          <div class="st-tell">
+            <span class="st-time">18:40</span>
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}">
+              <h2>Close the lid.</h2>
+              <p>Done for the day. Lid shut, bag zipped.</p><p>Twenty-three containers from three projects are still up. Two node processes have been running since yesterday. The bag is warm by the time you're home.</p>
+              <p class="st-jab">Nothing stops on its own. So nothing stops.</p>
+            </sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}">
+              <h2 class="st-calm">It goes to sleep. So can you.</h2>
+              <p>Every stack, in the menu bar. Idle services are already asleep; quit the app and your stacks keep running, asleep, until something calls them in the morning.</p>
+            </sc-if>
+          </div>
+          <div class="st-show">
+            <sc-if value="{{v.before}}" hint-placeholder-val="{{true}}"><div class="st-mess">
+
+<div class="st-win"><div class="st-bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>zsh</span></div><pre class="st-pre" style="background:#120A18"><span class="st-dim">$</span> docker ps --format '{{.Names}}' | wc -l
+      23
+<span class="st-dim">$</span> ps -eo etime,comm | grep node
+ 1-02:14:09 node
+ 1-01:58:40 node</pre></div></div></sc-if>
+            <sc-if value="{{v.doze}}" hint-placeholder-val="{{false}}"><div class="st-calmbox">
+<div class="st-menu">
+  <div class="st-menu-h">Stacks</div>
+  <div class="st-menu-r on"><span><i style="background:#8BE39B"></i>larder</span><b>all asleep</b></div>
+  <div class="st-menu-r"><span><i style="background:#8BE39B"></i>billing</span><b>all asleep</b></div>
+  <div class="st-menu-r"><span><i style="background:#5A4168"></i>acme</span><b>down</b></div>
+  <div class="st-menu-sep"></div>
+  <div class="st-menu-r"><span>Quit doze</span><b>stacks keep running</b></div>
+</div></div></sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px">
+        <span class="st-eyebrow" style="color: #9C8AAB">{{v.meterTitle}}</span>
+        <div class="st-meter" role="status" aria-live="polite">
+          <sc-for list="{{meter}}" as="m" hint-placeholder-count="4">
+            <div class="st-m"><b style="color: {{m.color}}">{{m.n}}</b><span>{{m.name}}</span><small>{{m.note}}</small></div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{v.end}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 28px">
+        <h2 class="st-h" style="font-size: 64px; max-width: 16ch">The same Tuesday, twice.</h2>
+        <div class="st-sum">
+          <div class="st-col" style="background: #2A1520; border: 1px solid #4A2230">
+            <b style="font: 700 22px 'Bricolage Grotesque', sans-serif; color: #FFB3BF">How it is</b>
+            <div class="st-row"><span style="color: #E7C9CF">commands to remember</span><b style="color: #FFE0E5">7</b></div>
+            <div class="st-row"><span style="color: #E7C9CF">ports to keep in your head</span><b style="color: #FFE0E5">8</b></div>
+            <div class="st-row"><span style="color: #E7C9CF">files to read before you start</span><b style="color: #FFE0E5">9</b></div>
+            <div class="st-row"><span style="color: #E7C9CF">still running when you close the lid</span><b style="color: #FFE0E5">23</b></div>
+          </div>
+          <div class="st-col" style="background: #241A0E; border: 1px solid #5A4220">
+            <b style="font: 700 22px 'Bricolage Grotesque', sans-serif; color: #F0A24B">With doze</b>
+            <div class="st-row"><span style="color: #E9D6BE">commands to remember <small style="font: 12px 'JetBrains Mono', monospace; color: #B8A07E">· doze up</small></span><b style="color: #FFE6C4">1</b></div>
+            <div class="st-row"><span style="color: #E9D6BE">ports to keep in your head <small style="font: 12px 'JetBrains Mono', monospace; color: #B8A07E">· every service has a name</small></span><b style="color: #FFE6C4">0</b></div>
+            <div class="st-row"><span style="color: #E9D6BE">files to read before you start <small style="font: 12px 'JetBrains Mono', monospace; color: #B8A07E">· doze.hcl</small></span><b style="color: #FFE6C4">1</b></div>
+            <div class="st-row"><span style="color: #E9D6BE">still running when you close the lid <small style="font: 12px 'JetBrains Mono', monospace; color: #B8A07E">· everything idle is asleep</small></span><b style="color: #FFE6C4">0</b></div>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 15px; color: #9C8AAB; max-width: 44rem">This Tuesday is a story, and its counts are the story's. Yours will differ. That's rather the point: count yours.</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap">
+          <a href="Download.dc.html" style="display: inline-flex; align-items: center; height: 52px; padding: 0 24px; border-radius: 12px; background: #F0A24B; color: #2A1534; font-weight: 600; font-size: 16px">Get doze</a>
+          <a href="Examples.dc.html" style="display: inline-flex; align-items: center; height: 52px; padding: 0 24px; border-radius: 12px; border: 1px solid #4A3458; color: #F4ECE4; font-weight: 600; font-size: 16px">Run Larder: a whole stack, one command</a>
+          <button type="button" onClick="{{restart}}" style="height: 52px; padding: 0 20px; border-radius: 12px; border: 0; background: transparent; color: #C9BAD3; font: 600 16px Geist, sans-serif; cursor: pointer">Start the day again</button>
+        </div>
+      </div>
+    </sc-if>
+  </section>
+
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"moment":{"editor":"enum","options":["0","1","2","3","4","5","6"],"default":"0"},"view":{"editor":"enum","options":["how it is","with doze"],"default":"how it is"},"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { at: Number(props.moment ?? 0), doze: (props.view ?? 'how it is') === 'with doze' };
+  }
+  renderVals() {
+    const scenes = [{"time":"9:02","label":"Which terminal?","meter":[7,0,9,0]},{"time":"9:20","label":"Port roulette","meter":[7,8,9,0]},{"time":"10:05","label":"The fan","meter":[7,8,9,0]},{"time":"11:30","label":"Ask the AI","meter":[7,8,9,0]},{"time":"14:00","label":"Back after months","meter":[7,8,9,0]},{"time":"18:40","label":"Close the lid","meter":[7,8,9,23]}];
+    const names = ["commands to remember","ports to keep in your head","files to read before you start","still running when you close the lid"];
+    const dozeMeter = [1,0,1,0];
+    const dozeNote = ["doze up","every service has a name","doze.hcl","everything idle is asleep"];
+    const at = this.state.at, doze = this.state.doze, end = at >= scenes.length;
+    const go = (i, d) => () => this.setState({ at: i, doze: d });
+    const stops = scenes.map((s, i) => ({ time: s.time, label: s.label, pick: go(i, false), pressed: i === at ? 'true' : 'false', cls: i === at ? 'on' : (i < at ? 'done' : '') }))
+      .concat([{ time: '19:00', label: 'The same day, twice', pick: go(scenes.length, false), pressed: end ? 'true' : 'false', cls: end ? 'on' : '' }]);
+    const cur = scenes[Math.min(at, scenes.length - 1)].meter;
+    const meter = names.map((name, i) => doze
+      ? { n: dozeMeter[i], name, note: dozeNote[i], color: '#F0A24B' }
+      : { n: cur[i], name, note: '', color: cur[i] ? '#FF9AA8' : '#5A4168' });
+    const v = { inDay: !end, end, before: !doze, doze, segBefore: doze ? '' : 'on', segDoze: doze ? 'on d' : '',
+      meterTitle: doze ? 'The mess meter, with doze' : 'The mess meter, so far today' };
+    scenes.forEach((_, i) => { v['s' + i] = !end && i === at; });
+    return {
+      stops, meter, v,
+      toBefore: () => this.setState({ doze: false }),
+      toDoze: () => this.setState({ doze: true }),
+      next: () => this.setState(doze ? { at: at + 1, doze: false } : { doze: true }),
+      prev: () => this.setState(doze ? { doze: false } : { at: Math.max(0, at - 1), doze: true }),
+      nextLabel: doze ? (at === scenes.length - 1 ? 'See the whole day →' : 'Next moment →') : 'Now with doze →',
+      restart: () => this.setState({ at: 0, doze: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

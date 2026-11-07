@@ -7,16 +7,14 @@
       "ref": "main",
       "path": "website/src/content/docs",
       "links": "absolute",
-      "keep": [
-        "/registry",
-        "/schema"
-      ],
+      "keep": ["/registry", "/schema"],
       "copy": {
         "website/public/schema": "schema"
       },
-      "also": [
-        "website/src/assets"
-      ]
+      "also": ["website/src/assets"],
+      "files": {
+        "website/public/llms.txt": "llms.txt"
+      }
     },
     {
       "name": "aws",
@@ -31,9 +29,7 @@
       "ref": "main",
       "path": "docs",
       "links": "relative",
-      "exclude": [
-        "reports/**"
-      ]
+      "exclude": ["reports/**"]
     }
   ]
 }

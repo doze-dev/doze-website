@@ -1,0 +1,11 @@
+# Module builds on GitHub (doze-dev/doze-modules, one release per module, files uploaded per version).
+# "in index" = listed in the signed registry index today. Builds not in the index are not resolvable by doze.
+postgres 0.1.0 2026-06-27 · 0.1.1 2026-06-28 · 0.2.0 2026-07-02 · 0.2.1 2026-07-02 (in index) · 0.2.2 2026-07-03 (in index) · 0.2.3 2026-07-03 (in index) · 0.2.4 2026-11-02 (in index, newest) · 0.2.5 2026-11-03 (built, not in index)
+valkey 0.1.0 2026-06-28 · 0.2.0 2026-07-02 · 0.2.1 2026-07-02 (in index, newest) · 0.2.2 2026-11-03 (built, not in index)
+kafka 0.1.0 2026-07-17 (in index) · 0.1.1 2026-07-18 (in index, newest)
+aws 0.1.0 2026-07-18 (in index) · 0.1.1 2026-07-18 (in index, newest)
+ferret 0.2.0 2026-07-02 · 0.2.1 2026-07-02 (in index) · 0.2.2 2026-07-03 (in index) · 0.2.3 2026-11-02 (in index, newest) · 0.2.4 2026-11-03 (built, not in index)
+temporal 0.2.0 · 0.2.1 2026-07-02 (in index) · 0.2.2 2026-07-04 (in index, newest) · 0.2.3 2026-11-03 (built, not in index)
+mariadb 0.2.0 · 0.2.1 2026-07-02 (in index, newest) · 0.2.2 2026-11-03 (built, not in index)
+kvrocks 0.1.0 · 0.2.0 · 0.2.1 2026-07-02 (in index, newest) · 0.2.2 2026-11-03 (built, not in index)
+doze releases: v0.1.0 2026-07-02 · v0.1.1 2026-07-02 (newest). Local main is far ahead; the next doze release is [0.2.0].

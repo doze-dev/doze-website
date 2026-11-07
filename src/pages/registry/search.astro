@@ -1,0 +1,157 @@
+---
+// Registry search (designs: RegistrySearch, RegistryNoResults). Reads ?q= and
+// searches /registry/search.json in the browser (registry-search.ts); results are
+// grouped and each says why it matched. Both states are drawn here.
+import "../../components/registry/FindBase.css";
+import RegistryBar from "../../components/RegistryBar.astro";
+import { extensions } from "../../data/extensions";
+import { tools } from "../../data/tools";
+import Page from "../../layouts/Page.astro";
+import { modules } from "../../lib/registry";
+
+const kinds = [
+  ["mods", "Modules"],
+  ["byo", "Bring your own"],
+  ["exts", "Postgres extensions"],
+  ["docs", "Docs"],
+] as const;
+const tries = ["redis", "pgvector", "mongodb", "s3", "mysql"];
+---
+<Page title="Registry search" description="Search doze's modules, Postgres extensions, bring-your-own tools and docs." theme="light" current="registry">
+  <RegistryBar section="none" />
+  <div class="rg">
+    <div class="rg-wrap">
+      <!-- results -->
+      <div data-rs-results hidden>
+        <h1 class="rg-h1" style="padding-top: 36px">Results for <span data-rs-q></span></h1>
+        <div class="rs-body">
+          <aside aria-label="Narrow the results">
+            <div class="rs-row" style="justify-content: space-between; gap: 10px">
+              <p style="margin: 0; font-size: 15px"><b data-rs-total>0 results</b> in the registry and docs</p>
+              <button class="rg-btn sec rg-filters-btn" type="button" aria-controls="rs-facets" aria-expanded="false" data-rs-filters-btn><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" /></svg>Filters</button>
+            </div>
+            <div class="rs-facets" id="rs-facets">
+              <div class="rg-facet" style="margin-top: 14px">
+                <h3>Kind</h3>
+                {kinds.map(([k, label]) => <label class="rg-opt" data-rs-kind-opt={k}><input type="checkbox" checked data-rs-kind={k} /><span>{label}</span><span class="n" data-rs-kind-n={k}>0</span></label>)}
+              </div>
+              <div class="rg-facet">
+                <h3>Matched on</h3>
+                <span class="rg-small" style="line-height: 1.7">alias · name · description · extension · tool. Each result says which.</span>
+              </div>
+            </div>
+          </aside>
+          <div class="rs-groups" data-rs-groups></div>
+        </div>
+      </div>
+
+      <!-- nothing found -->
+      <div class="rs-none" data-rs-none hidden>
+        <section class="rs-col" style="gap: 12px; max-width: 780px">
+          <span class="rg-eyebrow">0 results</span>
+          <h1 class="rg-h1">Nothing in the registry for <span data-rs-q></span>.</h1>
+          <p class="rg-lead">No module, Postgres extension or bring-your-own tool is called <span data-rs-q></span>, has it as an alias, or mentions it. That's {modules.length} modules, {extensions.length} extensions, {tools.length} tools and the docs searched.</p>
+          <div class="rg-note" style="margin-top: 4px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 1px"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+            <span data-rs-near></span>
+          </div>
+        </section>
+
+        <section aria-labelledby="ways" class="rs-col" style="gap: 16px">
+          <h2 class="rg-h2" id="ways">Three ways forward</h2>
+          <div class="nr-ways">
+            <article class="rg-panel nr-card" style="gap: 16px">
+              <div class="rs-row" style="gap: 12px"><span class="nr-num">1</span><h3 class="rg-h3">Run it yourself, today</h3><span class="rg-chip ok" style="margin-left: auto">Works today</span></div>
+              <p class="rg-p">doze runs anything with a port as a <code class="rg-mono" style="font-size: 13.5px">service</code>. <code class="rg-mono" style="font-size: 13.5px">doze add</code> with a name it doesn't know writes the generic block: a download to fill in.</p>
+              <div class="rg-code"><div class="rg-code-top"><span>terminal</span><button class="rg-copy" type="button" data-rs-copy-add>Copy</button></div><pre data-rs-term></pre></div>
+              <div class="rg-code"><div class="rg-code-top"><span>doze.hcl, as written: fill in download and run</span></div><pre data-rs-block></pre></div>
+              <ul class="nr-lines">
+                <li><code>download</code><span>Put the real archive URL here. doze fetches it once and pins its sha256 in doze.lock; a changed file is refused.</span></li>
+                <li><code>run</code><span data-rs-runline></span></li>
+                <li data-rs-portline><code>port</code><span>What doze listens on and wakes it for. $HOST, $PORT and $DATA are filled in at run time.</span></li>
+                <li><code>--as container</code><span data-rs-container></span></li>
+              </ul>
+              <p class="rg-small" style="margin: 0">doze still gives it a name, a port, sleep and wake, and logs. It isn't signed by doze. <a href="/registry/tools/">How bring-your-own works</a></p>
+            </article>
+
+            <div class="rs-col" style="gap: 18px; min-width: 0">
+              <article class="rg-panel nr-card">
+                <div class="rs-row" style="gap: 12px"><span class="nr-num">2</span><h3 class="rg-h3">Ask for a module</h3></div>
+                <p class="rg-p">Say what you'd run it for and which version. A module means doze pins the engine, signs it, and declares its databases in doze.hcl.</p>
+                <p class="rg-small" style="margin: 0">doze-dev.com keeps no search log, so a missing module only gets noticed when someone asks.</p>
+                <a class="rg-btn sec" href="https://github.com/doze-dev/doze/discussions" style="align-self: flex-start">Open a GitHub discussion
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a>
+              </article>
+              <article class="rg-panel nr-card">
+                <div class="rs-row" style="gap: 12px"><span class="nr-num">3</span><h3 class="rg-h3">Write one</h3></div>
+                <p class="rg-p">A module is a Go plugin that speaks doze's module protocol 1. The official ones are open source to copy from: six in doze-modules, doze AWS and doze Kafka in their own repositories.</p>
+                <p class="rg-small" style="margin: 0">Outside publishers aren't open yet; the publish page says how it will work.</p>
+                <a class="rg-btn sec" href="/registry/publish/" style="align-self: flex-start">Publish a module →</a>
+              </article>
+              <div class="rg-sunk" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
+                <b style="font-size: 14px">Try instead</b>
+                <span class="rg-small" style="color: #4A3D55">Searches that find things: {tries.map((t, i) => <>{i > 0 && " · "}<a href={`/registry/search/?q=${t}`}>{t}</a></>)}</span>
+                <a href="/registry/" style="font-size: 14px; font-weight: 600">Browse all modules →</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- no query (or no script) -->
+      <section class="rs-empty rs-col" data-rs-empty style="gap: 12px">
+        <span class="rg-eyebrow">Search the registry</span>
+        <h1 class="rg-h1">Search modules, extensions and tools.</h1>
+        <p class="rg-lead">Type in the box above: a module, a Postgres extension, a tool or what it's compatible with. Try {tries.map((t, i) => <>{i > 0 && (i === tries.length - 1 ? " or " : ", ")}<a href={`/registry/search/?q=${t}`}>{t}</a></>)}.</p>
+        <noscript><p class="rg-p">Search runs in your browser and needs JavaScript. <a href="/registry/">Browse all modules</a> instead.</p></noscript>
+      </section>
+    </div>
+  </div>
+</Page>
+
+<script>import "../../scripts/registry-search.ts";</script>
+
+<style>
+  .rs-col { display: flex; flex-direction: column; }
+  .rs-row { display: flex; align-items: center; }
+  .rs-body { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; align-items: start; padding: 32px 0 56px; }
+  .rs-groups { display: flex; flex-direction: column; gap: 34px; min-width: 0; }
+  .rs-groups :global(.rs-group) { display: flex; flex-direction: column; gap: 12px; }
+  .rs-groups :global(.rs-group[hidden]) { display: none; }
+  .rs-groups :global(.rs-group > header) { display: flex; align-items: baseline; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid #eadfd3; }
+  .rs-groups :global(.rs-group > header h2) { margin: 0; font: 600 13px var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; color: #4a3d55; }
+  .rs-groups :global(.rs-group > header span) { font: 13px var(--font-mono); color: #6e5f79; }
+  .rs-groups :global(.rs-res) { display: grid; grid-template-columns: 44px minmax(0, 1fr) 250px; gap: 16px; align-items: start; padding: 18px; }
+  .rs-groups :global(.rs-main) { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .rs-groups :global(.rs-line) { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .rs-groups :global(.rs-meta) { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .rs-groups :global(.rs-doc) { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: #fff; border: 1px solid #eadfd3; border-radius: 12px; color: #140c1b; }
+  .rs-groups :global(.rs-doc:hover) { border-color: #dccfc2; text-decoration: none; }
+  .rs-groups :global(.rs-crumb) { font: 13px var(--font-mono); color: #6e5f79; }
+  .rs-groups :global(.rs-byo) { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .rs-none { padding-top: 40px; padding-bottom: 72px; display: flex; flex-direction: column; gap: 32px; }
+  .rs-none[hidden] { display: none; }
+  .rs-empty { padding: 40px 0 72px; max-width: 780px; }
+  .rs-empty[hidden] { display: none; }
+  .nr-ways { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .nr-card { padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .nr-num { width: 28px; height: 28px; border-radius: 50%; background: #140c1b; color: #fffaf4; display: flex; align-items: center; justify-content: center; font: 700 14px var(--font-display); flex: none; }
+  .nr-lines { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .nr-lines li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; font-size: 14px; line-height: 1.5; color: #4a3d55; }
+  .nr-lines li[hidden] { display: none; }
+  .nr-lines li > code { font: 13px var(--font-mono); color: #140c1b; background: #fff4e8; border-radius: 5px; padding: 2px 6px; align-self: start; justify-self: start; white-space: nowrap; }
+  .nr-lines :global(code.bare) { background: transparent; padding: 0; font: 13px var(--font-mono); }
+  @media (max-width: 1000px) {
+    .rs-groups :global(.rs-res) { grid-template-columns: 44px minmax(0, 1fr); }
+    .rs-groups :global(.rs-res .rs-meta) { grid-column: 2; }
+    .nr-ways { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 760px) {
+    .rs-body { grid-template-columns: 1fr; gap: 18px; padding-top: 20px; }
+    .rs-groups :global(.rs-res) { grid-template-columns: 1fr; padding: 16px; }
+    .rs-groups :global(.rs-res .rs-meta) { grid-column: auto; }
+    .rs-facets { display: none; }
+    .rs-facets:global(.open) { display: block; }
+    .nr-lines li { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>

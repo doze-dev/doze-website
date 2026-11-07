@@ -1,0 +1,366 @@
+---
+// A module's overview (design: RegistryModule, and RegistryTooOld for "your doze
+// is too old"), for every module in the index. Postgres carries the board's copy
+// (src/data/module-extras.ts); every other module is built from its index entry
+// and meta.yaml, and leaves out what can't be grounded.
+import "../../../../components/module/overview.css";
+import "../../../../components/module/tooold.css";
+import ModuleHead from "../../../../components/ModuleHead.astro";
+import {
+  base,
+  display,
+  dozeThresholds,
+  engineLabel,
+  engineMajors,
+  exampleBlock,
+  hcl,
+  lockEntry,
+  lockHtml,
+  modulePaths,
+  range,
+  relHref,
+  startBlock,
+} from "../../../../components/module/lib";
+import TooOld from "../../../../components/module/TooOld.astro";
+import RegistryBar from "../../../../components/RegistryBar.astro";
+import { extensions } from "../../../../data/extensions";
+import { extrasFor } from "../../../../data/module-extras";
+import Page from "../../../../layouts/Page.astro";
+import { fmtDate, getModule, look, registry, runsOn, semverGte } from "../../../../lib/registry";
+import { hrefFor } from "../../../../routes";
+
+export const getStaticPaths = modulePaths;
+
+const m = getModule(Astro.params.module as string)!;
+const x = extrasFor(m.name);
+const rels = m.releases;
+const newest = rels[0];
+const name = display(m);
+const k = (s: string) => hcl(s, "rm-k", "rm-s", "rm-c");
+
+// Start: the block from the module's own example; then its own full example.
+const start = startBlock(m);
+const example = exampleBlock(m);
+const recipes =
+  x.recipes?.items ??
+  (example
+    ? [
+        {
+          title: `The ${name} example, complete`,
+          body: `The example the module ships in its own description (meta.yaml), in doze 0.2's <code class="rm-ic">module</code> syntax.`,
+          blocks: [{ label: "doze.hcl", aria: `Copy the ${m.name} example`, code: example }],
+        },
+      ]
+    : []);
+const recipesLede = x.recipes?.lede ?? "Paste it over the block above and keep what you need.";
+
+// Recipe copy that names live facts.
+const pgMajors = m.name === "postgres" ? engineMajors(m) : [];
+const fill = (s: string) =>
+  s
+    .replace("{newest18}", pgMajors.find((g) => g.major === "18")?.newest ?? "[newest 18.x]")
+    .replace("{builds}", String(registry.engines.postgres?.versions.length ?? ""));
+
+// Install rail: one block per release; the select shows one.
+const runAdd = `doze add ${m.name}`;
+const hclAdd = startBlock(m, { port: true });
+const engines = (r: (typeof rels)[number]) => engineLabel(m, r, x.engineLabel);
+const anyMin = rels.some((r) => r.doze);
+
+// Too old: one state per range of doze versions in which the newest release doesn't run.
+const ts = ["0.0.0", ...dozeThresholds(rels)];
+const buckets = newest?.doze
+  ? ts
+      .map((lo, i) => ({ lo, hi: ts[i + 1] ?? "999.0.0" }))
+      .filter((b) => !runsOn(newest, b.lo))
+      .map((b) => ({ ...b, pick: rels.find((r) => runsOn(r, b.lo)) ?? null, old: !semverGte(b.lo, "0.2.0") }))
+  : [];
+
+const exts = x.extensions
+  ? ["vector", "pg_cron", "postgis", "timescaledb", "pgmq", "pg_search"]
+      .map((n) => extensions.find((e) => e.name === n)!)
+      .filter(Boolean)
+  : [];
+const pgRange = (cells: { state: string }[]) => {
+  const ok = cells.map((c, i) => (c.state === "coming" || c.state === "planned" ? 14 + i : 0)).filter(Boolean);
+  return ok.length ? (ok.length === 1 ? `PG ${ok[0]} only` : `PG ${ok[0]}–${ok[ok.length - 1]}`) : "";
+};
+const tick =
+  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
+const keyShort = `${registry.key.key.slice(0, 8)}…${registry.key.key.slice(-5)}`;
+const firstEngines = newest ? engines(newest) : "";
+const homepage = m.meta.homepage ?? "https://github.com/doze-dev/doze-modules";
+const srcLabel = homepage.replace("https://github.com/doze-dev/", "").replace("/tree/main/", "/");
+---
+<Page title={`${name} · registry`} description={m.meta.tagline} theme="light" current="registry">
+  <RegistryBar section="modules" />
+  <ModuleHead module={m} tab="overview" />
+
+  <div class="mo" data-thresholds={buckets.length ? "1" : undefined}>
+    {buckets.map((b) => <TooOld module={m} lo={b.lo} hi={b.hi} pick={b.pick} old={b.old} />)}
+
+    <div class="rm-page mo-normal">
+      <div class="rm-wrap">
+        <div class="rm-main" style="display: contents">
+          <section class="rm-sec rm-a" aria-labelledby="start">
+            <div class="rm-head">
+              <h2 id="start">Start</h2>
+              <p class="rm-lede">{x.startLede ?? `A few lines in doze.hcl give you ${name}. Nothing starts until something connects.`}</p>
+            </div>
+            <div class="rm-two">
+              <div class="rm-step">
+                <span class="rm-lbl">1 · In doze.hcl</span>
+                <div class="rm-codebox">
+                  <div class="rm-codebar"><span>doze.hcl</span><button class="rm-copy" type="button" aria-label={`Copy the ${m.name} block`} data-copy={start}>Copy</button></div>
+                  <pre class="rm-code" set:html={k(start)} />
+                </div>
+              </div>
+              {x.app && (
+                <div class="rm-step">
+                  <span class="rm-lbl">2 · Hand your app the URL</span>
+                  <div class="rm-codebox">
+                    <div class="rm-codebar"><span>doze.hcl</span><button class="rm-copy" type="button" aria-label="Copy the app block" data-copy={x.app.code}>Copy</button></div>
+                    <pre class="rm-code" set:html={k(x.app.code)} />
+                  </div>
+                </div>
+              )}
+            </div>
+            {x.app && <p class="rm-after" set:html={x.app.after} />}
+            {!x.app && m.meta.port && <p class="rm-after">It listens on port <code class="rm-ic">{m.meta.port}</code>. <code class="rm-ic">doze env</code> prints its address for tools outside doze.hcl.</p>}
+
+            {x.connect && (
+              <div class="rm-step">
+                <span class="rm-lbl">3 · Connect</span>
+                <div class="rm-codebox" data-tabs>
+                  <div class="rm-tabrow">
+                    <div class="rm-tabs" role="tablist" aria-label="Connect from">
+                      {x.connect.tabs.map((t, i) => (
+                        <button type="button" role="tab" id={`ct-${t.id}`} aria-controls={`cp-${t.id}`} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1}>{t.label}</button>
+                      ))}
+                    </div>
+                    <div><button class="rm-copy" type="button" aria-label={x.connect.tabs[0].copy} data-copy-from={`#cp-${x.connect.tabs[0].id}`} data-tab-copy>Copy</button></div>
+                  </div>
+                  {x.connect.tabs.map((t, i) => (
+                    <pre class="rm-code" role="tabpanel" id={`cp-${t.id}`} aria-labelledby={`ct-${t.id}`} data-copy-label={t.copy} hidden={i !== 0} set:html={t.html} />
+                  ))}
+                </div>
+                <p class="rm-sum" set:html={x.connect.summary} />
+              </div>
+            )}
+          </section>
+
+          <div class="rm-main rm-c">
+            {recipes.length > 0 && (
+              <section class="rm-sec" aria-labelledby="recipes">
+                <div class="rm-head">
+                  <h2 id="recipes">{x.recipes ? "Recipes" : "A fuller setup"}</h2>
+                  <p class="rm-lede">{recipesLede}</p>
+                </div>
+                <div class="rm-recipes">
+                  {recipes.map((r: any) => (
+                    <article class:list={["rm-panel rm-recipe", !x.recipes && "rm-recipe-wide"]}>
+                      <div class="rm-r-t">
+                        {r.aside ? (
+                          <div class:list={["rm-rhead", "chip" in r.aside && "rm-wrapc"]}>
+                            <h3>{r.title}</h3>
+                            {"chip" in r.aside ? <span class="rm-chip rm-info">{r.aside.chip}</span> : <a href={r.aside.href}>{r.aside.text}</a>}
+                          </div>
+                        ) : <h3>{r.title}</h3>}
+                        <p set:html={fill(r.body)} />
+                        {r.link && <a class="rm-rlink" href={r.link.href}>{fill(r.link.text)}</a>}
+                      </div>
+                      <div class="rm-r-c">
+                        {r.blocks.map((b: any) => (
+                          <div class="rm-codebox">
+                            <div class="rm-codebar"><span>{b.label}</span><button class="rm-copy" type="button" aria-label={b.aria} data-copy={b.lang === "shell" ? b.code.replace(/^\$ /gm, "") : b.code}>Copy</button></div>
+                            <pre class="rm-code" set:html={b.lang === "shell" ? b.code.split("\n").map((l: string) => l.replace(/^\$ /, '<span class="rm-p">$</span> ')).join("\n") : k(b.code)} />
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {exts.length > 0 && (
+              <section class="rm-sec" aria-labelledby="extensions">
+                <div class="rm-xhead">
+                  <div class="rm-head">
+                    <h2 id="extensions">Extensions</h2>
+                    <p class="rm-lede">{extensions.length} extensions by name, coming in postgres 0.3: doze fetches each for your Postgres major and platform. Contrib ones (pg_trgm, uuid-ossp, hstore, citext) ship with Postgres and work now.</p>
+                  </div>
+                  <a href={hrefFor("RegistryExtensions.dc.html")}>All {extensions.length} extensions</a>
+                </div>
+                <div class="rm-exts">
+                  {exts.map((e) => (
+                    <a class="rm-panel rm-ext" href={`/registry/doze/postgres/extensions/${e.name}/`}>
+                      <code>{e.name}</code>
+                      <p>{e.what}.</p>
+                      <div class="rm-meta">
+                        <span class="rm-chip rm-dim">{pgRange(e.cells)}</span>
+                        {e.preload !== "yes" || /GPL/.test(e.licence) ? <span class="rm-chip rm-dim">{e.licence}</span> : null}
+                        {e.preload === "yes" && <span class="rm-chip rm-warn">Preloads</span>}
+                      </div>
+                    </a>
+                  ))}
+                </div>
+                <p class="rm-cap">Preloads: doze adds it to shared_preload_libraries and restarts the instance once when the set changes.</p>
+              </section>
+            )}
+
+            {x.does && (
+              <section class="rm-sec" aria-labelledby="does">
+                <h2 id="does">What doze does for you</h2>
+                <div class="rm-does">
+                  {x.does.map((d) => (
+                    <div><Fragment set:html={d.icon} /><span><b>{d.title}</b><p set:html={d.body} /></span></div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <section class="rm-sec" aria-labelledby="quality">
+              <div class="rm-head">
+                <h2 id="quality">Quality</h2>
+                <p class="rm-lede">Each line says where it comes from, so you can check it.</p>
+              </div>
+              <ul class="rm-panel rm-qa">
+                <li><span class="rm-tick" set:html={tick} /><span><b>Signed by doze-dev</b><p>ed25519 key <code>{keyShort}</code>, compiled into doze, over every file and over the whole index. <a href={hrefFor("RegistryTrust.dc.html")}>How signing works</a></p></span><span class="rm-chip rm-dim">signed index</span></li>
+                {newest && (
+                  <li><span class="rm-tick" set:html={tick} /><span><b>{newest.platforms.length === 3 ? "Three platforms" : `${newest.platforms.length} platforms`}</b><p>macOS arm64, Linux x86_64, Linux arm64, each with its own sha256, in every release.</p></span><span class="rm-chip rm-dim">signed index</span></li>
+                )}
+                {newest?.engines.length > 0 && (
+                  <li><span class="rm-tick" set:html={tick} /><span><b>Conformance-tested on {firstEngines}</b><p>{x.conformance ?? "Every argument on the Reference tab converged into a running engine, once per supported version, before a release is signed."}</p></span><span class="rm-chip rm-info">doze-modules CI · new</span></li>
+                )}
+                <li><span class="rm-tick" set:html={tick} /><span><b>Every example on this page parsed by doze</b><p>By doze 0.2 with <code>doze lint --offline</code>, on every change to the registry.</p></span><span class="rm-chip rm-info">registry CI · new</span></li>
+                <li><span class="rm-tick" set:html={tick} /><span><b>Source linked</b><p><a href={homepage}>{srcLabel}</a>, Apache-2.0{engineMajors(m).length > 0 && <>; {look[m.name]?.engine ?? name} builds from <a href="https://github.com/doze-dev/doze-binaries">doze-binaries</a></>}.</p></span><span class="rm-chip rm-dim">GitHub</span></li>
+              </ul>
+            </section>
+          </div>
+        </div>
+
+        <aside class="rm-rail" aria-label="Install and compatibility">
+          <section class="rm-panel rm-rail-box" aria-labelledby="install" data-install>
+            <h2 id="install" class="rm-h20">Install</h2>
+            <div class="rm-sel">
+              <label for="rel">Module release</label>
+              <select id="rel">
+                {rels.map((r, i) => <option value={r.version} selected={i === 0}>{r.version}{i === 0 ? " (newest)" : ""}</option>)}
+              </select>
+              {rels.map((r, i) => (
+                <div class="rm-chips" data-rel={r.version} hidden={i !== 0}>
+                  {r.doze ? <span class="rm-chip rm-warn">Needs doze {r.doze}</span> : <span class="rm-chip rm-dim">Runs on any doze</span>}
+                  <span>{fmtDate(r.date)} · {engines(r)}</span>
+                </div>
+              ))}
+            </div>
+            <div class="rm-col">
+              <span class="rm-lbl">Run</span>
+              <div class="rm-run">
+                <code><span>$</span> {runAdd}</code>
+                <button class="rm-copy" type="button" aria-label={`Copy ${runAdd}`} data-copy={runAdd}>Copy</button>
+              </div>
+            </div>
+            <div class="rm-col">
+              <span class="rm-lbl">It writes to doze.hcl <small>[doze add will name it {m.name}: to build]</small></span>
+              <div class="rm-codebox"><pre class="rm-code rm-hcl" set:html={k(hclAdd)} /></div>
+            </div>
+            <div class="rm-col">
+              <div class="rm-lockhead"><span class="rm-lbl">And to doze.lock, on first use</span><button class="rm-copy rm-light" type="button" aria-label="Copy the doze.lock entry" data-copy={newest ? lockEntry(m, newest) : ""} data-lock-copy>Copy</button></div>
+              <div class="rm-codebox">
+                {rels.map((r, i) => (
+                  <pre class="rm-code rm-lock" data-rel={r.version} data-lock={lockEntry(m, r)} hidden={i !== 0} set:html={lockHtml(lockEntry(m, r, { hash: (h) => `${h.slice(0, 4)}…` }), "rm-s")} />
+                ))}
+              </div>
+            </div>
+            <p class="rm-pinned"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg><span><b>Pinned forever.</b> Only <code>doze modules upgrade</code> moves it.</span></p>
+          </section>
+
+          <section class="rm-panel rm-rail-box" aria-labelledby="compat">
+            <div class="rm-ch"><h2 id="compat" class="rm-h20">Compatibility</h2><a href={`${base(m)}versions/`}>Versions</a></div>
+            <div style="overflow-x: auto">
+              <table class="rm-mini">
+                <thead><tr><th scope="col">Release</th><th scope="col">Needs doze</th><th scope="col">Engines</th></tr></thead>
+                <tbody>
+                  {x.coming && <tr><td class="rm-coming">{x.coming.short} <span>coming</span></td><td>{x.coming.doze}</td><td>{range(x.coming.engines)} + extensions</td></tr>}
+                  {rels.map((r) => <tr><td><a href={relHref(m, r.version)} style="color: inherit">{r.version}</a></td><td>{r.doze ?? "any"}</td><td>{r.engines.length ? range(r.engines) : "—"}</td></tr>)}
+                </tbody>
+              </table>
+            </div>
+            <p class="rm-foot">"any": the release sets no minimum and runs on doze 0.1.0 and up.{anyMin && <> <a href="?doze=0.1.1" data-doze-pick="0.1.1">On doze 0.1.1?</a></>}</p>
+          </section>
+
+          <section class="rm-rail-box rm-tele" aria-labelledby="tele">
+            <h2 id="tele">No download counts</h2>
+            <p>We don't count downloads: doze sends nothing home.</p>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </div>
+</Page>
+
+<script>
+  // Install rail: the release select switches the shown chips and doze.lock entry.
+  for (const box of document.querySelectorAll<HTMLElement>("[data-install]")) {
+    const sel = box.querySelector<HTMLSelectElement>("select")!;
+    const copy = box.querySelector<HTMLButtonElement>("[data-lock-copy]")!;
+    const show = () => {
+      for (const el of box.querySelectorAll<HTMLElement>("[data-rel]")) el.hidden = el.dataset.rel !== sel.value;
+      const pre = box.querySelector<HTMLElement>(`pre[data-rel="${sel.value}"]`);
+      if (pre) copy.dataset.copy = pre.dataset.lock;
+    };
+    sel.addEventListener("change", show);
+    show();
+  }
+
+  // Connect tabs: arrow keys move between tabs; Copy follows the shown panel.
+  for (const box of document.querySelectorAll<HTMLElement>("[data-tabs]")) {
+    const tabs = [...box.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const copy = box.querySelector<HTMLButtonElement>("[data-tab-copy]")!;
+    const pick = (t: HTMLButtonElement, focus = false) => {
+      for (const o of tabs) {
+        const on = o === t;
+        o.setAttribute("aria-selected", String(on));
+        o.tabIndex = on ? 0 : -1;
+        const panel = box.querySelector<HTMLElement>(`#${o.getAttribute("aria-controls")}`)!;
+        panel.hidden = !on;
+        if (on) {
+          copy.dataset.copyFrom = `#${panel.id}`;
+          copy.setAttribute("aria-label", panel.dataset.copyLabel ?? "Copy");
+        }
+      }
+      if (focus) t.focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", () => pick(t));
+      t.addEventListener("keydown", (e) => {
+        const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (d) pick(tabs[(i + d + tabs.length) % tabs.length], true);
+      });
+    });
+  }
+
+  // Too old: show the state for the reader's doze (set by doze-check.ts on <html data-doze>).
+  const root = document.querySelector<HTMLElement>(".mo[data-thresholds]");
+  if (root) {
+    const older = (a: string, b: string) => {
+      const pa = a.split(".").map(Number), pb = b.split(".").map(Number);
+      for (let i = 0; i < 3; i++) if (pa[i] !== pb[i]) return pa[i] < pb[i];
+      return false;
+    };
+    const apply = () => {
+      const v = document.documentElement.dataset.doze;
+      let any = false;
+      for (const el of root.querySelectorAll<HTMLElement>("[data-lo]")) {
+        const on = !!v && !older(v, el.dataset.lo!) && older(v, el.dataset.hi!);
+        el.hidden = !on;
+        any ||= on;
+      }
+      root.querySelector<HTMLElement>(".mo-normal")!.hidden = any;
+    };
+    new MutationObserver(apply).observe(document.documentElement, { attributes: true, attributeFilter: ["data-doze"] });
+    apply();
+  }
+</script>

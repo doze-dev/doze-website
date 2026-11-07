@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Page not found · doze</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+.nf{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#F4ECE4;background:#140C1B;min-height:100%}
+.nf a{color:#F0A24B;text-decoration:none}.nf a:hover{color:#FFC27A}
+.nf :focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+.nf code,.nf pre{font-variant-ligatures:none}
+.nf-wrap{max-width:1240px;margin:0 auto;padding:96px 32px;display:flex;flex-direction:column;gap:72px}
+.nf-eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.nf-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:80px;line-height:.98;letter-spacing:-0.04em;text-wrap:balance;max-width:12ch}
+.nf-lede{margin:0;font-size:20px;line-height:1.55;color:#D6C8DF;max-width:36rem}
+.nf-p{margin:0;font-size:16px;line-height:1.6;color:#C9BAD3}
+.nf-label{margin:0;font:600 13px Geist,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9C8AAB}
+.nf-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:center}
+.nf-hero > *{min-width:0}
+.nf-stage{position:relative;display:flex;justify-content:center}
+.nf-glow{position:absolute;inset:6% 4% 0;border-radius:50%;background:radial-gradient(closest-side,rgba(240,162,75,0.22),rgba(240,162,75,0));pointer-events:none}
+.nf-bat{position:relative;width:420px;max-width:100%;height:auto}
+.nf-search{display:flex;align-items:center;gap:10px;background:#1E1328;border:1px solid #4A3458;border-radius:14px;min-height:60px;padding:0 8px 0 16px;box-sizing:border-box;max-width:560px}
+.nf-search:focus-within{border-color:#F0A24B}
+.nf-search input{flex:1;min-width:0;background:transparent;border:0;color:#F4ECE4;font:17px Geist,sans-serif;height:52px;outline:none}
+.nf-search input::placeholder{color:#9C8AAB}
+.nf-kbd{font:12px 'JetBrains Mono',monospace;color:#C9BAD3;border:1px solid #4A3458;border-radius:6px;padding:3px 7px}
+.nf-go{flex:none;height:44px;padding:0 18px;border-radius:10px;border:0;background:#F0A24B;color:#2A1534;font:600 15px Geist,sans-serif;cursor:pointer}
+.nf-go:hover{background:#FFB866}
+.nf-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.nf-term{margin:0;max-width:560px;box-sizing:border-box;font:13px/1.75 'JetBrains Mono',monospace;background:#120A18;border:1px solid #2E1F3A;border-radius:16px;padding:18px 20px;color:#D6C8DF;white-space:pre;overflow-x:auto}
+.nf-term .pr,.nf-term .c{color:#9C8AAB}.nf-term .e{color:#FF9AA8}
+.nf-pop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.nf a.nf-card{display:flex;flex-direction:column;gap:10px;background:#1E1328;border:1px solid #34233F;border-radius:18px;padding:22px;color:#F4ECE4;box-sizing:border-box}
+.nf a.nf-card:hover{border-color:#7A5E8C;color:#FFFFFF}
+.nf-card b{font-size:18px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nf-card span{font-size:15px;line-height:1.5;color:#C9BAD3}
+.nf-moved{display:flex;gap:16px;align-items:flex-start;background:#1A1022;border:1px solid #5A3E1E;border-radius:18px;padding:22px 24px}
+.nf-moved > div{min-width:0;display:flex;flex-direction:column;gap:6px}
+.nf-moved code{font-family:'JetBrains Mono',monospace;font-size:14px;color:#F4ECE4;background:#120A18;border:1px solid #2E1F3A;border-radius:6px;padding:1px 6px;white-space:nowrap}
+.nf .nf-link{display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+.nf-ic{width:20px;height:20px;flex:none}
+@media (max-width:1000px){.nf-pop{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.nf-hero{grid-template-columns:minmax(0,1fr);gap:24px}.nf-stage{order:-1}.nf-bat{width:240px}}
+@media (max-width:600px){
+  .nf-wrap{padding:40px 32px 72px;gap:56px}
+  .nf-h1{font-size:48px}.nf-lede{font-size:18px}
+  .nf-pop{grid-template-columns:minmax(0,1fr)}
+  .nf-kbd{display:none}
+  .nf-search input{font-size:16px}
+  .nf-term{font-size:12px;padding:16px}
+}
+</style>
+</helmet>
+<div class="nf">
+  <dc-import name="SiteHeader" theme="dark" current="none" hint-size="100%,72px"></dc-import>
+
+  <main class="nf-wrap">
+    <section class="nf-hero" aria-labelledby="nf-title">
+      <div style="display: flex; flex-direction: column; gap: 22px">
+        <span class="nf-eyebrow">404 · page not found</span>
+        <h1 id="nf-title" class="nf-h1">This page is asleep.</h1>
+        <p class="nf-lede">Nothing woke it, because it doesn't exist. The address may be mistyped, or the page moved when the site did.</p>
+
+        <form role="search" action="DocsHome.dc.html">
+          <label class="nf-sr" for="nf-q">Search doze-dev.com</label>
+          <div class="nf-search">
+            <svg class="nf-ic" viewBox="0 0 24 24" fill="none" stroke="#9C8AAB" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+            <input id="nf-q" name="q" type="search" placeholder="Search doze-dev.com">
+            <span class="nf-kbd" aria-hidden="true">/</span>
+            <button class="nf-go" type="submit">Search</button>
+          </div>
+        </form>
+
+        <pre class="nf-term" aria-label="The same thing, the way doze would say it"><span class="pr">$</span> doze wake this-page
+<span class="e">no page named "this-page"</span>
+<span class="c">did you mean: download, docs,</span>
+<span class="c">  registry, examples?</span>
+<span class="c"># exit 4: nothing declares it</span></pre>
+      </div>
+
+      <div class="nf-stage">
+        <div class="nf-glow" aria-hidden="true"></div>
+        <svg class="nf-bat" width="420" height="380" viewBox="0 0 420 380" role="img" aria-label="A bat asleep, hanging upside down from a branch, with z's drifting up">
+          <path d="M28 70 Q210 36 392 74" fill="none" stroke="#6B4F7A" stroke-width="9" stroke-linecap="round"/>
+          <path d="M318 62 q22 -26 48 -20 q-14 26 -48 20z" fill="#4A6B4F"/>
+          <path d="M84 62 q-16 -22 -40 -18 q10 22 40 18z" fill="#4A6B4F"/>
+          <path d="M196 58 L198 92 M224 58 L222 92" stroke="#3A2448" stroke-width="7" stroke-linecap="round"/>
+          <path d="M210 86 C156 88 124 140 132 204 C138 246 166 270 210 274 C254 270 282 246 288 204 C296 140 264 88 210 86 Z" fill="#3A2448" stroke="#5A4168" stroke-width="2"/>
+          <path d="M210 94 Q176 166 156 248 M210 94 Q244 166 264 248 M210 94 L210 262" fill="none" stroke="#2A1534" stroke-width="3" stroke-linecap="round"/>
+          <path d="M184 300 L174 340 L198 310 Z M236 300 L246 340 L222 310 Z" fill="#3A2448" stroke="#5A4168" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="210" cy="284" r="36" fill="#3A2448" stroke="#5A4168" stroke-width="2"/>
+          <path d="M190 278 q7 7 14 0 M216 278 q7 7 14 0" fill="none" stroke="#D6C8DF" stroke-width="3" stroke-linecap="round"/>
+          <path d="M204 294 q6 4 12 0" fill="none" stroke="#9C8AAB" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="276" y="250" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="26" fill="#F0A24B" opacity="0.55">z</text>
+          <text x="306" y="206" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="38" fill="#F0A24B" opacity="0.8">z</text>
+          <text x="344" y="150" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="54" fill="#F0A24B">z</text>
+        </svg>
+      </div>
+    </section>
+
+    <section aria-labelledby="nf-pop-title" style="display: flex; flex-direction: column; gap: 18px">
+      <h2 id="nf-pop-title" class="nf-label">Where people usually mean to go</h2>
+      <div class="nf-pop">
+        <a class="nf-card" href="Download.dc.html"><b>Download <span aria-hidden="true" style="color: #F0A24B">→</span></b><span>The app for Apple silicon, or the CLI for Mac and Linux.</span></a>
+        <a class="nf-card" href="DocsHome.dc.html"><b>Docs <span aria-hidden="true" style="color: #F0A24B">→</span></b><span>doze, doze AWS and doze Kafka, searchable in one place.</span></a>
+        <a class="nf-card" href="Registry.dc.html"><b>Registry <span aria-hidden="true" style="color: #F0A24B">→</span></b><span>Signed modules: Postgres, Valkey, Kafka, AWS and more.</span></a>
+        <a class="nf-card" href="Examples.dc.html"><b>Examples <span aria-hidden="true" style="color: #F0A24B">→</span></b><span>Larder, a grocery service you can run in one command.</span></a>
+      </div>
+    </section>
+
+    <aside class="nf-moved" aria-label="The docs moved">
+      <svg class="nf-ic" viewBox="0 0 24 24" fill="none" stroke="#F0A24B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-top: 3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <div>
+        <b style="font-size: 17px">Followed a link from doze.nerdmenot.in?</b>
+        <p class="nf-p" style="font-size: 15px">The docs moved to <code>doze-dev.com/docs/doze</code>. Most old links are sent there for you; this one slipped through.</p>
+        <p class="nf-p" style="font-size: 15px"><code>doze.nerdmenot.in/registry</code> keeps serving older doze, so a 0.1.1 install still finds its modules.</p>
+        <a class="nf-link" href="DozeDocs.dc.html">Open the doze docs →</a>
+      </div>
+    </aside>
+  </main>
+
+  <dc-import name="SiteFooter" theme="dark" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1560}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Download doze</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+.dl{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#F4ECE4;background:#140C1B;min-height:100%}
+.dl a{color:#F0A24B;text-decoration:none}.dl a:hover{color:#FFC27A}
+.dl :focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+.dl code,.dl pre{font-variant-ligatures:none}
+.dl-wrap{max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px}
+.dl-sec{padding-top:96px;padding-bottom:96px}
+.dl-band{background:#1A1022;border-top:1px solid #2E1F3A;border-bottom:1px solid #2E1F3A}
+.dl-eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.dl-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:80px;line-height:.98;letter-spacing:-0.04em;text-wrap:balance}
+.dl-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:50px;line-height:1.04;letter-spacing:-0.03em;text-wrap:balance}
+.dl-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px;line-height:1.2;letter-spacing:-0.01em}
+.dl-lede{margin:0;font-size:20px;line-height:1.55;color:#D6C8DF;max-width:44rem}
+.dl-p{margin:0;font-size:16px;line-height:1.6;color:#C9BAD3}
+.dl-dim{color:#9C8AAB}
+.dl-small{font-size:14px;line-height:1.55;color:#C9BAD3}
+.dl-ic{width:20px;height:20px;flex:none}
+.dl-label{margin:0;font:600 13px Geist,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9C8AAB}
+.dl-ic-code{font-family:'JetBrains Mono',monospace;font-size:14px;color:#F4ECE4;background:#120A18;border:1px solid #2E1F3A;border-radius:6px;padding:1px 6px;white-space:nowrap}
+.dl .dl-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px;box-sizing:border-box}
+.dl .dl-lamp{background:#F0A24B;color:#2A1534}.dl .dl-lamp:hover{background:#FFB866;color:#2A1534}
+.dl .dl-ghost{border:1px solid #4A3458;color:#F4ECE4}.dl .dl-ghost:hover{border-color:#7A5E8C;color:#FFFFFF}
+.dl .dl-link{display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+.dl-copy{flex:none;height:44px;min-width:60px;padding:0 12px;border-radius:9px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer}
+.dl-copy:hover{border-color:#7A5E8C}
+.dl-cmd{display:flex;align-items:center;gap:8px;background:#1E1328;border:1px solid #4A3458;border-radius:12px;min-height:56px;padding:0 6px 0 16px;box-sizing:border-box}
+.dl-cmd code{flex:1;min-width:0;font:15px 'JetBrains Mono',monospace;color:#F4ECE4;white-space:pre;overflow-x:auto;padding:12px 0}
+.dl-pr{color:#9C8AAB}
+.dl-pre-box{display:flex;align-items:flex-start;gap:4px;background:#120A18;border:1px solid #2E1F3A;border-radius:16px;min-width:0}
+.dl-pre-box .dl-copy{margin:8px 8px 8px 0}
+.dl-pre{margin:0;font:14px/1.75 'JetBrains Mono',monospace;color:#D6C8DF;white-space:pre;overflow-x:auto;padding:18px 22px}
+.dl-pre-box .dl-pre{flex:1;min-width:0;padding-right:8px}
+.dl-pre .c{color:#9C8AAB}.dl-pre .s{color:#8BE39B}
+.dl-chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.dl-chip-good{color:#8BE39B;border:1px solid #2F5A3A;background:#14251A}
+.dl-chip-info{color:#9DC7FF;border:1px solid #2C3F66;background:#141B2C}
+.dl-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+.dl-hero > *{min-width:0}
+.dl-mac{position:relative;overflow:hidden;background:#1E1328;border:1px solid #4A3458;border-radius:24px;padding:36px;display:flex;flex-direction:column;gap:22px;box-sizing:border-box}
+.dl-glow{position:absolute;right:-120px;top:-140px;width:420px;height:420px;border-radius:50%;background:radial-gradient(closest-side,rgba(240,162,75,0.30),rgba(240,162,75,0));pointer-events:none}
+.dl-tile{width:64px;height:64px;flex:none;border-radius:14px}
+.dl-facts{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:#C9BAD3}
+.dl-gets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.dl-gets div{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;color:#D6C8DF;background:#140C1B;border:1px solid #2E1F3A;border-radius:12px;padding:12px 14px}
+.dl-gets svg{flex:none;margin-top:2px}
+.dl-side{display:flex;flex-direction:column;gap:20px}
+.dl-mini{background:#1A1022;border:1px solid #2E1F3A;border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box}
+.dl-pkgs{display:flex;flex-direction:column;gap:8px}
+.dl-pkg{display:flex;align-items:center;gap:10px;font-size:14px;color:#C9BAD3}
+.dl-pkg b{min-width:44px;color:#F4ECE4;font-weight:600}
+.dl-pkg span{font:13px 'JetBrains Mono',monospace;color:#C9BAD3;border:1px solid #34233F;border-radius:8px;padding:5px 9px;background:#140C1B;white-space:nowrap}
+.dl-row{display:flex;flex-direction:column;gap:6px;padding:12px 0;border-top:1px solid #2E1F3A}
+.dl-row:first-child{border-top:0;padding-top:0}
+.dl-req{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#2E1F3A;border:1px solid #2E1F3A;border-radius:20px;overflow:hidden}
+.dl-req > div{background:#1A1022;padding:22px 24px;display:flex;flex-direction:column;gap:8px}
+.dl-req b{font-size:16px}
+.dl-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+.dl-two > *{min-width:0}
+.dl-does{display:flex;gap:16px;align-items:flex-start;padding:20px 0;border-top:1px solid #2E1F3A}
+.dl-does:first-child{border-top:0;padding-top:0}
+.dl-does > div{min-width:0;display:flex;flex-direction:column;gap:6px}
+.dl-n{flex:none;width:28px;height:28px;border-radius:8px;background:#2A1C10;border:1px solid #5A3E1E;color:#F0A24B;font:600 13px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center}
+.dl-card{background:#1E1328;border:1px solid #34233F;border-radius:20px;padding:28px;box-sizing:border-box}
+.dl-undo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:32px;align-items:start}
+.dl-undo > *{min-width:0}
+.dl-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.dl-step{background:#1E1328;border:1px solid #34233F;border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box;min-width:0}
+.dl-num{width:36px;height:36px;border-radius:10px;background:#2A1C36;border:1px solid #4A3458;color:#F0A24B;font:700 16px 'Bricolage Grotesque',sans-serif;display:flex;align-items:center;justify-content:center}
+.dl-step .dl-pre{font-size:13px;padding:14px 16px}
+
+.dl-from{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.dl-from > *{min-width:0}
+.dl-bracket{font-family:'JetBrains Mono',monospace;font-size:13px;color:#F0A24B}
+.dl-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:1100px){.dl-req{grid-template-columns:repeat(2,minmax(0,1fr))}.dl-steps{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:980px){.dl-hero,.dl-two,.dl-undo,.dl-from{grid-template-columns:minmax(0,1fr)}.dl-two{gap:40px}}
+@media (max-width:600px){
+  .dl-wrap{padding-left:32px;padding-right:32px}
+  .dl-sec{padding-top:64px;padding-bottom:64px}
+  .dl-h1{font-size:48px}.dl-h2{font-size:34px}.dl-lede{font-size:18px}
+  .dl-mac{padding:22px}.dl-mini,.dl-card,.dl-step{padding:22px}
+  .dl-tile{width:48px;height:48px;border-radius:12px}
+  .dl-gets,.dl-req{grid-template-columns:minmax(0,1fr)}
+  .dl-stack{flex-direction:column !important;align-items:stretch !important}
+  .dl-cmd code{font-size:13px}.dl-pre{font-size:12.5px}
+}
+</style>
+</helmet>
+<div class="dl">
+  <dc-import name="SiteHeader" theme="dark" current="download" hint-size="100%,72px"></dc-import>
+
+  <main>
+  <section class="dl-wrap" style="padding-top: 72px; padding-bottom: 36px; display: flex; flex-direction: column; gap: 18px">
+    <span class="dl-eyebrow">Download</span>
+    <h1 class="dl-h1" style="max-width: 15ch">Get doze. Keep your fans quiet.</h1>
+    <p class="dl-lede">One app and one command line for your whole local stack. Free, Apache-2.0, no account. We guessed your machine from your browser; the others are right beside it.</p>
+  </section>
+
+  <section class="dl-wrap" style="padding-bottom: 32px">
+    <div class="dl-hero">
+      <div class="dl-mac" aria-labelledby="dl-mac-title">
+        <div class="dl-glow" aria-hidden="true"></div>
+        <div style="display: flex; align-items: center; gap: 16px; position: relative">
+          <img class="dl-tile" src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="">
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+            <span class="dl-chip dl-chip-good" style="align-self: flex-start">Looks like your Mac</span>
+            <h2 id="dl-mac-title" class="dl-h3" style="font-size: 30px">Download doze for Mac</h2>
+          </div>
+        </div>
+        <p class="dl-p" style="position: relative; font-size: 17px">Doze.app for Apple silicon: the window, the bat in your menu bar, and <code class="dl-ic-code">doze</code> on your PATH. Quit the app and your stacks keep running.</p>
+        <div class="dl-stack" style="display: flex; gap: 14px 18px; flex-wrap: wrap; align-items: center; position: relative">
+          <a class="dl-btn dl-lamp" href="https://github.com/doze-dev/doze/releases/latest">
+            <svg class="dl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+            Download Doze-0.2.0.dmg
+          </a>
+          <div class="dl-facts">
+            <span>Version <b style="color: #F4ECE4">0.2</b> · [0.2 release date]</span>
+            <span>[MB]</span>
+            <span>Apple silicon</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; position: relative">
+          <span class="dl-small dl-dim">Or with Homebrew</span>
+          <div class="dl-cmd"><code><span class="dl-pr">$ </span>brew install --cask doze-dev/tap/doze</code><button class="dl-copy" type="button" aria-label="Copy: brew install --cask doze-dev/tap/doze">Copy</button></div>
+        </div>
+        <div class="dl-gets" style="position: relative" aria-label="In the app">
+          <div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8BE39B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span>Every stack in one Library, with a switch each</span></div>
+          <div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8BE39B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span>Tiles, List or Map: see what's awake</span></div>
+          <div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8BE39B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span>⌘K across every stack</span></div>
+        </div>
+      </div>
+
+      <div class="dl-side">
+        <div class="dl-mini" aria-labelledby="dl-linux-title">
+          <h2 id="dl-linux-title" class="dl-h3">Linux</h2>
+          <p class="dl-p" style="font-size: 15px">x86_64 and arm64. The CLI runs on any glibc distribution. The app's packages are built and being tested on real desktops. <span class="dl-bracket">[deb and rpm at launch: confirm]</span></p>
+          <div class="dl-pkgs" aria-label="Packages">
+            <div class="dl-pkg"><b>App</b><span>.deb</span><span>.rpm</span></div>
+            <div class="dl-pkg"><b>CLI</b><span>.tar.gz</span><span>Homebrew</span></div>
+          </div>
+          <div class="dl-cmd" style="border-style: dashed"><code><span class="dl-pr">$ </span>curl -fsSL https://doze-dev.com/install.sh | sh</code></div>
+          <span class="dl-bracket">[install.sh: placeholder, not built yet]</span>
+          <a class="dl-link" href="https://github.com/doze-dev/doze/releases/latest">Linux files on GitHub →</a>
+        </div>
+        <div class="dl-mini" aria-labelledby="dl-cli-title">
+          <h2 id="dl-cli-title" class="dl-h3">Just the command line</h2>
+          <p class="dl-p" style="font-size: 15px">For servers, CI and terminal people. Same <code class="dl-ic-code">doze</code>, no window. Install the formula or the cask, not both: they conflict.</p>
+          <div>
+            <div class="dl-row"><span class="dl-small dl-dim">Homebrew</span><div class="dl-cmd"><code>brew install doze-dev/tap/doze</code><button class="dl-copy" type="button" aria-label="Copy: brew install doze-dev/tap/doze">Copy</button></div></div>
+            <div class="dl-row"><span class="dl-small dl-dim">mise</span><div class="dl-cmd"><code>mise use -g ubi:doze-dev/doze</code><button class="dl-copy" type="button" aria-label="Copy: mise use -g ubi:doze-dev/doze">Copy</button></div></div>
+            <div class="dl-row"><span class="dl-small dl-dim">Tarball or source</span><span class="dl-small">Archives and <code class="dl-ic-code">checksums.txt</code> on <a href="https://github.com/doze-dev/doze/releases/latest" style="display: inline-block; min-height: 44px; line-height: 44px">GitHub releases</a>. From source: clone the repo, then <code class="dl-ic-code">make build</code> (Go 1.27+ and bun). <code class="dl-ic-code">go install</code> is not a way in: the module carries a replace for a patched Wails.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dl-wrap" style="padding-top: 24px; padding-bottom: 40px" aria-labelledby="dl-req-title">
+    <h2 id="dl-req-title" class="dl-label" style="margin-bottom: 16px">Will it run on mine?</h2>
+    <div class="dl-req">
+      <div><span style="color: #8BE39B" aria-hidden="true">●</span><b>macOS 14 Sonoma or later</b><span class="dl-small">On Apple silicon (M1 and newer).</span></div>
+      <div><span style="color: #8BE39B" aria-hidden="true">●</span><b>Linux, x86_64 and arm64</b><span class="dl-small">glibc distributions. The app needs WebKitGTK 4.1.</span></div>
+      <div><span style="color: #FF9AA8" aria-hidden="true">●</span><b>No Intel Mac</b><span class="dl-small">The engines are built for Apple silicon only. Use a Linux VM.</span></div>
+      <div><span style="color: #9C8AAB" aria-hidden="true">●</span><b>Windows via WSL2</b><span class="dl-small">Install the Linux CLI inside WSL2.</span></div>
+    </div>
+  </section>
+
+  <section class="dl-wrap" style="padding-bottom: 96px" aria-labelledby="dl-from-title">
+    <div class="dl-card" style="display: flex; flex-direction: column; gap: 20px; border-color: #5A3E1E">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h2 id="dl-from-title" class="dl-h3">Coming from 0.1.1?</h2>
+        <p class="dl-p" style="font-size: 15px">Update doze first, then your modules. 0.1.1 can't read a module release's oldest-doze field, so <code class="dl-ic-code">doze modules upgrade</code> on 0.1.1 could pick a release it can't run.</p>
+      </div>
+      <div class="dl-from">
+        <div class="dl-pre-box"><pre class="dl-pre" aria-label="Upgrade commands"><span class="dl-pr">$</span> brew upgrade doze
+<span class="dl-pr">$</span> doze modules upgrade</pre><button class="dl-copy" type="button" aria-label="Copy the upgrade commands">Copy</button></div>
+        <div class="dl-small" style="display: flex; flex-direction: column; gap: 8px">
+          <span>Your doze.hcl needs the new words, and doze says which line:</span>
+          <span><code class="dl-ic-code">postgres "db" {}</code> becomes <code class="dl-ic-code">module postgres "db" {}</code></span>
+          <span><code class="dl-ic-code">idle_timeout</code> becomes <code class="dl-ic-code">sleep</code>, and the default is 2 minutes, not 5.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dl-band">
+    <div class="dl-wrap dl-sec">
+      <div class="dl-two">
+        <div style="display: flex; flex-direction: column; gap: 16px">
+          <span class="dl-eyebrow">No surprises</span>
+          <h2 class="dl-h2">What the installer does to your machine.</h2>
+          <p class="dl-lede" style="font-size: 18px">Three things, all listed here, all undone by four commands. No kernel extension, no telemetry. The app asks GitHub for a newer doze only when you open Settings › About.</p>
+        </div>
+        <div>
+          <div class="dl-does"><span class="dl-n">1</span><div><b style="font-size: 17px">Copies Doze.app to Applications</b><span class="dl-p" style="font-size: 15px">The window and the bat in your menu bar.</span></div></div>
+          <div class="dl-does"><span class="dl-n">2</span><div><b style="font-size: 17px">Puts <code class="dl-ic-code">doze</code> on your PATH</b><span class="dl-p" style="font-size: 15px">A link to the binary inside the app, so the CLI and the app are always the same version.</span></div></div>
+          <div class="dl-does"><span class="dl-n">3</span><div><b style="font-size: 17px">Asks for your password once, for .doze names</b><span class="dl-p" style="font-size: 15px">So <code class="dl-ic-code">gateway.larder.doze</code> reaches your gateway, and two projects can both use port 5432. On a Mac it adds two things:</span>
+            <ul style="margin: 4px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; color: #C9BAD3; font-size: 15px; line-height: 1.55">
+              <li><code class="dl-ic-code">/etc/resolver/doze</code>, which sends the .doze zone to doze's resolver and nothing else.</li>
+              <li><code class="dl-ic-code">dev.doze.netd</code>, a small network daemon that gives each service a loopback address of its own.</li>
+            </ul>
+            <span class="dl-p" style="font-size: 15px">On Linux: the <code class="dl-ic-code">doze-netd</code> systemd unit and a drop-in for your DNS manager. doze AWS and doze Kafka share it: whichever you run first sets it up for all three. Skip it and everything runs on 127.0.0.1.</span>
+          </div></div>
+          <div class="dl-does"><span class="dl-n">+</span><div><b style="font-size: 17px">Only if you declare your own domain</b><span class="dl-p" style="font-size: 15px"><code class="dl-ic-code">doze trust</code> makes a certificate authority for this machine. Its key stays in <code class="dl-ic-code">~/.doze/ca</code>, readable by you alone.</span></div></div>
+        </div>
+      </div>
+
+      <div class="dl-card dl-undo" style="margin-top: 56px">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 class="dl-h3">Take it all back</h3>
+          <p class="dl-p" style="font-size: 15px">Run these in order. The last one deletes every engine, every module and every project's data under <code class="dl-ic-code">~/.doze</code>, so keep it for when you mean it.</p>
+          <p class="dl-small" style="margin: 4px 0 0">Still on 0.1.1? It installed none of the above:</p>
+          <div class="dl-pre-box"><pre class="dl-pre" aria-label="Uninstall doze 0.1.1"><span class="dl-pr">$</span> brew uninstall doze
+<span class="dl-pr">$</span> rm -rf ~/.doze</pre><button class="dl-copy" type="button" aria-label="Copy the 0.1.1 uninstall commands">Copy</button></div>
+        </div>
+        <div class="dl-pre-box"><pre class="dl-pre" aria-label="Uninstall commands"><span class="dl-pr">$</span> doze dns-setup --uninstall  <span class="c"># resolver file, daemon</span>
+<span class="dl-pr">$</span> doze trust --remove         <span class="c"># if you used domains</span>
+<span class="dl-pr">$</span> brew uninstall --cask doze
+<span class="dl-pr">$</span> rm -rf ~/.doze              <span class="c"># all data</span></pre><button class="dl-copy" type="button" aria-label="Copy the uninstall commands">Copy</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dl-wrap dl-sec" aria-labelledby="dl-verify-title">
+    <div class="dl-two">
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <span class="dl-eyebrow">Trust, but check</span>
+        <h2 id="dl-verify-title" class="dl-h2">Verify your download.</h2>
+        <p class="dl-lede" style="font-size: 18px">Every release on GitHub carries <code class="dl-ic-code" style="font-size: 16px">checksums.txt</code> with the sha256 of each file. Doze.app is signed with a Developer ID and notarised by Apple, so it opens without a warning.</p>
+        <p class="dl-p">Engines and modules that doze downloads later are signed too, and checked before they run.</p>
+        <a class="dl-link" href="RegistryTrust.dc.html">How signing works →</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <div class="dl-pre-box"><pre class="dl-pre" aria-label="Check the checksums"><span class="c"># in the folder you downloaded to</span>
+<span class="dl-pr">$</span> shasum -a 256 -c checksums.txt \
+    --ignore-missing
+Doze-0.2.0.dmg: <span class="s">OK</span></pre><button class="dl-copy" type="button" aria-label="Copy the checksum command">Copy</button></div>
+        <div class="dl-pre-box"><pre class="dl-pre" aria-label="Check the app signature"><span class="dl-pr">$</span> spctl -a -vv /Applications/Doze.app
+<span class="c"># accepted</span>
+<span class="c"># source=Notarized Developer ID</span>
+<span class="c"># origin=Developer ID Application:</span>
+<span class="c">#   [team name]</span></pre><button class="dl-copy" type="button" aria-label="Copy the signature check">Copy</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dl-band">
+    <div class="dl-wrap dl-sec" style="display: flex; flex-direction: column; gap: 36px">
+      <div style="display: flex; flex-direction: column; gap: 14px; max-width: 46rem">
+        <span class="dl-eyebrow">Then</span>
+        <h2 class="dl-h2">Your first stack in five minutes.</h2>
+        <p class="dl-lede" style="font-size: 18px">The first <code class="dl-ic-code" style="font-size: 16px">doze up</code> downloads the engines it needs, so give it a minute. After that it starts in seconds, and works offline.</p>
+      </div>
+      <div class="dl-steps">
+        <div class="dl-step"><span class="dl-num">1</span><h3 class="dl-h3" style="font-size: 21px">Install</h3><p class="dl-p" style="font-size: 15px">The app above, or the CLI on its own.</p><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> brew install --cask \
+    doze-dev/tap/doze</pre><button class="dl-copy" type="button" aria-label="Copy the install command">Copy</button></div></div>
+        <div class="dl-step"><span class="dl-num">2</span><h3 class="dl-h3" style="font-size: 21px">Point it at a project</h3><p class="dl-p" style="font-size: 15px"><code class="dl-ic-code">doze init</code> reads your repo and writes a doze.hcl. Or borrow Larder, a grocery service in Go, Python and TypeScript.</p><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> cd your-project
+<span class="dl-pr">$</span> doze init</pre><button class="dl-copy" type="button" aria-label="Copy the init commands">Copy</button></div><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> git clone \
+    https://github.com/doze-dev/doze-examples
+<span class="dl-pr">$</span> cd doze-examples/larder</pre><button class="dl-copy" type="button" aria-label="Copy the Larder clone commands">Copy</button></div></div>
+        <div class="dl-step"><span class="dl-num">3</span><h3 class="dl-h3" style="font-size: 21px">Bring it up</h3><p class="dl-p" style="font-size: 15px">Everything starts in order, then dozes when nothing is using it. For Larder, stock the shelves once.</p><div class="dl-pre-box"><pre class="dl-pre"><span class="dl-pr">$</span> doze up
+<span class="dl-pr">$</span> doze task seed-catalog</pre><button class="dl-copy" type="button" aria-label="Copy the up commands">Copy</button></div></div>
+      </div>
+      <div class="dl-stack" style="display: flex; gap: 12px; flex-wrap: wrap">
+        <a class="dl-btn dl-ghost" href="Examples.dc.html">Tour Larder</a>
+        <a class="dl-btn dl-ghost" href="DocsHome.dc.html">Read the docs</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="dl-wrap" style="padding-top: 56px; padding-bottom: 88px">
+    <div class="dl-card dl-stack" style="display: flex; justify-content: space-between; align-items: center; gap: 16px 24px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <b style="font-size: 18px">What's in each release</b>
+        <span class="dl-p" style="font-size: 15px">Newest: doze 0.2, [0.2 release date].</span>
+      </div>
+      <div class="dl-stack" style="display: flex; gap: 0 24px; flex-wrap: wrap; align-items: center">
+        <a class="dl-link" href="Changelog.dc.html">Changelog →</a>
+        <a class="dl-link" href="https://github.com/doze-dev/doze/releases">Older versions on GitHub →</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <dc-import name="SiteFooter" theme="dark" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5120}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

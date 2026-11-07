@@ -1,0 +1,55 @@
+---
+// Starlight PageTitle override: breadcrumbs from Docs down, the version chip
+// with a link to older docs, the page's path, the title, and the page's
+// description as its lede (boards: DozeDocs, AwsDocs, KafkaDocs).
+import { docsProducts, productFor } from "./products";
+
+// Starlight links "Overview" in the contents to this id.
+const PAGE_TITLE_ID = "_top";
+
+const { entry, sidebar } = Astro.locals.starlightRoute;
+const path = Astro.url.pathname;
+const product = productFor(path) ?? docsProducts[0];
+const isIndex = path === product.href;
+
+type Entry = (typeof sidebar)[number];
+// The groups that hold the current page: ["Guides", "Recipes"].
+const trail = (entries: Entry[]): string[] | undefined => {
+  for (const e of entries) {
+    if (e.type === "link") {
+      if (e.isCurrent) return [];
+    } else {
+      const inner = trail(e.entries);
+      if (inner) return [e.label, ...inner];
+    }
+  }
+  return undefined;
+};
+const groups = isIndex ? [] : (trail(sidebar) ?? []);
+const shownPath = path.replace(/\/$/, "");
+---
+<div class="dz-head">
+  <div class="dz-head-row" data-pagefind-ignore>
+    <nav class="dz-crumbs" aria-label="Breadcrumb">
+      <a href="/docs/">Docs</a>
+      <span aria-hidden="true">›</span>
+      {isIndex ? <span aria-current="page" class="dz-crumb-now">{product.name}</span> : <a href={product.href}>{product.name}</a>}
+      {groups.map((g) => (
+        <>
+          <span aria-hidden="true">›</span>
+          <span>{g}</span>
+        </>
+      ))}
+      {!isIndex && (
+        <>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page" class="dz-crumb-now">{entry.data.title}</span>
+        </>
+      )}
+    </nav>
+    <span class="dz-ver"><span class="dz-vchip">{product.version}</span><a href={product.older.href}>{product.older.label}</a></span>
+  </div>
+  <span class="dz-urlpath" data-pagefind-ignore>{shownPath}</span>
+  <h1 id={PAGE_TITLE_ID}>{entry.data.title}</h1>
+  {entry.data.description && <p class="dz-lede">{entry.data.description}</p>}
+</div>

@@ -1,0 +1,119 @@
+---
+// Starlight PageFrame override: the boards' docs frame (DozeDocs, AwsDocs,
+// KafkaDocs). The site header on top, then one 1240px column: the docs
+// sidebar (product switcher, search, the section's pages) beside the page,
+// and the site footer below. Under 900px the switcher, search and pages
+// fold into one bar (a splash page, which has no page list, still gets the
+// switcher and search); "Pages" opens the page list as a popover, as
+// Starlight's own mobile menu does.
+import Search from "@astrojs/starlight/components/Search.astro";
+import SiteFooter from "../SiteFooter.astro";
+import { docsProducts, productFor } from "./products";
+
+const { hasSidebar } = Astro.locals.starlightRoute;
+const current = productFor(Astro.url.pathname) ?? docsProducts[0];
+const chevron = "m6 9 6 6 6-6";
+---
+<div class="dz-page">
+  <slot name="header" />
+  <div class="dz-wrap">
+    <nav class="dz-side print:hidden" aria-label={`${current.name} docs`}>
+      <div class="dz-sw-box" role="group" aria-label="Choose a product's docs">
+        <span class="dz-sw-h">Docs for</span>
+        {docsProducts.map((p) => (
+          <a class:list={["dz-sw", { "dz-sw-on": p === current }]} href={p.href} aria-current={p === current ? "true" : undefined}>
+            <img src={p.logo} alt="" width="28" height="28" />
+            <span class="dz-sw-t"><b>{p.name}</b><span class="dz-sw-path">{p.href.replace(/\/$/, "")}</span></span>
+          </a>
+        ))}
+      </div>
+      <div class="dz-bar">
+        <details class="dz-sw-m">
+          <summary aria-label={`${current.name} docs: switch product`}>
+            <img src={current.logo} alt="" width="22" height="22" />
+            <span>{current.name}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={chevron} /></svg>
+          </summary>
+          <div class="dz-sw-m-list">
+            {docsProducts.map((p) => (
+              <a class:list={["dz-sw", { "dz-sw-on": p === current }]} href={p.href} aria-current={p === current ? "true" : undefined}>
+                <img src={p.logo} alt="" width="28" height="28" />
+                <span class="dz-sw-t"><b>{p.name}</b><span class="dz-sw-path">{p.href.replace(/\/$/, "")}</span></span>
+              </a>
+            ))}
+          </div>
+        </details>
+        <div class="dz-srch">
+          <Search />
+          <span class="dz-srch-ph" aria-hidden="true">Search the docs</span>
+        </div>
+        {hasSidebar && (
+          <button type="button" class="dz-pages" popovertarget="starlight__sidebar">
+            Pages
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={chevron} /></svg>
+          </button>
+        )}
+      </div>
+      {hasSidebar && <dz-sidebar-pane popover="auto" id="starlight__sidebar" class="dz-pane">
+        <div class="dz-pane-head">
+          <b>{current.name} pages</b>
+          <button type="button" class="dz-pane-close" popovertarget="starlight__sidebar" popovertargetaction="hide">Close</button>
+        </div>
+        <slot name="sidebar" />
+      </dz-sidebar-pane>}
+    </nav>
+    <div class="dz-frame"><slot /></div>
+  </div>
+  <SiteFooter theme="light" />
+</div>
+
+<script>
+  // The page list is a popover only on phones; on wide screens it is just the
+  // sidebar. Same idea as Starlight's sl-sidebar-pane, at the boards' 900px.
+  class DzSidebarPane extends HTMLElement {
+    connectedCallback() {
+      const wide = matchMedia("(min-width: 900.02px)");
+      const sync = () => {
+        if (wide.matches && this.matches(":popover-open")) this.hidePopover();
+        this.popover = wide.matches ? null : "auto";
+      };
+      sync();
+      wide.addEventListener("change", sync);
+      this.addEventListener("toggle", (e) => {
+        const open = (e as ToggleEvent).newState === "open";
+        document.body.classList.toggle("dz-pane-open", open);
+        if (open) this.querySelector<HTMLElement>('[aria-current="page"]')?.scrollIntoView({ block: "center" });
+      });
+    }
+  }
+  customElements.define("dz-sidebar-pane", DzSidebarPane);
+
+  // Phone tables become stacked cards (docs.css); each cell is labelled with
+  // its column heading. Tables without a header row stay as they are.
+  for (const table of document.querySelectorAll<HTMLTableElement>(".sl-markdown-content table")) {
+    const heads = [...table.querySelectorAll("thead th")].map((th) => th.textContent?.trim() ?? "");
+    if (heads.length < 2) continue;
+    for (const row of table.querySelectorAll("tbody tr"))
+      [...row.children].forEach((td, i) => td.setAttribute("data-l", heads[i] ?? ""));
+    table.classList.add("dz-stack");
+  }
+
+  // /docs/ hands its search box to Starlight's: /docs/doze/?q=postgres opens
+  // the search dialog with the words already typed.
+  const q = new URLSearchParams(location.search).get("q");
+  if (q) {
+    const open = () => {
+      const btn = document.querySelector<HTMLButtonElement>("site-search button[data-open-modal]");
+      if (!btn || btn.disabled) return setTimeout(open, 50);
+      btn.click();
+      const fill = (tries = 0) => {
+        const input = document.querySelector<HTMLInputElement>("#starlight__search input");
+        if (!input) return tries < 100 && setTimeout(() => fill(tries + 1), 50);
+        input.value = q;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+      fill();
+    };
+    open();
+  }
+</script>

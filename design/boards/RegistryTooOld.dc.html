@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PostgreSQL on doze 0.1.1 · doze registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.to-page{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#140C1B;background:#FFFAF4}
+.to-page a{color:#A85A0C;text-decoration:none}.to-page a:hover{text-decoration:underline}
+.to-page code,.to-page pre{font-variant-ligatures:none !important}
+.to-wrap{max-width:1240px;margin:0 auto;padding:36px 32px 96px;display:flex;flex-direction:column;gap:56px}
+.to-page h2{margin:0;font:700 30px/1.15 'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+.to-page h3{margin:0;font:700 22px/1.2 'Bricolage Grotesque',sans-serif;letter-spacing:-0.01em}
+.to-page h4{margin:0;font:600 14px Geist,sans-serif;color:#140C1B}
+.to-p{margin:0;font-size:15px;line-height:1.6;color:#4A3D55}
+.to-sec{display:flex;flex-direction:column;gap:18px}
+.to-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font:600 12px Geist,sans-serif;white-space:nowrap}
+.to-chip.to-good{background:#E6F4EA;color:#1D7A45}.to-chip.to-warn{background:#FFF1D6;color:#8A5300}.to-chip.info{background:#E8EEFC;color:#2F62D9}.to-chip.to-dim{background:#F3ECE4;color:#4A3D55}
+.to-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:16px}
+.to-alert{background:#FFF1D6;border:1px solid #F2D49A;border-radius:18px;padding:28px 30px;display:flex;gap:20px;align-items:flex-start}
+.to-alert-ic{width:48px;height:48px;border-radius:14px;background:#FFFFFF;color:#8A5300;display:flex;align-items:center;justify-content:center;flex:none}
+.to-paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:20px}
+.to-path{padding:26px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.to-codebox{background:#1E1328;border-radius:12px;overflow:hidden;min-width:0}
+.to-codebar{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-bottom:1px solid #34233F}
+.to-codebar span{font:500 12.5px Geist,sans-serif;color:#C9BAD3;flex:1;min-width:0}
+.to-code{margin:0;padding:14px 16px;font:13px/1.7 'JetBrains Mono',monospace;color:#F4ECE4;overflow-x:auto;white-space:pre}
+.to-code .to-k{color:#F0A24B}.to-code .to-s{color:#A8E0B4}.to-code .to-c{color:#B3A2C2}.to-code .to-p{color:#9C8AAB}.to-code .to-e{color:#FF9AA8}.to-code .w{color:#FFD08A}.to-code .to-del{color:#FF9AA8}.to-code .to-add{color:#8BE39B}
+.to-copy{display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 12px Geist,sans-serif;cursor:pointer;flex:none}
+.to-gets{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.to-gets li{display:flex;gap:10px;font-size:14.5px;line-height:1.5;color:#4A3D55}
+.to-gets svg{flex:none;margin-top:3px}
+.to-step{display:flex;flex-direction:column;gap:8px}
+.to-n{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:#140C1B;color:#FFFFFF;font:600 12px Geist,sans-serif;margin-right:8px;vertical-align:1px}
+.to-fails{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:20px}
+.to-fail{padding:0;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.to-fail .to-codebox{border-radius:0}
+.to-fail dl{margin:0;padding:18px 22px 22px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px 12px;font-size:14.5px;line-height:1.55}
+.to-fail dt{font:600 12px Geist,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79;padding-top:2px}
+.to-fail dd{margin:0;color:#4A3D55}
+.to-tw{overflow-x:auto;border:1px solid #EADFD3;border-radius:14px;background:#FFFFFF}
+.to-page table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:640px}
+.to-page th{font:600 11.5px Geist,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79;text-align:left;padding:11px 16px;background:#FFF9F2;border-bottom:1px solid #EADFD3;white-space:nowrap}
+.to-page td{padding:13px 16px;border-top:1px solid #F1E8DE;color:#4A3D55;white-space:nowrap}
+.to-page tbody tr:first-child td{border-top:0}
+.to-page td b{color:#140C1B;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px}
+.to-page tr.to-no td{background:#FBF7F2;color:#6E5F79}
+.to-page tr.to-no td b{color:#6E5F79}
+.to-page tr.to-pick td{background:#F2FAF4}
+.to-page tr.to-pick td:first-child{box-shadow:inset 3px 0 0 #1D7A45}
+.to-cap{margin:0;font-size:13px;line-height:1.55;color:#6E5F79}
+@media (max-width:760px){.to-wrap{padding:24px 32px 72px;gap:44px}.to-alert{flex-direction:column;padding:22px}.to-path{padding:20px}.to-page h2{font-size:26px}.to-copy{height:44px;padding:0 14px}}
+@media (max-width:600px){.to-tw{overflow:visible;border:0;background:transparent}.to-page table{min-width:0}.to-page thead{display:none}.to-page table,.to-page tbody{display:block}.to-page tr{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:14px 16px;margin-bottom:10px;border:1px solid #EADFD3;border-radius:12px;background:#FFFFFF}.to-page td{display:block;border:0 !important;padding:0;white-space:normal}.to-page td:first-child{width:100%}.to-page td:nth-child(3)::before{content:"needs doze ";color:#6E5F79}.to-page td:nth-child(4){width:100%}}
+</style>
+</helmet>
+<div class="to-page">
+  <dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+  <dc-import name="RegistryBar" section="modules" doze="0.1.1" hint-size="100%,120px"></dc-import>
+  <dc-import name="RegistryModuleHead" tab="overview" doze="0.1.1" newest="0.2.5" hint-size="100%,330px"></dc-import>
+
+  <div class="to-wrap">
+    <p style="margin: 0 0 -32px; font-size: 13.5px; color: #4A3D55">The <code style="font: 13px 'JetBrains Mono', monospace">doze add postgres</code> in the header is doze 0.2. On 0.1.1, write the block by hand (below).</p>
+    <!-- THE ANSWER -->
+    <section class="to-alert" aria-labelledby="answer">
+      <span class="to-alert-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.01"/></svg></span>
+      <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+        <h2 id="answer" style="font-size: 30px; max-width: 46rem">The newest release, 0.2.5, needs doze 0.2.0. 0.2.4 runs on your 0.1.1.</h2>
+        <p class="to-p" style="color: #5A3A08; max-width: 52rem">Both run Postgres 14 to 18. 0.2.5 is the newest; 0.2.4 is the newest your doze can run. Pick a path below. Neither touches your data.</p>
+        <p class="to-cap" style="color: #6B4A12">0.2.5 carries <code style="font: 12.5px 'JetBrains Mono', monospace">doze: "0.2.0"</code> in its signed index entry; every release before it sets no minimum.</p>
+      </div>
+    </section>
+
+    <!-- TWO PATHS -->
+    <section class="to-sec" aria-label="Two ways forward">
+      <div class="to-paths">
+        <article class="to-panel to-path" aria-labelledby="up">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap"><h3 id="up">Update doze</h3><span class="to-chip to-good">Recommended</span></div>
+          <div class="to-step">
+            <h4><span class="to-n">1</span>Update</h4>
+            <div class="to-codebox">
+              <div class="to-codebar"><span>doze 0.1.1 is the CLI: update it with Homebrew</span><button class="to-copy" type="button" aria-label="Copy brew upgrade doze">Copy</button></div>
+<pre class="to-code"><span class="to-p">$</span> brew upgrade doze</pre>
+            </div>
+            <p class="to-cap">Update doze first, then move the pin: 0.1.1 can't check a release's minimum, so its <code style="font: 12.5px 'JetBrains Mono', monospace">doze modules upgrade</code> would take 0.2.5 anyway. Want the Mac app too? <code style="font: 12.5px 'JetBrains Mono', monospace">brew install --cask doze-dev/tap/doze</code>; it updates itself from Settings › About.</p>
+          </div>
+          <div class="to-step">
+            <h4><span class="to-n">2</span>Update doze.hcl</h4>
+            <p class="to-p">doze 0.2 names every line to change. Each block gains <code style="font: 13px 'JetBrains Mono', monospace">module</code>; <code style="font: 13px 'JetBrains Mono', monospace">idle_timeout</code> becomes <code style="font: 13px 'JetBrains Mono', monospace">sleep</code>, and the default sleep is 2 minutes (was 5).</p>
+            <div class="to-codebox">
+              <div class="to-codebar"><span>doze.hcl</span></div>
+<pre class="to-code"><span class="to-del">- postgres "postgres" {</span>
+<span class="to-add">+ module postgres "postgres" {</span>
+    version = 18
+  }</pre>
+            </div>
+          </div>
+          <div class="to-step">
+            <h4>What you get</h4>
+            <ul class="to-gets">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span>postgres 0.2.5, and 0.3 with extensions by name when it lands. <a href="RegistryRelease.dc.html">What changed in 0.2.5</a></span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span><code style="font: 13px 'JetBrains Mono', monospace">doze add</code>, <code style="font: 13px 'JetBrains Mono', monospace">doze migrate</code> between Postgres majors, and the desktop app.</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span>From then on, doze picks a release your doze can run, by itself.</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span>Every example on the overview works as written.</span></li>
+            </ul>
+          </div>
+          <div class="to-step">
+            <div class="to-codebox">
+              <div class="to-codebar"><span>then, in your project</span><button class="to-copy" type="button" aria-label="Copy doze modules upgrade postgres">Copy</button></div>
+<pre class="to-code"><span class="to-p">$</span> doze modules upgrade postgres
+<span class="to-c">  moves doze/postgres 0.2.4 → 0.2.5 in doze.lock; commit it</span></pre>
+            </div>
+          </div>
+        </article>
+
+        <article class="to-panel to-path" aria-labelledby="stay">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap"><h3 id="stay">Stay on 0.1.1</h3><span class="to-chip to-dim">Use postgres 0.2.4</span></div>
+          <p class="to-p" style="font-size: 14.5px">From doze 0.2 this happens on its own: doze skips releases that need a newer doze and pins the newest one that runs. doze 0.1.1 came before releases carried a minimum, so it would fetch 0.2.5. Hold postgres at 0.2.4 yourself, in 0.1.1's own syntax:</p>
+          <div style="border: 1px dashed #DCCFC2; border-radius: 12px; padding: 14px 16px; background: #FFFAF4"><h4 style="margin-bottom: 4px">If you don't: doze 0.1.1 fetches 0.2.5 anyway</h4><p class="to-p" style="margin: 0">[what happens then: to test]</p></div>
+          <div class="to-step">
+            <h4><span class="to-n">1</span>Hold the release in doze.hcl</h4>
+            <div class="to-codebox">
+              <div class="to-codebar"><span>doze.hcl, as doze 0.1.1 reads it</span><button class="to-copy" type="button" aria-label="Copy the doze 0.1.1 block">Copy</button></div>
+<pre class="to-code"><span class="to-k">modules</span> {
+  <span class="to-k">module</span> <span class="to-s">"postgres"</span> { version = <span class="to-s">"0.2.4"</span> }
+}
+
+<span class="to-k">postgres</span> <span class="to-s">"postgres"</span> {
+  version = 18
+}</pre>
+            </div>
+          </div>
+          <div class="to-step">
+            <h4><span class="to-n">2</span>doze writes this to doze.lock</h4>
+            <div class="to-codebox">
+              <div class="to-codebar"><span>doze.lock</span><button class="to-copy" type="button" aria-label="Copy the doze.lock entry">Copy</button></div>
+<pre class="to-code" style="font-size: 12.5px">modules:
+    doze/postgres:
+        version: 0.2.4
+        protocol: 1
+        engines:
+            - <span class="to-s">"14"</span>
+            - <span class="to-s">"15"</span>
+            - <span class="to-s">"16"</span>
+            - <span class="to-s">"17"</span>
+            - <span class="to-s">"18"</span>
+        hashes:
+            aarch64-apple-darwin: sha256:a07134…b89a
+            aarch64-unknown-linux-gnu: sha256:f29c48…d2a2
+            x86_64-unknown-linux-gnu: sha256:7c9205…4f68</pre>
+            </div>
+            <div class="to-codebox">
+<pre class="to-code" style="font-size: 12.5px">pinned doze/postgres 0.2.4 in doze.lock — commit the lockfile
+so your team and CI get this exact build</pre>
+            </div>
+          </div>
+          <p class="to-cap" style="margin-top: auto; border-top: 1px dashed #DCCFC2; padding-top: 14px">When you do update: delete the <code style="font: 12.5px 'JetBrains Mono', monospace">modules</code> block. doze 0.2 refuses it ("the modules block is gone") and pins releases itself.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- FAILURE OUTPUT -->
+    <section class="to-sec" aria-labelledby="stops">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h2 id="stops">What doze 0.2 and later print</h2>
+        <p class="to-p" style="max-width: 50rem">From 0.2 on, doze checks each release's minimum. When the next minimum arrives, say a future release that needs doze 0.3.0 while you are on 0.2.0, it says so in one of two ways, word for word:</p>
+      </div>
+      <div class="to-fails">
+        <article class="to-panel to-fail" aria-labelledby="f1">
+          <div class="to-codebox">
+            <div class="to-codebar"><span id="f1">Nothing in the registry runs on this doze</span></div>
+<pre class="to-code" style="white-space: pre-wrap"><span class="to-p">$</span> doze up
+<span class="to-e">error:</span> postgres 18 needs doze 0.3.0 or newer; this doze is 0.2.0. Update doze (in the app: Settings › About), then run the command again</pre>
+          </div>
+          <dl>
+            <dt>Why</dt><dd>doze looked for a postgres release that supports Postgres 18 and runs on your doze, and none does. It names the oldest doze that would work.</dd>
+            <dt>Fix</dt><dd>Update doze: <code style="font: 13px 'JetBrains Mono', monospace">brew upgrade doze</code>, or Settings › About in the app. Run the same command again; nothing else to undo.</dd>
+          </dl>
+        </article>
+        <article class="to-panel to-fail" aria-labelledby="f2">
+          <div class="to-codebox">
+            <div class="to-codebar"><span id="f2">doze.lock was written by a newer doze</span></div>
+<pre class="to-code" style="white-space: pre-wrap"><span class="to-p">$</span> doze up
+<span class="to-e">error:</span> module doze/postgres [0.x.y] (pinned in doze.lock) needs doze 0.3.0 or newer; this doze is 0.2.0. Update doze (in the app: Settings › About); the lock was written by a newer doze</pre>
+          </div>
+          <dl>
+            <dt>Why</dt><dd>A teammate on a newer doze committed doze.lock with a release that needs it. The pin is the team's agreement, so doze will not quietly run something older.</dd>
+            <dt>Fix</dt><dd>Update doze to match your team. Don't edit the pin down: the next commit would move everyone else back too.</dd>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <!-- COMPATIBILITY -->
+    <section class="to-sec" aria-labelledby="compat">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+        <h2 id="compat">Every release against doze 0.1.1</h2>
+        <a href="RegistryVersions.dc.html" style="font-weight: 600; font-size: 15px">All versions and release notes</a>
+      </div>
+      <div class="to-tw">
+        <table>
+          <thead><tr><th scope="col">Release</th><th scope="col">Released</th><th scope="col">Needs doze</th><th scope="col">Engines</th><th scope="col">On your 0.1.1</th></tr></thead>
+          <tbody>
+            <tr class="to-no"><td><b>0.3</b></td><td>[coming]</td><td>0.2.0</td><td>Postgres 14–18 + extensions</td><td><span class="to-chip to-warn">Needs newer doze</span></td></tr>
+            <tr class="to-no"><td><b>0.2.5</b> <span class="to-chip to-dim" style="margin-left: 6px">newest</span></td><td>[publish date]</td><td>0.2.0</td><td>Postgres 14–18</td><td><span class="to-chip to-warn">Needs newer doze</span></td></tr>
+            <tr class="to-pick"><td><b>0.2.4</b></td><td>2 Nov 2026</td><td>any</td><td>Postgres 14–18</td><td><span class="to-chip to-good">Runs · hold it yourself on 0.1.1</span></td></tr>
+            <tr><td><b>0.2.3</b></td><td>3 Jul 2026</td><td>any</td><td>Postgres 14–18</td><td><span class="to-chip to-good">Runs</span></td></tr>
+            <tr><td><b>0.2.2</b></td><td>3 Jul 2026</td><td>any</td><td>Postgres 14–18</td><td><span class="to-chip to-good">Runs</span></td></tr>
+            <tr><td><b>0.2.1</b></td><td>2 Jul 2026</td><td>any</td><td>Postgres 14–18</td><td><span class="to-chip to-good">Runs</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="to-cap">"any": no minimum set, runs on doze 0.1.0 and up. Checking against 0.1.1 because you chose it above. <a href="RegistryModule.dc.html">Stop checking</a></p>
+    </section>
+  </div>
+
+  <dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doze · Publisher · Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.rp code,.rp .rp-mono{font-variant-ligatures:none}
+.rp-tile img{width:26px;height:26px}
+.rp-need{font-size:13px;margin-top:3px}
+.rp{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#140C1B;background:#FFFAF4}
+.rp a{color:#A85A0C;text-decoration:underline;text-underline-offset:2px}
+.rp-wrap{max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px}
+.rp h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;letter-spacing:-0.025em;line-height:1.1;margin:0}
+.rp h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.01em;margin:0;line-height:1.25}
+.rp p{margin:0;line-height:1.6}
+.rp-kick{font:600 13px Geist,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#6E5F79}
+.rp-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font:600 13px Geist,sans-serif;white-space:nowrap}
+.rp-c-good{background:#E6F4EA;color:#1D7A45}.rp-c-warn{background:#FFF1D6;color:#8A5300}.rp-c-info{background:#E8EEFC;color:#2F62D9}.rp-c-dim{background:#F3ECE4;color:#5A4B66}.rp-c-amb{background:#FDE6CB;color:#6B3A06}
+.rp-badge{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:999px;font:600 13px Geist,sans-serif;white-space:nowrap}
+.rp-mono{font-family:'JetBrains Mono',monospace}
+.rp-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.rp-fact{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rp-fact span{font-size: 13px;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79}
+.rp-fact b{font-size:15px;font-weight:600;color:#140C1B}
+.rp-mods{width:100%;border-collapse:collapse;font-size:14.5px}
+.rp-mods th{text-align:left;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79;padding:12px 16px;border-bottom:1px solid #DCCFC2;background:#FFF4E8;white-space:nowrap}
+.rp-mods td{padding:14px 16px;border-bottom:1px solid #EADFD3;vertical-align:middle;color:#4A3D55}
+.rp-mods tr:last-child td{border-bottom:0}
+.rp-mods a.rp-mname{color:#140C1B;text-decoration:none;font-weight:600;font-size:15.5px}
+.rp-mods a.rp-mname:hover{color:#A85A0C}
+.rp-tile{width:40px;height:40px;border-radius:10px;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font:800 18px 'Bricolage Grotesque',sans-serif;flex:none}
+.rp-vrow{display:grid;grid-template-columns:32px 1fr auto;gap:4px 14px;align-items:start;justify-items:start;padding:16px 0;border-top:1px solid #EADFD3}
+.rp-vrow:first-of-type{border-top:0}
+.rp-vic{width:32px;height:32px;border-radius:9px;background:#FFF4E8;display:flex;align-items:center;justify-content:center;color:#A85A0C}
+@media (max-width:760px){.rp-wrap{padding-left:32px;padding-right:32px}.rp-h1{font-size:38px !important}.rp-vchip{justify-self:start}.rp-mods thead{display:none}.rp-mods tr{display:grid;grid-template-columns:40px 1fr;gap:4px 14px;padding:14px 16px;border-bottom:1px solid #EADFD3}.rp-mods td{border:0;padding:0}.rp-mods td.rp-t{grid-row:span 3}.rp-mods td.rp-hide-s{display:none}.rp-vrow{grid-template-columns:32px 1fr}.rp-vrow>.rp-vchip{grid-column:2}}
+</style>
+</helmet>
+<div class="rp">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="none" hint-size="100%,120px"></dc-import>
+
+<main>
+<!-- Publisher header -->
+<section style="background: #FFFAF4; border-bottom: 1px solid #EADFD3">
+  <div class="rp-wrap" style="padding-top: 28px; padding-bottom: 28px; display: flex; flex-direction: column; gap: 22px">
+    <nav aria-label="Breadcrumb" style="font-size: 13px; color: #6E5F79"><a href="Registry.dc.html">Registry</a> / doze</nav>
+    <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap">
+      <div style="width: 72px; height: 72px; border-radius: 18px; background: #140C1B; display: flex; align-items: center; justify-content: center; flex: none"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 48px; height: 48px"></div>
+      <div style="display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 260px">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+          <h1 class="rp-h1" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 46px; letter-spacing: -0.03em; line-height: 1">doze</h1>
+          <span class="rp-badge" style="background: #FDE6CB; color: #6B3A06"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>Official</span>
+          <span class="rp-badge" style="background: #E6F4EA; color: #1D7A45"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Signed</span>
+        </div>
+        <p style="font-size: 18px; color: #4A3D55; max-width: 62ch">The doze maintainers. Every module in the registry today is published and signed here, built in public CI from source on GitHub.</p>
+        <div style="display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px">
+          <a href="https://github.com/doze-dev" style="display: inline-flex; align-items: center; gap: 6px; min-height: 28px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.6 11.6 0 0 0-6 0C6.8 2.8 5.8 3.1 5.8 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>github.com/doze-dev</a>
+          <a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 28px">doze-dev.com</a>
+          <a href="Security.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 28px">Report a security problem</a>
+        </div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 16px; padding: 16px 0 0; border-top: 1px solid #EADFD3">
+      <div class="rp-fact"><span>Namespace</span><b class="rp-mono" style="font-size: 14px">doze</b></div>
+      <div class="rp-fact"><span>Modules</span><b>8</b></div>
+      <div class="rp-fact"><span>Signing key since</span><b>26 Jun 2026</b></div>
+      <div class="rp-fact"><span>Newest release</span><b>postgres 0.2.5 · 3 Nov 2026</b></div>
+      <div class="rp-fact"><span>Licence</span><b>Apache-2.0, all 8</b></div>
+    </div>
+  </div>
+</section>
+
+<div class="rp-wrap" style="padding-top: 40px; padding-bottom: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px; align-items: start">
+
+  <!-- Modules -->
+  <section aria-labelledby="mods" style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 6px"><span class="rp-kick">Published here</span><h2 id="mods">8 modules</h2></div>
+      <p style="font-size: 13.5px; color: #6E5F79; max-width: 52ch">No download counts: doze sends nothing home, so the registry has nothing to count. Dates are when each release was built on GitHub.</p>
+    </div>
+    <div class="rp-panel" style="overflow: hidden">
+      <table class="rp-mods">
+        <thead><tr><th style="width: 56px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Logo</span></th><th>Module</th><th>Newest release</th><th>Runs</th><th>Releases</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="rp-t"><div class="rp-tile" aria-hidden="true" style="background: #336791">P</div></td><td><a class="rp-mname" href="RegistryModule.dc.html">PostgreSQL</a> <span class="rp-mono" style="font-size: 13px; color: #6E5F79">doze/postgres</span><div style="font-size: 14px">Real Postgres, declared not scripted: roles, schemas, grants and extensions.</div></td><td><b style="color: #140C1B">0.2.5</b> · 3 Nov 2026<div class="rp-need"><span class="rp-chip rp-c-warn">needs doze 0.2.0</span></div></td><td>Postgres 14 – 18</td><td class="rp-hide-s">5</td><td class="rp-hide-s rp-mono" style="font-size: 13px; white-space: nowrap">doze-modules</td></tr>
+          <tr><td class="rp-t"><div class="rp-tile" aria-hidden="true" style="background: #2F5F3A">F</div></td><td><a class="rp-mname" href="Registry.dc.html">FerretDB</a> <span class="rp-mono" style="font-size: 13px; color: #6E5F79">doze/ferret</span><div style="font-size: 14px">MongoDB-compatible: any Mongo client connects. FerretDB 2 over a private Postgres.</div></td><td><b style="color: #140C1B">0.2.4</b> · 3 Nov 2026<div class="rp-need"><span class="rp-chip rp-c-warn">needs doze 0.2.0</span></div></td><td>FerretDB 2</td><td class="rp-hide-s">4</td><td class="rp-hide-s rp-mono" style="font-size: 13px; white-space: nowrap">doze-modules</td></tr>
+          <tr><td class="rp-t"><div class="rp-tile" aria-hidden="true" style="background: #3D2A0A"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt=""></div></td><td><a class="rp-mname" href="Kafka.dc.html">Kafka</a> <span class="rp-mono" style="font-size: 13px; color: #6E5F79">doze/kafka</span><div style="font-size: 14px">doze Kafka: a Kafka-protocol broker in one Go binary. No JVM, no ZooKeeper, no KRaft.</div></td><td><b style="color: #140C1B">0.1.2</b> · 1 Nov 2026<div class="rp-need"><span style="color: #6E5F79">any doze</span></div></td><td>itself · Kafka protocol 1 – 4</td><td class="rp-hide-s">3</td><td class="rp-hide-s rp-mono" style="font-size: 13px; white-space: nowrap">doze-kafka</td></tr>
+          <tr><td class="rp-t"><div class="rp-tile" aria-hidden="true" style="background: #6B4E16"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt=""></div></td><td><a class="rp-mname" href="Aws.dc.html">AWS</a> <span class="rp-mono" style="font-size: 13px; color: #6E5F79">doze/aws</span><div style="font-size: 14px">doze AWS as one service: S3, SQS, DynamoDB, Lambda and 13 more on one endpoint, with its console.</div></td><td><b style="color: #140C1B">0.1.1</b> · 18 Jul 2026<div class="rp-need"><span style="color: #6E5F79">any doze</span></div></td><td>itself: doze AWS is in the module</td><td class="rp-hide-s">2</td><td class="rp-hide-s rp-mono" style="font-size: 13px; white-space: nowrap">doze-aws</td></tr>
+          <tr><td class="rp-t"><div class="rp-tile" aria-hidden="true" style="background: #24242B">T</div></td><td><a class="rp-mname" href="Registry.dc.html">Temporal</a> <span class="rp-mono" style="font-size: 13px; color: #6E5F79">doze/temporal</span><div style="font-size: 14px">A local Temporal dev server with its Web UI. One Go binary, SQLite store.</div></td><td><b style="color: #140C1B">0.2.3</b> · 3 Nov 2026<div class="rp-need"><span class="rp-chip rp-c-warn">needs doze 0.2.0</span></div></td><td>Temporal CLI 1.x</td><td class="rp-hide-s">3</td><td class="rp-hide-s rp-mono" style="font-size: 13px; white-space: nowrap">doze-modules</td></tr>
+          <tr><td class="rp-t"><div class="rp-tile" aria-hidden="true" style="background: #4C55C8">V</div></td><td><a class="rp-mname" href="Registry.dc.html">Valkey</a> <span class="rp-mono" style="font-size: 13px; color: #6E5F79">doze/valkey</span><div style="font-size: 14px">In-memory cache that speaks the Redis protocol: any redis client works.</div></td><td><b style="color: #140C1B">0.2.2</b> · 3 Nov 2026<div class="rp-need"><span class="rp-chip rp-c-warn">needs doze 0.2.0</span></div></td><td>Valkey 8 – 9</td><td class="rp-hide-s">2</td><td class="rp-hide-s rp-mono" style="font-size: 13px; white-space: nowrap">doze-modules</td></tr>
+          <tr><td class="rp-t"><div class="rp-tile" aria-hidden="true" style="background: #2B6E64">K</div></td><td><a class="rp-mname" href="Registry.dc.html">Kvrocks</a> <span class="rp-mono" style="font-size: 13px; color: #6E5F79">doze/kvrocks</span><div style="font-size: 14px">The Redis protocol on RocksDB: durable, and the data lives on disk, not in RAM.</div></td><td><b style="color: #140C1B">0.2.2</b> · 3 Nov 2026<div class="rp-need"><span class="rp-chip rp-c-warn">needs doze 0.2.0</span></div></td><td>Kvrocks 2</td><td class="rp-hide-s">2</td><td class="rp-hide-s rp-mono" style="font-size: 13px; white-space: nowrap">doze-modules</td></tr>
+          <tr><td class="rp-t"><div class="rp-tile" aria-hidden="true" style="background: #1F4F66">M</div></td><td><a class="rp-mname" href="Registry.dc.html">MariaDB</a> <span class="rp-mono" style="font-size: 13px; color: #6E5F79">doze/mariadb</span><div style="font-size: 14px">MySQL-compatible. Databases, users and grants declared in doze.hcl.</div></td><td><b style="color: #140C1B">0.2.2</b> · 3 Nov 2026<div class="rp-need"><span class="rp-chip rp-c-warn">needs doze 0.2.0</span></div></td><td>MariaDB 11</td><td class="rp-hide-s">2</td><td class="rp-hide-s rp-mono" style="font-size: 13px; white-space: nowrap">doze-modules</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 13.5px; color: #6E5F79">Releases counts what the signed index serves. Six modules' newest releases need doze 0.2.0; an older doze skips them and keeps resolving the release before (postgres 0.2.4, valkey 0.2.1, and so on). Kafka 0.1.2 and AWS 0.1.1 run on any doze.</p>
+  </section>
+
+  <!-- Verification -->
+  <section aria-labelledby="verif" class="rp-panel" style="padding: 24px 24px 10px; display: flex; flex-direction: column">
+    <span class="rp-kick">Who this is</span>
+    <h2 id="verif" style="margin: 6px 0 4px">How it is verified</h2>
+    <p style="font-size: 14.5px; color: #4A3D55; margin-bottom: 8px">Three separate proofs that this namespace belongs to the people who make doze.</p>
+    <div class="rp-vrow">
+      <div class="rp-vic" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3"/></svg></div>
+      <div><h3>Key compiled into doze</h3><p style="font-size: 14px; color: #4A3D55">The namespace key is a constant in doze's own source. Every doze binary checks against it.</p></div>
+      <span class="rp-chip rp-c-good rp-vchip">in place</span>
+    </div>
+    <div class="rp-vrow">
+      <div class="rp-vic" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div>
+      <div><h3>Source in the doze-dev GitHub org</h3><p style="font-size: 14px; color: #4A3D55">Modules build from <a href="https://github.com/doze-dev/doze-modules">doze-modules</a>, <a href="https://github.com/doze-dev/doze-aws">doze AWS</a> and <a href="https://github.com/doze-dev/doze-kafka">doze Kafka</a>; signing runs in <a href="https://github.com/doze-dev/doze-registry">doze-registry</a>.</p></div>
+      <span class="rp-chip rp-c-good rp-vchip">in place</span>
+    </div>
+    <div class="rp-vrow">
+      <div class="rp-vic" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div>
+      <div><h3>Domain doze-dev.com</h3><p style="font-size: 14px; color: #4A3D55">A DNS TXT record on the domain names the key, so anyone can check the namespace and the website share an owner.</p><code class="rp-mono" style="display: block; margin-top: 8px; font-size: 13px; background: #FFF4E8; border: 1px solid #EADFD3; border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere; color: #140C1B">_doze-registry.doze-dev.com TXT "ed25519=Nu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw="</code><p style="font-size: 13px; color: #6E5F79; margin-top: 6px">[Record name and format to decide.]</p></div>
+      <span class="rp-chip rp-c-info rp-vchip">new</span>
+    </div>
+  </section>
+
+  <!-- Key history -->
+  <section aria-labelledby="keys-h" id="keys" class="rp-panel" style="padding: 24px; display: flex; flex-direction: column; gap: 14px">
+    <span class="rp-kick">Keys</span>
+    <h2 id="keys-h">Key history</h2>
+    <div style="border: 1px solid #EADFD3; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: #FFFAF4">
+      <div style="display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap"><b style="font-size: 15px">ed25519 · namespace <span class="rp-mono">doze</span></b><span class="rp-chip rp-c-good">Active</span></div>
+      <code class="rp-mono" style="font-size: 13.5px; overflow-wrap: anywhere">Nu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw=</code>
+      <div style="font-size: 13.5px; color: #4A3D55">Since 26 Jun 2026 · signs all 8 modules · <a href="https://github.com/doze-dev/doze-registry/blob/main/registry/doze/keys.json">keys.json</a></div>
+    </div>
+    <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; border-left: 2px solid #EADFD3; padding-left: 16px">
+      <li style="font-size: 14px; color: #4A3D55"><b style="color: #140C1B">26 Jun 2026.</b> Namespace renamed from <span class="rp-mono">nerdmenot</span> to <span class="rp-mono">doze</span> and a new key generated, before the first doze release (2 Jul). Nothing signed by the old key is served.</li>
+      <li style="font-size: 14px; color: #4A3D55"><b style="color: #140C1B">No rotations since.</b> See the <a href="RegistryTrust.dc.html#rotation">rotation policy</a> (still open).</li>
+    </ol>
+    <div style="border-top: 1px solid #EADFD3; padding-top: 12px; display: flex; flex-direction: column; gap: 6px">
+      <b style="font-size: 14px">Maintainers</b>
+      <p style="font-size: 14px; color: #4A3D55">Owned by the doze-dev GitHub org since 26 Jun 2026. No past owners. [The list of people who can approve a release is to be shown here.]</p>
+    </div>
+  </section>
+
+  <!-- Notices -->
+  <section aria-labelledby="notices-h" id="notices" class="rp-panel" style="padding: 24px; display: flex; flex-direction: column; gap: 14px">
+    <span class="rp-kick">From the maintainers</span>
+    <h2 id="notices-h">Notices</h2>
+    <div style="border: 1.5px dashed #DCCFC2; border-radius: 12px; padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1D7A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>
+      <b style="font-size: 16px">No notices</b>
+      <p style="font-size: 14px; color: #4A3D55; max-width: 36ch">No key changes, advisories, yanked releases or deprecations from this publisher.</p>
+    </div>
+    <p style="font-size: 13px; color: #6E5F79">A notice is a dated, plain-text warning shown here and on every affected release page: a key rotation, a security advisory, a yanked release, a module or engine major being deprecated.</p>
+  </section>
+</div>
+</main>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2522}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

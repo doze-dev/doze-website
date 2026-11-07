@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doze · the app and the CLI</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#140C1B}
+.dz a{color:#F0A24B;text-decoration:none}.dz a:hover{color:#FFC27A}
+.dz .dz-sub a{color:#C9BAD3;font-size:14px;display:inline-flex;align-items:center;min-height:44px}.dz .dz-sub a:hover{color:#F4ECE4}
+.dz-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px}
+.dz .dz-btn-lamp{background:#F0A24B;color:#2A1534}.dz .dz-btn-lamp:hover{background:#FFB866;color:#2A1534}
+.dz .dz-btn-ghost{border:1px solid #4A3458;color:#F4ECE4}.dz .dz-btn-ghost:hover{border-color:#7A5E8C;color:#FFFFFF}
+.dz-eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.dz-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:48px;line-height:1.04;letter-spacing:-0.025em;text-wrap:balance}
+.dz-tile{background:#221630;border:1px solid #3A2A47;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.dz-tile span{overflow-wrap:normal}
+.dz-mi{display:flex;justify-content:space-between;gap:16px;padding:6px 12px;border-radius:6px;font-size:14px;color:#2B2232}
+.dz-term{margin:0;font:14px/1.75 'JetBrains Mono',monospace;border-radius:16px;padding:22px;overflow-x:auto}
+.dz-recap{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;color:#C9BAD3;background:#2A1C36;border:1px dashed #5A4168;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.dz-poly{background:#1E1328;border:1px solid #34233F;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.dz-poly code{margin-top:auto;font:13px 'JetBrains Mono',monospace;background:#120A18;border:1px solid #2E1F3A;border-radius:10px;padding:10px 12px;color:#E9DEEF;overflow-x:auto;white-space:nowrap}
+.dz-file-grid pre{font-size:13px !important}
+@media (max-width:1000px){.dz-file-grid{grid-template-columns:minmax(0,1fr) !important}}
+.dz code,.dz pre{font-variant-ligatures:none}
+.dz pre{white-space:pre;overflow-x:auto;max-width:100%}
+.dz-cmp{overflow:hidden;border:1px solid #34233F;border-radius:16px}
+.dz-cmp table{width:100%;border-collapse:collapse;font-size:16px}
+.dz-cmp th,.dz-cmp td{padding:16px 20px;text-align:left;vertical-align:top}
+.dz-cmp thead th{background:#1E1328;color:#B6A6C2;font-weight:600}
+.dz-cmp tbody th{color:#C9BAD3;font-weight:400}
+.dz-cmp tbody td:last-child{color:#C9BAD3}
+.dz-cmp tbody tr{border-top:1px solid #34233F}
+.dz-cmd{display:flex;align-items:center;gap:8px;background:#120A18;border:1px solid #2E1F3A;border-radius:10px;padding:6px 6px 6px 14px;min-width:0}
+.dz-cmd code{font:14px 'JetBrains Mono',monospace;white-space:pre;overflow-x:auto;flex:1;min-width:0}
+.dz-copy{height:36px;padding:0 12px;border-radius:8px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer;flex:none}
+@media (max-width:600px){.dz-cmp thead{display:none}.dz-cmp table,.dz-cmp tbody,.dz-cmp tr,.dz-cmp th,.dz-cmp td{display:block}.dz-cmp tbody tr{padding:14px 18px}.dz-cmp tbody tr:first-child{border-top:0}.dz-cmp tbody th{padding:0 0 8px;color:#F4ECE4;font-weight:600}.dz-cmp td{padding:4px 0;display:flex;gap:12px}.dz-cmp td::before{content:attr(data-l);flex:0 0 120px;color:#9C8AAB;font-size:14px}.dz-tiles{grid-template-columns:minmax(0,1fr) !important}}
+.dz-lang-dot{width:10px;height:10px;border-radius:3px;flex:none}
+@media (max-width:760px){.dz-hero-title{font-size:46px !important}.dz-h2{font-size:36px !important}.dz-stack-sm{flex-direction:column !important;align-items:stretch !important}.dz .dz-sub nav{gap:4px 18px !important}}
+</style>
+</helmet>
+<div class="dz" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #F4ECE4; background: #140C1B; min-height: 100%">
+
+  <dc-import name="SiteHeader" theme="dark" current="doze" hint-size="100%,72px"></dc-import>
+  <div class="dz-sub" style="border-bottom: 1px solid #241730; background: #170E1F">
+    <nav aria-label="On this page" style="max-width: 1240px; margin: 0 auto; padding: 6px 32px; display: flex; gap: 24px; flex-wrap: wrap; align-items: center">
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; color: #F0A24B"><span style="width: 8px; height: 8px; border-radius: 4px; background: #F0A24B"></span>doze</span>
+      <a href="#before">Before and after</a><a href="#app">The app</a><a href="#file">One file</a><a href="#polyglot">Any language</a><a href="#compare">Compared</a><a href="#download">Install</a><a href="DozeDocs.dc.html">Docs</a>
+    </nav>
+  </div>
+
+  <!-- Hero -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 96px 32px 56px; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center">
+    <img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="doze" style="width: 108px; height: 108px">
+    <h1 class="dz-hero-title" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 80px; line-height: 0.98; letter-spacing: -0.035em; max-width: 14ch; text-wrap: balance">The local stack that knows when to quit.</h1>
+    <p style="margin: 0; font-size: 20px; line-height: 1.55; color: #D6C8DF; max-width: 40rem">Postgres, MariaDB, Valkey, Kafka, Temporal and a local AWS, running natively, each awake only while your code is using it. No VM. No port clashes. No setup doc.</p>
+    <div class="dz-stack-sm" style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: center">
+      <a class="dz-btn dz-btn-lamp" href="Download.dc.html">Download for Mac</a>
+      <a class="dz-btn dz-btn-ghost" href="DozeDocs.dc.html">Your first stack</a>
+    </div>
+    <span style="font-size: 14px; color: #9C8AAB">Free and open source · macOS on Apple silicon · Linux x86_64 and arm64</span>
+  </section>
+
+  <!-- The real app -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 8px 32px 64px; position: relative">
+    <div style="position: absolute; left: 15%; right: 15%; top: 5%; height: 75%; border-radius: 50%; background: radial-gradient(closest-side, rgba(240,162,75,0.26), rgba(240,162,75,0))"></div>
+    <div style="position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #4A3458; box-shadow: 0 50px 120px rgba(0,0,0,0.55)">
+      <div style="height: 32px; background: #110F18; display: flex; align-items: center; gap: 7px; padding: 0 14px"><span style="width: 11px; height: 11px; border-radius: 6px; background: #FF5F57"></span><span style="width: 11px; height: 11px; border-radius: 6px; background: #FEBC2E"></span><span style="width: 11px; height: 11px; border-radius: 6px; background: #28C840"></span><span style="margin: 0 auto; font-size: 13px; color: #8A85A8">doze</span></div>
+      <img src="/_blob/fed6afecf6252da163570107c1a0c7c3" alt="The doze app's tiles for a demo stack, with memory, cores and every service awake, dozing, waking or asleep" style="display: block; width: 100%; height: auto">
+    </div>
+    <p style="position: relative; margin: 16px 0 0; text-align: center; font-size: 13px; color: #9C8AAB">The doze app, from its demo stack. <span class="dz-recap">[re-capture with Larder]</span></p>
+  </section>
+
+  <!-- Before / after -->
+  <section id="before" style="max-width: 1240px; margin: 0 auto; padding: 40px 32px 96px; display: flex; flex-direction: column; gap: 24px">
+    <h2 class="dz-h2" style="text-align: center">Monday morning, two ways.</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+        <span style="font-size: 14px; color: #FF9AA8; font-weight: 600">The usual</span>
+        <pre class="dz-term" style="background: #1F1016; border: 1px solid #4A2230; color: #E8C9CF"><span style="color: #A07A82">$</span> docker compose up
+Error: Bind for 0.0.0.0:5432 failed:
+  port is already allocated
+<span style="color: #A07A82">$</span> lsof -i :5432          <span style="color: #A07A82"># who is it this time</span>
+<span style="color: #A07A82">$</span> brew services stop postgresql@14
+<span style="color: #A07A82">$</span> docker compose up
+kafka-1  | waiting for controller quorum…
+<span style="color: #A07A82">$</span> cp .env.example .env    <span style="color: #A07A82"># then ask in Slack</span>
+<span style="color: #A07A82"># 40 minutes later, fans at full tilt</span></pre>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+        <span style="font-size: 14px; color: #8BE39B; font-weight: 600">With doze, on Larder</span>
+        <pre class="dz-term" style="background: #120A18; border: 1px solid #2E1F3A; color: #D6C8DF"><span style="color: #9C8AAB">$</span> doze up
+<span style="color: #8BE39B">✓</span> migrate-catalog, migrate-orders … ran
+<span style="color: #8BE39B">✓</span> storefront  http://storefront.larder.doze
+<span style="color: #8BE39B">✓</span> gateway     http://gateway.larder.doze
+<span style="color: #9C8AAB">○</span> catalog     asleep, wakes on a connection
+<span style="color: #9C8AAB">○</span> mailpit     asleep, wakes on a connection
+
+<span style="color: #9C8AAB"># that's it. go write code.</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- See it move: real recordings -->
+  <section id="live" style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: flex; flex-direction: column; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+      <span class="dz-eyebrow">See it move</span>
+      <h2 class="dz-h2" style="font-size: 52px">Six things you'll do on day one.</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #C9BAD3">Each one recorded from the real app. Pick one.</p>
+    </div>
+    <dc-import name="Tour" set="doze" hint-size="100%,745px"></dc-import>
+  </section>
+
+  <!-- The app: product-true fragments -->
+  <section id="app" style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: flex; flex-direction: column; gap: 48px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+        <span class="dz-eyebrow">The app</span>
+        <h2 class="dz-h2">See your whole stack. Touch nothing.</h2>
+        <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #C9BAD3">What's awake, what's asleep, what needs you. Wake or sleep a whole stack in one click, from the window or the menu bar.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 24px; align-items: start">
+        <!-- Fragment 1: tiles mid-wake -->
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 14px; min-width: 0">
+          <div style="background: #15101C; border: 1px solid #3A2A47; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap"><b style="font-size: 20px">larder</b><span style="font-size: 13px; color: #9C8AAB">~/code/larder · up [41 min]</span></div>
+            <div class="dz-tiles" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+              <div class="dz-tile"><b>● gateway</b><span style="font-size: 13px; color: #8BE39B">awake · [3] connections</span><span style="font-size: 12px; color: #9C8AAB">gateway.<wbr>larder.<wbr>doze</span></div>
+              <div class="dz-tile"><b>◐ catalog</b><span style="font-size: 13px; color: #8FBDFF">waking · gateway asked for it</span><span style="font-size: 12px; color: #9C8AAB">catalog.<wbr>larder.<wbr>doze</span></div>
+              <div class="dz-tile"><b>◐ redis</b><span style="font-size: 13px; color: #F2C879">dozing · sleeps in [1:12]</span><span style="font-size: 12px; color: #9C8AAB">redis.<wbr>larder.<wbr>doze:6379</span></div>
+              <div class="dz-tile" style="border-style: dashed"><b style="color: #C9BAD3">○ mailpit</b><span style="font-size: 13px; color: #9C8AAB">asleep · wakes on a connection</span><span style="font-size: 12px; color: #9C8AAB">mailpit.<wbr>larder.<wbr>doze</span></div>
+            </div>
+          </div>
+          <figcaption style="font-size: 15px; color: #C9BAD3; line-height: 1.5"><b style="color: #F4ECE4">Every service, at a glance.</b> Awake, waking, dozing, asleep: the four words doze uses everywhere.</figcaption>
+        </figure>
+
+        <!-- Fragment 2: the menu bar -->
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 14px; min-width: 0">
+          <div style="background: #2A1E33; border: 1px solid #3A2A47; border-radius: 20px; padding: 22px; display: flex; justify-content: center">
+            <div style="width: 300px; max-width: 100%; background: #F3EEF6; border-radius: 12px; padding: 6px; box-shadow: 0 20px 50px rgba(0,0,0,0.45); display: flex; flex-direction: column">
+              <div style="padding: 6px 12px 2px; font-size: 12px; font-weight: 600; color: #6A5E76">Needs you</div>
+              <div class="dz-mi" style="background: #FBE3E7"><span>● acme · postgres crashed</span><span style="color: #6A5E76">Fix…</span></div>
+              <div style="height: 1px; background: #DDD3E3; margin: 6px 8px"></div>
+              <div style="padding: 2px 12px; font-size: 12px; font-weight: 600; color: #6A5E76">Stacks</div>
+              <div class="dz-mi"><span>●&#160;&#160;larder</span><span style="color: #6A5E76">›</span></div>
+              <div class="dz-mi"><span>●&#160;&#160;acme</span><span style="color: #6A5E76">›</span></div>
+              <div class="dz-mi"><span>○&#160;&#160;billing</span><span style="color: #6A5E76">›</span></div>
+              <div style="height: 1px; background: #DDD3E3; margin: 6px 8px"></div>
+              <div class="dz-mi"><span>Open doze</span><span style="color: #6A5E76">⇧⌘D</span></div>
+              <div class="dz-mi"><span>Settings…</span><span style="color: #6A5E76">⌘,</span></div>
+              <div class="dz-mi"><span>Quit doze · stacks keep running</span></div>
+            </div>
+          </div>
+          <figcaption style="font-size: 15px; color: #C9BAD3; line-height: 1.5"><b style="color: #F4ECE4">Lives in your menu bar.</b> Every stack one click from awake or asleep. Quit the app and your stacks keep running.</figcaption>
+        </figure>
+
+        <!-- Fragment 3: a mistake, explained -->
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 14px; min-width: 0">
+          <div style="background: #15101C; border: 1px solid #3A2A47; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+            <b style="font-size: 18px; color: #FF9AA8">doze.hcl has a mistake</b>
+            <div style="font: 13px/1.9 'JetBrains Mono', monospace; background: #0F0A14; border: 1px solid #2E1F3A; border-radius: 12px; padding: 10px 0">
+              <div style="padding: 0 14px; color: #9C8AAB">19&#160;&#160;defaults {</div>
+              <div style="padding: 0 14px; background: #3A1520; color: #FFD3DA">20&#160;&#160;&#160;&#160;idle_timeout = "2m"</div>
+              <div style="padding: 0 14px; color: #9C8AAB">21&#160;&#160;}</div>
+            </div>
+            <span style="font-size: 14px; color: #D6C8DF">`idle_timeout` is now `sleep`</span>
+            <div style="background: #17301F; border-radius: 10px; padding: 10px 12px; font-size: 14px; color: #CFF5D6"><span style="color: #8BC79A; margin-right: 6px">To fix it</span>Write: sleep = "2m"</div>
+          </div>
+          <figcaption style="font-size: 15px; color: #C9BAD3; line-height: 1.5"><b style="color: #F4ECE4">Mistakes that explain themselves.</b> The file, the line, and exactly what to write.</figcaption>
+        </figure>
+      </div>
+      <span style="font-size: 13px; color: #9C8AAB">Drawn from the app's own screens and wording, in its brand theme, with Larder's names.</span>
+    </div>
+  </section>
+
+  <!-- One file -->
+  <section id="file" class="dz-file-grid" style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 48px; align-items: center">
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <span class="dz-eyebrow">One file in your repo</span>
+      <h2 class="dz-h2">Onboarding is <code style="font-family: 'JetBrains Mono', monospace; font-size: 0.8em; color: #F0A24B">doze up</code>.</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #C9BAD3">doze.hcl says what your app needs. Connection strings wire themselves, and doze.lock pins every engine, byte for byte, so your Postgres is your teammate's Postgres. This is a slice of Larder's.</p>
+      <ul style="margin: 0; padding-left: 18px; color: #C9BAD3; line-height: 1.9">
+        <li>One Postgres, a role and a schema per service</li>
+        <li>Your own domain over https, for when OAuth refuses localhost</li>
+        <li>Migrations that run once, before the code that needs them</li>
+        <li>The same file runs your tests in CI: <code style="font-family: 'JetBrains Mono', monospace; color: #F4ECE4">doze run -- go test ./...</code></li>
+        <li>Postgres extensions by name, <span style="color: #9C8AAB">coming in postgres 0.3</span></li>
+      </ul>
+      <a href="https://github.com/doze-dev/doze-examples/blob/main/larder/doze.hcl" style="font-weight: 600; align-self: flex-start; padding: 10px 0">Read all of Larder's doze.hcl on GitHub →</a>
+    </div>
+    <pre class="dz-term" style="background: #120A18; border: 1px solid #2E1F3A; color: #E9DEEF; min-width: 0"><span style="color: #9C8AAB"># doze.hcl</span>
+stack = "larder"
+
+module postgres "postgres" {
+  version = 18
+  role   "catalog" { password = "catalog" }
+  schema "catalog" { owner = "catalog" }
+}
+
+module valkey "redis" { version = 9 }
+
+task "migrate-catalog" {
+  run    = "go run ./platform/cmd/migrate services/catalog/migrations"
+  inputs = ["services/catalog/migrations/*.sql"]
+}
+
+app "catalog" {
+  run   = "go run ./services/catalog"
+  port  = 8002
+  after = [task.migrate-catalog]
+  env   = {
+    DATABASE_URL = "postgres://catalog:catalog@${module.postgres.address}/postgres?sslmode=disable"
+  }
+}</pre>
+  </section>
+
+  <!-- Polyglot by default -->
+  <section id="polyglot" style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 80px 32px; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 44rem">
+          <span class="dz-eyebrow">Polyglot by default</span>
+          <h2 class="dz-h2">doze runs the command you'd run.</h2>
+          <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #C9BAD3">No SDK, no base image, no plugin per language. Each team keeps its toolchain; doze gives every service a name, a port, its connection strings, and sleep.</p>
+        </div>
+        <a href="Examples.dc.html" style="font-weight: 600; padding: 10px 0">See all three in Larder →</a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); gap: 14px">
+        <div class="dz-poly"><b style="display: flex; align-items: center; gap: 10px; font-size: 17px"><span class="dz-lang-dot" style="background: #5BB8E8"></span>Go</b><span style="font-size: 14px; color: #C9BAD3">gateway, identity, catalog, orders, payments</span><code>run = "go run ./services/orders"</code></div>
+        <div class="dz-poly"><b style="display: flex; align-items: center; gap: 10px; font-size: 17px"><span class="dz-lang-dot" style="background: #FFD60A"></span>Python</b><span style="font-size: 14px; color: #C9BAD3">fulfilment, recommendations, with uv</span><code>run = "uv run --frozen python -m fulfilment"</code></div>
+        <div class="dz-poly"><b style="display: flex; align-items: center; gap: 10px; font-size: 17px"><span class="dz-lang-dot" style="background: #F0A24B"></span>TypeScript</b><span style="font-size: 14px; color: #C9BAD3">notifications, storefront, on bun</span><code>run = "bun run dev"</code></div>
+        <div class="dz-poly" style="background: transparent; border-style: dashed"><b style="display: flex; align-items: center; gap: 10px; font-size: 17px"><span class="dz-lang-dot" style="background: #8BE39B"></span>Anything else</b><span style="font-size: 14px; color: #C9BAD3">If it starts from your terminal, it starts from doze.hcl.</span><code>run = "[the command you type today]"</code></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular tools, one line each -->
+  <section style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 48rem">
+      <span class="dz-eyebrow">Add anything</span>
+      <h2 class="dz-h2" style="font-size: 52px">Need Kafka? <code style="font-family: 'JetBrains Mono', monospace; font-size: 0.75em; color: #F0A24B">doze add kafka</code>.</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #C9BAD3">The newest version, its usual port, a name, wired into your app. The same for every tool below.</p>
+    </div>
+    <dc-import name="Popular" hint-size="100%,1090px"></dc-import>
+  </section>
+
+  <!-- Compared -->
+  <section id="compare" style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 88px 32px; display: flex; flex-direction: column; gap: 28px">
+      <h2 class="dz-h2" style="font-size: 44px">doze or docker compose?</h2>
+      <p style="margin: 0; font-size: 18px; color: #C9BAD3; max-width: 46rem; line-height: 1.6">Both are good tools. Containers win at shipping. For the code you write all day, here is what changes.</p>
+      <div class="dz-cmp">
+        <table>
+          <thead><tr><th><span style="position: absolute; left: -9999px">Question</span></th><th style="color: #F0A24B">doze</th><th>docker compose</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">What runs</th><td data-l="doze">Native processes</td><td data-l="docker compose">Containers in a Linux VM</td></tr>
+            <tr><th scope="row">While you're in a meeting</th><td data-l="doze">Asleep</td><td data-l="docker compose">Running</td></tr>
+            <tr><th scope="row">Memory at rest</th><td data-l="doze">[measured, named Mac]</td><td data-l="docker compose">[measured, same Mac]</td></tr>
+            <tr><th scope="row">Your debugger</th><td data-l="doze">Attaches to a local process</td><td data-l="docker compose">Crosses a VM boundary</td></tr>
+            <tr><th scope="row">Two projects on 5432</th><td data-l="doze">Fine: each has its own address</td><td data-l="docker compose">Remap one by hand</td></tr>
+            <tr><th scope="row">Three languages in one repo</th><td data-l="doze">Each runs with its own toolchain</td><td data-l="docker compose">A Dockerfile per service</td></tr>
+            <tr><th scope="row">https on your own domain</th><td data-l="doze">One line, one password prompt</td><td data-l="docker compose">A proxy and a CA you set up</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download -->
+  <section id="download" style="max-width: 1240px; margin: 0 auto; padding: 96px 32px 104px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 20px">
+    <div style="grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 10px"><h2 class="dz-h2" style="font-size: 52px">Fans off. Stack on.</h2><p style="margin: 0; color: #C9BAD3; font-size: 18px">doze 0.2 · [0.2 release date] · <a href="Changelog.dc.html">what's new</a></p></div>
+      <a href="Download.dc.html" style="font-weight: 600; padding: 10px 0">Every way to install →</a>
+    </div>
+    <div style="background: #F0A24B; color: #2A1534; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 14px"><h3 style="margin: 0; font-size: 22px; font-family: 'Bricolage Grotesque', sans-serif">Mac app</h3><p style="margin: 0; line-height: 1.6">The menu bar app with the CLI inside, for Apple silicon. One password prompt sets up .doze names.</p><a class="dz-btn" href="Download.dc.html" style="background: #2A1534; color: #F4ECE4; align-self: flex-start; margin-top: auto">Download for Mac</a></div>
+    <div style="background: #1E1328; border: 1px solid #34233F; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 14px; min-width: 0"><h3 style="margin: 0; font-size: 22px; font-family: 'Bricolage Grotesque', sans-serif">Homebrew</h3>
+      <div class="dz-cmd"><code>brew install --cask doze-dev/tap/doze</code><button type="button" class="dz-copy" aria-label="Copy the app install command">Copy</button></div>
+      <div class="dz-cmd"><code>brew install doze-dev/tap/doze</code><button type="button" class="dz-copy" aria-label="Copy the CLI install command">Copy</button></div>
+      <span style="color: #9C8AAB; font-size: 13px">The first installs the app; the second, the CLI alone.</span></div>
+    <div style="background: #1E1328; border: 1px solid #34233F; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 14px; min-width: 0"><h3 style="margin: 0; font-size: 22px; font-family: 'Bricolage Grotesque', sans-serif">Linux</h3><span style="color: #C9BAD3; font-size: 15px; line-height: 1.6">x86_64 and arm64: Homebrew, mise or a tarball. On Windows, WSL2 works.</span><a class="dz-btn dz-btn-ghost" href="Download.dc.html" style="align-self: flex-start; margin-top: auto">Linux install options</a></div>
+  </section>
+
+  <dc-import name="SiteFooter" theme="dark" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

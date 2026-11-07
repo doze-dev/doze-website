@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registry grounding</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.gr-t{width:100%;min-width:820px;border-collapse:collapse;font-size:14px;table-layout:fixed}
+.gr-t th{text-align:left;font:600 12px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79;padding:10px 12px;border-bottom:1px solid #DCCFC2}
+.gr-t td{padding:12px;border-bottom:1px solid #EADFD3;vertical-align:top;line-height:1.45;color:#4A3D55}
+.gr-t td:first-child{color:#140C1B;font-weight:500}
+.gr-chip{display:inline-block;font:600 12px Geist,sans-serif;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.gr-box{overflow-x:auto;background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+</style>
+</helmet>
+<div style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #140C1B; background: #FFFAF4; padding: 56px 0 72px">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 0 32px; display: flex; flex-direction: column; gap: 36px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 820px">
+      <span style="font: 13px 'JetBrains Mono', monospace; letter-spacing: 0.14em; text-transform: uppercase; color: #A85A0C">Grounding · not a page on the site</span>
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 52px; line-height: 1; letter-spacing: -0.03em">Every fact the registry shows, and where it comes from.</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #4A3D55">Checked against the code on 7 Nov 2026: doze (internal/modules), doze-registry, doze-modules, doze-binaries. What exists can be built into pages now; the rest is the work list.</p>
+    </div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #EADFD3; border-radius: 12px"><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span><b style="font-size: 22px; font-family: 'Bricolage Grotesque', sans-serif">10</b></div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #EADFD3; border-radius: 12px"><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span><b style="font-size: 22px; font-family: 'Bricolage Grotesque', sans-serif">8</b></div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #EADFD3; border-radius: 12px"><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span><b style="font-size: 22px; font-family: 'Bricolage Grotesque', sans-serif">18</b></div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #EADFD3; border-radius: 12px"><span class="gr-chip" style="background: #FCE8EC; color: #B4233C">To decide</span><b style="font-size: 22px; font-family: 'Bricolage Grotesque', sans-serif">4</b></div>
+    </div>
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em">Modules and releases</h2>
+      <div class="gr-box"><table class="gr-t"><colgroup><col style="width:31%"><col style="width:19%"><col style="width:38%"><col style="width:12%"></colgroup><thead><tr><th scope="col">What the page shows</th><th scope="col">Where</th><th scope="col">Comes from</th><th scope="col">State</th></tr></thead><tbody>
+        <tr><td>Module name, title, one line, category, description</td><td>every registry page</td><td>meta.yaml from each module's Describe (dzm meta)</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>Releases: version, protocol, engine majors, three platforms</td><td>Versions, Release, install box</td><td>index.yaml (signed as a whole)</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>sha256 and ed25519 signature per platform archive</td><td>Release, Trust, lock entry</td><td>index.yaml artifacts</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>Release dates</td><td>Versions, Changelog, cards</td><td>GitHub asset upload times today; should be a field in the index</td><td><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span></td></tr>
+        <tr><td>Release notes</td><td>Versions, Release</td><td>GitHub release notes per module version (one rolling release per module today)</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>Builds on GitHub not in the index (postgres 0.2.5…)</td><td>Versions ("Built, not published")</td><td>compare GitHub assets with the index at site build</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+      </tbody></table></div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em">Which doze a release needs</h2>
+      <div class="gr-box"><table class="gr-t"><colgroup><col style="width:31%"><col style="width:19%"><col style="width:38%"><col style="width:12%"></colgroup><thead><tr><th scope="col">What the page shows</th><th scope="col">Where</th><th scope="col">Comes from</th><th scope="col">State</th></tr></thead><tbody>
+        <tr><td>Oldest doze per release (doze: "0.2.0")</td><td>module header, Versions, Release, cards</td><td>stamped by modtool from doze-sdk proto.MinHost (from v0.11.0); doze main honours it, ships in 0.2; 0.1.1 ignores it</td><td><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span></td></tr>
+        <tr><td>…inside the signed payload</td><td>Trust (known gaps)</td><td>today read beside the index, unsigned; move it in (index schema 2)</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>"Check against your doze" picker, ?doze=0.1.1</td><td>Registry bar, ForYourDoze, TooOld</td><td>the site only; remembered in localStorage (no cookies, no tracking)</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>doze modules docs <name> --web opens the page with your version</td><td>TooOld, module pages</td><td>new CLI subcommand</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>The two refusal sentences doze prints</td><td>TooOld, Trust</td><td>internal/modules/modules.go on main (verbatim); ship in 0.2</td><td><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span></td></tr>
+        <tr><td>doze checking the minimum at all</td><td>TooOld, ForYourDoze</td><td>written 6 Nov 2026, after 0.1.1: only doze 0.2 and later skip a release they can't run; 0.1.1 fetches it anyway</td><td><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span></td></tr>
+      </tbody></table></div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em">Release states</h2>
+      <div class="gr-box"><table class="gr-t"><colgroup><col style="width:31%"><col style="width:19%"><col style="width:38%"><col style="width:12%"></colgroup><thead><tr><th scope="col">What the page shows</th><th scope="col">Where</th><th scope="col">Comes from</th><th scope="col">State</th></tr></thead><tbody>
+        <tr><td>Current / superseded</td><td>Versions, ReleaseOld</td><td>derived from the index (newest wins)</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>Yanked (reason, use-instead), still served to pins</td><td>Versions (design example)</td><td>new index fields; doze warns on a pinned yanked release</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>Deprecated module or engine major, dated stages</td><td>Engines (Postgres 14 EOL 12 Nov 2026)</td><td>new index fields; doze warns new projects</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>Security advisories on affected releases</td><td>Versions (design example), Security</td><td>new advisories file in doze-registry, signed</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+      </tbody></table></div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em">Engines and extensions</h2>
+      <div class="gr-box"><table class="gr-t"><colgroup><col style="width:31%"><col style="width:19%"><col style="width:38%"><col style="width:12%"></colgroup><thead><tr><th scope="col">What the page shows</th><th scope="col">Where</th><th scope="col">Comes from</th><th scope="col">State</th></tr></thead><tbody>
+        <tr><td>Every engine minor per platform (Postgres 14.0–18.6)</td><td>Engine versions</td><td>doze-binaries versions.yaml and its mirror index</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>What a bare major resolves to today</td><td>Engine versions, install box</td><td>mirror index major → newest map</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>Postgres extensions × majors × versions</td><td>Extensions, Extension, search</td><td>pgext bundles in the mirror index (pgext branch, not released)</td><td><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span></td></tr>
+        <tr><td>Extension facts: preload, licence, what it's for, aliases</td><td>Extensions, Extension</td><td>the module's extension catalog (pgext branch)</td><td><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span></td></tr>
+        <tr><td>Bring-your-own tools and the blocks doze add writes</td><td>Tool, search</td><td>internal/detect/render.go</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>doze add --as container uses the right image</td><td>Tool, NoResults</td><td>bug: containerImage() returns the bare name (docker run mailpit, not axllent/mailpit) for every tool but mongo</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>doze add finds an installed redis-server; unknown tools get a working block</td><td>Search (redis), NoResults</td><td>bugs: looks for a binary named redis; --as container without --port writes -p $HOST:$PORT:0 and no port; an installed unknown tool still gets the download block</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>doze add on 0.1.1</td><td>Tool, search</td><td>doze add arrives with 0.2; on 0.1.1 the block is written by hand</td><td><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span></td></tr>
+      </tbody></table></div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em">Pages and search</h2>
+      <div class="gr-box"><table class="gr-t"><colgroup><col style="width:31%"><col style="width:19%"><col style="width:38%"><col style="width:12%"></colgroup><thead><tr><th scope="col">What the page shows</th><th scope="col">Where</th><th scope="col">Comes from</th><th scope="col">State</th></tr></thead><tbody>
+        <tr><td>Start, recipes, env and connect snippets per module</td><td>module Overview</td><td>new Describe fields (start, recipes, env, connect) + dzm meta</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>Full argument and block reference</td><td>Reference</td><td>meta.yaml config</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>"Since" per argument</td><td>Reference</td><td>diff meta.yaml across releases at site build</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>Search over modules, extensions, aliases, tools, docs</td><td>Search, NoResults</td><td>a static index built with the site (Pagefind + a registry JSON)</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>Every HCL example parsed by the current doze</td><td>quality checklist</td><td>CI: doze lint --offline on each snippet</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>Conformance tested on every listed engine major</td><td>quality checklist</td><td>acceptance CI tests Postgres 16 only (Linux x86_64, weekly and at release); 14–18 is to build</td><td><span class="gr-chip" style="background: #FFF1D6; color: #8A5300">Partly</span></td></tr>
+        <tr><td>doze add postgres names the instance postgres</td><td>install box, module header</td><td>today it writes module postgres "db"; change the default to the module's name</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>Block arguments described (role, grant, schema, extension)</td><td>Reference</td><td>only in the docs today; Describe should carry them</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>One default per argument</td><td>Reference</td><td>autovacuum: true in the module, false in configuration.md; fix one</td><td><span class="gr-chip" style="background: #FCE8EC; color: #B4233C">To decide</span></td></tr>
+      </tbody></table></div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em">Trust and publishing</h2>
+      <div class="gr-box"><table class="gr-t"><colgroup><col style="width:31%"><col style="width:19%"><col style="width:38%"><col style="width:12%"></colgroup><thead><tr><th scope="col">What the page shows</th><th scope="col">Where</th><th scope="col">Comes from</th><th scope="col">State</th></tr></thead><tbody>
+        <tr><td>The registry key, compiled into doze</td><td>Trust, Publisher, Release</td><td>RegistryKey in modules.go; keys.json is informational</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+        <tr><td>registry.doze-dev.com for the signed files</td><td>Trust, site map</td><td>today doze.nerdmenot.in/registry is compiled in; move with doze 0.2, keep the old address redirecting</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>doze modules verify</td><td>Trust, Release</td><td>new; main has only `doze modules upgrade [--check]` (0.1.1 also had list, which, info, search, docs)</td><td><span class="gr-chip" style="background: #E8EEFC; color: #2F62D9">To build</span></td></tr>
+        <tr><td>The site launches with doze 0.2</td><td>every page</td><td>decided for the design: pages describe 0.2 as current; 0.1.1 appears only in upgrade advice and the check-your-doze states</td><td><span class="gr-chip" style="background: #FCE8EC; color: #B4233C">To decide</span></td></tr>
+        <tr><td>Outside publishers: namespaces, own keys pinned on first use, tiers</td><td>Publish, Publisher</td><td>planned; doze refuses any namespace but doze today</td><td><span class="gr-chip" style="background: #FCE8EC; color: #B4233C">To decide</span></td></tr>
+        <tr><td>Key rotation policy</td><td>Trust</td><td>operations.md has a draft; owner to decide</td><td><span class="gr-chip" style="background: #FCE8EC; color: #B4233C">To decide</span></td></tr>
+        <tr><td>Download counts</td><td>nowhere, on purpose</td><td>doze sends nothing home; pages say so</td><td><span class="gr-chip" style="background: #E6F4EA; color: #1D7A45">Exists</span></td></tr>
+      </tbody></table></div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

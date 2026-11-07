@@ -1,0 +1,88 @@
+---
+// The site's footer (design: SiteFooter).
+import type { Theme } from "./SiteHeader.astro";
+
+interface Props {
+  theme?: Theme;
+}
+const { theme = "dark" } = Astro.props;
+const cols = [
+  [
+    "Products",
+    [
+      ["doze", "/doze/"],
+      ["doze AWS", "/aws/"],
+      ["doze Kafka", "/kafka/"],
+      ["Download", "/download/"],
+    ],
+  ],
+  [
+    "Registry",
+    [
+      ["Modules", "/registry/"],
+      ["Postgres extensions", "/registry/extensions/"],
+      ["How signing works", "/registry/trust/"],
+      ["Publish a module", "/registry/publish/"],
+    ],
+  ],
+  [
+    "Learn",
+    [
+      ["Docs", "/docs/"],
+      ["Examples", "/examples/"],
+      ["Changelog", "/changelog/"],
+      ["Coming from Docker Compose", "/docs/doze/start/from-docker-compose/"],
+    ],
+  ],
+  [
+    "Project",
+    [
+      ["GitHub", "https://github.com/doze-dev"],
+      ["Security", "/security/"],
+      ["Brand", "/brand/"],
+      ["Discussions", "https://github.com/doze-dev/doze/discussions"],
+    ],
+  ],
+] as const;
+---
+<footer class={`sf sf-${theme}`}>
+  <div class="sf-cols">
+    <div class="sf-brand">
+      <a class="sf-mark" href="/"><img src="/brand/doze.svg" alt="" width="30" height="30" /><span>doze</span></a>
+      <p class="sf-tag">Run your whole stack. Feel none of it.</p>
+      <span class="sf-dim">Open source, Apache-2.0. No account, no telemetry.</span>
+    </div>
+    {cols.map(([title, links]) => (
+      <nav aria-label={title}>
+        <h2>{title}</h2>
+        {links.map(([label, href]) => <a href={href}>{label}</a>)}
+      </nav>
+    ))}
+  </div>
+  <div class="sf-bottom">
+    <span>© {new Date().getFullYear()} the doze authors</span>
+    <span>doze sends nothing home. Not even from this website: no cookies, no analytics.</span>
+  </div>
+</footer>
+
+<style>
+  .sf { --g: #140c1b; --l: #2e1f3a; --i: #f4ece4; --i2: #c9bad3; --d: #9c8aab; font-family: var(--font-text); background: var(--g); border-top: 1px solid var(--l); color: var(--i); }
+  .sf-aws { --g: #0c1320; --l: #1c2b44; }
+  .sf-kafka { --g: #16150f; --l: #2c2a1c; }
+  .sf-light { --g: #fff4e8; --l: #eadfd3; --i: #140c1b; --i2: #4a3d55; --d: #6e5f79; }
+  .sf-cols { box-sizing: content-box; max-width: 1240px; margin: 0 auto; padding: 64px 32px 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 36px 24px; }
+  .sf-brand { grid-column: span 2; display: flex; flex-direction: column; gap: 14px; }
+  .sf a { text-decoration: none; font-size: 14px; color: var(--i2); }
+  .sf a:hover { color: var(--i); }
+  .sf a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
+  .sf-mark { display: flex; align-items: center; gap: 10px; color: var(--i) !important; font: 700 19px var(--font-display) !important; }
+  .sf-tag { margin: 0; font: 800 22px/1.15 var(--font-display); letter-spacing: -0.02em; max-width: 17ch; text-wrap: balance; }
+  .sf-dim { font-size: 13px; color: var(--d); }
+  .sf nav { display: flex; flex-direction: column; gap: 10px; }
+  .sf h2 { margin: 0 0 4px; font: 600 12px var(--font-text); letter-spacing: 0.12em; text-transform: uppercase; color: var(--d); }
+  .sf-bottom { width: min(1240px, calc(100% - 64px)); margin: 0 auto; padding: 18px 0 36px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; font-size: 13px; color: var(--d); border-top: 1px solid var(--l); }
+  @media (max-width: 700px) {
+    .sf-brand { grid-column: 1 / -1; }
+    .sf nav a { display: block; padding: 11px 0; }
+  }
+</style>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registry bar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.rb a{text-decoration:none}
+.rb-nav a{font-size:14px;color:#4A3D55;padding:10px 2px;border-bottom:2px solid transparent;white-space:nowrap}
+.rb-nav a:hover{color:#140C1B}
+.rb-nav a[aria-current="page"]{color:#140C1B;font-weight:600;border-bottom-color:#F0A24B}
+.rb-search{display:flex;align-items:center;gap:10px;height:42px;padding:0 12px;border:1px solid #DCCFC2;border-radius:10px;background:#FFFFFF;flex:1 1 320px;max-width:520px}
+.rb-search input{border:0;outline:0;flex:1;font:15px Geist,sans-serif;color:#140C1B;background:transparent;min-width:0}
+.rb-search:focus-within{border-color:#A85A0C;box-shadow:0 0 0 3px #FDE6CB}
+.rb-kbd{font:600 11px 'JetBrains Mono',monospace;color:#6E5F79;border:1px solid #DCCFC2;border-radius:5px;padding:1px 6px}
+.rb-doze{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-radius:10px;border:1px solid #DCCFC2;background:#FFFFFF;font:500 14px Geist,sans-serif;color:#140C1B;white-space:nowrap;cursor:pointer}
+.rb-doze.set{border-color:#A85A0C}
+.rb-search input{height:100%}
+.rb-doze img{width:20px;height:20px;flex:none}
+@media (max-width:760px){.rb-nav{gap:4px 18px !important}.rb-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 2px}.rb-doze{flex:1 1 100%}.rb-kbd{display:none}.rb-title{display:inline-flex;align-items:center;min-height:44px}}
+</style>
+</helmet>
+<div class="rb" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; background: #FFF4E8; border-bottom: 1px solid #EADFD3; color: #140C1B">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 18px 32px 0; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+      <a class="rb-title" href="Registry.dc.html" style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; color: #140C1B; margin-right: 10px">Registry</a>
+      <form class="rb-search" role="search" action="RegistrySearch.dc.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label for="rb-q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search modules, extensions and tools</label>
+        <input id="rb-q" name="q" type="search" value="{{q}}" placeholder="Search: redis, pgvector, s3…">
+        <span class="rb-kbd">/</span>
+      </form>
+      <span style="flex: 1"></span>
+      <sc-if value="{{hasDoze}}" hint-placeholder-val="{{false}}">
+        <button class="rb-doze set" type="button" aria-label="Checking against doze {{doze}}. Change the version">
+          <img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 20px; height: 20px">
+          Checking against doze <b>{{doze}}</b>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </sc-if>
+      <sc-if value="{{noDoze}}" hint-placeholder-val="{{true}}">
+        <button class="rb-doze" type="button">Check against your doze
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </sc-if>
+    </div>
+    <nav class="rb-nav" aria-label="Registry" style="display: flex; gap: 24px; flex-wrap: wrap">
+      <sc-for list="{{items}}" as="n" hint-placeholder-count="5">
+        <a href="{{n.href}}" aria-current="{{n.current}}">{{n.label}}</a>
+      </sc-for>
+    </nav>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"section":{"editor":"enum","options":["modules","extensions","tools","trust","publish","none"],"default":"modules"},"q":{"editor":"text","default":""},"doze":{"editor":"text","default":""},"$preview":{"width":1440,"height":120}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const section = this.props.section ?? 'modules';
+    const doze = this.props.doze ?? '';
+    const items = [
+      ['modules', 'Modules', 'Registry.dc.html'],
+      ['extensions', 'Postgres extensions', 'RegistryExtensions.dc.html'],
+      ['tools', 'Bring your own', 'RegistryTool.dc.html'],
+      ['trust', 'How signing works', 'RegistryTrust.dc.html'],
+      ['publish', 'Publish a module', 'RegistryPublish.dc.html']
+    ].map(([id, label, href]) => ({ label, href, current: id === section ? 'page' : false }));
+    return { items, q: this.props.q ?? '', doze, hasDoze: doze !== '', noDoze: doze === '' };
+  }
+}
+</script>
+</body>
+</html>

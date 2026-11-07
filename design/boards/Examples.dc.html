@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Examples: Larder</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#140C1B}
+.lx-pg{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#F4ECE4;background:#140C1B;min-height:100%}
+.lx-pg a{color:#F0A24B;text-decoration:none}.lx-pg a:hover{color:#FFC27A}
+.lx-pg code,.lx-pg pre{font-variant-ligatures:none}
+.lx-pg :focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+.lx-ic-code{font-family:'JetBrains Mono',monospace;color:#F4ECE4;font-size:.92em}
+.lx-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.lx-sec{padding-top:96px;padding-bottom:96px}
+.lx-eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.lx-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:76px;line-height:.98;letter-spacing:-0.04em;text-wrap:balance}
+.lx-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:50px;line-height:1.04;letter-spacing:-0.03em;text-wrap:balance}
+.lx-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px;line-height:1.2;letter-spacing:-0.01em;text-wrap:balance}
+.lx-lede{margin:0;font-size:20px;line-height:1.55;color:#D6C8DF;max-width:40rem}
+.lx-p{margin:0;font-size:16px;line-height:1.6;color:#C9BAD3}
+.lx-dim{color:#9C8AAB}
+.lx-card{background:#1E1328;border:1px solid #34233F;border-radius:20px;padding:28px;box-sizing:border-box}
+.lx-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px;box-sizing:border-box}
+.lx-pg a.lx-btn-lamp{background:#F0A24B;color:#2A1534}.lx-pg a.lx-btn-lamp:hover{background:#FFB866;color:#2A1534}
+.lx-pg a.lx-btn-ghost{border:1px solid #4A3458;color:#F4ECE4}.lx-pg a.lx-btn-ghost:hover{border-color:#7A5E8C;color:#fff}
+.lx-cmd{display:flex;align-items:center;gap:8px;background:#1E1328;border:1px solid #4A3458;border-radius:12px;min-height:56px;padding:0 6px 0 16px;box-sizing:border-box;max-width:100%}
+.lx-cmd code{font:15px 'JetBrains Mono',monospace;color:#F4ECE4;flex:1;min-width:0;overflow-x:auto;white-space:pre;padding:16px 0}
+.lx-pr{color:#9C8AAB}
+.lx-copy{height:44px;min-width:64px;padding:0 14px;border-radius:9px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer;flex:none}
+.lx-copy:hover{border-color:#7A5E8C}
+.lx-code{margin:0;font:14px/1.75 'JetBrains Mono',monospace;background:#120A18;border:1px solid #2E1F3A;border-radius:16px;padding:20px 22px;color:#D6C8DF;white-space:pre;overflow-x:auto;min-width:0}
+.lx-c{color:#9C8AAB}.lx-k{color:#F0A24B}.lx-s{color:#8BE39B}
+.lx-codebox{background:#120A18;border:1px solid #2E1F3A;border-radius:16px;overflow:hidden;min-width:0}
+.lx-codebox-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 6px 6px 18px;border-bottom:1px solid #2E1F3A;font:13px 'JetBrains Mono',monospace;color:#9C8AAB}
+.lx-codebox .lx-code{border:0;border-radius:0;background:transparent}
+.lx-chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid #2C3F66;color:#9DC7FF;background:#141B2C;white-space:nowrap}
+.lx-shot{border:1px dashed #5A4168;border-radius:16px;background:repeating-linear-gradient(135deg,#1A1022 0 14px,#1E1328 14px 28px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px;color:#C9BAD3;font-size:14px;box-sizing:border-box}
+.lx-shot b{font-family:'JetBrains Mono',monospace;font-size:13px;color:#F0A24B}
+.lx-grid{display:grid;gap:20px}
+.lx-ic{width:20px;height:20px;flex:none}
+.lx-lang{display:inline-flex;align-items:center;height:22px;padding:0 7px;border-radius:6px;font:600 11px 'JetBrains Mono',monospace;letter-spacing:.04em;flex:none;vertical-align:middle}
+.lx-go{background:#123040;color:#7FD3F0;border:1px solid #23536A}
+.lx-py{background:#2E2A10;color:#F2DA6B;border:1px solid #5A5020}
+.lx-ts{background:#1A2348;color:#A9BBFF;border:1px solid #33427E}
+.lx-node{background:#1E1328;border:1px solid #4A3458;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;box-sizing:border-box;min-width:0}
+.lx-node b{font-size:16px;color:#F4ECE4}
+.lx-nh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lx-d{font-size:13px;color:#B9A9C6;line-height:1.45}
+.lx-band{border:1px solid #2E1F3A;border-radius:22px;padding:24px;background:#1A1022;display:flex;flex-direction:column;gap:18px;min-width:0}
+.lx-band-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.lx-band-h b{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#C9BAD3}
+.lx-arrow{color:#9C8AAB;display:flex;align-items:center;justify-content:center;flex:none}
+.lx-flow{display:flex;align-items:center;gap:10px}
+.lx-topic{display:grid;grid-template-columns:150px 20px 190px 20px minmax(0,1fr);align-items:center;gap:12px;padding:12px 0;border-top:1px solid #2E1F3A}
+.lx-topic:first-child{border-top:0}
+.lx-topic code{font:13px 'JetBrains Mono',monospace;color:#FFD60A;background:#16150F;border:1px solid #3A3518;border-radius:8px;padding:5px 9px;justify-self:start}
+.lx-who{font-size:14px;color:#F4ECE4;display:flex;align-items:center;gap:8px}
+.lx-cons{display:flex;flex-wrap:wrap;gap:8px}
+.lx-con{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:#F4ECE4;background:#1E1328;border:1px solid #34233F;border-radius:8px;padding:5px 9px}
+.lx-con i{font-style:normal;color:#B9A9C6}
+.lx-infra{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:12px}
+.lx-chunk{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:start;padding:44px 0;border-top:1px solid #2E1F3A}
+.lx-n{font-family:'JetBrains Mono',monospace;font-size:13px;color:#F0A24B}
+.lx-chunk .lx-code{font-size:13.5px}
+.lx-try{display:flex;flex-direction:column;gap:14px;min-width:0}
+.lx-t{font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C8AAB;letter-spacing:.08em;text-transform:uppercase}
+.lx-states{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
+.lx-s8{border-radius:999px;padding:4px 10px;border:1px solid #4A3458;color:#F4ECE4;background:#22162C}
+.lx-mini{display:flex;align-items:flex-start;gap:8px;background:#120A18;border:1px solid #2E1F3A;border-radius:10px;padding:4px 4px 4px 12px;min-width:0}
+.lx-mini pre{margin:0;flex:1;min-width:0;font:13px/1.6 'JetBrains Mono',monospace;color:#D6C8DF;white-space:pre;overflow-x:auto;padding:8px 0}
+.lx-shows li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.55;color:#E9DEEF}
+.lx-shows li svg{color:#8BE39B;margin-top:3px}
+.lx-planned{border:1px dashed #4A3458;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.lx-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:56px;align-items:center}
+@media (max-width:1000px){.lx-hero{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){.lx-chunk{grid-template-columns:minmax(0,1fr);gap:20px}.lx-flow{flex-direction:column;align-items:stretch}.lx-flow .lx-arrow{transform:rotate(90deg)}.lx-flow>.lx-node{flex:none !important}.lx-topic{grid-template-columns:minmax(0,1fr);gap:8px}.lx-topic .lx-arrow{display:none}}
+@media (max-width:760px){.lx-h1{font-size:46px}.lx-h2{font-size:34px}.lx-lede{font-size:18px}.lx-sec{padding-top:64px;padding-bottom:64px}.lx-card{padding:22px}.lx-band{padding:18px}.lx-stack-sm{flex-direction:column !important;align-items:stretch !important}}
+
+</style>
+</helmet>
+<div class="lx-pg">
+<dc-import name="SiteHeader" theme="dark" current="examples" hint-size="100%,72px"></dc-import>
+<main>
+
+  <!-- Hero: the claim and the command on the left, the head of the real doze.hcl on the right -->
+  <section style="position: relative; overflow: hidden">
+    <div aria-hidden="true" style="position: absolute; left: 50%; top: -140px; width: 1000px; height: 560px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(240,162,75,0.2), rgba(240,162,75,0))"></div>
+    <div class="lx-wrap lx-hero" style="position: relative; padding-top: 88px; padding-bottom: 88px">
+      <div style="display: flex; flex-direction: column; gap: 24px; align-items: flex-start; min-width: 0">
+        <span class="lx-eyebrow">Example · Larder</span>
+        <h1 class="lx-h1">Larder: a grocery service you can run in one command.</h1>
+        <p class="lx-lede">Nine services in Go, Python and TypeScript, on Postgres, Redis, Kafka, S3, SQS and a mail catcher. The kind of backend that usually comes with a compose file, a wiki page and a lost afternoon. Here it is one <code class="lx-ic-code">doze.hcl</code>, and no Docker.</p>
+        <div class="lx-stack-sm" style="display: flex; gap: 12px; flex-wrap: wrap">
+          <a class="lx-btn lx-btn-lamp" href="#run">Clone and run</a>
+          <a class="lx-btn lx-btn-ghost" href="https://github.com/doze-dev/doze-examples/tree/main/larder">Larder on GitHub</a>
+        </div>
+        <dl style="margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px">
+          <div style="display: flex; gap: 8px"><dt class="lx-dim">Services</dt><dd style="margin: 0">7, a gateway and a storefront</dd></div>
+          <div style="display: flex; gap: 8px"><dt class="lx-dim">Config</dt><dd style="margin: 0">one file, 322 lines with comments</dd></div>
+          <div style="display: flex; gap: 8px"><dt class="lx-dim">Containers</dt><dd style="margin: 0">none</dd></div>
+        </dl>
+      </div>
+      <div class="lx-codebox" style="box-shadow: 0 40px 100px rgba(0,0,0,0.5)">
+        <div class="lx-codebox-h" style="padding: 12px 18px"><span>larder/doze.hcl</span><span>the top, shortened</span></div>
+<pre class="lx-code" aria-label="The start of Larder's doze.hcl"><span class="lx-k">stack</span> = <span class="lx-s">"larder"</span>
+
+<span class="lx-k">defaults</span> {
+  sleep = <span class="lx-s">"2m"</span>
+  names = var.names
+}
+
+<span class="lx-k">module</span> postgres <span class="lx-s">"postgres"</span> {
+  version = 18
+  port    = 5432
+
+  <span class="lx-k">role</span> <span class="lx-s">"identity"</span> { password = <span class="lx-s">"identity"</span> }
+  <span class="lx-k">schema</span> <span class="lx-s">"identity"</span> { owner = <span class="lx-s">"identity"</span> }
+  <span class="lx-c"># … the same for the other four services</span>
+}
+
+<span class="lx-k">module</span> valkey <span class="lx-s">"redis"</span> {
+  version = 9
+  port    = 6379
+}
+
+<span class="lx-k">module</span> kafka <span class="lx-s">"kafka"</span> {
+  version            = 4
+  auto_create_topics = false
+  <span class="lx-k">topic</span> <span class="lx-s">"orders.placed"</span> { partitions = 3 }
+  <span class="lx-c"># … users.signed-up, payments.settled, payments.failed</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section aria-labelledby="arch-h" style="border-top: 1px solid #2E1F3A; background: #170E1F">
+    <div class="lx-wrap lx-sec" style="display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+        <span class="lx-eyebrow">How it fits together</span>
+        <h2 class="lx-h2" id="arch-h">Split by domain, the way real backends end up.</h2>
+        <p class="lx-p" style="font-size: 18px">Each team picks the language it knows. What holds it together is the contracts: HTTP between services, JSON events on Kafka, and one schema per service in a shared Postgres.</p>
+      </div>
+
+      <div class="lx-band" role="group" aria-label="Requests">
+        <div class="lx-band-h"><b>Requests</b><span style="font-size: 13px" class="lx-dim">browser → storefront → gateway → the service that owns the answer</span></div>
+        <div class="lx-flow">
+          <div class="lx-node" style="flex: 0 0 150px"><b>browser</b><span class="lx-d">storefront.larder.doze:5173</span></div>
+          <div class="lx-arrow" aria-hidden="true"><svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h22M18 4l6 6-6 6"/></svg></div>
+          <div class="lx-node" style="flex: 0 0 180px"><div class="lx-nh"><b>storefront</b><span class="lx-lang lx-ts">TS</span></div><span class="lx-d">Vite + React; proxies /api to the gateway</span></div>
+          <div class="lx-arrow" aria-hidden="true"><svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h22M18 4l6 6-6 6"/></svg></div>
+          <div class="lx-node" style="flex: 0 0 180px"><div class="lx-nh"><b>gateway</b><span class="lx-lang lx-go">Go</span></div><span class="lx-d">sessions, rate limits in Redis, routing</span></div>
+          <div class="lx-arrow" aria-hidden="true"><svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h22M18 4l6 6-6 6"/></svg></div>
+          <div style="flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px">
+            <div class="lx-node"><div class="lx-nh"><b>identity</b><span class="lx-lang lx-go">Go</span></div><span class="lx-d">users, sign-in, sessions</span></div>
+            <div class="lx-node"><div class="lx-nh"><b>catalog</b><span class="lx-lang lx-go">Go</span></div><span class="lx-d">products, stock, search; images in S3</span></div>
+            <div class="lx-node"><div class="lx-nh"><b>orders</b><span class="lx-lang lx-go">Go</span></div><span class="lx-d">basket, checkout; reserves stock with catalog</span></div>
+            <div class="lx-node"><div class="lx-nh"><b>fulfilment</b><span class="lx-lang lx-py">Py</span></div><span class="lx-d">pick lists on SQS, receipts in S3</span></div>
+            <div class="lx-node"><div class="lx-nh"><b>recommendations</b><span class="lx-lang lx-py">Py</span></div><span class="lx-d">"goes well with", cached in Redis</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lx-band" role="group" aria-label="Events on Kafka">
+        <div class="lx-band-h"><b>Events, on Kafka</b><span style="font-size: 13px" class="lx-dim">who publishes · topic · who listens</span></div>
+        <div>
+          <div class="lx-topic"><div class="lx-who">identity <span class="lx-lang lx-go">Go</span></div><div class="lx-arrow" aria-hidden="true">→</div><code>users.signed-up</code><div class="lx-arrow" aria-hidden="true">→</div><div class="lx-cons"><span class="lx-con">notifications <span class="lx-lang lx-ts">TS</span><i>welcome email</i></span></div></div>
+          <div class="lx-topic"><div class="lx-who">orders <span class="lx-lang lx-go">Go</span></div><div class="lx-arrow" aria-hidden="true">→</div><code>orders.placed</code><div class="lx-arrow" aria-hidden="true">→</div><div class="lx-cons"><span class="lx-con">payments <span class="lx-lang lx-go">Go</span><i>charges the card</i></span><span class="lx-con">recommendations <span class="lx-lang lx-py">Py</span><i>counts what's bought together</i></span><span class="lx-con">notifications <span class="lx-lang lx-ts">TS</span></span></div></div>
+          <div class="lx-topic"><div class="lx-who">payments <span class="lx-lang lx-go">Go</span></div><div class="lx-arrow" aria-hidden="true">→</div><code>payments.settled</code><div class="lx-arrow" aria-hidden="true">→</div><div class="lx-cons"><span class="lx-con">orders <span class="lx-lang lx-go">Go</span><i>marks it paid</i></span><span class="lx-con">fulfilment <span class="lx-lang lx-py">Py</span><i>pick list on SQS, then packed, receipt in S3</i></span></div></div>
+          <div class="lx-topic"><div class="lx-who">payments <span class="lx-lang lx-go">Go</span></div><div class="lx-arrow" aria-hidden="true">→</div><code>payments.failed</code><div class="lx-arrow" aria-hidden="true">→</div><div class="lx-cons"><span class="lx-con">orders <span class="lx-lang lx-go">Go</span><i>puts the stock back</i></span><span class="lx-con">notifications <span class="lx-lang lx-ts">TS</span></span></div></div>
+        </div>
+      </div>
+
+      <div class="lx-band" role="group" aria-label="Shared backing services">
+        <div class="lx-band-h"><b>Shared, declared once</b><span style="font-size: 13px" class="lx-dim">native processes, asleep until something connects</span></div>
+        <div class="lx-infra">
+          <div class="lx-node"><b>postgres</b><span class="lx-d">Postgres 18 on :5432, a role and schema per service</span></div>
+          <div class="lx-node"><b>redis</b><span class="lx-d">Valkey 9 on :6379: rate limits, idempotency keys, cached suggestions</span></div>
+          <div class="lx-node"><b>kafka</b><span class="lx-d">doze Kafka on :9092, four declared topics</span></div>
+          <div class="lx-node"><b>aws</b><span class="lx-d">doze AWS on :4566: buckets product-images and receipts, queue pick-lists with a DLQ</span></div>
+          <div class="lx-node"><b>mailpit</b><span class="lx-d">SMTP on :2525, catches every email; web UI as its console</span></div>
+        </div>
+      </div>
+      <p style="margin: 0; display: flex; gap: 10px 22px; flex-wrap: wrap; font-size: 14px" class="lx-dim"><span><span class="lx-lang lx-go">Go</span> identity, catalog, orders, payments, gateway</span><span><span class="lx-lang lx-py">Py</span> fulfilment, recommendations</span><span><span class="lx-lang lx-ts">TS</span> notifications, storefront</span></p>
+    </div>
+  </section>
+
+  <!-- Clone and run -->
+  <section id="run" aria-labelledby="run-h">
+    <div class="lx-wrap lx-sec" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 48px; align-items: start">
+      <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+        <span class="lx-eyebrow">Clone and run</span>
+        <h2 class="lx-h2" id="run-h">Three commands, then open the storefront.</h2>
+        <p class="lx-p" style="font-size: 18px">The first <code class="lx-ic-code">doze up</code> downloads the engines and compiles each service, so give it a minute. After that it takes seconds.</p>
+        <div class="lx-card" style="padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+          <b style="font-size: 15px">You need</b>
+          <p class="lx-p" style="font-size: 15px"><a href="Download.dc.html">doze</a>, Go, bun, Python and uv. The versions Larder is tested with are pinned in <code class="lx-ic-code">.prototools</code> (Go 1.27.3, bun 1.4.4, Python 3.14.10, uv 0.13.7), and <code class="lx-ic-code">proto install</code> sets them all up. doze runs <code class="lx-ic-code">uv sync</code> and <code class="lx-ic-code">bun install</code> for you.</p>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+        <div class="lx-codebox">
+          <div class="lx-codebox-h"><span>terminal</span><button class="lx-copy" type="button" aria-label="Copy the commands to clone and run Larder">Copy</button></div>
+<pre class="lx-code" aria-label="Commands to run Larder"><span class="lx-pr">$</span> git clone https://github.com/doze-dev/doze-examples
+<span class="lx-pr">$</span> cd doze-examples/larder
+<span class="lx-pr">$</span> doze up                  <span class="lx-c"># everything, in dependency order</span>
+<span class="lx-pr">$</span> doze task seed-catalog   <span class="lx-c"># once: 31 products in 5 categories</span></pre>
+        </div>
+        <p class="lx-p" style="font-size: 15px">Then open the storefront at <a href="http://storefront.larder.doze:5173">storefront.larder.doze:5173</a>. Every service has a <code class="lx-ic-code">.larder.doze</code> name, so two stacks can both use 5432 without a clash.</p>
+        <p class="lx-p" style="font-size: 15px">Sharing ports with another stack on a machine without names set up? <code class="lx-ic-code">doze up --var names=false</code> binds everything on 127.0.0.1; swap <code class="lx-ic-code">localhost</code> into the addresses below.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- doze.hcl walkthrough -->
+  <section id="doze-hcl" aria-labelledby="hcl-h" style="background: #170E1F; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div class="lx-wrap lx-sec" style="padding-bottom: 56px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem; padding-bottom: 32px">
+        <span class="lx-eyebrow">Inside doze.hcl</span>
+        <h2 class="lx-h2" id="hcl-h">The whole backend, read in five pieces.</h2>
+        <p class="lx-p" style="font-size: 18px">Real lines from <a href="https://github.com/doze-dev/doze-examples/blob/main/larder/doze.hcl">larder/doze.hcl</a>, and why each one is there.</p>
+      </div>
+
+      <div class="lx-chunk">
+<pre class="lx-code"><span class="lx-c"># One Postgres server, one database, and a role and schema per service:
+# each service connects as itself and can only touch its own tables.</span>
+<span class="lx-k">module</span> postgres <span class="lx-s">"postgres"</span> {
+  version = 18
+  port    = 5432
+
+  <span class="lx-k">role</span> <span class="lx-s">"orders"</span> { password = <span class="lx-s">"orders"</span> }
+  <span class="lx-k">role</span> <span class="lx-s">"payments"</span> { password = <span class="lx-s">"payments"</span> }
+  <span class="lx-c">…</span>
+  <span class="lx-k">schema</span> <span class="lx-s">"orders"</span> { owner = <span class="lx-s">"orders"</span> }
+  <span class="lx-k">schema</span> <span class="lx-s">"payments"</span> { owner = <span class="lx-s">"payments"</span> }
+}</pre>
+        <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+          <span class="lx-n">01 · Ownership</span>
+          <h3 class="lx-h3">A role and a schema per service.</h3>
+          <p class="lx-p">Running five Postgres servers is wasteful, so teams share one, usually with one login. Then any service can read any table, and that habit follows you to production. Here each service connects as itself. The schema shares the role's name, so the default search path finds its tables unqualified.</p>
+          <div class="lx-mini"><pre><span class="lx-pr">$</span> psql "postgres://orders:orders@postgres.larder.doze:5432/postgres" \
+    -c 'select * from identity.users'
+ERROR:  permission denied for schema identity</pre><button class="lx-copy" type="button" aria-label="Copy the psql command">Copy</button></div>
+        </div>
+      </div>
+
+      <div class="lx-chunk">
+<pre class="lx-code"><span class="lx-c"># The topics are the contracts between services, so they are declared here
+# rather than created by whichever client happens to write first.</span>
+<span class="lx-k">module</span> kafka <span class="lx-s">"kafka"</span> {
+  version            = 4
+  port               = 9092
+  auto_create_topics = false
+
+  <span class="lx-k">topic</span> <span class="lx-s">"users.signed-up"</span> { partitions = 3 }
+  <span class="lx-k">topic</span> <span class="lx-s">"orders.placed"</span> { partitions = 3 }
+  <span class="lx-k">topic</span> <span class="lx-s">"payments.settled"</span> { partitions = 3 }
+  <span class="lx-k">topic</span> <span class="lx-s">"payments.failed"</span> { partitions = 3 }
+}</pre>
+        <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+          <span class="lx-n">02 · Contracts</span>
+          <h3 class="lx-h3">Topics are declared, not discovered.</h3>
+          <p class="lx-p">With auto-create on, a typo in a producer quietly makes a new topic and the consumer waits forever. With <code class="lx-ic-code">auto_create_topics = false</code>, the four topics in this file are the only ones that exist, and a misspelt one fails loudly on the first write.</p>
+        </div>
+      </div>
+
+      <div class="lx-chunk">
+<pre class="lx-code"><span class="lx-k">task</span> <span class="lx-s">"migrate-orders"</span> {
+  run    = <span class="lx-s">"go run ./platform/cmd/migrate services/orders/migrations"</span>
+  inputs = [<span class="lx-s">"services/orders/migrations/*.sql"</span>]
+  env    = { DATABASE_URL = <span class="lx-s">"postgres://orders:orders@…"</span> }
+}
+
+<span class="lx-k">app</span> <span class="lx-s">"orders"</span> {
+  run   = <span class="lx-s">"go run ./services/orders"</span>
+  port  = 8003
+  ready = http(<span class="lx-s">"/healthz"</span>)
+  after = [task.migrate-orders]
+  <span class="lx-c">…</span>
+}</pre>
+        <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+          <span class="lx-n">03 · Order</span>
+          <h3 class="lx-h3">Tasks run before the apps that need them.</h3>
+          <p class="lx-p">"Did you run the migrations?" is the first question in every broken onboarding. A task runs before the app that lists it in <code class="lx-ic-code">after</code>, and runs again only when its <code class="lx-ic-code">.sql</code> files change. The app counts as ready when <code class="lx-ic-code">/healthz</code> answers, not when its process happens to exist.</p>
+        </div>
+      </div>
+
+      <div class="lx-chunk">
+<pre class="lx-code"><span class="lx-k">defaults</span> {
+  sleep = <span class="lx-s">"2m"</span>
+  <span class="lx-c">…</span>
+}
+
+<span class="lx-k">app</span> <span class="lx-s">"payments"</span> {
+  run   = <span class="lx-s">"go run ./services/payments"</span>
+  after = [task.migrate-payments]
+  sleep = <span class="lx-s">"never"</span>
+  <span class="lx-c">…</span>
+}
+
+<span class="lx-k">app</span> <span class="lx-s">"orders"</span> {
+  <span class="lx-c">…</span>
+  sleep = <span class="lx-s">"never"</span> <span class="lx-c"># it consumes Kafka: no request would ever wake it</span>
+}</pre>
+        <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+          <span class="lx-n">04 · Sleep</span>
+          <h3 class="lx-h3">Requests wake apps. Consumers never sleep.</h3>
+          <p class="lx-p">doze wakes an app when a connection arrives at its port. A Kafka consumer gets its work by asking Kafka, so no connection would ever wake it, and the comment says exactly that. Orders, payments, fulfilment and recommendations are marked <code class="lx-ic-code">"never"</code>; notifications has no port at all, so it runs until stopped.</p>
+        </div>
+      </div>
+
+      <div class="lx-chunk">
+<pre class="lx-code"><span class="lx-c"># Dependencies follow the lockfiles: installed again only when one changes.</span>
+<span class="lx-k">task</span> <span class="lx-s">"install-fulfilment"</span> {
+  dir    = <span class="lx-s">"services/fulfilment"</span>
+  run    = <span class="lx-s">"uv sync --frozen"</span>
+  inputs = [<span class="lx-s">"pyproject.toml"</span>, <span class="lx-s">"uv.lock"</span>]
+}
+
+<span class="lx-k">task</span> <span class="lx-s">"install-storefront"</span> {
+  dir    = <span class="lx-s">"apps/storefront"</span>
+  run    = <span class="lx-s">"bun install --frozen-lockfile"</span>
+  inputs = [<span class="lx-s">"package.json"</span>, <span class="lx-s">"bun.lock"</span>]
+}
+
+<span class="lx-c"># Not in the registry: fetched once, pinned in doze.lock, run from the
+# archive. Catches every email; its web UI is the console.</span>
+<span class="lx-k">service</span> <span class="lx-s">"mailpit"</span> {
+  download = {
+    mac = <span class="lx-s">"…/mailpit/releases/download/v1.21.8/mailpit-darwin-arm64.tar.gz"</span>
+    <span class="lx-c">…</span>
+  }
+  port    = 2525
+  console = <span class="lx-s">"http://127.0.0.1:8025"</span>
+}</pre>
+        <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+          <span class="lx-n">05 · Setup, done once</span>
+          <h3 class="lx-h3">Installs keyed by lockfiles. Tools pinned by hash.</h3>
+          <p class="lx-p">A teammate pulls, the Python service fails on a missing package, and someone remembers you have to run <code class="lx-ic-code">uv sync</code> after a pull. Here the install task re-runs when <code class="lx-ic-code">uv.lock</code> or <code class="lx-ic-code">bun.lock</code> changes, and not otherwise. Mailpit isn't a doze module, so it comes as a download pinned in doze.lock, with its web UI as the service's console.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Things to try -->
+  <section aria-labelledby="try-h">
+    <div class="lx-wrap lx-sec" style="display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+        <span class="lx-eyebrow">Things to try</span>
+        <h2 class="lx-h2" id="try-h">Poke it. Every part has somewhere to look.</h2>
+      </div>
+      <div class="lx-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr))">
+        <div class="lx-card lx-try">
+          <span class="lx-t">01 · The happy path</span>
+          <h3 class="lx-h3">Place an order and watch it travel.</h3>
+          <p class="lx-p">Create an account in the storefront, add a few things, check out with the card that's filled in. The order page follows it through orders, payments and fulfilment, over Kafka and SQS, then links the receipt.</p>
+          <div class="lx-states" aria-label="Order states"><span class="lx-s8">placed</span><span aria-hidden="true" class="lx-dim">→</span><span class="lx-s8">paid</span><span aria-hidden="true" class="lx-dim">→</span><span class="lx-s8">packed</span><span aria-hidden="true" class="lx-dim">→</span><span class="lx-s8" style="border-color: #2F5A3A; color: #8BE39B">out for delivery</span></div>
+        </div>
+        <div class="lx-card lx-try">
+          <span class="lx-t">02 · The sad path</span>
+          <h3 class="lx-h3">Pay with a card ending 0002.</h3>
+          <p class="lx-p">Check out again with <code class="lx-ic-code">4000 0000 0000 0002</code>. Payments declines it and publishes <code class="lx-ic-code" style="color: #FFD60A">payments.failed</code>; orders puts the stock back on the shelf, and an email says so.</p>
+        </div>
+        <div class="lx-card lx-try">
+          <span class="lx-t">03 · Email</span>
+          <h3 class="lx-h3">Open Mailpit.</h3>
+          <p class="lx-p">Welcome, order and payment-failed emails all land in Mailpit instead of anyone's inbox. It is the mailpit service's console: open it from its row in the doze app.</p>
+        </div>
+        <div class="lx-card lx-try">
+          <span class="lx-t">04 · doze AWS</span>
+          <h3 class="lx-h3">Find the receipt in S3.</h3>
+          <p class="lx-p">A packed order leaves a receipt in the <code class="lx-ic-code">receipts</code> bucket, after its pick list went through SQS. The <a href="Aws.dc.html">doze AWS</a> console at <a href="http://aws.larder.doze:4566/_console">aws.larder.doze:4566/_console</a> shows both, and every call that put them there.</p>
+          <div class="lx-mini"><pre><span class="lx-pr">$</span> aws --endpoint-url \
+    http://aws.larder.doze:4566 \
+    s3 ls s3://receipts/receipts/</pre><button class="lx-copy" type="button" aria-label="Copy the aws s3 ls command">Copy</button></div>
+        </div>
+        <div class="lx-card lx-try">
+          <span class="lx-t">05 · doze Kafka</span>
+          <h3 class="lx-h3">Watch the events go by.</h3>
+          <p class="lx-p">The <a href="Kafka.dc.html">doze Kafka</a> console shows the four topics and each message as it lands. Any Kafka client works too.</p>
+          <div class="lx-mini"><pre><span class="lx-pr">$</span> kcat -b kafka.larder.doze:9092 \
+    -C -t orders.placed -e</pre><button class="lx-copy" type="button" aria-label="Copy the kcat command">Copy</button></div>
+        </div>
+        <div class="lx-card lx-try" style="border-color: #5A3E1E; background: linear-gradient(180deg, #24172C, #1E1328)">
+          <span class="lx-t" style="color: #F0A24B">06 · The point of doze</span>
+          <h3 class="lx-h3">Leave it alone for two minutes.</h3>
+          <p class="lx-p">With nothing connected, the storefront and the gateway go to sleep, then identity, which only the gateway uses. Reload the storefront: one request wakes them in order. Catalog stays awake, because orders and recommendations hold it.</p>
+          <div class="lx-mini"><pre><span class="lx-pr">$</span> doze status</pre><button class="lx-copy" type="button" aria-label="Copy doze status">Copy</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screens -->
+  <section aria-labelledby="screens-h" style="background: #170E1F; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div class="lx-wrap lx-sec" style="display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 46rem">
+        <span class="lx-eyebrow">What you'll see</span>
+        <h2 class="lx-h2" id="screens-h">The storefront, the map and the bucket.</h2>
+      </div>
+      <div class="lx-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); gap: 24px">
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px; grid-column: 1 / -1">
+          <div class="lx-shot" style="aspect-ratio: 16 / 6; min-height: 240px" role="img" aria-label="Screenshot to come: the Larder storefront basket"><b>[screenshot: Larder storefront, basket]</b><span>A basket ending with the sourdough loaf, the total, and below it "Goes well with Sourdough loaf": the products most often bought with it.</span></div>
+          <figcaption style="font-size: 14px" class="lx-dim">The storefront's basket. "Goes well with" comes from recommendations, counted from <code class="lx-ic-code" style="color: inherit">orders.placed</code> and cached in Redis.</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px">
+          <div class="lx-shot" style="aspect-ratio: 16 / 10" role="img" aria-label="Screenshot to come: the doze app's map of Larder"><b>[screenshot: doze app, Larder map]</b><span>Larder as a map: storefront → gateway → five services, each linked to postgres, redis, kafka and aws; storefront, gateway and identity asleep.</span></div>
+          <figcaption style="font-size: 14px" class="lx-dim">The doze app draws the map from the references in doze.hcl.</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px">
+          <div class="lx-shot" style="aspect-ratio: 16 / 10" role="img" aria-label="Screenshot to come: the doze AWS console showing the receipts bucket"><b>[screenshot: doze AWS console, receipts bucket]</b><span>The receipts bucket open under receipts/, one object per packed order, versioning on.</span></div>
+          <figcaption style="font-size: 14px" class="lx-dim">The doze AWS console: the receipts fulfilment wrote.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- What it shows -->
+  <section aria-labelledby="shows-h">
+    <div class="lx-wrap lx-sec" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 48px; align-items: start">
+      <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+        <span class="lx-eyebrow">What it shows about doze</span>
+        <h2 class="lx-h2" id="shows-h">Nothing in Larder's code knows doze is there.</h2>
+        <p class="lx-p" style="font-size: 18px">Every service reads plain environment variables. In doze.hcl they are references like <code class="lx-ic-code">module.kafka.address</code> and <code class="lx-ic-code">app.catalog.url</code>; in production the same variables point at the real thing.</p>
+      </div>
+      <ul class="lx-shows" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px">
+        <li><svg class="lx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b>Three languages, wired the same way.</b> Go, Python and TypeScript services all get their addresses from one file.</span></li>
+        <li><svg class="lx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b>References are edges.</b> doze starts things in dependency order and draws the map from them; nobody maintains a diagram.</span></li>
+        <li><svg class="lx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b>Real engines, no containers.</b> Postgres 18, Valkey 9, doze Kafka and doze AWS run as native processes you can attach a debugger to.</span></li>
+        <li><svg class="lx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b>Asleep where it's safe, awake where it isn't.</b> Request-driven apps sleep after two minutes; consumers say <code class="lx-ic-code">"never"</code> and say why.</span></li>
+        <li><svg class="lx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b>Setup that keeps itself current.</b> Migrations and installs re-run when their inputs change, so a pull never needs a ritual.</span></li>
+        <li><svg class="lx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b>Edit and save.</b> The Go apps have <code class="lx-ic-code">watch</code> set, so saving a <code class="lx-ic-code">.go</code> file restarts that service; Vite reloads the storefront itself.</span></li>
+        <li><svg class="lx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span><b>Pinned, so it runs the same next month.</b> Engines, modules and the mailpit download are all pinned in the committed doze.lock.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- More examples -->
+  <section aria-labelledby="more-h" style="border-top: 1px solid #2E1F3A">
+    <div class="lx-wrap lx-sec" style="display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 40rem">
+          <span class="lx-eyebrow">More examples coming</span>
+          <h2 class="lx-h2" id="more-h">Larder is the only one today.</h2>
+          <p class="lx-p">These are planned, not built. Want one sooner, or a different stack? Say so on GitHub.</p>
+        </div>
+        <a class="lx-btn lx-btn-ghost" href="https://github.com/doze-dev/doze-examples/issues">Suggest an example</a>
+      </div>
+      <div class="lx-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr))">
+        <div class="lx-planned"><span class="lx-chip" style="align-self: flex-start">[planned]</span><h3 class="lx-h3" style="font-size: 20px">Rails + Sidekiq</h3><p class="lx-p" style="font-size: 15px">A Rails app with Sidekiq jobs on Valkey and Postgres: the worker that has no port, done right.</p></div>
+        <div class="lx-planned"><span class="lx-chip" style="align-self: flex-start">[planned]</span><h3 class="lx-h3" style="font-size: 20px">Django</h3><p class="lx-p" style="font-size: 15px">Django on Postgres with Celery, S3 uploads through doze AWS, and email to Mailpit.</p></div>
+        <div class="lx-planned"><span class="lx-chip" style="align-self: flex-start">[planned]</span><h3 class="lx-h3" style="font-size: 20px">[A serverless stack]</h3><p class="lx-p" style="font-size: 15px">[Lambda, DynamoDB and EventBridge on doze AWS, with no app server at all.]</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+<dc-import name="SiteFooter" theme="dark" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":9640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

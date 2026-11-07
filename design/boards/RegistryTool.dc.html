@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MongoDB, bring your own · doze Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.rg-wrap *{box-sizing:border-box}
+.rg a{color:#A85A0C;text-decoration:none}
+.rg a:hover{text-decoration:underline}
+.rg-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.rg-eyebrow{font:600 13px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#A85A0C}
+.rg-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-0.03em;text-wrap:balance}
+.rg-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:30px;line-height:1.15;letter-spacing:-0.02em}
+.rg-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-0.01em}
+.rg-lead{margin:0;font-size:18px;line-height:1.55;color:#4A3D55;max-width:44rem}
+.rg-p{margin:0;font-size:15px;line-height:1.6;color:#4A3D55}
+.rg-small{font-size:13px;line-height:1.5;color:#6E5F79}
+.rg-mono{font-family:'JetBrains Mono',monospace}
+.rg-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.rg-sunk{background:#FFF4E8;border:1px solid #EADFD3;border-radius:14px}
+.rg-card{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.rg-card:hover{border-color:#DCCFC2;box-shadow:0 2px 10px rgba(20,12,27,.05)}
+.rg-card.dim{background:#FFFCF8}
+.rg-tile{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font:800 21px 'Bricolage Grotesque',sans-serif;flex:none}
+.rg-tile.sm{width:32px;height:32px;border-radius:8px;font-size:15px}
+.rg-tile img{width:100%;height:100%;border-radius:inherit}
+.rg-name{font:700 18px 'Bricolage Grotesque',sans-serif;letter-spacing:-0.01em;color:#140C1B}
+.rg-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font:600 13px Geist,sans-serif;white-space:nowrap}
+.rg-chip.ok{background:#E6F4EA;color:#1D7A45}
+.rg-chip.warn{background:#FFF1D6;color:#8A5300}
+.rg-chip.bad{background:#FCE8EC;color:#B4233C}
+.rg-chip.info{background:#E8EEFC;color:#2F62D9}
+.rg-chip.dim{background:#F3ECE4;color:#5E5068}
+.rg-chip.off{background:#FDE6CB;color:#6B3A06}
+.rg-chip.line{background:#FFFFFF;color:#4A3D55;border:1px solid #DCCFC2}
+.rg-facts{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:0;font-size:13.5px}
+.rg-facts dt{color:#6E5F79}
+.rg-facts dd{margin:0;color:#140C1B;font-weight:500;min-width:0}
+.rg-snip{display:flex;align-items:center;gap:8px;background:#1E1328;border-radius:9px;height:40px;padding:0 5px 0 12px;min-width:0}
+.rg-snip code{font:13px 'JetBrains Mono',monospace;color:#F4ECE4;flex:1;white-space:pre;overflow-x:auto;min-width:0;scrollbar-width:none}
+.rg-snip code i{font-style:normal;color:#9C8AAB}
+.rg-copy{height:30px;padding:0 11px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer;flex:none}
+.rg-code{background:#1E1328;border-radius:12px;overflow:hidden;min-width:0}
+.rg-code-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-bottom:1px solid #34233F}
+.rg-code-top span{font:13px 'JetBrains Mono',monospace;color:#C9BAD3}
+.rg-code pre{margin:0;padding:14px 16px;font:13px/1.65 'JetBrains Mono',monospace;color:#F4ECE4;overflow-x:auto;white-space:pre !important}
+.rg code,.rg pre,.rg .rg-mono{font-variant-ligatures:none}
+.rg-code .c{color:#A796B5}
+.rg-code .k{color:#FFC27A}
+.rg-code .s{color:#B8E6C1}
+.rg-code .p{color:#9C8AAB}
+.rg-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 16px;border-radius:10px;font:600 14px Geist,sans-serif;cursor:pointer;white-space:nowrap}
+.rg-btn.pri{background:#F0A24B;color:#2A1534;border:1px solid #F0A24B}
+.rg-btn.sec{background:#FFFFFF;color:#140C1B;border:1px solid #DCCFC2}
+.rg .rg-btn:hover{text-decoration:none}
+.rg-btn.pri:hover{background:#FFB866}
+.rg-facet{display:flex;flex-direction:column;gap:2px;padding:16px 0;border-top:1px solid #EADFD3}
+.rg-facet h3{margin:0 0 6px;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.rg-opt{display:flex;align-items:center;gap:10px;min-height:34px;font-size:14.5px;color:#140C1B;cursor:pointer}
+.rg-opt input{width:16px;height:16px;margin:0;accent-color:#A85A0C;flex:none}
+.rg-opt span:first-of-type{flex:1}
+.rg-opt .n{font:13px 'JetBrains Mono',monospace;color:#6E5F79}
+.rg-switch{display:inline-flex;align-items:center;width:38px;height:22px;border-radius:999px;background:#DCCFC2;padding:2px;flex:none}
+.rg-switch::after{content:"";width:18px;height:18px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.rg-switch.on{background:#A85A0C;justify-content:flex-end}
+.rg-select{height:44px;border:1px solid #DCCFC2;border-radius:9px;background:#FFFFFF;padding:0 10px;font:500 14px Geist,sans-serif;color:#140C1B}
+.rg-why{font-size:13px;color:#4A3D55;background:#FFF4E8;border-radius:7px;padding:5px 9px;align-self:flex-start}
+.rg-why b{color:#6B3A06;font-weight:600}
+.rg-mark{background:#FDE6CB;color:#140C1B;border-radius:3px;padding:0 2px}
+.rg-hr{height:1px;background:#EADFD3;border:0;margin:0}
+.rg-filters-btn{display:none}
+.rg-note{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:#4A3D55;padding:12px 14px;border-radius:10px;background:#FFF4E8;border:1px dashed #DCCFC2}
+.rg-tag-new{font:600 13px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#2F62D9;background:#E8EEFC;border-radius:4px;padding:2px 5px}
+@media (max-width:760px){
+
+  .rg-h1{font-size:36px}
+  .rg-h2{font-size:26px}
+  .rg-lead{font-size:16.5px}
+  .rg-filters-btn{display:inline-flex}
+  .rg-hide-sm{display:none !important}
+  .rg-stack-sm{flex-direction:column !important;align-items:stretch !important}
+  .rg-copy{height:44px;padding:0 14px}
+  .rg-snip{height:54px}
+  .rg-opt{min-height:44px}
+}
+
+/* tables become stacked row cards on phones: each td carries data-l */
+@media (max-width:600px){
+  .rg-tc thead{display:none}
+  .rg-tc,.rg-tc tbody,.rg-tc tr,.rg-tc td{display:block;width:100%}
+  .rg-tc tr{padding:12px 16px;border-bottom:1px solid #EADFD3}
+  .rg-tc td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 !important;border:0 !important;white-space:normal !important;text-align:right}
+  .rg-tc td::before{content:attr(data-l);font-size:13px;color:#6E5F79;text-align:left;flex:none}
+  .rg-tc td:first-child{font-weight:600;text-align:left}
+  .rg-tc td.rg-tc-empty{display:none}
+  .rg-tc .rg-hide-sm{display:flex !important}
+}
+.t-ways{display:grid;grid-template-columns:1fr;gap:14px}
+.t-way{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.45fr);grid-auto-rows:min-content;gap:10px 24px;padding:18px;min-width:0}
+.t-way > *{grid-column:1}
+.t-way > .rg-code{grid-column:2;grid-row:1 / span 4;align-self:start}
+.t-way h3{margin:0;font:700 17px 'Bricolage Grotesque',sans-serif}
+.t-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.t-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.t-list li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.5;color:#4A3D55}
+.t-list li b{color:#140C1B;font-weight:600}
+.t-ico{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
+.t-tools{width:100%;border-collapse:collapse;font-size:14px}
+.t-tools th{text-align:left;font:600 13px Geist,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79;padding:10px 14px;border-bottom:1px solid #EADFD3}
+.t-tools td{padding:11px 14px;border-bottom:1px solid #F1E8DE;vertical-align:top}
+.t-tools td:first-child{font:600 13.5px 'JetBrains Mono',monospace;white-space:nowrap}
+.t-tools td.w{white-space:nowrap;color:#4A3D55;font-size:13px}
+@media (max-width:900px){.t-way{grid-template-columns:1fr}.t-way > .rg-code{grid-column:1;grid-row:auto}}
+@media (max-width:760px){.t-two{grid-template-columns:1fr}.t-tools .rg-hide-sm{display:none}}
+</style>
+</helmet>
+<div class="rg" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; background: #FFFAF4; color: #140C1B; min-height: 100%">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="tools" hint-size="100%,120px"></dc-import>
+
+<div class="rg-wrap" style="padding-top: 28px; padding-bottom: 72px; display: flex; flex-direction: column; gap: 40px">
+  <section style="display: flex; flex-direction: column; gap: 18px">
+    <nav aria-label="Breadcrumb" class="rg-small"><a href="Registry.dc.html">Registry</a> / <a href="Registry.dc.html">Bring your own</a> / mongo</nav>
+    <div style="display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap">
+      <div class="rg-tile" style="width: 60px; height: 60px; border-radius: 15px; font-size: 28px; background: #3F7A3A" aria-hidden="true">M</div>
+      <div style="display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 260px">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+          <h1 class="rg-h1">MongoDB</h1>
+          <span class="rg-chip line">Bring your own</span><span class="rg-chip dim">Not signed by doze</span>
+        </div>
+        <p class="rg-lead">The document database. doze runs your MongoDB: the mongod you installed, the <code class="rg-mono" style="font-size: 15.5px">mongo:7</code> container, or an archive you pin.</p>
+        <code class="rg-small rg-mono">doze add mongo · port 27017</code>
+      </div>
+    </div>
+    <div class="rg-note" style="border-style: solid; background: #FFFFFF; border-color: #DCCFC2; font-size: 15px; padding: 16px 18px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 1px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+      <span><b style="color: #140C1B">Not a module: doze runs your MongoDB.</b> There is no doze/mongo in the registry. <code class="rg-mono" style="font-size: 13.5px">doze add mongo</code> writes a <code class="rg-mono" style="font-size: 13.5px">service</code> block, takes the first way that works on your machine, and names the other two.</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="ways" style="display: flex; flex-direction: column; gap: 14px">
+    <h2 class="rg-h2" id="ways">Three ways to run it, and the block each writes</h2>
+    <div class="t-ways">
+      <article class="rg-panel t-way">
+        <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center"><h3>Installed</h3><span class="rg-chip ok">first choice</span></div>
+        <div class="rg-snip"><code><i>$</i> doze add mongo --as installed</code><button class="rg-copy" type="button" aria-label="Copy doze add mongo --as installed">Copy</button></div>
+        <p class="rg-small" style="margin: 0; color: #4A3D55">Runs the mongod on your PATH. If there is none: <span class="rg-mono" style="font-size: 13px">mongod is not on your PATH: install it, or use --as container or --as download</span></p>
+        <div class="rg-code"><div class="rg-code-top"><span>doze.hcl</span><button class="rg-copy" type="button">Copy</button></div><pre><span class="k">service</span> <span class="s">"mongo"</span> {
+  run  = <span class="s">"mongod --dbpath $DATA --bind_ip $HOST --port $PORT"</span>
+  port = 27017
+}</pre></div>
+      </article>
+      <article class="rg-panel t-way">
+        <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center"><h3>Container</h3><span class="rg-chip line">if mongod isn't installed</span></div>
+        <div class="rg-snip"><code><i>$</i> doze add mongo --as container</code><button class="rg-copy" type="button" aria-label="Copy doze add mongo --as container">Copy</button></div>
+        <p class="rg-small" style="margin: 0; color: #4A3D55">A container is just a command that stays in the foreground. Needs Docker or a compatible runtime.</p>
+        <div class="rg-code"><div class="rg-code-top"><span>doze.hcl</span><button class="rg-copy" type="button">Copy</button></div><pre><span class="k">service</span> <span class="s">"mongo"</span> {
+  <span class="c"># a container: a container is just a command, and `run` stays in the foreground</span>
+  run  = <span class="s">"docker run --rm -p $HOST:$PORT:27017 mongo:7"</span>
+  port = 27017
+}</pre></div>
+      </article>
+      <article class="rg-panel t-way">
+        <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center"><h3>Download</h3><span class="rg-chip line">pinned by sha256</span></div>
+        <div class="rg-snip"><code><i>$</i> doze add mongo --as download</code><button class="rg-copy" type="button" aria-label="Copy doze add mongo --as download">Copy</button></div>
+        <p class="rg-small" style="margin: 0; color: #4A3D55">You fill in the archive URL and the real run line; doze fetches it once and pins its checksum in doze.lock.</p>
+        <div class="rg-code"><div class="rg-code-top"><span>doze.hcl: fill in download and run</span></div><pre><span class="k">service</span> <span class="s">"mongo"</span> {
+  <span class="c"># fetched once, pinned in doze.lock by its checksum, and run from the archive</span>
+  download = <span class="s">"https://example.com/mongo-darwin-arm64.tar.gz"</span> <span class="c"># fill this in</span>
+  run      = <span class="s">"./mongo --port $PORT"</span>
+  port     = 27017
+}</pre></div>
+      </article>
+    </div>
+    <div class="rg-code"><div class="rg-code-top"><span>terminal: plain doze add, on a machine without mongod</span><button class="rg-copy" type="button">Copy</button></div><pre><span class="p">$</span> doze add mongo
+<span class="c">→ mongo is not a doze module — adding it as a service
+  mongod is not installed — the block runs it as a container
+  other ways: --as installed · --as container · --as download</span>
+
+<span class="c">  use it from an app:</span>  MONGO_ADDR = service.mongo.address</pre></div>
+    <p class="rg-small" style="margin: 0">doze init writes the full URL when it finds a Mongo driver: <code class="rg-mono">MONGO_URL = "mongodb://${service.mongo.address}"</code>. $HOST, $PORT and $DATA are filled in at run time.</p>
+  </section>
+
+  <section class="t-two" aria-label="What doze does and doesn't do for it">
+    <div class="rg-panel" style="padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <h2 class="rg-h3">What doze still gives it</h2>
+      <ul class="t-list">
+        <li><span class="t-ico" style="background: #E6F4EA; color: #1D7A45"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>A name:</b> <code class="rg-mono" style="font-size: 13px">mongo.&lt;stack&gt;.doze</code>, and your own domain over https if you set one.</span></li>
+        <li><span class="t-ico" style="background: #E6F4EA; color: #1D7A45"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>A port,</b> held by doze while mongod is asleep.</span></li>
+        <li><span class="t-ico" style="background: #E6F4EA; color: #1D7A45"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Sleep and wake:</b> it wakes when a client connects and sleeps when nothing has for a while. Data stays in $DATA.</span></li>
+        <li><span class="t-ico" style="background: #E6F4EA; color: #1D7A45"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Logs</b> in <code class="rg-mono" style="font-size: 13px">doze logs mongo</code> and in the app, next to everything else.</span></li>
+      </ul>
+    </div>
+    <div class="rg-panel" style="padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <h2 class="rg-h3">What it doesn't</h2>
+      <ul class="t-list">
+        <li><span class="t-ico" style="background: #FCE8EC; color: #B4233C"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No signature.</b> doze didn't build mongod or the image, so it doesn't sign them. A download is pinned by sha256 in doze.lock: a changed file is refused, but nobody vouched for the first one.</span></li>
+        <li><span class="t-ico" style="background: #FCE8EC; color: #B4233C"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No pinned version for installed or container.</b> You get whatever mongod is on the PATH, or whatever <code class="rg-mono" style="font-size: 13px">mongo:7</code> points at today.</span></li>
+        <li><span class="t-ico" style="background: #FCE8EC; color: #B4233C"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></span><span><b>No declared databases or users.</b> A module converges those from doze.hcl; a service is just a process.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="rg-panel" aria-labelledby="ferret" style="padding: 22px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; border-color: #DCCFC2">
+    <div class="rg-tile" style="background: #2F5F3A" aria-hidden="true">F</div>
+    <div style="flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 6px">
+      <h2 class="rg-h3" id="ferret">Want MongoDB-compatible from the registry? FerretDB.</h2>
+      <p class="rg-p">Any Mongo client connects to it. It's FerretDB 2 over a private Postgres, signed and pinned like every module, with databases, collections, indexes and seeds declared in doze.hcl. Not every MongoDB feature is there; check yours.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 240px">
+      <div class="rg-snip"><code><i>$</i> doze add ferret</code><button class="rg-copy" type="button" aria-label="Copy doze add ferret">Copy</button></div>
+      <a href="RegistryModule.dc.html" style="font-weight: 600; font-size: 14px">The ferret module →</a>
+    </div>
+  </section>
+
+  <section aria-labelledby="others" style="display: flex; flex-direction: column; gap: 12px">
+    <h2 class="rg-h2" id="others">The other tools doze add knows</h2>
+    <p class="rg-p">Each gets the same three ways where it can. The last three have no known run line, so installed falls back to the container.</p>
+    <div class="rg-panel" style="overflow: hidden">
+      <table class="t-tools rg-tc">
+        <thead><tr><th scope="col">Name</th><th scope="col">What it is</th><th scope="col" class="rg-hide-sm">Runs from</th><th scope="col">Port</th></tr></thead>
+        <tbody>
+          <tr><td data-l=""><a href="RegistryTool.dc.html">mailpit</a></td><td data-l="What">Catches outgoing email; web inbox on the next port</td><td class="w rg-hide-sm" data-l="Runs from">mailpit · axllent/mailpit</td><td data-l="Port">1025</td></tr>
+          <tr><td data-l=""><a href="RegistryTool.dc.html">minio</a></td><td data-l="What">S3-compatible object storage (doze AWS has S3 too)</td><td class="w rg-hide-sm" data-l="Runs from">minio · minio/minio</td><td data-l="Port">9000</td></tr>
+          <tr><td data-l=""><a href="RegistryTool.dc.html">nats</a></td><td data-l="What">Messaging and streams</td><td class="w rg-hide-sm" data-l="Runs from">nats-server · nats</td><td data-l="Port">4222</td></tr>
+          <tr><td data-l=""><a href="RegistryTool.dc.html">meilisearch</a></td><td data-l="What">Typo-tolerant search engine</td><td class="w rg-hide-sm" data-l="Runs from">meilisearch · getmeili/meilisearch</td><td data-l="Port">7700</td></tr>
+          <tr><td data-l=""><a href="RegistryTool.dc.html">memcached</a></td><td data-l="What">The classic in-memory cache</td><td class="w rg-hide-sm" data-l="Runs from">memcached · memcached</td><td data-l="Port">11211</td></tr>
+          <tr><td data-l=""><a href="RegistryTool.dc.html">rabbitmq</a></td><td data-l="What">AMQP message broker</td><td class="w rg-hide-sm" data-l="Runs from">container rabbitmq:3</td><td data-l="Port">5672</td></tr>
+          <tr><td data-l=""><a href="RegistryTool.dc.html">opensearch</a></td><td data-l="What">Search and log analytics</td><td class="w rg-hide-sm" data-l="Runs from">container opensearchproject/opensearch</td><td data-l="Port">9200</td></tr>
+          <tr><td data-l=""><a href="RegistryTool.dc.html">clickhouse</a></td><td data-l="What">Column-store analytics database</td><td class="w rg-hide-sm" data-l="Runs from">container clickhouse/clickhouse-server</td><td data-l="Port">8123</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="rg-small" style="margin: 0">Anything else: <code class="rg-mono">doze add &lt;name&gt;</code> writes a download block to fill in. <a href="RegistryNoResults.dc.html">What that looks like</a></p>
+  </section>
+</div>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2872}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

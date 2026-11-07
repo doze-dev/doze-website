@@ -1,0 +1,10 @@
+---
+// Starlight Pagination override: the boards' previous/next cards.
+const { prev, next } = Astro.locals.starlightRoute.pagination;
+---
+{(prev || next) && (
+  <nav class="dz-pn print:hidden" aria-label="Previous and next pages">
+    {prev ? <a href={prev.href} rel="prev"><span>Previous</span><b>{prev.label}</b></a> : <span aria-hidden="true"></span>}
+    {next && <a href={next.href} rel="next" class="dz-pn-next"><span>Next</span><b>{next.label}</b></a>}
+  </nav>
+)}

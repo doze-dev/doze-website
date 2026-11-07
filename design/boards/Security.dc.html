@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Security</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.sec-pg{font-family:Geist,ui-sans-serif,system-ui,sans-serif;color:#F4ECE4;background:#140C1B;min-height:100%}
+.sec-pg a{color:#F0A24B;text-decoration:none}.sec-pg a:hover{color:#FFC27A}
+.sec-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.sec-eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.sec-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:80px;line-height:1;letter-spacing:-0.04em;text-wrap:balance}
+.sec-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:50px;line-height:1.05;letter-spacing:-0.03em;text-wrap:balance}
+.sec-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px;line-height:1.2;letter-spacing:-0.01em}
+.sec-lede{margin:0;font-size:20px;line-height:1.55;color:#D6C8DF;max-width:44rem}
+.sec-p{margin:0;font-size:16px;line-height:1.6;color:#C9BAD3}
+.sec-dim{color:#9C8AAB}
+.sec-card{background:#1E1328;border:1px solid #34233F;border-radius:20px;padding:28px;box-sizing:border-box}
+.sec-card-raised{background:#1A1022;border:1px solid #2E1F3A;border-radius:20px}
+.sec-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px;box-sizing:border-box}
+.sec-pg a.sec-btn-lamp,.sec-btn-lamp{background:#F0A24B;color:#2A1534}.sec-pg a.sec-btn-lamp:hover{background:#FFB866;color:#2A1534}
+.sec-pg a.sec-btn-ghost,.sec-btn-ghost{border:1px solid #4A3458;color:#F4ECE4;background:transparent}.sec-pg a.sec-btn-ghost:hover{border-color:#7A5E8C;color:#fff}
+.sec-cmd{display:flex;align-items:center;gap:8px;background:#1E1328;border:1px solid #4A3458;border-radius:12px;min-height:52px;padding:0 8px 0 16px;box-sizing:border-box}
+.sec-cmd code{font:15px 'JetBrains Mono',monospace;color:#F4ECE4;flex:1;min-width:0;overflow-x:auto;white-space:pre;padding:12px 8px 12px 0}
+.sec-cmd code .sec-pr{color:#9C8AAB}
+.sec-copy{flex:none;height:44px;min-width:56px;padding:0 12px;border-radius:8px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer}
+pre.sec-code{margin:0;white-space:pre;font:14px/1.75 'JetBrains Mono',monospace;background:#120A18;border:1px solid #2E1F3A;border-radius:16px;padding:20px 22px;color:#D6C8DF;overflow-x:auto}
+pre.sec-code .sec-c{color:#9C8AAB}pre.sec-code .sec-k{color:#F0A24B}pre.sec-code .sec-s{color:#8BE39B}pre.sec-code .sec-pr{color:#9C8AAB}
+.sec-chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid #4A3458;color:#D6C8DF;white-space:nowrap}
+.sec-chip-good{color:#8BE39B;border-color:#2F5A3A;background:#14251A}
+.sec-chip-warn{color:#F0A24B;border-color:#5A3E1E;background:#2A1C10}
+.sec-chip-bad{color:#FF9AA8;border-color:#5A2A35;background:#2A1520}
+.sec-chip-info{color:#9DC7FF;border-color:#2C3F66;background:#141B2C}
+.sec-tag-new{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#F0A24B;border:1px dashed #8A5A2A;border-radius:6px;padding:2px 6px}
+.sec-shot{border:1px dashed #5A4168;border-radius:16px;background:repeating-linear-gradient(135deg,#1A1022 0 14px,#1E1328 14px 28px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px;color:#C9BAD3;font-size:14px;box-sizing:border-box}
+.sec-shot b{font-family:'JetBrains Mono',monospace;font-size:13px;color:#F0A24B}
+.sec-grid{display:grid;gap:20px}
+.sec-sec{padding-top:96px;padding-bottom:96px}
+
+.sec-rule{border:0;border-top:1px solid #2E1F3A;margin:0}
+.sec-ic{width:20px;height:20px;flex:none}
+.sec-pg :focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+@media (max-width:760px){.sec-h1{font-size:46px}.sec-h2{font-size:34px}.sec-lede{font-size:18px}.sec-sec{padding-top:64px;padding-bottom:64px}.sec-wrap{padding:0 32px}.sec-card{padding:22px}.sec-stack-sm{flex-direction:column !important;align-items:stretch !important}.sec-hide-sm{display:none !important}}
+@media (max-width:760px){.sec-wrap.sec-sec{padding:64px 20px}}
+
+.sec-pg code,.sec-pg pre{font-variant-ligatures:none}
+.sec-pg code.sec-i{white-space:nowrap;font:0.9em 'JetBrains Mono',monospace;color:#F4ECE4;background:#241732;border:1px solid #34233F;border-radius:6px;padding:1px 6px}
+.sec-way{display:flex;flex-direction:column;gap:14px}
+.sec-way .sec-num{font:600 13px 'JetBrains Mono',monospace;color:#9C8AAB}
+.sec-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;border:1px solid #34233F;border-radius:20px;overflow:hidden}
+.sec-facts>div{padding:22px 24px;border-right:1px solid #2E1F3A;display:flex;flex-direction:column;gap:6px;background:#1A1022}
+.sec-facts>div:last-child{border-right:0}
+.sec-facts b{font-size:13px;color:#9C8AAB;font-weight:500}
+.sec-facts span{font-size:17px;color:#F4ECE4}
+.sec-tbl{width:100%;border-collapse:collapse;font-size:16px}
+.sec-tbl th{text-align:left;font:600 12px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#9C8AAB;padding:0 16px 12px 0;border-bottom:1px solid #34233F}
+.sec-tbl td{padding:16px 16px 16px 0;border-bottom:1px solid #2E1F3A;color:#D6C8DF;vertical-align:top}
+.sec-tbl td:first-child{font-family:'JetBrains Mono',monospace;color:#F4ECE4}
+.sec-does{display:flex;flex-direction:column;gap:14px}
+.sec-does .sec-top{display:flex;align-items:center;gap:12px}
+.sec-does .sec-ico{width:44px;height:44px;border-radius:12px;background:#2A1C10;border:1px solid #5A3E1E;color:#F0A24B;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.sec-files{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font:13px/1.5 'JetBrains Mono',monospace;color:#D6C8DF}
+.sec-files li{display:flex;gap:10px}
+.sec-files li span{overflow-wrap:anywhere;min-width:0}
+.sec-files li span:first-child{color:#9C8AAB;flex:none;width:52px}
+.sec-undo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:#9C8AAB;border-top:1px solid #2E1F3A;padding-top:14px;margin-top:auto}
+.sec-chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;align-items:stretch;position:relative}
+.sec-node{position:relative;display:flex;flex-direction:column;gap:10px;padding:22px 20px 22px;background:#1E1328;border:1px solid #34233F;border-radius:18px;margin-right:28px}
+.sec-node:last-child{margin-right:0}
+.sec-node::after{content:"";position:absolute;right:-27px;top:44px;width:26px;height:2px;background:#F0A24B}
+.sec-node::before{content:"";position:absolute;right:-28px;top:39px;border:6px solid transparent;border-left:8px solid #F0A24B;transform:translateX(8px)}
+.sec-node:last-child::after,.sec-node:last-child::before{display:none}
+.sec-node .sec-step{font:600 12px 'JetBrains Mono',monospace;color:#F0A24B;letter-spacing:.1em}
+.sec-node h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:21px;font-weight:700;letter-spacing:-0.01em}
+.sec-node p{margin:0;font-size:14px;line-height:1.55;color:#C9BAD3}
+.sec-node .sec-art{font:12px/1.5 'JetBrains Mono',monospace;color:#9C8AAB;background:#140C1B;border:1px solid #2E1F3A;border-radius:8px;padding:8px 10px;overflow-wrap:anywhere;margin-top:auto}
+.sec-node-lock{border-color:#5A3E1E;background:#24170F}
+.sec-wrap.sec-sec{padding:96px 32px}
+@media (max-width:760px){.sec-wrap.sec-sec{padding:64px 32px}}
+@media (max-width:600px){.sec-tbl thead{display:none}.sec-tbl tr{display:block;padding:14px 0;border-bottom:1px solid #2E1F3A}.sec-tbl td{display:block;border:0;padding:4px 0}}
+.sec-key{font:14px 'JetBrains Mono',monospace;color:#F4ECE4;overflow-wrap:anywhere}
+@media (max-width:1000px){.sec-chain{grid-template-columns:1fr;gap:28px}.sec-node{margin-right:0}.sec-node::after{right:auto;left:40px;top:auto;bottom:-27px;width:2px;height:26px}.sec-node::before{right:auto;left:35px;top:auto;bottom:-28px;border:6px solid transparent;border-top:8px solid #F0A24B;transform:translateY(8px)}.sec-facts>div{border-right:0;border-bottom:1px solid #2E1F3A}}
+</style>
+</helmet>
+<div class="sec-pg">
+<dc-import name="SiteHeader" theme="dark" current="none" hint-size="100%,72px"></dc-import>
+
+<main>
+  <!-- Hero + how to report -->
+  <section class="sec-wrap" style="padding-top: 88px; padding-bottom: 72px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 48px; align-items: start">
+    <div style="display: flex; flex-direction: column; gap: 22px">
+      <span class="sec-eyebrow">Security</span>
+      <h1 class="sec-h1" style="max-width: 12ch">Found a hole? Tell us quietly.</h1>
+      <p class="sec-lede">doze runs on your machine, asks for an admin password once and fetches signed code. If any of that can be turned against you, we want to hear it before anyone else does. Please don't open a public issue.</p>
+    </div>
+    <div class="sec-card" style="display: flex; flex-direction: column; gap: 22px; border-color: #5A3E1E">
+      <div class="sec-way">
+        <span class="sec-num">The quickest way</span>
+        <h2 class="sec-h3">Report on GitHub, privately</h2>
+        <p class="sec-p">Only the maintainers see it. We can talk it through, fix it and publish the advisory in the same place.</p>
+        <a class="sec-btn sec-btn-lamp" href="https://github.com/doze-dev/doze/security/advisories/new" style="align-self: flex-start">Report a vulnerability</a>
+      </div>
+      <hr class="sec-rule">
+      <div class="sec-way">
+        <span class="sec-num">Or by email</span>
+        <span style="font-size: 18px; font-weight: 600; color: #F4ECE4">[security address]</span>
+        <span class="sec-p" style="font-size: 14px">PGP key: [none yet]. Until there is an address, the GitHub report above is the way in.</span>
+      </div>
+      <hr class="sec-rule">
+      <div class="sec-way">
+        <span class="sec-num">Please include</span>
+        <ul class="sec-p" style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px">
+          <li>What you found and what it lets someone do</li>
+          <li>How to reproduce it</li>
+          <li>The version: the output of <code class="sec-i">doze version</code></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- What happens next -->
+  <section class="sec-wrap" style="padding-bottom: 96px">
+    <div class="sec-facts">
+      <div><b>We reply</b><span>within [2 working days]</span></div>
+      <div><b>A fix or a plan</b><span>within [14 days]</span></div>
+      <div><b>Disclosure</b><span>agreed with you, credited if you like</span></div>
+      <div><b>Bounty</b><span>[none; say so plainly]</span></div>
+    </div>
+  </section>
+
+  <!-- Scope and supported versions -->
+  <section style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div class="sec-wrap sec-sec" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 56px">
+      <div style="display: flex; flex-direction: column; gap: 18px">
+        <span class="sec-eyebrow">Scope</span>
+        <h2 class="sec-h2">A tool for your laptop, not a server.</h2>
+        <p class="sec-p">doze runs engines on <code class="sec-i">127.0.0.1</code> and gives the AWS services dummy credentials. It is not built to face a network or to run production. The reports that matter most:</p>
+        <ul class="sec-p" style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px">
+          <li><b style="color: #F4ECE4">Local privilege escalation</b>, through the admin setup or the network daemon it installs.</li>
+          <li><b style="color: #F4ECE4">Code execution through config</b>: a doze.hcl or a module that does more than it says.</li>
+          <li><b style="color: #F4ECE4">The supply chain</b>: anything that gets an unsigned or altered engine or module past doze's checks.</li>
+        </ul>
+        <p class="sec-p">doze AWS and doze Kafka are covered too: report them here and we route it.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 18px">
+        <span class="sec-eyebrow">Supported versions</span>
+        <h2 class="sec-h2">Fixes land on the latest minor.</h2>
+        <table class="sec-tbl">
+          <caption style="text-align: left; color: #9C8AAB; font-size: 14px; padding-bottom: 14px">Security fixes ship as a patch release of the newest minor. Upgrade with <code class="sec-i">brew upgrade doze</code>.</caption>
+          <thead><tr><th scope="col">doze</th><th scope="col">Security fixes</th></tr></thead>
+          <tbody>
+            <tr><td>0.2.x</td><td><span class="sec-chip sec-chip-good">Supported</span> &#160;latest is 0.2.0, [0.2 release date]</td></tr>
+            <tr><td>0.1.x</td><td><span class="sec-chip">No fixes</span> &#160;update with <code class="sec-i">brew upgrade doze</code> [confirm policy]</td></tr>
+          </tbody>
+        </table>
+        <p class="sec-p" style="font-size: 14px">Pinned engines and modules are separate from doze's version: a fix to a module is a new module release, and a yanked release says which to use instead.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What doze does on your machine -->
+  <section class="sec-wrap sec-sec" style="display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 48rem">
+      <span class="sec-eyebrow">On your machine</span>
+      <h2 class="sec-h2">Exactly what doze changes, and how to take it back.</h2>
+      <p class="sec-lede" style="font-size: 18px">Most of doze runs as you, in <code class="sec-i">~/.doze</code>. Two things need an admin, and each is one prompt you can read first with <code class="sec-i">--print</code>.</p>
+    </div>
+    <div class="sec-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr))">
+      <div class="sec-card sec-does">
+        <div class="sec-top"><span class="sec-ico"><svg class="sec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><h3 class="sec-h3">One admin prompt, for .doze names</h3></div>
+        <p class="sec-p">So <code class="sec-i">gateway.larder.doze</code> resolves, and on macOS two stacks can both use port 5432. Shared by doze, doze AWS and doze Kafka: whichever runs first sets it up for all three.</p>
+        <ul class="sec-files" aria-label="Files written on macOS">
+          <li><span>macOS</span><span>/etc/resolver/doze</span></li>
+          <li><span></span><span>/Library/LaunchDaemons/dev.doze.netd.plist</span></li>
+          <li><span></span><span>/Library/PrivilegedHelperTools/dev.doze.netd</span></li>
+        </ul>
+        <ul class="sec-files" aria-label="Files written on Linux">
+          <li><span>Linux</span><span>doze-netd.service (systemd)</span></li>
+          <li><span></span><span>a .doze route for systemd-resolved or dnsmasq</span></li>
+          <li><span></span><span>/etc/sysctl.d/60-doze.conf (ports from 80)</span></li>
+        </ul>
+        <div class="sec-undo"><span>Undo:</span><code class="sec-i">doze dns-setup --uninstall</code></div>
+      </div>
+      <div class="sec-card sec-does">
+        <div class="sec-top"><span class="sec-ico"><svg class="sec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3 class="sec-h3">A local certificate authority, only if you ask</h3></div>
+        <p class="sec-p">Nothing happens until a stack declares <code class="sec-i">domains = ["dev.acme.com"]</code> and you run <code class="sec-i">doze trust</code>. Then doze makes one authority for this machine and trusts it, so https on your own domain works in every browser.</p>
+        <ul class="sec-files" aria-label="Where the authority lives">
+          <li><span>key</span><span>~/.doze/ca, mode 0600, never leaves the machine</span></li>
+          <li><span>trust</span><span>the System keychain (macOS), the system store (Linux)</span></li>
+          <li><span>route</span><span>one per declared domain, e.g. /etc/resolver/dev.acme.com</span></li>
+        </ul>
+        <div class="sec-undo"><span>Undo:</span><code class="sec-i">doze trust --remove</code><span>·</span><span>New key:</span><code class="sec-i">doze trust --rotate</code></div>
+      </div>
+      <div class="sec-card sec-does">
+        <div class="sec-top"><span class="sec-ico"><svg class="sec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><h3 class="sec-h3">No telemetry</h3></div>
+        <p class="sec-p">No usage stats, no crash reports, no account. That is also why the registry shows no download counts: we don't have them. This website sets no cookies and runs no analytics.</p>
+      </div>
+      <div class="sec-card sec-does">
+        <div class="sec-top"><span class="sec-ico"><svg class="sec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span><h3 class="sec-h3">The network, only for what you declared</h3></div>
+        <ul class="sec-p" style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px">
+          <li>Engines and modules your doze.hcl names, from the registry, each checked against its signature before it runs. Pinned and cached means offline.</li>
+          <li>Downloads you declare yourself (a <code class="sec-i">service</code> with <code class="sec-i">download</code>), checked against the sha256 in doze.lock.</li>
+          <li>GitHub's releases API, only when you open Settings › About or press Check for Updates. Nothing runs in the background.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supply chain -->
+  <section style="background: #1A1022; border-top: 1px solid #2E1F3A; border-bottom: 1px solid #2E1F3A">
+    <div class="sec-wrap sec-sec" style="display: flex; flex-direction: column; gap: 40px">
+      <div class="sec-stack-sm" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 16px; max-width: 46rem">
+          <span class="sec-eyebrow">The supply chain</span>
+          <h2 class="sec-h2">From source to your laptop, checked at every hand-off.</h2>
+          <p class="sec-p" style="font-size: 18px">An engine you never built yourself still has a trail: who built it, who signed it, and the hash your project expects.</p>
+        </div>
+        <a class="sec-btn sec-btn-ghost" href="RegistryTrust.dc.html">How signing works →</a>
+      </div>
+      <ol class="sec-chain" aria-label="How an engine reaches your machine" style="list-style: none; margin: 0; padding: 0">
+        <li class="sec-node"><span class="sec-step">1 · BUILD</span><h3>doze-binaries</h3><p>Builds each engine from upstream source, per platform. Postgres 14.0 to 18.6, Valkey, MariaDB and the rest.</p><span class="sec-art">sha256 per platform</span></li>
+        <li class="sec-node"><span class="sec-step">2 · PACKAGE</span><h3>doze-modules</h3><p>Builds the module that runs the engine, for Apple silicon and both Linux architectures, in CI.</p><span class="sec-art">postgres-plugin-0.2.4-…tar.gz</span></li>
+        <li class="sec-node"><span class="sec-step">3 · SIGN</span><h3>The registry</h3><p>Signs every artifact, and the index over all of them, with one ed25519 key.</p><span class="sec-art">index.yaml + signatures</span></li>
+        <li class="sec-node"><span class="sec-step">4 · VERIFY</span><h3>doze</h3><p>Checks the index and each file against the key compiled into doze, and each hash, before anything runs.</p><span class="sec-art">a mismatch stops the start</span></li>
+        <li class="sec-node sec-node-lock"><span class="sec-step">5 · PIN</span><h3>doze.lock</h3><p>Pins each engine's and module's version and per-platform hashes. Nothing moves until you upgrade.</p><span class="sec-art">commit it; teammates get the same bytes</span></li>
+      </ol>
+      <div class="sec-card" style="display: flex; gap: 16px 28px; flex-wrap: wrap; align-items: center; background: #140C1B">
+        <span style="font-size: 14px; color: #9C8AAB">The doze-dev signing key (ed25519), compiled into doze</span>
+        <span class="sec-key">Nu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw=</span>
+        <a href="RegistryTrust.dc.html" style="margin-left: auto; min-height: 44px; display: inline-flex; align-items: center">Check it yourself →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Advisories -->
+  <section class="sec-wrap sec-sec" style="display: flex; flex-direction: column; gap: 28px">
+    <div class="sec-stack-sm" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <span class="sec-eyebrow">Advisories</span>
+        <h2 class="sec-h2">Published advisories</h2>
+      </div>
+      <a href="https://github.com/doze-dev/doze/security/advisories" style="min-height: 44px; display: inline-flex; align-items: center">On GitHub →</a>
+    </div>
+    <div class="sec-card" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; border-style: dashed">
+      <span class="sec-chip sec-chip-good">None published</span>
+      <p class="sec-p" style="margin: 0; flex: 1; min-width: 260px">No advisories for doze, doze AWS, doze Kafka or any module so far. When there is one, it is listed here with the affected releases, the fixed release and the command to move to it, and every affected module release in the registry carries a notice.</p>
+    </div>
+  </section>
+</main>
+
+<dc-import name="SiteFooter" theme="dark" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4450}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

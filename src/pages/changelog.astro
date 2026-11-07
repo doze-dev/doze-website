@@ -1,0 +1,390 @@
+---
+import Page from "../layouts/Page.astro";
+import { fmtDate, getModule } from "../lib/registry";
+
+// Module release dates come from the registry index, not the board.
+const relDate = (mod: string, v: string) => getModule(mod)?.releases.find((r) => r.version === v)?.date ?? null;
+const pg024 = relDate("postgres", "0.2.4");
+const fe023 = relDate("ferret", "0.2.3");
+---
+<Page title="Changelog" theme="dark" current="changelog">
+<div class="cl-pg cl-root">
+<div>
+  <section class="cl-wrap cl-s1">
+    <span class="cl-eyebrow">Changelog</span>
+    <h1 class="cl-h1 cl-s2">What changed, and when.</h1>
+    <p class="cl-lede">Every release of doze, doze AWS and doze Kafka, and the notable module releases, newest first. Every module release is on that module's Versions tab. Upgrading doze never changes what a project runs: engines and modules stay pinned in its <code class="cl-s3">doze.lock</code> until you move them.</p>
+    <div class="cl-stack-sm cl-s4">
+      <div class="cl-filters" role="group" aria-label="Show releases of">
+        <button class="cl-fchip" type="button" aria-pressed="true" data-cl-filter="all">All</button>
+        <button class="cl-fchip" type="button" aria-pressed="false" data-cl-filter="doze"><span class="cl-sw cl-s5"></span>doze</button>
+        <button class="cl-fchip" type="button" aria-pressed="false" data-cl-filter="aws"><span class="cl-sw cl-s6"></span>doze AWS</button>
+        <button class="cl-fchip" type="button" aria-pressed="false" data-cl-filter="kafka"><span class="cl-sw cl-s7"></span>doze Kafka</button>
+        <button class="cl-fchip" type="button" aria-pressed="false" data-cl-filter="modules"><span class="cl-sw cl-s8"></span>Modules</button>
+      </div>
+      <a class="cl-s9" href="/changelog.xml" type="application/atom+xml">
+        <svg class="cl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 11a8 8 0 0 1 8 8M5 5a14 14 0 0 1 14 14"/><circle cx="6" cy="18" r="1.5"/></svg>
+        RSS / Atom feed
+      </a>
+    </div>
+  </section>
+
+  <div class="cl-wrap cl-s10">
+
+    <!-- Unreleased: doze 0.2 -->
+    <article class="cl-next cl-s11" aria-labelledby="e-next" data-cl-product="doze">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-doze"><img src="/brand/doze.svg" alt="">doze</span>
+        <span class="cl-ver" id="e-next">0.2</span>
+        <span class="cl-chip cl-chip-good">Latest</span>
+        <span class="cl-when">[0.2 release date]</span>
+      </div>
+      <div class="cl-s12">
+        <p class="cl-sum">A desktop app, your own domain over https, and a stack that remembers how you left it.</p>
+        <div class="cl-cols">
+          <div class="cl-grp">
+            <h3 class="cl-g-new">New</h3>
+            <ul>
+              <li><b>The app.</b> The Library shows every stack with a switch. Each stack in Tiles, List or Map. <code>⌘K</code> reaches across every stack. A Needs you bell, and the bat in the menu bar.</li>
+              <li><b>Your own domain, over https.</b> <code>domains = ["dev.acme.com"]</code> on an app, then <code>doze trust</code> once.</li>
+              <li><b>Take one service out of this run.</b> <code>doze off</code> and <code>doze on</code>, or the switch on its row.</li>
+              <li><b>A failed start explains itself:</b> what went wrong, how to fix it, and which process holds the port it wanted.</li>
+              <li><code>doze</code> on its own opens the app. Over SSH it is still the terminal dash.</li>
+              <li><code>doze up</code> remembers what you started and offers the same set next time.</li>
+              <li><code>doze = "&gt;= 0.2"</code> in doze.hcl. doze skips module releases it can't run, and says to update.</li>
+              <li><code>doze migrate postgres</code> moves Postgres data to a new major.</li>
+              <li>Doze.app for the Mac, as a disk image or <code>brew install --cask doze-dev/tap/doze</code>.</li>
+            </ul>
+          </div>
+          <div class="cl-s12">
+            <div class="cl-grp">
+              <h3 class="cl-g-chg">Changed</h3>
+              <ul>
+                <li>Services go to sleep after 2 minutes, not 5.</li>
+                <li>An app with a <code>port</code> sleeps too; a request wakes it. <code>sleep = "never"</code> keeps it awake.</li>
+                <li>Renamed: <code>depends_on</code> is <code>after</code>, <code>idle_timeout</code> is <code>sleep</code>. The old spelling prints the new line.</li>
+                <li>Exit codes mean something (2 usage, 4 unknown name, 5 bad config…); <code>--json</code> gives one envelope everywhere.</li>
+              </ul>
+            </div>
+            <div class="cl-grp">
+              <h3 class="cl-g-fix">Fixed</h3>
+              <ul>
+                <li><code>after</code> on a module block works.</li>
+                <li>Two data races in the daemon.</li>
+              </ul>
+            </div>
+            <div class="cl-grp">
+              <h3 class="cl-g-new">Module releases that need doze 0.2.0</h3>
+              <ul>
+                <li>postgres 0.2.5, valkey 0.2.2, ferret 0.2.4, temporal 0.2.3, mariadb 0.2.2 and kvrocks 0.2.2 download their engines through doze (doze-sdk v0.10.0). An older doze skips them and keeps the release it has. <a href="/registry/">In the registry</a></li>
+              </ul>
+            </div>
+            <div class="cl-grp">
+              <h3 class="cl-g-soon">Coming with postgres 0.3</h3>
+              <ul>
+                <li>Postgres extensions by name: <code>extensions = ["vector", "pg_cron"]</code>, pinned in doze.lock. <a href="/registry/extensions/">See the catalog</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="cl-upg"><span>Upgrade:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> brew upgrade doze</code><button data-copy="brew upgrade doze" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div><a href="https://github.com/doze-dev/doze/releases">Release on GitHub</a></div>
+        <p class="cl-note cl-s13">Coming from 0.1.1: update doze before you run <code>doze modules upgrade</code>, because 0.1.1 can't tell which module releases need a newer doze. The old spellings (<code>idle_timeout</code>, <code>depends_on</code>) stop with an error that prints the new line. <a href="https://github.com/doze-dev/doze/blob/main/CHANGELOG.md">Full notes</a></p>
+      </div>
+    </article>
+
+    <!-- postgres 0.2.4 -->
+    <article class="cl-entry" aria-labelledby="e-pg024" data-cl-product="modules">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-mod"><span class="cl-ini cl-s14">P</span>Module · postgres</span>
+        <span class="cl-ver" id="e-pg024">0.2.4</span>
+        <span class="cl-when"><time datetime={pg024 ?? undefined}>{fmtDate(pg024)}</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">A console for Postgres: who is connected, what they are running, and a way to stop it.</p>
+        <div class="cl-grp">
+          <h3 class="cl-g-new">New</h3>
+          <ul>
+            <li>An Activity tab: the counters, the sessions, the selected session's query, and Cancel or Terminate.</li>
+            <li>A databases table on the overview. System databases are left out.</li>
+          </ul>
+        </div>
+        <div class="cl-upg"><span>Upgrade a project's pin:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> doze modules upgrade postgres</code><button data-copy="doze modules upgrade postgres" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div></div>
+        <div class="cl-upg"><a href="/registry/doze/postgres/0.2.4/">postgres 0.2.4 in the registry</a><a href="/registry/doze/postgres/versions/">All postgres releases</a></div>
+      </div>
+    </article>
+
+    <!-- ferret 0.2.3 -->
+    <article class="cl-entry" aria-labelledby="e-fe023" data-cl-product="modules">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-mod"><span class="cl-ini cl-s16">F</span>Module · ferret</span>
+        <span class="cl-ver" id="e-fe023">0.2.3</span>
+        <span class="cl-when"><time datetime={fe023 ?? undefined}>{fmtDate(fe023)}</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">FerretDB starts on Linux when the data folder has a capital letter in it.</p>
+        <div class="cl-grp">
+          <h3 class="cl-g-fix">Fixed</h3>
+          <ul>
+            <li>The Mongo driver read the socket path as a host name and lowercased it, so on a case-sensitive filesystem start-up waited for a socket that did not exist. The module now dials the socket directly. macOS hid it: its filesystem ignores case.</li>
+          </ul>
+        </div>
+        <div class="cl-upg"><span>Upgrade a project's pin:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> doze modules upgrade ferret</code><button data-copy="doze modules upgrade ferret" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div><a href="/registry/">ferret in the registry</a></div>
+      </div>
+    </article>
+
+    <!-- doze AWS 0.3.0 -->
+    <article class="cl-entry" aria-labelledby="e-aws030" data-cl-product="aws">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-aws"><img src="/brand/doze-aws.svg" alt="">doze AWS</span>
+        <span class="cl-ver" id="e-aws030">0.3.0</span>
+        <span class="cl-when"><time datetime="2026-07-18">18 Jul 2026</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">The console gets a glance view for doze, and queue URLs survive a path prefix.</p>
+        <div class="cl-grp">
+          <h3 class="cl-g-new">New</h3>
+          <ul><li>A glance API the doze app reads to show what each AWS service holds, without opening the console.</li></ul>
+        </div>
+        <div class="cl-grp">
+          <h3 class="cl-g-fix">Fixed</h3>
+          <ul><li>Queue URLs keep the path prefix when doze AWS is served behind one.</li></ul>
+        </div>
+        <div class="cl-upg"><span>Upgrade:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-aws/main/install.sh | sh</code><button data-copy="curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-aws/main/install.sh | sh" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div><span>Inside doze, <code>doze modules upgrade aws</code> moves you to module aws 0.1.1.</span><a href="https://github.com/doze-dev/doze-aws/releases/tag/v0.3.0">Release on GitHub</a></div>
+      </div>
+    </article>
+
+    <!-- doze Kafka 1.2.0 -->
+    <article class="cl-entry" aria-labelledby="e-k120" data-cl-product="kafka">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-kafka"><img src="/brand/doze-kafka.svg" alt="">doze Kafka</span>
+        <span class="cl-ver" id="e-k120">1.2.0</span>
+        <span class="cl-when"><time datetime="2026-07-18">18 Jul 2026</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">A web console for the broker. See the messages without installing a client.</p>
+        <div class="cl-grp">
+          <h3 class="cl-g-new">New</h3>
+          <ul><li>Topics, a live message tape, produce from the browser, and consumer groups with their lag.</li></ul>
+        </div>
+        <div class="cl-upg"><span>Upgrade:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh</code><button data-copy="curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div><span>Inside doze, <code>doze modules upgrade kafka</code> moves you to module kafka 0.1.1.</span><a href="https://github.com/doze-dev/doze-kafka/releases/tag/v1.2.0">Release on GitHub</a></div>
+      </div>
+    </article>
+
+    <!-- doze AWS 0.2.0 -->
+    <article class="cl-entry" aria-labelledby="e-aws020" data-cl-product="aws">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-aws"><img src="/brand/doze-aws.svg" alt="">doze AWS</span>
+        <span class="cl-ver" id="e-aws020">0.2.0</span>
+        <span class="cl-when"><time datetime="2026-07-17">17 Jul 2026</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">Tidier inside, the same on the wire.</p>
+        <div class="cl-grp">
+          <h3 class="cl-g-chg">Changed</h3>
+          <ul><li>Large files split by service, duplicate protocol codecs merged, the stack file split per service. Nothing you call changes.</li></ul>
+        </div>
+        <div class="cl-upg"><a href="https://github.com/doze-dev/doze-aws/releases/tag/v0.2.0">Release on GitHub</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- doze Kafka 1.1.0 -->
+    <article class="cl-entry" aria-labelledby="e-k110" data-cl-product="kafka">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-kafka"><img src="/brand/doze-kafka.svg" alt="">doze Kafka</span>
+        <span class="cl-ver" id="e-k110">1.1.0</span>
+        <span class="cl-when"><time datetime="2026-07-17">17 Jul 2026</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">Run the broker inside your own Go program.</p>
+        <div class="cl-grp"><h3 class="cl-g-new">New</h3><ul><li>An embeddable server package: start a broker in a test with no separate process.</li></ul></div>
+        <div class="cl-upg"><a href="https://github.com/doze-dev/doze-kafka/releases/tag/v1.1.0">Release on GitHub</a></div>
+      </div>
+    </article>
+
+    <!-- doze AWS 0.1.0 + doze Kafka 1.0.0 -->
+    <article class="cl-entry" aria-labelledby="e-aws010" data-cl-product="aws">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-aws"><img src="/brand/doze-aws.svg" alt="">doze AWS</span>
+        <span class="cl-ver" id="e-aws010">0.1.0</span>
+        <span class="cl-when"><time datetime="2026-07-10">10 Jul 2026</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">First release: a local AWS in one small Go binary.</p>
+        <div class="cl-upg"><a href="/aws/">What it covers</a><a href="https://github.com/doze-dev/doze-aws/releases/tag/v0.1.0">Release on GitHub</a></div>
+      </div>
+    </article>
+
+    <article class="cl-entry" aria-labelledby="e-k100" data-cl-product="kafka">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-kafka"><img src="/brand/doze-kafka.svg" alt="">doze Kafka</span>
+        <span class="cl-ver" id="e-k100">1.0.0</span>
+        <span class="cl-when"><time datetime="2026-07-10">10 Jul 2026</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">Kafka in one Go binary, with no JVM.</p>
+        <div class="cl-grp"><h3 class="cl-g-new">New</h3><ul><li>A config file in TOML. Flags win over the file, the file over the defaults.</li></ul></div>
+        <div class="cl-upg"><a href="https://github.com/doze-dev/doze-kafka/releases/tag/v1.0.0">Release on GitHub</a></div>
+      </div>
+    </article>
+
+    <!-- doze 0.1.1 -->
+    <article class="cl-entry" aria-labelledby="e-011" data-cl-product="doze">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-doze"><img src="/brand/doze.svg" alt="">doze</span>
+        <span class="cl-ver" id="e-011">0.1.1</span>
+        <span class="cl-when"><time datetime="2026-07-02">2 Jul 2026</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">Know what a block accepts without leaving the terminal.</p>
+        <div class="cl-grp">
+          <h3 class="cl-g-new">New</h3>
+          <ul>
+            <li><code>doze modules docs postgres</code> prints a module's description, an example and every argument, with which are required and which engine versions take them.</li>
+          </ul>
+        </div>
+        <div class="cl-grp">
+          <h3 class="cl-g-chg">Changed</h3>
+          <ul><li>A first session that nudges: hints and suggestions where people got stuck.</li></ul>
+        </div>
+        <div class="cl-upg"><a href="https://github.com/doze-dev/doze/releases/tag/v0.1.1">Release on GitHub</a></div>
+      </div>
+    </article>
+
+    <!-- doze 0.1.0 -->
+    <article class="cl-entry" aria-labelledby="e-010" data-cl-product="doze">
+      <div class="cl-meta">
+        <span class="cl-badge cl-b-doze"><img src="/brand/doze.svg" alt="">doze</span>
+        <span class="cl-ver" id="e-010">0.1.0</span>
+        <span class="cl-when"><time datetime="2026-07-02">2 Jul 2026</time></span>
+      </div>
+      <div class="cl-s15">
+        <p class="cl-sum">First release. One doze.hcl, real engines, no Docker.</p>
+        <div class="cl-grp">
+          <h3 class="cl-g-new">New</h3>
+          <ul>
+            <li>Modules come from a signed index; <code>doze modules upgrade</code> moves a project's pins on purpose.</li>
+            <li><code>doze reset</code> for a clean start.</li>
+            <li>A Mongo-compatible engine (FerretDB).</li>
+            <li><code>for_each</code> and <code>count</code>; variables, locals and outputs.</li>
+            <li>Sibling <code>*.doze.hcl</code> files merge into one stack.</li>
+            <li><code>brew install doze-dev/tap/doze</code>.</li>
+          </ul>
+        </div>
+        <div class="cl-upg"><a href="https://github.com/doze-dev/doze/releases/tag/v0.1.0">Release on GitHub</a></div>
+      </div>
+    </article>
+
+    <div class="cl-s17">
+      <p class="cl-p cl-s13">Every module release, with what it needs and what it pins, is on that module's Versions tab.</p>
+      <div class="cl-s18">
+        <a class="cl-s19" href="/registry/doze/postgres/versions/">postgres versions →</a>
+        <a class="cl-s19" href="https://github.com/doze-dev/doze/releases">All doze releases on GitHub →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</Page>
+
+<script>import "../scripts/product-changelog.ts";</script>
+
+<style>
+*{box-sizing:content-box}
+button,select,input[type=button],input[type=submit],input[type=reset],input[type=search]{box-sizing:border-box}
+.cl-root{line-height:normal}
+
+.cl-pg{font-family:var(--font-text);color:#F4ECE4;background:#140C1B;min-height:100%}
+.cl-pg a{color:#F0A24B;text-decoration:none}.cl-pg a:hover{color:#FFC27A}
+.cl-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.cl-eyebrow{font-family:var(--font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
+.cl-h1{margin:0;font-family:var(--font-display);font-weight:800;font-size:80px;line-height:1;letter-spacing:-0.04em;text-wrap:balance}
+.cl-h2{margin:0;font-family:var(--font-display);font-weight:800;font-size:50px;line-height:1.05;letter-spacing:-0.03em;text-wrap:balance}
+.cl-h3{margin:0;font-family:var(--font-display);font-weight:700;font-size:24px;line-height:1.2;letter-spacing:-0.01em}
+.cl-lede{margin:0;font-size:20px;line-height:1.55;color:#D6C8DF;max-width:44rem}
+.cl-p{margin:0;font-size:16px;line-height:1.6;color:#C9BAD3}
+.cl-dim{color:#9C8AAB}
+.cl-card{background:#1E1328;border:1px solid #34233F;border-radius:20px;padding:28px;box-sizing:border-box}
+.cl-card-raised{background:#1A1022;border:1px solid #2E1F3A;border-radius:20px}
+.cl-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px;box-sizing:border-box}
+.cl-pg a.cl-btn-lamp,.cl-btn-lamp{background:#F0A24B;color:#2A1534}.cl-pg a.cl-btn-lamp:hover{background:#FFB866;color:#2A1534}
+.cl-pg a.cl-btn-ghost,.cl-btn-ghost{border:1px solid #4A3458;color:#F4ECE4;background:transparent}.cl-pg a.cl-btn-ghost:hover{border-color:#7A5E8C;color:#fff}
+.cl-cmd{display:flex;align-items:center;gap:8px;background:#1E1328;border:1px solid #4A3458;border-radius:12px;min-height:52px;padding:0 8px 0 16px;box-sizing:border-box}
+.cl-cmd code{font:15px var(--font-mono);color:#F4ECE4;flex:1;min-width:0;overflow-x:auto;white-space:pre;padding:12px 8px 12px 0}
+.cl-cmd code .cl-pr{color:#9C8AAB}
+.cl-copy{flex:none;height:44px;min-width:56px;padding:0 12px;border-radius:8px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px var(--font-text);cursor:pointer}
+pre.cl-code{margin:0;white-space:pre;font:14px/1.75 var(--font-mono);background:#120A18;border:1px solid #2E1F3A;border-radius:16px;padding:20px 22px;color:#D6C8DF;overflow-x:auto}
+pre.cl-code .cl-c{color:#9C8AAB}pre.cl-code .cl-k{color:#F0A24B}pre.cl-code .cl-s{color:#8BE39B}pre.cl-code .cl-pr{color:#9C8AAB}
+.cl-chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid #4A3458;color:#D6C8DF;white-space:nowrap}
+.cl-chip-good{color:#8BE39B;border-color:#2F5A3A;background:#14251A}
+.cl-chip-warn{color:#F0A24B;border-color:#5A3E1E;background:#2A1C10}
+.cl-chip-bad{color:#FF9AA8;border-color:#5A2A35;background:#2A1520}
+.cl-chip-info{color:#9DC7FF;border-color:#2C3F66;background:#141B2C}
+.cl-tag-new{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#F0A24B;border:1px dashed #8A5A2A;border-radius:6px;padding:2px 6px}
+.cl-shot{border:1px dashed #5A4168;border-radius:16px;background:repeating-linear-gradient(135deg,#1A1022 0 14px,#1E1328 14px 28px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px;color:#C9BAD3;font-size:14px;box-sizing:border-box}
+.cl-shot b{font-family:var(--font-mono);font-size:13px;color:#F0A24B}
+.cl-grid{display:grid;gap:20px}
+.cl-sec{padding-top:96px;padding-bottom:96px}
+
+.cl-rule{border:0;border-top:1px solid #2E1F3A;margin:0}
+.cl-ic{width:20px;height:20px;flex:none}
+.cl-pg :focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+@media (max-width:760px){.cl-h1{font-size:46px}.cl-h2{font-size:34px}.cl-lede{font-size:18px}.cl-sec{padding-top:64px;padding-bottom:64px}.cl-wrap{padding:0 32px}.cl-card{padding:22px}.cl-stack-sm{flex-direction:column !important;align-items:stretch !important}.cl-hide-sm{display:none !important}}
+@media (max-width:760px){.cl-wrap.cl-sec{padding:64px 20px}}
+
+.cl-pg code,.cl-pg pre{font-variant-ligatures:none}
+.cl-filters{display:flex;gap:10px;flex-wrap:wrap}
+.cl-fchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid #4A3458;background:transparent;color:#D6C8DF;font:500 15px var(--font-text);cursor:pointer}
+.cl-fchip[aria-pressed="true"]{background:#F4ECE4;color:#140C1B;border-color:#F4ECE4}
+.cl-fchip .cl-sw{width:8px;height:8px;border-radius:4px}
+.cl-entry{display:grid;grid-template-columns:220px 1fr;gap:40px;padding:48px 0;border-top:1px solid #2E1F3A}
+.cl-meta{display:flex;flex-direction:column;gap:10px;align-self:start;position:sticky;top:24px}
+.cl-ver{font-family:var(--font-display);font-weight:800;font-size:36px;letter-spacing:-0.03em;line-height:1}
+.cl-when{font-size:14px;color:#9C8AAB}
+.cl-badge{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;height:28px;padding:0 12px 0 6px;border-radius:999px;font-size:13px;font-weight:600}
+.cl-badge img{width:18px;height:18px;border-radius:5px;min-height:0 !important}
+.cl-b-doze{background:#2A1C10;color:#F0A24B;border:1px solid #5A3E1E}
+.cl-b-aws{background:#0C1320;color:#5BB8E8;border:1px solid #1F3A55}
+.cl-b-kafka{background:#16150F;color:#FFD60A;border:1px solid #4A4520}
+.cl-b-mod{background:#1E1328;color:#D6C8DF;border:1px solid #4A3458}
+.cl-b-mod .cl-ini{width:18px;height:18px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#140C1B}
+.cl-sum{margin:0;font-family:var(--font-display);font-weight:700;font-size:26px;line-height:1.25;letter-spacing:-0.015em;text-wrap:balance;max-width:40rem}
+.cl-grp{display:flex;flex-direction:column;gap:10px}
+.cl-grp h3{margin:0;font:600 12px var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
+.cl-g-new{color:#8BE39B}.cl-g-chg{color:#F0A24B}.cl-g-fix{color:#9DC7FF}.cl-g-soon{color:#9DC7FF}
+.cl-grp ul{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:9px;color:#D6C8DF;font-size:16px;line-height:1.55}
+.cl-grp li::marker{color:#6E5A7E}
+.cl-grp code,.cl-sum code,.cl-p code,.cl-note code,.cl-upg span code{white-space:nowrap;font:0.9em var(--font-mono);color:#F4ECE4;background:#241732;border:1px solid #34233F;border-radius:6px;padding:1px 6px}
+.cl-upg{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px;color:#9C8AAB}
+.cl-upg .cl-cmd{min-height:44px}
+.cl-upg .cl-cmd code{font-size:14px}
+.cl-next{background:linear-gradient(180deg,#1E1328,#1A1022);border:1px solid #5A3E1E;border-radius:24px;padding:40px;margin:0 -40px;display:grid;grid-template-columns:220px 1fr;gap:40px}
+.cl-meta .cl-chip{align-self:flex-start}
+.cl-upg .cl-cmd{max-width:100%;min-width:0;flex:0 1 auto}
+.cl-entry>*,.cl-next>*,.cl-cols>*,.cl-upg>*{min-width:0}
+@media (max-width:600px){.cl-grp code{white-space:normal}}
+.cl-note{font-size:14px;color:#9C8AAB;line-height:1.55}
+.cl-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px 40px}
+@media (max-width:900px){.cl-entry,.cl-next{grid-template-columns:1fr;gap:20px}.cl-next{margin:0 -12px;padding:24px 20px}.cl-meta{position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 14px}.cl-ver{font-size:28px}}
+/* one-off layout from the board's inline styles */
+.cl-s1.cl-s1.cl-s1{padding-top:88px;padding-bottom:40px;display:flex;flex-direction:column;gap:22px}
+.cl-s2.cl-s2.cl-s2{max-width:16ch}
+.cl-s3.cl-s3.cl-s3{font-family:var(--font-mono);color:#F4ECE4}
+.cl-s4.cl-s4.cl-s4{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:16px}
+.cl-s5.cl-s5.cl-s5{background:#F0A24B}
+.cl-s6.cl-s6.cl-s6{background:#5BB8E8}
+.cl-s7.cl-s7.cl-s7{background:#FFD60A}
+.cl-s8.cl-s8.cl-s8{background:#C9BAD3}
+.cl-s9.cl-s9.cl-s9{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px}
+.cl-s10.cl-s10.cl-s10{padding-bottom:96px}
+.cl-s11.cl-s11.cl-s11{margin-bottom:8px}
+.cl-s12.cl-s12.cl-s12{display:flex;flex-direction:column;gap:28px}
+.cl-s13.cl-s13.cl-s13{margin:0}
+.cl-s14.cl-s14.cl-s14{background:#7FA7E0}
+.cl-s15.cl-s15.cl-s15{display:flex;flex-direction:column;gap:22px}
+.cl-s16.cl-s16.cl-s16{background:#8BE39B}
+.cl-s17.cl-s17.cl-s17{border-top:1px solid #2E1F3A;padding-top:32px;display:flex;gap:16px 32px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.cl-s18.cl-s18.cl-s18{display:flex;gap:24px;flex-wrap:wrap}
+.cl-s19.cl-s19.cl-s19{min-height:44px;display:inline-flex;align-items:center}
+</style>

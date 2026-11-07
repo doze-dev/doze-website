@@ -1,0 +1,211 @@
+---
+// One Postgres extension (design: RegistryExtension), for every extension in
+// src/data/extensions.ts. vector carries the board's copy (module-extras.ts:
+// what it does, builds per platform, queries); the others are built from the
+// catalog alone and leave out what it doesn't say.
+import "../../../../../components/module/extension.css";
+import ModuleHead from "../../../../../components/ModuleHead.astro";
+import { hcl, plat } from "../../../../../components/module/lib";
+import RegistryBar from "../../../../../components/RegistryBar.astro";
+import { type Cell, extensions, pgMajors } from "../../../../../data/extensions";
+import { extensionExtras } from "../../../../../data/module-extras";
+import Page from "../../../../../layouts/Page.astro";
+import { getModule } from "../../../../../lib/registry";
+import { hrefFor } from "../../../../../routes";
+
+export function getStaticPaths() {
+  return extensions.map((e) => ({ params: { ext: e.name } }));
+}
+
+const e = extensions.find((x) => x.name === Astro.params.ext)!;
+const xx = extensionExtras[e.name];
+const m = getModule("postgres")!;
+const coming = e.wave === 1;
+const withV = e.cells.map((c, i) => ({ c, major: pgMajors[i] })).filter((x) => "v" in x.c) as {
+  c: Extract<Cell, { v: string }>;
+  major: number;
+}[];
+const newestCell = withV[withV.length - 1];
+const version = newestCell?.c.v ?? "";
+const versions = [...new Set(withV.map((x) => x.c.v))];
+const line = xx?.defaultLine ?? version.split(".").slice(0, 2).join(".");
+const majorsOk = withV.map((x) => x.major);
+const pgRange =
+  majorsOk.length === 0
+    ? "—"
+    : majorsOk.length === 1
+      ? `${majorsOk[0]} only`
+      : `${majorsOk[0]} – ${majorsOk[majorsOk.length - 1]}`;
+const pgMajor = newestCell?.major ?? 18;
+const status = coming ? "Coming with postgres 0.3" : "Planned [to confirm]";
+const preload = {
+  yes: ["Yes", "Yes: restarts once when the set changes"],
+  no: ["No", "No, no restart"],
+  "bgw, off": ["Worker, off", "Its background worker is off unless you turn it on"],
+  optional: ["Optional", "Optional: only for some features"],
+}[e.preload];
+const one = `module postgres "postgres" {\n  version    = ${pgMajor}\n  extensions = ["${e.name}"]\n}`;
+const pinned = `module postgres "postgres" {\n  version = ${pgMajor}\n  extension "${e.name}" { version = "${version}" }\n}`;
+const k = (s: string) => hcl(s, "rx-k", "rx-s");
+const cell = (c: Cell) => {
+  if (c.state === "coming") return { cls: "rx-info", text: `${c.v} · coming` };
+  if (c.state === "planned") return { cls: "rx-dim", text: `${c.v} · planned` };
+  if (c.state === "no") return { cls: "rx-warn", text: "not possible" };
+  if (c.state === "unverified") return { cls: "rx-dim", text: "unverified" };
+  return { cls: "rx-dim", text: "—" };
+};
+const lockLine = line.includes(".") ? line : version;
+const related = (xx?.related ?? []).map((n) => extensions.find((x) => x.name === n)!).filter(Boolean);
+const rangeOf = (cells: Cell[]) => {
+  const ok = cells.map((c, i) => ("v" in c ? pgMajors[i] : 0)).filter(Boolean);
+  return ok.length === 1 ? `PG ${ok[0]} only` : ok.length ? `PG ${ok[0]}–${ok[ok.length - 1]}` : "";
+};
+const catalog = hrefFor("RegistryExtensions.dc.html");
+---
+<Page title={`${e.name} · Postgres extensions · registry`} description={`${e.title}: ${e.what}. ${status}.`} theme="light" current="registry">
+  <RegistryBar section="modules" />
+  <ModuleHead module={m} tab="extensions" />
+
+  <div class="rx-page">
+    <div class="rx-wrap">
+      <div class="rx-main">
+        <header class="rx-sec rx-g14">
+          <nav aria-label="Breadcrumb" class="rx-crumb"><a href={catalog}>Extensions</a> / {e.name}</nav>
+          <div class="rx-title">
+            <h2 class="rx-name">{e.name}</h2>
+            {e.title !== e.name && <span class="rx-alt">{e.title}</span>}
+            <span class:list={["rx-chip", coming ? "rx-info" : "rx-dim"]}>{status}</span>
+          </div>
+          {xx ? <p class="rx-lede" set:html={xx.lede} /> : <p class="rx-lede">{e.what}.{e.sub && e.sub !== e.title && <> {e.sub}.</>}</p>}
+          <div class="rx-facts">
+            <div><span>Version</span><b>{versions.length > 1 ? `${versions[0]} – ${versions[versions.length - 1]}` : version || "—"}</b></div>
+            <div><span>Postgres</span><b>{pgRange}</b></div>
+            <div><span>Preload</span><b>{preload[0]}</b></div>
+            <div><span>Licence</span><b>{e.licence}</b></div>
+            {e.aliases.length > 0 && <div><span>Also called</span><b>{e.aliases.map((a, i) => <>{i > 0 && ", "}<code class="rx-ac">{a}</code></>)}</b></div>}
+            {xx?.upstream && <div><span>Upstream</span><b><a href={xx.upstream.href}>{xx.upstream.text}</a></b></div>}
+          </div>
+        </header>
+
+        <section class="rx-sec" aria-labelledby="use">
+          <h2 id="use">Add it</h2>
+          <div class="rx-two">
+            <div class="rx-col">
+              <span class="rx-lbl">One line: the newest {lockLine.includes(".") && lockLine !== version ? `${lockLine}.x` : version}</span>
+              <div class="rx-codebox">
+                <div class="rx-codebar"><span>doze.hcl</span><button class="rx-copy" type="button" aria-label="Copy the one-line snippet" data-copy={one}>Copy</button></div>
+                <pre class="rx-code" set:html={k(one)} />
+              </div>
+            </div>
+            <div class="rx-col">
+              <span class="rx-lbl">Pinned to an exact version</span>
+              <div class="rx-codebox">
+                <div class="rx-codebar"><span>doze.hcl</span><button class="rx-copy" type="button" aria-label="Copy the pinned snippet" data-copy={pinned}>Copy</button></div>
+                <pre class="rx-code" set:html={k(pinned)} />
+              </div>
+            </div>
+          </div>
+          <p class="rx-p">doze fetches the build for your Postgres major and platform once, checks its sha256, pins it in doze.lock and runs <code class="rx-ic2">CREATE EXTENSION {e.name}</code>. Nothing to install, the same on a Mac and on Linux. A newer pin later runs <code class="rx-ic2">ALTER EXTENSION {e.name} UPDATE</code> for you.{e.preload === "yes" && " It preloads: doze adds it to shared_preload_libraries and restarts the instance once when the set changes."}</p>
+        </section>
+
+        <section class="rx-sec" aria-labelledby="mx">
+          <div class="rx-mh">
+            <h2 id="mx">Postgres majors</h2>
+            <a href={catalog}>Every extension × every major</a>
+          </div>
+          <div class="rx-tw">
+            <table class="rx-mx rx-560">
+              <thead><tr><th scope="col">Extension</th>{pgMajors.map((p) => <th scope="col">PG {p}</th>)}</tr></thead>
+              <tbody>
+                <tr>
+                  <th scope="row" class="rx-rowh">{e.name}</th>
+                  {e.cells.map((c, i) => { const x = cell(c); return <td data-pg={`PG ${pgMajors[i]}`}><span class:list={["rx-chip", x.cls]}>{x.text}</span></td>; })}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="rx-cap">{coming ? "Coming with postgres 0.3, which needs doze 0.2.0 or newer." : "Planned for after postgres 0.3; not built yet. Versions are the lines we plan to build [to confirm]."}</p>
+        </section>
+
+        {xx?.bundles && (
+          <section class="rx-sec" aria-labelledby="bundles">
+            <h2 id="bundles">Builds per platform</h2>
+            <p class="rx-p">One bundle per extension version, Postgres major and platform, built against doze's own Postgres. Once published, each one's sha256 is pinned in doze.lock on first use. Below: Postgres {xx.bundles.major}.</p>
+            <div class="rx-tw">
+              <table class="rx-bt rx-760">
+                <thead><tr><th scope="col">Platform</th><th scope="col">Bundle</th><th scope="col">State</th></tr></thead>
+                <tbody>
+                  {xx.bundles.rows.map((b) => (
+                    <tr><td class="rx-pl">{plat(b.triple)}</td><td><code>pgext-{e.name}-pg{xx.bundles!.major}-{version}-{b.triple}.tar.gz</code></td><td>{b.state === "built" ? <span class="rx-chip rx-info">Built · not published yet</span> : <span class="rx-chip rx-dim">Not built yet</span>}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {xx?.query && (
+          <section class="rx-sec" aria-labelledby="query">
+            <h2 id="query">Use it from your code</h2>
+            <p class="rx-p" set:html={xx.query.intro} />
+            <div class="rx-codebox">
+              <div class="rx-codebar"><span>SQL, in your migration</span><button class="rx-copy" type="button" aria-label="Copy the SQL" data-copy-from="#rx-sql">Copy</button></div>
+              <pre class="rx-code" id="rx-sql" set:html={xx.query.sql} />
+            </div>
+            <div class="rx-langs">
+              {xx.query.langs.map((l, i) => (
+                <div class="rx-codebox">
+                  <div class="rx-codebar"><span>{l.label}</span><button class="rx-copy" type="button" aria-label={l.aria} data-copy-from={`#rx-lang-${i}`}>Copy</button></div>
+                  <pre class="rx-code" id={`rx-lang-${i}`} set:html={l.html} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <aside class="rx-rail" aria-label="Details">
+        <section class="rx-panel rx-railbox" aria-labelledby="lock">
+          <h2 id="lock" class="rx-h19">What doze.lock records</h2>
+          <p class="rx-rp">A bundle is pinned like a Postgres build: version and one sha256 per platform, written the first time each platform fetches it.</p>
+          <div class="rx-codebox">
+            <pre class="rx-code rx-lock"><span class="rx-k">engines:</span>
+    pgext-{e.name}-pg{pgMajor}:
+        <span class="rx-s">"{lockLine}"</span>:
+            resolved: {version}
+            source: mirror
+            hashes:
+                aarch64-apple-darwin: sha256:…</pre>
+          </div>
+          <p class="rx-rc">… is each platform's sha256, written on its first fetch. The module pin above it moves to postgres 0.3; <code class="rx-ic3">doze modules upgrade</code> moves both on purpose.</p>
+        </section>
+        <section class="rx-panel rx-railbox" aria-labelledby="facts2">
+          <h2 id="facts2" class="rx-h19">At a glance</h2>
+          <div>
+            <div class="rx-kv"><span>CREATE EXTENSION name</span><b class="rx-kvm">{e.name}</b></div>
+            <div class="rx-kv"><span>Default line</span><b>{lockLine}</b></div>
+            <div class="rx-kv"><span>Preload</span><b>{preload[1]}</b></div>
+            <div class="rx-kv"><span>Licence</span><b>{e.licence}</b></div>
+            {xx?.builtFrom && <div class="rx-kv"><span>Built from</span><a href={xx.builtFrom.href}>{xx.builtFrom.text}</a></div>}
+            {coming && <div class="rx-kv"><span>Recipe</span><a href="https://github.com/doze-dev/doze-binaries/tree/main/recipes/pgext">doze-binaries</a></div>}
+            <div class="rx-kv"><span>Needs</span><b>postgres 0.3 · doze 0.2.0</b></div>
+          </div>
+        </section>
+        <p class="rx-until">Until postgres 0.3, on {m.newest}: only extensions that ship with Postgres (pg_trgm, uuid-ossp, hstore…) work by name.</p>
+        {related.length > 0 && (
+          <section class="rx-sec rx-g12" aria-labelledby="related">
+            <h2 id="related" class="rx-h20">Often used with</h2>
+            <div class="rx-rel">
+              {related.map((r) => (
+                <a class="rx-panel" href={`/registry/doze/postgres/extensions/${r.name}/`}>
+                  <div class="rx-relh"><code>{r.name}</code><span class="rx-relc"><span class="rx-chip rx-dim">{rangeOf(r.cells)}</span>{r.preload === "yes" && <span class="rx-chip rx-warn">Preloads</span>}</span></div>
+                  <p>{r.title !== r.name ? `${r.title}: ` : ""}{r.what}.{r.name === "vectorscale" && " Brings vector in with it."}{r.name === "pg_search" && e.name === "vector" && " With vector, hybrid search: keywords and meaning in one query."} {/GPL/.test(r.licence) ? `${r.licence}.` : ""}</p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+      </aside>
+    </div>
+  </div>
+</Page>

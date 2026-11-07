@@ -23,6 +23,7 @@ type Source = {
   keep?: string[];
   exclude?: string[];
   copy?: Record<string, string>;
+  files?: Record<string, string>; // single files to copy into public/, links rewritten
   also?: string[]; // more folders to fetch in git mode, e.g. images the pages point at
 };
 
@@ -99,7 +100,24 @@ function link(s: Source, base: string, page: string, isIndex: boolean, target: s
 }
 
 function rewrite(s: Source, base: string, page: string, isIndex: boolean, text: string): string {
-  return text.replace(/(\]\()([^)\s]+)(\))/g, (_m, a, t, b) => `${a}${link(s, base, page, isIndex, t)}${b}`);
+  const body = text.replace(/(\]\()([^)\s]+)(\))/g, (_m, a, t, b) => `${a}${link(s, base, page, isIndex, t)}${b}`);
+  // Frontmatter links (a splash page's hero actions: `link: /start/x/`) need
+  // the same treatment as markdown links, or they point outside /docs/<name>/.
+  const end = body.startsWith("---") ? body.indexOf("\n---", 3) : -1;
+  if (end < 0) return body;
+  const front = body
+    .slice(0, end)
+    .replace(/^(\s*link:\s*)(\S+)\s*$/gm, (_m, a, t) => `${a}${link(s, base, page, isIndex, t)}`);
+  return front + body.slice(end);
+}
+
+// Each page's "Edit this page on GitHub" goes to its file in its own repo.
+// Starlight reads `editUrl` from the frontmatter; a page that sets its own keeps it.
+function withEditUrl(s: Source, file: string, text: string): string {
+  const end = text.indexOf("\n---", 3);
+  if (/^editUrl:/m.test(text.slice(0, end))) return text;
+  const url = `https://github.com/${s.repo}/edit/${s.ref}/${join(s.path, file)}`;
+  return `---\neditUrl: ${JSON.stringify(url)}${text.slice(3)}`;
 }
 
 // Images a page points at with a relative path (in frontmatter or markdown)
@@ -134,11 +152,21 @@ for (const s of sources) {
       const fallback = isIndex ? s.name : file.replace(/\.mdx?$/, "");
       text = `---\ntitle: ${JSON.stringify(t?.title ?? fallback)}\n---\n${t ? t.rest : text}`;
     }
+    text = withEditUrl(s, file, text);
     const target = join(out, s.name, dest.toLowerCase());
     mkdirSync(dirname(target), { recursive: true });
     text = images(join(base, file), target, join(out, s.name), text);
     writeFileSync(target, rewrite(s, base, file, isIndex, text));
     n++;
+  }
+  // single files (e.g. llms.txt): from the checkout, or from GitHub at the ref;
+  // markdown links in them are rewritten like the pages'.
+  for (const [from, to] of Object.entries(s.files ?? {})) {
+    const local = join(dir, from);
+    const text = existsSync(local)
+      ? readFileSync(local, "utf8")
+      : await fetch(`https://raw.githubusercontent.com/${s.repo}/${s.ref}/${from}`).then((r) => (r.ok ? r.text() : ""));
+    if (text) writeFileSync(join(root, "public", to), rewrite(s, base, to, false, text));
   }
   for (const [from, to] of Object.entries(s.copy ?? {})) {
     const src = join(dir, from);

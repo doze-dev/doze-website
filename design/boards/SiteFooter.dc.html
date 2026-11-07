@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site footer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.sf a{text-decoration:none;font-size:14px}
+.sf-dark a{color:#C9BAD3}.sf-dark a:hover{color:#FFFFFF}
+.sf-light a{color:#4A3D55}.sf-light a:hover{color:#140C1B}
+.sf-brand{grid-column:span 2}@media (max-width:700px){.sf-brand{grid-column:1/-1}}
+@media (max-width:700px){.sf nav a{display:block;padding:11px 0}}
+.sf a:focus-visible{outline:2px solid #F0A24B;outline-offset:3px;border-radius:4px}
+.sf h2{margin:0 0 4px;font:600 12px Geist,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+</style>
+</helmet>
+<footer class="sf {{cls}}" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; background: {{bg}}; border-top: 1px solid {{line}}; color: {{ink}}">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 64px 32px 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 36px 24px">
+    <div class="sf-brand" style="display: flex; flex-direction: column; gap: 14px">
+      <a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: {{ink}}"><img src="/_blob/011c89d77e6c83d760300a6f93b9f3cb" alt="" style="width: 30px; height: 30px"><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 19px">doze</span></a>
+      <p style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px; line-height: 1.15; letter-spacing: -0.02em; max-width: 17ch; text-wrap: balance">Run your whole stack. Feel none of it.</p>
+      <span style="font-size: 13px; color: {{dim}}">Open source, Apache-2.0. No account, no telemetry.</span>
+    </div>
+    <nav aria-label="Products" style="display: flex; flex-direction: column; gap: 10px"><h2 style="color: {{dim}}">Products</h2><a href="Doze.dc.html">doze</a><a href="Aws.dc.html">doze AWS</a><a href="Kafka.dc.html">doze Kafka</a><a href="Download.dc.html">Download</a></nav>
+    <nav aria-label="Registry" style="display: flex; flex-direction: column; gap: 10px"><h2 style="color: {{dim}}">Registry</h2><a href="Registry.dc.html">Modules</a><a href="RegistryExtensions.dc.html">Postgres extensions</a><a href="RegistryTrust.dc.html">How signing works</a><a href="RegistryPublish.dc.html">Publish a module</a></nav>
+    <nav aria-label="Learn" style="display: flex; flex-direction: column; gap: 10px"><h2 style="color: {{dim}}">Learn</h2><a href="DocsHome.dc.html">Docs</a><a href="Examples.dc.html">Examples</a><a href="Changelog.dc.html">Changelog</a><a href="DozeDocs.dc.html">Coming from Docker Compose</a></nav>
+    <nav aria-label="Project" style="display: flex; flex-direction: column; gap: 10px"><h2 style="color: {{dim}}">Project</h2><a href="https://github.com/doze-dev">GitHub</a><a href="Security.dc.html">Security</a><a href="Brand.dc.html">Brand</a><a href="https://github.com/doze-dev/doze/discussions">Discussions</a></nav>
+  </div>
+  <div style="width: min(1240px, calc(100% - 64px)); margin: 0 auto; padding: 18px 0 36px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; font-size: 13px; color: {{dim}}; border-top: 1px solid {{line}}">
+    <span>© [year] the doze authors</span>
+    <span>doze sends nothing home. Not even from this website: no cookies, no analytics.</span>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light","aws","kafka"],"default":"dark"},"$preview":{"width":1440,"height":360}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    const dark = theme !== 'light';
+    const ground = { dark: '#140C1B', aws: '#0C1320', kafka: '#16150F', light: '#FFF4E8' }[theme] ?? '#140C1B';
+    const rule = { dark: '#2E1F3A', aws: '#1C2B44', kafka: '#2C2A1C', light: '#EADFD3' }[theme] ?? '#2E1F3A';
+    return {
+      cls: dark ? 'sf-dark' : 'sf-light',
+      bg: ground,
+      line: rule,
+      ink: dark ? '#F4ECE4' : '#140C1B',
+      dim: dark ? '#9C8AAB' : '#6E5F79'
+    };
+  }
+}
+</script>
+</body>
+</html>

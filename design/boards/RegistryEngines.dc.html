@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Engine versions · doze/postgres · Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.re-pg{font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:#FFFAF4;color:#140C1B;font-size:15px;line-height:1.5}
+.re-pg a{color:#A85A0C;text-decoration:none}
+.re-pg a:hover{text-decoration:underline}
+.re-wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+.re-sec{padding:40px 0 0}
+.re-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;line-height:1.1;letter-spacing:-0.025em}
+.re-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-0.015em}
+.re-lead{margin:0;font-size:16px;line-height:1.55;color:#4A3D55;max-width:72ch}
+.re-small{font-size:13px;color:#6E5F79;line-height:1.5}
+.re-eyebrow{font:600 12px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.re-mono{font-family:'JetBrains Mono',monospace;font-variant-ligatures:none}
+.re-code,.re-code pre{font-variant-ligatures:none}
+.re-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font:600 12.5px Geist,sans-serif;white-space:nowrap;line-height:1}
+.re-c-good{background:#E6F4EA;color:#1D7A45}
+.re-c-warn{background:#FFF1D6;color:#8A5300}
+.re-c-bad{background:#FCE8EC;color:#B4233C}
+.re-c-info{background:#E8EEFC;color:#2F62D9}
+.re-c-dim{background:#F1EAE2;color:#5E5068}
+.re-c-line{background:#FFFFFF;color:#4A3D55;border:1px solid #DCCFC2}
+.re-eng{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:22px;padding:0 4px;border-radius:6px;border:1px solid #DCCFC2;background:#FFFFFF;font:600 12px 'JetBrains Mono',monospace;color:#4A3D55;box-sizing:border-box}
+.re-eng.re-off{border-style:dashed;color:#6E5F79;background:transparent}
+.re-engs{display:inline-flex;gap:4px}
+.re-pm{display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 6px;border-radius:6px;background:#F1EAE2;color:#4A3D55;font:600 11px 'JetBrains Mono',monospace}
+.re-pms{display:inline-flex;gap:4px}
+.re-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:16px}
+.re-sunk{background:#FFF4E8;border:1px solid #EADFD3;border-radius:16px}
+.re-tbox{position:relative;overflow-x:auto;border:1px solid #EADFD3;border-radius:14px;background:#FFFFFF;-webkit-overflow-scrolling:touch}
+.re-t{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}
+.re-t th{text-align:left;font:600 11.5px Geist,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#6E5F79;padding:12px 14px;border-bottom:1px solid #EADFD3;background:#FFF4E8;white-space:nowrap}
+.re-t td{padding:13px 14px;border-bottom:1px solid #F1E8DE;vertical-align:middle;white-space:nowrap;background:#FFFFFF}
+.re-t tr:last-child td{border-bottom:0}
+.re-t .re-stick{position:sticky;left:0;z-index:1;box-shadow:inset -1px 0 0 #EADFD3}
+.re-t .re-grp th,.re-t .re-grp td{background:#FFFAF4;padding:10px 14px;font:600 13px Geist,sans-serif;letter-spacing:0;text-transform:none;color:#140C1B;border-bottom:1px solid #EADFD3;border-top:1px solid #EADFD3}
+.re-code{background:#1E1328;border-radius:12px;color:#F4ECE4;font:13px/1.75 'JetBrains Mono',monospace;margin:0;overflow-x:auto}
+.re-code-bar{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-bottom:1px solid #34233F}
+.re-code-bar span{font:500 12px Geist,sans-serif;color:#C9BAD3;flex:1}
+.re-code pre{margin:0;padding:14px 18px;white-space:pre;font:inherit}
+.re-code .re-p{color:#9C8AAB}
+.re-code .re-c{color:#9C8AAB}
+.re-code .re-add{color:#8BE39B}
+.re-code .re-del{color:#FF9AA8}
+.re-code .re-k{color:#F0A24B}
+.re-copy{height:30px;padding:0 12px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 12.5px Geist,sans-serif;cursor:pointer}
+.re-lcopy{height:28px;padding:0 10px;border-radius:7px;border:1px solid #DCCFC2;background:#FFFFFF;color:#4A3D55;font:600 12px Geist,sans-serif;cursor:pointer;white-space:nowrap}
+.re-designed{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#2F62D9;background:#E8EEFC;border-radius:8px;padding:6px 10px}
+.re-new{display:inline-block;font:700 10.5px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#2F62D9;border:1px solid #9DB5F0;border-radius:5px;padding:1px 5px;vertical-align:2px}
+.re-dx{outline:2px dashed #B4233C;outline-offset:-2px;border-radius:14px}
+.re-dxtag{display:inline-flex;align-items:center;gap:6px;font:700 12px Geist,sans-serif;color:#B4233C;background:#FFFFFF;border:1px solid #F3B7C2;border-radius:6px;padding:3px 8px}
+.re-btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:10px;font:600 14px Geist,sans-serif;white-space:nowrap;box-sizing:border-box}
+.re-btn-a{background:#F0A24B;color:#2A1534 !important}
+.re-btn-l{background:#FFFFFF;border:1px solid #DCCFC2;color:#140C1B !important}
+.re-sel{display:inline-flex;align-items:center;gap:8px}
+.re-sel label{font-size:14px;color:#4A3D55;white-space:nowrap}
+.re-sel select{height:44px;padding:0 34px 0 12px;border-radius:10px;border:1px solid #DCCFC2;background:#FFFFFF;font:500 14px Geist,sans-serif;color:#140C1B;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#4A3D55 50%),linear-gradient(135deg,#4A3D55 50%,transparent 50%);background-position:calc(100% - 17px) 19px,calc(100% - 12px) 19px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.re-t td.re-end,.re-t th.re-end{padding-right:20px}
+@media (max-width:760px){.re-h2{font-size:26px}.re-sec{padding-top:32px}}
+@media (max-width:600px){
+.re-copy,.re-lcopy,.re-btn{min-height:44px}
+.re-tbox{border:0;background:transparent;overflow:visible;border-radius:0}
+.re-t,.re-t tbody,.re-t tr,.re-t td,.re-t tbody th{display:block}
+.re-t{min-width:0 !important}
+.re-t thead{display:none}
+.re-t tr{background:#FFFFFF;border:1px solid #EADFD3;border-radius:12px;margin-bottom:10px;padding:4px 16px}
+.re-t tr.re-dim{background:#FCF8F3}
+.re-t td,.re-t tbody th{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:7px 0 !important;border-bottom:1px solid #F1E8DE;white-space:normal;min-width:0 !important;width:auto !important;text-align:right;position:static;box-shadow:none !important;background:transparent !important}
+.re-t td:last-child,.re-t tbody th:last-child{border-bottom:0}
+.re-t td[data-label]::before,.re-t tbody th[data-label]::before{content:attr(data-label);font:600 11.5px Geist,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#6E5F79;text-align:left;flex:none}
+.re-t td.re-wide,.re-t th.re-wide{flex-direction:column;align-items:flex-start;text-align:left;gap:6px}
+.re-t td:empty{display:none}
+.re-t td.re-stick{justify-content:flex-start;font-size:17px;padding:12px 0 8px !important}
+.re-t td.re-stick::before,.re-t tbody th.re-stick::before{content:none !important}
+.re-t tbody th.re-stick{justify-content:flex-start;font-size:16px;padding:12px 0 8px !important}
+.re-t td.re-end{justify-content:flex-end;padding:0 !important}
+.re-t td.re-end::before{content:none !important}
+.re-t tr.re-grp{background:transparent;border:0;padding:6px 0 0;margin:14px 0 6px}
+.re-t tr.re-grp th,.re-t tr.re-grp td{display:inline;border:0;padding:0 8px 0 0 !important;background:transparent !important}
+.re-t tr.re-grp th::before,.re-t tr.re-grp td::before{content:none !important}
+}
+.re-major{background:#FFFFFF;border:1px solid #EADFD3;border-radius:16px;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.re-major.re-eolb{border-color:#F2D29B;background:#FFFCF6}
+.re-major-head{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap}
+.re-major-body{display:flex;gap:16px 32px;flex-wrap:wrap;align-items:flex-start}
+.re-resolve{display:flex;flex-direction:column;gap:6px;flex:0 0 230px}
+.re-resolve code{font-size:15px;color:#140C1B}
+.re-mns{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.re-mn{display:inline-flex;align-items:center;justify-content:center;height:28px;min-width:48px;padding:0 8px;box-sizing:border-box;border-radius:7px;border:1px solid #DCCFC2;background:#FFFFFF;font:500 12.5px 'JetBrains Mono',monospace;color:#4A3D55}
+.re-mn.re-top{background:#F0A24B;border-color:#F0A24B;color:#2A1534;font-weight:600}
+.re-mn.re-gap{border-style:dashed;background:transparent;color:#6E5F79;text-decoration:line-through}
+.re-stages{list-style:none;margin:0;padding:14px 0 0;border-top:1px solid #F2E3C8;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:12px 20px}
+.re-stages li{display:flex;flex-direction:column;gap:4px;padding-left:14px;border-left:3px solid #DCCFC2}
+.re-stages li.re-on{border-left-color:#F0A24B}
+.re-stages b{font-size:15px}
+.re-t.re-mx td{text-align:center}
+.re-t.re-mx th:not(.re-stick){text-align:center}
+.re-t.re-mx tbody th{text-align:left;font:500 14px Geist,sans-serif;letter-spacing:0;text-transform:none;color:#140C1B;background:#FFFFFF;border-bottom:1px solid #F1E8DE;padding:13px 14px;white-space:nowrap}
+.re-t.re-mx tbody tr:last-child th{border-bottom:0}
+.re-ok{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:#E6F4EA;color:#1D7A45;font-weight:700}
+.re-cm{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:6px;background:#E8EEFC;color:#2F62D9;font:600 12px Geist,sans-serif}
+@media (max-width:760px){.re-resolve{flex:1 1 100%}}
+@media (max-width:600px){
+.re-t.re-mx tr{display:flex;flex-wrap:wrap;gap:8px;padding:4px 16px 14px}
+.re-t.re-mx tbody th.re-stick{flex:1 1 100%;border-bottom:1px solid #F1E8DE}
+.re-t.re-mx td{flex:0 0 auto;border:1px solid #EADFD3 !important;border-radius:8px;padding:4px 8px !important;gap:8px}
+.re-t.re-mx td:last-child{border-bottom:1px solid #EADFD3}
+}
+</style>
+</helmet>
+<div class="re-pg">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="modules" hint-size="100%,120px"></dc-import>
+<dc-import name="RegistryModuleHead" tab="engines" newest="0.2.5" hint-size="100%,330px"></dc-import>
+
+<main>
+  <section class="re-wrap re-sec">
+    <div style="display: flex; gap: 16px 32px; align-items: flex-end; justify-content: space-between; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h2 class="re-h2">Engine versions</h2>
+        <p class="re-lead">The Postgres servers doze runs: 79 builds of real, unmodified Postgres from <a href="https://github.com/doze-dev/doze-binaries">doze-binaries</a>, every one for all three platforms. The engine and the module (doze/postgres) are pinned separately in doze.lock.</p>
+      </div>
+      <a href="https://github.com/doze-dev/doze-binaries/releases/download/postgres/index.yaml" style="font-size: 15px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; min-height: 44px">The same list as index.yaml
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+    </div>
+
+    <div style="margin-top: 22px; display: flex; gap: 10px 22px; flex-wrap: wrap; align-items: center" class="re-small">
+      <span style="display: inline-flex; gap: 8px; align-items: center"><span class="re-mn re-top" style="list-style: none">17.11</span> what a bare major resolves to today</span>
+      <span style="display: inline-flex; gap: 8px; align-items: center"><span class="re-mn re-gap" style="list-style: none">18.5</span> never tagged upstream</span>
+      <span style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap">Platforms: <span class="re-pm">mac</span> macOS arm64 <span class="re-pm">arm</span> Linux arm64 <span class="re-pm">x86</span> Linux x86_64</span>
+    </div>
+
+    <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px">
+      <article class="re-major" aria-labelledby="pg18">
+        <div class="re-major-head">
+          <h3 id="pg18" class="re-h3">Postgres 18</h3>
+          <span class="re-chip re-c-good">Supported upstream until 14 Nov 2030</span>
+          <span style="flex: 1"></span>
+          <span class="re-pms"><span class="re-pm" title="macOS arm64">mac</span><span class="re-pm" title="Linux arm64">arm</span><span class="re-pm" title="Linux x86_64">x86</span></span>
+        </div>
+        <div class="re-major-body">
+          <div class="re-resolve">
+            <span class="re-eyebrow">Bare major resolves to</span>
+            <code class="re-mono"><span style="color: #6E5F79">version =</span> 18 <span style="color: #6E5F79">→</span> <b>18.6</b></code>
+            <span class="re-small">today, then pinned in doze.lock</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1 1 520px">
+            <span class="re-eyebrow">6 minors built, oldest to newest</span>
+            <ul class="re-mns" aria-label="Postgres 18 minors"><li class="re-mn">18.0</li><li class="re-mn">18.1</li><li class="re-mn">18.2</li><li class="re-mn">18.3</li><li class="re-mn">18.4</li><li class="re-mn re-gap" title="Upstream never tagged 18.5">18.5</li><li class="re-mn re-top">18.6</li></ul>
+            <p class="re-small" style="margin: 0">Upstream never tagged 18.5, so there is no 18.5 to build.</p>
+          </div>
+        </div>
+      </article>
+      <article class="re-major" aria-labelledby="pg17">
+        <div class="re-major-head">
+          <h3 id="pg17" class="re-h3">Postgres 17</h3>
+          <span class="re-chip re-c-good">Supported upstream until 8 Nov 2029</span>
+          <span style="flex: 1"></span>
+          <span class="re-pms"><span class="re-pm" title="macOS arm64">mac</span><span class="re-pm" title="Linux arm64">arm</span><span class="re-pm" title="Linux x86_64">x86</span></span>
+        </div>
+        <div class="re-major-body">
+          <div class="re-resolve">
+            <span class="re-eyebrow">Bare major resolves to</span>
+            <code class="re-mono"><span style="color: #6E5F79">version =</span> 17 <span style="color: #6E5F79">→</span> <b>17.11</b></code>
+            <span class="re-small">today, then pinned in doze.lock</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1 1 520px">
+            <span class="re-eyebrow">12 minors built, oldest to newest</span>
+            <ul class="re-mns" aria-label="Postgres 17 minors"><li class="re-mn">17.0</li><li class="re-mn">17.1</li><li class="re-mn">17.2</li><li class="re-mn">17.3</li><li class="re-mn">17.4</li><li class="re-mn">17.5</li><li class="re-mn">17.6</li><li class="re-mn">17.7</li><li class="re-mn">17.8</li><li class="re-mn">17.9</li><li class="re-mn">17.10</li><li class="re-mn re-top">17.11</li></ul>
+            
+          </div>
+        </div>
+      </article>
+      <article class="re-major" aria-labelledby="pg16">
+        <div class="re-major-head">
+          <h3 id="pg16" class="re-h3">Postgres 16</h3>
+          <span class="re-chip re-c-good">Supported upstream until 9 Nov 2028</span>
+          <span style="flex: 1"></span>
+          <span class="re-pms"><span class="re-pm" title="macOS arm64">mac</span><span class="re-pm" title="Linux arm64">arm</span><span class="re-pm" title="Linux x86_64">x86</span></span>
+        </div>
+        <div class="re-major-body">
+          <div class="re-resolve">
+            <span class="re-eyebrow">Bare major resolves to</span>
+            <code class="re-mono"><span style="color: #6E5F79">version =</span> 16 <span style="color: #6E5F79">→</span> <b>16.15</b></code>
+            <span class="re-small">today, then pinned in doze.lock</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1 1 520px">
+            <span class="re-eyebrow">16 minors built, oldest to newest</span>
+            <ul class="re-mns" aria-label="Postgres 16 minors"><li class="re-mn">16.0</li><li class="re-mn">16.1</li><li class="re-mn">16.2</li><li class="re-mn">16.3</li><li class="re-mn">16.4</li><li class="re-mn">16.5</li><li class="re-mn">16.6</li><li class="re-mn">16.7</li><li class="re-mn">16.8</li><li class="re-mn">16.9</li><li class="re-mn">16.10</li><li class="re-mn">16.11</li><li class="re-mn">16.12</li><li class="re-mn">16.13</li><li class="re-mn">16.14</li><li class="re-mn re-top">16.15</li></ul>
+            
+          </div>
+        </div>
+      </article>
+      <article class="re-major" aria-labelledby="pg15">
+        <div class="re-major-head">
+          <h3 id="pg15" class="re-h3">Postgres 15</h3>
+          <span class="re-chip re-c-good">Supported upstream until 11 Nov 2027</span>
+          <span style="flex: 1"></span>
+          <span class="re-pms"><span class="re-pm" title="macOS arm64">mac</span><span class="re-pm" title="Linux arm64">arm</span><span class="re-pm" title="Linux x86_64">x86</span></span>
+        </div>
+        <div class="re-major-body">
+          <div class="re-resolve">
+            <span class="re-eyebrow">Bare major resolves to</span>
+            <code class="re-mono"><span style="color: #6E5F79">version =</span> 15 <span style="color: #6E5F79">→</span> <b>15.19</b></code>
+            <span class="re-small">today, then pinned in doze.lock</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1 1 520px">
+            <span class="re-eyebrow">20 minors built, oldest to newest</span>
+            <ul class="re-mns" aria-label="Postgres 15 minors"><li class="re-mn">15.0</li><li class="re-mn">15.1</li><li class="re-mn">15.2</li><li class="re-mn">15.3</li><li class="re-mn">15.4</li><li class="re-mn">15.5</li><li class="re-mn">15.6</li><li class="re-mn">15.7</li><li class="re-mn">15.8</li><li class="re-mn">15.9</li><li class="re-mn">15.10</li><li class="re-mn">15.11</li><li class="re-mn">15.12</li><li class="re-mn">15.13</li><li class="re-mn">15.14</li><li class="re-mn">15.15</li><li class="re-mn">15.16</li><li class="re-mn">15.17</li><li class="re-mn">15.18</li><li class="re-mn re-top">15.19</li></ul>
+            
+          </div>
+        </div>
+      </article>
+      <article class="re-major re-eolb" aria-labelledby="pg14">
+        <div class="re-major-head">
+          <h3 id="pg14" class="re-h3">Postgres 14</h3>
+          <span class="re-chip re-c-warn">Deprecated</span> <span class="re-small">Upstream end of life 12 Nov 2026</span>
+          <span style="flex: 1"></span>
+          <span class="re-pms"><span class="re-pm" title="macOS arm64">mac</span><span class="re-pm" title="Linux arm64">arm</span><span class="re-pm" title="Linux x86_64">x86</span></span>
+        </div>
+        <div class="re-major-body">
+          <div class="re-resolve">
+            <span class="re-eyebrow">Bare major resolves to</span>
+            <code class="re-mono"><span style="color: #6E5F79">version =</span> 14 <span style="color: #6E5F79">→</span> <b>14.24</b></code>
+            <span class="re-small">today, then pinned in doze.lock</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1 1 520px">
+            <span class="re-eyebrow">25 minors built, oldest to newest</span>
+            <ul class="re-mns" aria-label="Postgres 14 minors"><li class="re-mn">14.0</li><li class="re-mn">14.1</li><li class="re-mn">14.2</li><li class="re-mn">14.3</li><li class="re-mn">14.4</li><li class="re-mn">14.5</li><li class="re-mn">14.6</li><li class="re-mn">14.7</li><li class="re-mn">14.8</li><li class="re-mn">14.9</li><li class="re-mn">14.10</li><li class="re-mn">14.11</li><li class="re-mn">14.12</li><li class="re-mn">14.13</li><li class="re-mn">14.14</li><li class="re-mn">14.15</li><li class="re-mn">14.16</li><li class="re-mn">14.17</li><li class="re-mn">14.18</li><li class="re-mn">14.19</li><li class="re-mn">14.20</li><li class="re-mn">14.21</li><li class="re-mn">14.22</li><li class="re-mn">14.23</li><li class="re-mn re-top">14.24</li></ul>
+            
+          </div>
+        </div>
+        <ol class="re-stages" aria-label="Postgres 14 support stages">
+          <li class="re-on"><span class="re-eyebrow">12 Nov 2026</span><b>End of life upstream</b><span class="re-small">The PostgreSQL project ships no more 14.x fixes. 14.24 is the newest built.</span></li>
+          <li><span class="re-eyebrow">From [date]</span><b>Deprecated in doze: new projects are warned</b><span class="re-small"><code class="re-mono">doze add postgres</code> and a fresh <code class="re-mono">version = 14</code> say so, and suggest 18.</span></li>
+          <li><span class="re-eyebrow">Forever</span><b>Served to pinned projects</b><span class="re-small">doze keeps serving every 14.x a doze.lock names. doze-binaries is append-only.</span></li>
+        </ol>
+      </article>
+    </div>
+    <p class="re-small" style="margin: 12px 0 0">Upstream dates from the <a href="https://www.postgresql.org/support/versioning/">PostgreSQL versioning policy</a>. Five years of fixes per major.</p>
+  </section>
+
+  <!-- pin exactly -->
+  <section class="re-wrap re-sec" aria-labelledby="pin-h">
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px">
+      <h2 id="pin-h" class="re-h2">Pin a major, or pin exactly</h2>
+      <p class="re-lead">A bare major takes the newest minor the first time it resolves, then stays there: a new 17.12 never reaches a project already pinned to 17.11. Write the full version when you need to match production.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 16px 20px; align-items: start">
+      <div class="re-code">
+        <div class="re-code-bar"><span>doze.hcl · a major</span><button class="re-copy" type="button" aria-label="Copy the major version block">Copy</button></div>
+<pre><span class="re-k">module</span> postgres "postgres" {
+  version = 17
+}</pre>
+      </div>
+      <div class="re-code">
+        <div class="re-code-bar"><span>doze.hcl · exactly</span><button class="re-copy" type="button" aria-label="Copy the exact version block">Copy</button></div>
+<pre><span class="re-k">module</span> postgres "postgres" {
+  version = "17.6"
+}</pre>
+      </div>
+    </div>
+    <div class="re-code" style="margin-top: 16px">
+      <div class="re-code-bar"><span>doze.lock · what each lands as (a new entry under each spec)</span><button class="re-copy" type="button" aria-label="Copy the lock entries">Copy</button></div>
+<pre>engines:
+    postgres:
+        "17":
+            resolved: 17.11.0
+            source: mirror
+            hashes:
+                aarch64-apple-darwin: sha256:1214c27cec0f357fbc570bc61788fde1cc918c2bced8b54e077ec990168c77f2
+        "17.6":
+            resolved: 17.6.0
+            source: mirror
+            hashes:
+                aarch64-apple-darwin: sha256:8e80925b1568cc09d8a17448368b6a5e6d935c9817474c10ed7fb5aa77780fee</pre>
+    </div>
+    <p class="re-small" style="margin: 12px 0 0">Each platform adds its own hash the first time it downloads, so a teammate on Linux adds a line under the same pin. Changing the version in doze.hcl adds a new entry; nothing else moves an engine pin.</p>
+  </section>
+
+  <!-- matrix -->
+  <section class="re-wrap re-sec" aria-labelledby="mx-h" style="padding-bottom: 72px">
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px">
+      <h2 id="mx-h" class="re-h2">Which module release runs which major</h2>
+      <p class="re-lead">Every postgres release so far runs all five majors, and any minor within them. What changes between releases is the doze they need.</p>
+    </div>
+    <div class="re-tbox" role="region" aria-label="Module releases by Postgres major" tabindex="0">
+      <table class="re-t re-mx" style="min-width: 760px">
+        <thead><tr>
+          <th class="re-stick" scope="col">Module release</th>
+          <th scope="col">Needs doze</th>
+          <th scope="col">PG 14</th><th scope="col">PG 15</th><th scope="col">PG 16</th><th scope="col">PG 17</th><th scope="col">PG 18</th>
+        </tr></thead>
+        <tbody>
+          <tr><th data-label="Module release" class="re-stick" scope="row"><span class="re-mono">0.3.0</span> <span class="re-chip re-c-info" style="height: 20px; font-size: 11.5px; margin-left: 6px">Coming</span></th><td data-label="Needs doze">0.2.0</td><td data-label="PG 14"><span class="re-cm">coming</span></td><td data-label="PG 15"><span class="re-cm">coming</span></td><td data-label="PG 16"><span class="re-cm">coming</span></td><td data-label="PG 17"><span class="re-cm">coming</span></td><td data-label="PG 18"><span class="re-cm">coming</span></td></tr>
+          <tr><th data-label="Module release" class="re-stick" scope="row"><a class="re-mono" href="RegistryVersions.dc.html">0.2.5</a> <span class="re-chip re-c-good" style="height: 20px; font-size: 12px; margin-left: 6px">Current</span></th><td data-label="Needs doze"><b>0.2.0</b></td><td data-label="PG 14"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 15"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 16"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 17"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 18"><span class="re-ok" aria-label="runs">&#10003;</span></td></tr>
+          <tr><th data-label="Module release" class="re-stick" scope="row"><a class="re-mono" href="RegistryRelease.dc.html">0.2.4</a></th><td data-label="Needs doze">any</td><td data-label="PG 14"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 15"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 16"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 17"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 18"><span class="re-ok" aria-label="runs">&#10003;</span></td></tr>
+          <tr><th data-label="Module release" class="re-stick" scope="row"><a class="re-mono" href="RegistryReleaseOld.dc.html">0.2.3</a></th><td data-label="Needs doze">any</td><td data-label="PG 14"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 15"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 16"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 17"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 18"><span class="re-ok" aria-label="runs">&#10003;</span></td></tr>
+          <tr><th data-label="Module release" class="re-stick" scope="row"><a class="re-mono" href="RegistryReleaseOld.dc.html">0.2.2</a></th><td data-label="Needs doze">any</td><td data-label="PG 14"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 15"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 16"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 17"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 18"><span class="re-ok" aria-label="runs">&#10003;</span></td></tr>
+          <tr><th data-label="Module release" class="re-stick" scope="row"><a class="re-mono" href="RegistryReleaseOld.dc.html">0.2.1</a></th><td data-label="Needs doze">any</td><td data-label="PG 14"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 15"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 16"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 17"><span class="re-ok" aria-label="runs">&#10003;</span></td><td data-label="PG 18"><span class="re-ok" aria-label="runs">&#10003;</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin: 12px 0 0; display: flex; gap: 10px 20px; flex-wrap: wrap; align-items: center">
+      <span class="re-small" style="display: flex; gap: 8px; align-items: flex-start; color: #4A3D55"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span>0.2.1–0.2.4 run on any doze; 0.2.5 and 0.3 need doze 0.2.0.</span></span>
+      <span class="re-small">Majors per release come from the signed index (<code class="re-mono">engines: ["14" … "18"]</code>). <a href="RegistryVersions.dc.html">All versions</a></span>
+    </p>
+  </section>
+</main>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3360}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+---
+// Every bring-your-own tool (no board of its own: built in RegistryTool's language).
+import "../../../components/registry/FindBase.css";
+import "../../../components/registry/FindTools.css";
+import RegistryBar from "../../../components/RegistryBar.astro";
+import FindToolTable from "../../../components/registry/FindToolTable.astro";
+import { tools } from "../../../data/tools";
+import Page from "../../../layouts/Page.astro";
+---
+<Page title="Bring your own" description="Tools doze runs without a module: your installed binary, a container, or a pinned download." theme="light" current="registry">
+  <RegistryBar section="tools" />
+  <div class="rg rt">
+    <div class="rg-wrap rt-main">
+      <section class="rt-sec">
+        <nav aria-label="Breadcrumb" class="rg-small"><a href="/registry/">Registry</a> / Bring your own</nav>
+        <div class="rt-head-main">
+          <h1 class="rg-h1">Bring your own</h1>
+          <p class="rg-lead">Not everything is a module. For {tools.length} tools doze knows how to run what you already have: the binary you installed, a container, or an archive you pin.</p>
+        </div>
+        <div class="rg-note rt-note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+          <span><b>Not modules: doze runs your tools.</b> None of these is in the registry. <code class="rg-mono">doze add &lt;name&gt;</code> writes a <code class="rg-mono">service</code> block, takes the first way that works on your machine, and names the others: <code class="rg-mono">--as installed</code>, <code class="rg-mono">--as container</code>, <code class="rg-mono">--as download</code>.</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="tools" class="rt-sec tighter">
+        <h2 class="rg-h2" id="tools">The tools doze add knows</h2>
+        <p class="rg-p">Each gets the same three ways where it can. rabbitmq, opensearch and clickhouse have no known run line, so installed falls back to the container.</p>
+        <FindToolTable list={tools} />
+        <p class="rg-small rt-m0">Anything else: <code class="rg-mono">doze add &lt;name&gt;</code> writes a download block to fill in. <a href="/registry/search/?q=cassandra">What that looks like</a></p>
+      </section>
+
+      <section class="rt-two" aria-label="What doze does and doesn't do for them">
+        <div class="rg-panel">
+          <h2 class="rg-h3">What doze still gives them</h2>
+          <ul class="rt-list">
+            <li><span class="rt-ico ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span><span><b>A name:</b> <code class="rg-mono">&lt;name&gt;.&lt;stack&gt;.doze</code>, and your own domain over https if you set one.</span></li>
+            <li><span class="rt-ico ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span><span><b>A port,</b> held by doze while the tool is asleep.</span></li>
+            <li><span class="rt-ico ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span><span><b>Sleep and wake:</b> it wakes when a client connects and sleeps when nothing has for a while. Data stays in $DATA.</span></li>
+            <li><span class="rt-ico ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span><span><b>Logs</b> in <code class="rg-mono">doze logs &lt;name&gt;</code> and in the app, next to everything else.</span></li>
+          </ul>
+        </div>
+        <div class="rg-panel">
+          <h2 class="rg-h3">What they don't</h2>
+          <ul class="rt-list">
+            <li><span class="rt-ico bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></span><span><b>No signature.</b> doze didn't build the binary or the image, so it doesn't sign them. A download is pinned by sha256 in doze.lock: a changed file is refused, but nobody vouched for the first one.</span></li>
+            <li><span class="rt-ico bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></span><span><b>No pinned version for installed or container.</b> You get whatever is on the PATH, or whatever the image tag points at today.</span></li>
+            <li><span class="rt-ico bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></span><span><b>No declared databases or users.</b> A module converges those from doze.hcl; a service is just a process.</span></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+</Page>

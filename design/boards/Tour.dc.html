@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doze in motion</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.tr-tab{min-height:44px;display:flex;flex-direction:column;gap:4px;text-align:left;padding:16px 18px;border-radius:14px;border:1px solid transparent;background:transparent;color:#C9BAD3;font-family:Geist,sans-serif;cursor:pointer;width:100%}
+.tr-tab:hover{background:#1E1328;color:#F4ECE4}
+.tr-tab:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
+@media (max-width:900px){.tr-tabs{flex-direction:row !important;overflow-x:auto;flex:1 1 100% !important;max-width:none !important;-webkit-mask-image:linear-gradient(90deg,#000 80%,transparent);mask-image:linear-gradient(90deg,#000 80%,transparent);padding-right:48px}.tr-tab{min-width:220px}.tr-cue{display:block !important}}
+</style>
+</helmet>
+<div style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; color: #F4ECE4; background: #140C1B; padding: 8px 0">
+  <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+    <!-- the moments -->
+    <div class="tr-tabs" role="tablist" aria-label="{{label}}" style="flex: 1 1 280px; max-width: 340px; display: flex; flex-direction: column; gap: 6px">
+      <sc-for list="{{slides}}" as="s" hint-placeholder-count="6">
+        <button type="button" class="tr-tab" role="tab" aria-selected="{{s.selected}}" onClick="{{s.pick}}" style="{{s.tabStyle}}">
+          <span style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; color: #F4ECE4"><span style="{{s.dotStyle}}"></span>{{s.title}}</span>
+          <span style="font-size: 14px; line-height: 1.5">{{s.line}}</span>
+        </button>
+      </sc-for>
+    </div>
+    <span class="tr-cue" aria-hidden="true" style="display: none; flex: 1 1 100%; margin: -16px 0 0; font-size: 13px; color: #9C8AAB">Swipe for more →</span>
+    <!-- the recording -->
+    <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+      <div style="position: relative">
+        <div style="{{glowStyle}}"></div>
+        <div style="position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #4A3458; box-shadow: 0 50px 120px rgba(0,0,0,0.55); background: #15131D">
+          <div style="height: 32px; background: #110F18; display: flex; align-items: center; gap: 7px; padding: 0 14px"><span style="width: 11px; height: 11px; border-radius: 6px; background: #FF5F57"></span><span style="width: 11px; height: 11px; border-radius: 6px; background: #FEBC2E"></span><span style="width: 11px; height: 11px; border-radius: 6px; background: #28C840"></span><span style="margin: 0 auto; font: 13px 'JetBrains Mono', monospace; color: #8A85A8">{{current.window}}</span></div>
+          <sc-for list="{{slides}}" as="s" hint-placeholder-count="1">
+            <sc-if value="{{s.selected}}" hint-placeholder-val="{{true}}">
+              <video src="{{s.video}}" autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline" controls="controls" onLoadedData="{{play}}" aria-label="{{s.alt}}" style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; background: #15131D"></video>
+            </sc-if>
+          </sc-for>
+        </div>
+      </div>
+      <span style="font-size: 13px; color: #9C8AAB">Recorded from the real {{current.what}}, not animated. {{current.note}}</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"set":{"editor":"enum","options":["doze","family"],"default":"doze"},"$preview":{"width":1240,"height":745}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { at: 0 }; }
+  renderVals() {
+    const set = this.props.set ?? 'doze';
+    const app = "doze app, from its demo stack";
+    const rc = "[re-capture with Larder]";
+    const doze = [
+      { title: 'Turn one off. Its dependents follow.', line: 'Switch a database off and doze asks: sleep the services that need it too? Memory comes back.', video: '/_blob/fc1b1ed81e3a3bcfb265191bfd210de9', alt: "Switching a database off; doze offers to sleep the service that needs it; both go to sleep and memory drops", window: "doze · demo stack", what: app, note: "Figures are the demo stack’s. " + rc, accent: '#F0A24B' },
+      { title: 'Wake anything with one click.', line: 'Flip a switch: asleep, waking, awake.', video: '/_blob/9738874146706bc5577f3c84b8d3bb96', alt: "Flipping a service on: it wakes", window: "doze · demo stack", what: app, note: rc, accent: '#F0A24B' },
+      { title: '⌘K. A verb and a name.', line: 'Type “wake”, a name, and press return. Every action is a keystroke away.', video: '/_blob/dc213b1e5544404d79670ecf79bcf3fc', alt: "Typing wake and a service name in the command palette", window: "doze · demo stack", what: app, note: rc, accent: '#F0A24B' },
+      { title: 'Tiles, list, map.', line: 'The same stack three ways. The map draws who needs whom.', video: '/_blob/91c020fb513acfb1a63c02e36db896e7', alt: 'Switching between the tiles, list and map views', window: "doze · demo stack", what: app, note: rc, accent: '#F0A24B' },
+      { title: 'Mistakes that explain themselves.', line: 'Save a broken doze.hcl: the line, what’s wrong, and what to write.', video: '/_blob/bea9785860cf00547ae656f4fe26304e', alt: 'A broken doze.hcl: the app shows line 4 and the fix', window: "doze · demo stack", what: app, note: rc, accent: '#F0A24B' },
+      { title: 'Needs you.', line: 'What’s broken or worth doing, each with its fix one click away.', video: '/_blob/b76027957a9b0fcd09e498f4db483ee5', alt: 'The Needs you panel with two items and their fixes', window: "doze · demo stack", what: app, note: rc, accent: '#F0A24B' }
+    ];
+    const family = [
+      { title: 'doze', line: 'Turn one service off and the ones that need it follow it to sleep.', video: '/_blob/fc1b1ed81e3a3bcfb265191bfd210de9', alt: "Switching a database off in doze; it and the service that needs it go to sleep", window: "doze · demo stack", what: app, note: "Figures are the demo stack’s. " + rc, accent: '#F0A24B' },
+      { title: 'doze AWS', line: 'Every call your app makes, live. Open the refused one: what you sent and why.', video: '/_blob/fa75fbb54cbb3d25b6245c9e7df9906a', alt: 'S3, SQS and DynamoDB calls stream into the doze AWS console; a refused PutItem opens', window: "doze AWS · /_console", what: 'doze AWS console, with real AWS CLI traffic', note: '', accent: '#5BB8E8' },
+      { title: 'doze Kafka', line: 'Orders arrive, the tape fills, every record on disk.', video: '/_blob/f5b813543fb12a68da232213faf10169', alt: 'Records produced with kcat appear in the doze Kafka console and its tape', window: "doze Kafka · console", what: 'doze Kafka console, with real kcat traffic', note: '', accent: '#FFD60A' }
+    ];
+    const list = set === 'family' ? family : doze;
+    const at = Math.min(this.state.at, list.length - 1);
+    const slides = list.map((s, i) => ({
+      ...s,
+      selected: i === at,
+      pick: () => this.setState({ at: i }),
+      tabStyle: i === at ? 'background: #1E1328; border-color: #4A3458; color: #E9DEEF' : '',
+      dotStyle: 'width: 9px; height: 9px; border-radius: 5px; flex: none; background: ' + (i === at ? s.accent : '#4A3458')
+    }));
+    const current = slides[at];
+    return {
+      slides, current,
+      label: set === 'family' ? 'The doze family, live' : 'doze, live',
+      glowStyle: 'position: absolute; left: 10%; right: 10%; top: 5%; height: 80%; border-radius: 50%; background: radial-gradient(closest-side, ' + current.accent + '44, transparent)',
+      play: (e) => { const v = e.currentTarget; v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+    };
+  }
+}
+</script>
+</body>
+</html>

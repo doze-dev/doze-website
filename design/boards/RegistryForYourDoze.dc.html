@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Checked against doze 0.1.1 · doze Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFAF4}
+.rg-wrap *{box-sizing:border-box}
+.rg a{color:#A85A0C;text-decoration:none}
+.rg a:hover{text-decoration:underline}
+.rg-wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:content-box}
+.rg-eyebrow{font:600 13px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#A85A0C}
+.rg-h1{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-0.03em;text-wrap:balance}
+.rg-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:30px;line-height:1.15;letter-spacing:-0.02em}
+.rg-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-0.01em}
+.rg-lead{margin:0;font-size:18px;line-height:1.55;color:#4A3D55;max-width:44rem}
+.rg-p{margin:0;font-size:15px;line-height:1.6;color:#4A3D55}
+.rg-small{font-size:13px;line-height:1.5;color:#6E5F79}
+.rg-mono{font-family:'JetBrains Mono',monospace}
+.rg-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px}
+.rg-sunk{background:#FFF4E8;border:1px solid #EADFD3;border-radius:14px}
+.rg-card{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.rg-card:hover{border-color:#DCCFC2;box-shadow:0 2px 10px rgba(20,12,27,.05)}
+.rg-card.dim{background:#FFFCF8}
+.rg-tile{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font:800 21px 'Bricolage Grotesque',sans-serif;flex:none}
+.rg-tile.sm{width:32px;height:32px;border-radius:8px;font-size:15px}
+.rg-tile img{width:100%;height:100%;border-radius:inherit}
+.rg-name{font:700 18px 'Bricolage Grotesque',sans-serif;letter-spacing:-0.01em;color:#140C1B}
+.rg-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font:600 13px Geist,sans-serif;white-space:nowrap}
+.rg-chip.ok{background:#E6F4EA;color:#1D7A45}
+.rg-chip.warn{background:#FFF1D6;color:#8A5300}
+.rg-chip.bad{background:#FCE8EC;color:#B4233C}
+.rg-chip.info{background:#E8EEFC;color:#2F62D9}
+.rg-chip.dim{background:#F3ECE4;color:#5E5068}
+.rg-chip.off{background:#FDE6CB;color:#6B3A06}
+.rg-chip.line{background:#FFFFFF;color:#4A3D55;border:1px solid #DCCFC2}
+.rg-facts{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:0;font-size:13.5px}
+.rg-facts dt{color:#6E5F79}
+.rg-facts dd{margin:0;color:#140C1B;font-weight:500;min-width:0}
+.rg-snip{display:flex;align-items:center;gap:8px;background:#1E1328;border-radius:9px;height:40px;padding:0 5px 0 12px;min-width:0}
+.rg-snip code{font:13px 'JetBrains Mono',monospace;color:#F4ECE4;flex:1;white-space:pre;overflow-x:auto;min-width:0;scrollbar-width:none}
+.rg-snip code i{font-style:normal;color:#9C8AAB}
+.rg-copy{height:30px;padding:0 11px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 13px Geist,sans-serif;cursor:pointer;flex:none}
+.rg-code{background:#1E1328;border-radius:12px;overflow:hidden;min-width:0}
+.rg-code-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-bottom:1px solid #34233F}
+.rg-code-top span{font:13px 'JetBrains Mono',monospace;color:#C9BAD3}
+.rg-code pre{margin:0;padding:14px 16px;font:13px/1.65 'JetBrains Mono',monospace;color:#F4ECE4;overflow-x:auto;white-space:pre !important}
+.rg code,.rg pre,.rg .rg-mono{font-variant-ligatures:none}
+.rg-code .c{color:#A796B5}
+.rg-code .k{color:#FFC27A}
+.rg-code .s{color:#B8E6C1}
+.rg-code .p{color:#9C8AAB}
+.rg-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 16px;border-radius:10px;font:600 14px Geist,sans-serif;cursor:pointer;white-space:nowrap}
+.rg-btn.pri{background:#F0A24B;color:#2A1534;border:1px solid #F0A24B}
+.rg-btn.sec{background:#FFFFFF;color:#140C1B;border:1px solid #DCCFC2}
+.rg .rg-btn:hover{text-decoration:none}
+.rg-btn.pri:hover{background:#FFB866}
+.rg-facet{display:flex;flex-direction:column;gap:2px;padding:16px 0;border-top:1px solid #EADFD3}
+.rg-facet h3{margin:0 0 6px;font:600 13px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.rg-opt{display:flex;align-items:center;gap:10px;min-height:34px;font-size:14.5px;color:#140C1B;cursor:pointer}
+.rg-opt input{width:16px;height:16px;margin:0;accent-color:#A85A0C;flex:none}
+.rg-opt span:first-of-type{flex:1}
+.rg-opt .n{font:13px 'JetBrains Mono',monospace;color:#6E5F79}
+.rg-switch{display:inline-flex;align-items:center;width:38px;height:22px;border-radius:999px;background:#DCCFC2;padding:2px;flex:none}
+.rg-switch::after{content:"";width:18px;height:18px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.rg-switch.on{background:#A85A0C;justify-content:flex-end}
+.rg-select{height:44px;border:1px solid #DCCFC2;border-radius:9px;background:#FFFFFF;padding:0 10px;font:500 14px Geist,sans-serif;color:#140C1B}
+.rg-why{font-size:13px;color:#4A3D55;background:#FFF4E8;border-radius:7px;padding:5px 9px;align-self:flex-start}
+.rg-why b{color:#6B3A06;font-weight:600}
+.rg-mark{background:#FDE6CB;color:#140C1B;border-radius:3px;padding:0 2px}
+.rg-hr{height:1px;background:#EADFD3;border:0;margin:0}
+.rg-filters-btn{display:none}
+.rg-note{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:#4A3D55;padding:12px 14px;border-radius:10px;background:#FFF4E8;border:1px dashed #DCCFC2}
+.rg-tag-new{font:600 13px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#2F62D9;background:#E8EEFC;border-radius:4px;padding:2px 5px}
+@media (max-width:760px){
+
+  .rg-h1{font-size:36px}
+  .rg-h2{font-size:26px}
+  .rg-lead{font-size:16.5px}
+  .rg-filters-btn{display:inline-flex}
+  .rg-hide-sm{display:none !important}
+  .rg-stack-sm{flex-direction:column !important;align-items:stretch !important}
+  .rg-copy{height:44px;padding:0 14px}
+  .rg-snip{height:54px}
+  .rg-opt{min-height:44px}
+}
+
+/* tables become stacked row cards on phones: each td carries data-l */
+@media (max-width:600px){
+  .rg-tc thead{display:none}
+  .rg-tc,.rg-tc tbody,.rg-tc tr,.rg-tc td{display:block;width:100%}
+  .rg-tc tr{padding:12px 16px;border-bottom:1px solid #EADFD3}
+  .rg-tc td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 !important;border:0 !important;white-space:normal !important;text-align:right}
+  .rg-tc td::before{content:attr(data-l);font-size:13px;color:#6E5F79;text-align:left;flex:none}
+  .rg-tc td:first-child{font-weight:600;text-align:left}
+  .rg-tc td.rg-tc-empty{display:none}
+  .rg-tc .rg-hide-sm{display:flex !important}
+}
+.fy-banner{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;padding:24px;border-radius:16px;background:#FFFFFF;border:1px solid #EADFD3;border-left:5px solid #F0A24B}
+.fy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(270px, 100%), 1fr));gap:14px}
+.fy-card{background:#FFFFFF;border:1px solid #EADFD3;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:11px}
+.fy-card.part{border-color:#F3D29A}
+.fy-rel{display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.fy-rel div{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fy-rel .old{color:#6E5F79}
+.fy-rel .old b{text-decoration:line-through;text-decoration-color:#B9AFC0}
+.fy-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.fy-tbl th{text-align:left;font:600 13px Geist,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6E5F79;padding:10px 14px;border-bottom:1px solid #EADFD3;white-space:nowrap}
+.fy-tbl td{padding:10px 14px;border-bottom:1px solid #F1E8DE;white-space:nowrap}
+.fy-mod{display:none}@media (max-width:600px){.fy-mod{display:inline}}
+.fy-tbl td.m{font:600 13.5px 'JetBrains Mono',monospace}
+.fy-tbl tr.grp td{border-top:1px solid #EADFD3}
+.fy-pop{position:absolute;right:max(32px, calc((100% - 1240px) / 2 + 32px));top:74px;width:340px;background:#FFFFFF;border:1px solid #DCCFC2;border-radius:14px;box-shadow:0 18px 40px rgba(20,12,27,.16);padding:8px;z-index:2}
+.fy-pop .o{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:9px;font-size:14.5px;color:#140C1B}
+.fy-pop .o.sel{background:#FFF4E8}
+.fy-pop .o small{margin-left:auto;font-size:13px;color:#6E5F79}
+.fy-pop hr{border:0;height:1px;background:#EADFD3;margin:6px 4px}
+@media (max-width:760px){.fy-explain{padding-top:500px !important}}
+.fy-state{border:2px dashed #DCCFC2;border-radius:18px;overflow:hidden;background:#FFFCF8}
+@media (max-width:1000px){.fy-banner{grid-template-columns:1fr}}
+@media (max-width:760px){.fy-banner{padding:18px}.fy-pop{left:12px;right:12px;width:auto;top:200px}.fy-tbl th:nth-child(3),.fy-tbl td:nth-child(3){display:none}.fy-tbl td,.fy-tbl th{padding:10px 10px}}
+</style>
+</helmet>
+<div class="rg" style="font-family: Geist, ui-sans-serif, system-ui, sans-serif; background: #FFFAF4; color: #140C1B; min-height: 100%">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="modules" doze="0.1.1" hint-size="100%,120px"></dc-import>
+
+<div class="rg-wrap" style="padding-top: 32px; padding-bottom: 72px; display: flex; flex-direction: column; gap: 40px">
+
+  <section class="fy-banner" aria-labelledby="yours">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="rg-eyebrow">Checked against your doze</span>
+      <h1 class="rg-h1" id="yours">You're on doze 0.1.1. 2 of 8 newest releases run on it.</h1>
+      <p class="rg-p" style="font-size: 16px">For six modules the newest release needs doze 0.2.0; the one before it still runs on yours, so every module has something you can use. doze AWS and doze Kafka run on any doze. Struck-through lines are releases yours can't run.</p>
+      <p class="rg-small" style="margin: 0">Remembered in this browser. <a href="Registry.dc.html">Stop checking</a> · set by the picker above, or from the terminal with <code class="rg-mono">doze modules docs postgres --web</code> <span class="rg-tag-new">New: --web (docs returns)</span></p>
+    </div>
+    <div class="rg-sunk" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; align-self: start">
+      <b style="font-size: 15px">Update to doze 0.2</b>
+      <div class="rg-snip"><code><i>$</i> brew upgrade doze</code><button class="rg-copy" type="button" aria-label="Copy brew upgrade doze">Copy</button></div>
+      <span class="rg-small" style="color: #4A3D55">Or get the Mac app: <code class="rg-mono">brew install --cask doze-dev/tap/doze</code>. It updates itself from Settings › About. <a href="Changelog.dc.html">What changed in 0.2</a></span>
+    </div>
+  </section>
+
+  <section aria-labelledby="cards" style="display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+      <h2 class="rg-h2" id="cards">Modules, for doze 0.1.1</h2>
+      <span style="display: flex; gap: 8px; flex-wrap: wrap"><span class="rg-chip ok">2 run their newest</span><span class="rg-chip warn">6 use an older release</span><span class="rg-chip dim">0 nothing runs</span></span>
+    </div>
+    <div class="fy-grid">
+      <article class="fy-card">
+        <div style="display: flex; gap: 10px; align-items: center"><div class="rg-tile sm" style="background: #6B4E16" aria-hidden="true"><img src="/_blob/41256a0dca71d1a229f31f249dc60fab" alt=""></div><a class="rg-name" href="RegistryModule.dc.html">AWS</a><span class="rg-chip ok" style="margin-left: auto">Runs</span></div>
+        <div class="fy-rel"><div><b>0.1.1</b><span>runs on yours</span></div></div>
+        <div class="rg-snip"><code><i>$</i> doze add aws</code><button class="rg-copy" type="button" aria-label="Copy doze add aws">Copy</button></div>
+      </article>
+      <article class="fy-card part">
+        <div style="display: flex; gap: 10px; align-items: center"><div class="rg-tile sm" style="background: #2F5F3A" aria-hidden="true">F</div><a class="rg-name" href="RegistryModule.dc.html">FerretDB</a><span class="rg-chip warn" style="margin-left: auto">Older release</span></div>
+        <div class="fy-rel"><div class="old"><b>0.2.4</b><span>needs doze 0.2.0</span><span class="rg-small">· 3 Nov 2026</span></div><div><b>0.2.3</b><span>runs on yours</span><span class="rg-small">· 2 Nov 2026</span></div></div>
+        <div class="rg-snip"><code><i>$</i> doze add ferret</code><button class="rg-copy" type="button" aria-label="Copy doze add ferret">Copy</button></div>
+      </article>
+      <article class="fy-card">
+        <div style="display: flex; gap: 10px; align-items: center"><div class="rg-tile sm" style="background: #3D2A0A" aria-hidden="true"><img src="/_blob/db3a4ac64e41e22e53ca3c1594b33fca" alt=""></div><a class="rg-name" href="RegistryModule.dc.html">Kafka</a><span class="rg-chip ok" style="margin-left: auto">Runs</span></div>
+        <div class="fy-rel"><div><b>0.1.2</b><span>runs on yours</span><span class="rg-small">· 1 Nov 2026, no oldest-doze stamp</span></div></div>
+        <div class="rg-snip"><code><i>$</i> doze add kafka</code><button class="rg-copy" type="button" aria-label="Copy doze add kafka">Copy</button></div>
+      </article>
+      <article class="fy-card part">
+        <div style="display: flex; gap: 10px; align-items: center"><div class="rg-tile sm" style="background: #2B6E64" aria-hidden="true">K</div><a class="rg-name" href="RegistryModule.dc.html">Kvrocks</a><span class="rg-chip warn" style="margin-left: auto">Older release</span></div>
+        <div class="fy-rel"><div class="old"><b>0.2.2</b><span>needs doze 0.2.0</span><span class="rg-small">· 3 Nov 2026</span></div><div><b>0.2.1</b><span>runs on yours</span><span class="rg-small">· 2 Jul 2026</span></div></div>
+        <div class="rg-snip"><code><i>$</i> doze add kvrocks</code><button class="rg-copy" type="button" aria-label="Copy doze add kvrocks">Copy</button></div>
+      </article>
+      <article class="fy-card part">
+        <div style="display: flex; gap: 10px; align-items: center"><div class="rg-tile sm" style="background: #1F4F66" aria-hidden="true">M</div><a class="rg-name" href="RegistryModule.dc.html">MariaDB</a><span class="rg-chip warn" style="margin-left: auto">Older release</span></div>
+        <div class="fy-rel"><div class="old"><b>0.2.2</b><span>needs doze 0.2.0</span><span class="rg-small">· 3 Nov 2026</span></div><div><b>0.2.1</b><span>runs on yours</span><span class="rg-small">· 2 Jul 2026</span></div></div>
+        <div class="rg-snip"><code><i>$</i> doze add mariadb</code><button class="rg-copy" type="button" aria-label="Copy doze add mariadb">Copy</button></div>
+      </article>
+      <article class="fy-card part">
+        <div style="display: flex; gap: 10px; align-items: center"><div class="rg-tile sm" style="background: #336791" aria-hidden="true">P</div><a class="rg-name" href="RegistryTooOld.dc.html">PostgreSQL</a><span class="rg-chip warn" style="margin-left: auto">Older release</span></div>
+        <div class="fy-rel"><div class="old"><b>0.2.5</b><span>needs doze 0.2.0</span><span class="rg-small">· 3 Nov 2026</span></div><div><b>0.2.4</b><span>runs on yours</span><span class="rg-small">· 2 Nov 2026</span></div></div>
+        <div class="rg-snip"><code><i>$</i> doze add postgres</code><button class="rg-copy" type="button" aria-label="Copy doze add postgres">Copy</button></div>
+      </article>
+      <article class="fy-card part">
+        <div style="display: flex; gap: 10px; align-items: center"><div class="rg-tile sm" style="background: #24242B" aria-hidden="true">T</div><a class="rg-name" href="RegistryModule.dc.html">Temporal</a><span class="rg-chip warn" style="margin-left: auto">Older release</span></div>
+        <div class="fy-rel"><div class="old"><b>0.2.3</b><span>needs doze 0.2.0</span><span class="rg-small">· 3 Nov 2026</span></div><div><b>0.2.2</b><span>runs on yours</span><span class="rg-small">· 4 Jul 2026</span></div></div>
+        <div class="rg-snip"><code><i>$</i> doze add temporal</code><button class="rg-copy" type="button" aria-label="Copy doze add temporal">Copy</button></div>
+      </article>
+      <article class="fy-card part">
+        <div style="display: flex; gap: 10px; align-items: center"><div class="rg-tile sm" style="background: #4C55C8" aria-hidden="true">V</div><a class="rg-name" href="RegistryModule.dc.html">Valkey</a><span class="rg-chip warn" style="margin-left: auto">Older release</span></div>
+        <div class="fy-rel"><div class="old"><b>0.2.2</b><span>needs doze 0.2.0</span><span class="rg-small">· 3 Nov 2026</span></div><div><b>0.2.1</b><span>runs on yours</span><span class="rg-small">· 2 Jul 2026</span></div></div>
+        <div class="rg-snip"><code><i>$</i> doze add valkey</code><button class="rg-copy" type="button" aria-label="Copy doze add valkey">Copy</button></div>
+      </article>
+    </div>
+    <div class="rg-note"><span class="rg-tag-new" style="flex: none">On 0.1.1</span><span>doze 0.1.1 can't check a release's oldest doze: on a fresh project it takes the newest release regardless, which is why this page tells you. Update doze before <code class="rg-mono">doze modules upgrade</code>; a doze.lock already pinned to postgres 0.2.4 keeps working until you do. 0.1.1 also has no <code class="rg-mono">doze add</code> and uses the old syntax (<code class="rg-mono">postgres "orders" {}</code>).</span></div>
+    <p class="rg-small" style="margin: 0">Before doze 0.2 launched, every release in the index ran on 0.1.1; the 3 Nov builds are the first stamped with an oldest doze.</p>
+  </section>
+
+  <section aria-labelledby="say" style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; max-width: 760px">
+    <div style="display: flex; flex-direction: column; gap: 10px; grid-column: 1 / -1">
+      <h2 class="rg-h2" id="say">What doze says when a release needs a newer doze</h2>
+      <p class="rg-p">From 0.2, doze reads each release's oldest doze itself: it skips releases it can't run and picks the newest one that fits. Only when none fits does it stop, with one of these. Shown for a future release that needs 0.3.0, on doze 0.2.0; doze 0.1.1 can't print them. (The lines wrap here; doze prints each on one line.)</p>
+    </div>
+    <div class="rg-code"><div class="rg-code-top"><span>a fetch, when no release fits</span></div><pre>postgres 17 needs doze 0.3.0 or newer; this doze is 0.2.0.
+Update doze (in the app: Settings › About), then run the
+command again</pre></div>
+    <div class="rg-code"><div class="rg-code-top"><span>a doze.lock written by a newer doze</span></div><pre>module doze/postgres 0.3.1 (pinned in doze.lock) needs doze
+0.3.0 or newer; this doze is 0.2.0. Update doze (in the app:
+Settings › About); the lock was written by a newer doze</pre></div>
+  </section>
+
+  <section aria-labelledby="table" style="display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+      <h2 class="rg-h2" id="table">Oldest doze, per release</h2>
+      <span class="rg-chip info">From the signed index</span>
+    </div>
+    <p class="rg-p">The release tool stamps each release with the oldest doze it needs, from the module SDK, always as three numbers: <code class="rg-mono">doze: "0.2.0"</code>. A release without the field runs on every doze. Today the field sits outside the signed part of the index; the design moves it inside.</p>
+    <div class="rg-panel" style="overflow-x: auto">
+      <table class="fy-tbl rg-tc">
+        <thead><tr><th scope="col">Module</th><th scope="col">Release</th><th scope="col">Uploaded</th><th scope="col">Oldest doze</th><th scope="col">On doze 0.1.1</th></tr></thead>
+        <tbody>
+<tr class="grp"><td class="m" data-l="Module">postgres</td><td data-l="Release">0.2.5</td><td data-l="Uploaded">3 Nov 2026</td><td data-l="Oldest doze"><b>0.2.0</b></td><td data-l="On doze 0.1.1"><span class="rg-chip warn">Needs newer doze</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">postgres </span>0.2.4</span></td><td data-l="Uploaded">2 Nov 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">postgres </span>0.2.3 · 0.2.2 · 0.2.1</span></td><td data-l="Uploaded">3 Jul · 3 Jul · 2 Jul 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr class="grp"><td class="m" data-l="Module">ferret</td><td data-l="Release">0.2.4</td><td data-l="Uploaded">3 Nov 2026</td><td data-l="Oldest doze"><b>0.2.0</b></td><td data-l="On doze 0.1.1"><span class="rg-chip warn">Needs newer doze</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">ferret </span>0.2.3</span></td><td data-l="Uploaded">2 Nov 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">ferret </span>0.2.2 · 0.2.1</span></td><td data-l="Uploaded">3 Jul · 2 Jul 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr class="grp"><td class="m" data-l="Module">valkey</td><td data-l="Release">0.2.2</td><td data-l="Uploaded">3 Nov 2026</td><td data-l="Oldest doze"><b>0.2.0</b></td><td data-l="On doze 0.1.1"><span class="rg-chip warn">Needs newer doze</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">valkey </span>0.2.1</span></td><td data-l="Uploaded">2 Jul 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr class="grp"><td class="m" data-l="Module">kvrocks</td><td data-l="Release">0.2.2</td><td data-l="Uploaded">3 Nov 2026</td><td data-l="Oldest doze"><b>0.2.0</b></td><td data-l="On doze 0.1.1"><span class="rg-chip warn">Needs newer doze</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">kvrocks </span>0.2.1</span></td><td data-l="Uploaded">2 Jul 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr class="grp"><td class="m" data-l="Module">mariadb</td><td data-l="Release">0.2.2</td><td data-l="Uploaded">3 Nov 2026</td><td data-l="Oldest doze"><b>0.2.0</b></td><td data-l="On doze 0.1.1"><span class="rg-chip warn">Needs newer doze</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">mariadb </span>0.2.1</span></td><td data-l="Uploaded">2 Jul 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr class="grp"><td class="m" data-l="Module">temporal</td><td data-l="Release">0.2.3</td><td data-l="Uploaded">3 Nov 2026</td><td data-l="Oldest doze"><b>0.2.0</b></td><td data-l="On doze 0.1.1"><span class="rg-chip warn">Needs newer doze</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">temporal </span>0.2.2 · 0.2.1</span></td><td data-l="Uploaded">4 Jul · 2 Jul 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr class="grp"><td class="m" data-l="Module">kafka</td><td data-l="Release">0.1.2</td><td data-l="Uploaded">1 Nov 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr><td class="m rg-tc-empty" data-l="Module"></td><td data-l="Release"><span><span class="fy-mod">kafka </span>0.1.1 · 0.1.0</span></td><td data-l="Uploaded">18 Jul · 17 Jul 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+<tr class="grp"><td class="m" data-l="Module">aws</td><td data-l="Release">0.1.1 · 0.1.0</td><td data-l="Uploaded">18 Jul 2026</td><td data-l="Oldest doze"><span style="color: #6E5F79">any (no field)</span></td><td data-l="On doze 0.1.1"><span class="rg-chip ok">Runs</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="picker" style="display: flex; flex-direction: column; gap: 12px">
+    <h2 class="rg-h2" id="picker">The picker, open</h2>
+    <div class="fy-state">
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 12px 18px; background: #FFF4E8; border-bottom: 1px solid #EADFD3; font-size: 13px; color: #4A3D55"><span class="rg-tag-new">State 2</span>"Checking against doze 0.1.1" clicked</div>
+      <div style="position: relative; min-height: 520px">
+        <dc-import name="RegistryBar" section="modules" doze="0.1.1" hint-size="100%,120px"></dc-import>
+        <div class="fy-explain" style="padding: 28px 24px; max-width: 560px; display: flex; flex-direction: column; gap: 12px">
+          <p class="rg-p"><b>Pick a version</b> and every registry page checks against it: cards, release tables, the install box. The choice sits in the URL (<code class="rg-mono">?doze=0.1.1</code>) so a link you share shows the same thing, and it is remembered in this browser.</p>
+          <p class="rg-p"><b>Detect</b> reads the line <code class="rg-mono">doze version</code> prints; nothing is sent anywhere.</p>
+          <p class="rg-p"><b>From the terminal:</b> <code class="rg-mono">doze modules docs postgres --web</code> opens the postgres page with your doze already set. <span class="rg-tag-new">New: --web (docs returns)</span></p>
+        </div>
+        <div class="fy-pop" role="listbox" aria-label="Check against doze version">
+          <div style="padding: 8px 12px 6px; font: 600 13px Geist, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #6E5F79">Check against</div>
+          <div class="o" role="option" aria-selected="false"><span style="width: 16px" aria-hidden="true"></span>doze 0.1.0<small>2 Jul 2026</small></div>
+          <div class="o sel" role="option" aria-selected="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><b>doze 0.1.1</b><small>2 Jul 2026</small></div>
+          <div class="o" role="option" aria-selected="false"><span style="width: 16px" aria-hidden="true"></span>doze 0.2.0<small>[0.2 release date] · newest</small></div>
+          <hr>
+          <div style="padding: 8px 12px; display: flex; flex-direction: column; gap: 8px">
+            <b style="font-size: 14px">Detect</b>
+            <span class="rg-small" style="color: #4A3D55">Run this and paste the line it prints:</span>
+            <div class="rg-snip"><code><i>$</i> doze version</code><button class="rg-copy" type="button" aria-label="Copy doze version">Copy</button></div>
+            <label for="fy-paste" class="rg-small">Its output</label>
+            <input id="fy-paste" type="text" placeholder="doze v0.1.1 (darwin/arm64, …)" style="height: 40px; border: 1px solid #DCCFC2; border-radius: 9px; padding: 0 10px; font: 13px 'JetBrains Mono', monospace; color: #140C1B">
+          </div>
+          <hr>
+          <div class="o" role="option" aria-selected="false" style="color: #A85A0C; font-weight: 600"><span style="width: 16px" aria-hidden="true"></span>Stop checking</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3532}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

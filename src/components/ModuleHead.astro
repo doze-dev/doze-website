@@ -1,0 +1,102 @@
+---
+// A module's header (design: RegistryModuleHead), for any module in the index.
+import { display, engineRange, fmtDate, look, type Module, needs, platformLabel } from "../lib/registry";
+
+interface Props {
+  module: Module;
+  tab: "overview" | "versions" | "engines" | "extensions" | "reference" | "hood";
+  crumb?: string;
+}
+const { module: m, tab, crumb } = Astro.props;
+const newest = m.releases[0];
+const base = `/registry/${m.namespace}/${m.name}/`;
+const hasEngines = !!look[m.name]?.engine;
+const tabs = [
+  ["overview", "Overview", base, ""],
+  ["versions", "Versions", `${base}versions/`, String(m.releases.length)],
+  ...(hasEngines ? [["engines", "Engine versions", `${base}engines/`, ""]] : []),
+  ...(m.name === "postgres" ? [["extensions", "Extensions", `${base}extensions/`, "coming"]] : []),
+  ["reference", "Reference", `${base}reference/`, ""],
+  ["hood", "Under the hood", `${base}${newest?.version}/`, ""],
+] as [string, string, string, string][];
+const lk = look[m.name] ?? {};
+const add = `doze add ${m.name}`;
+---
+<div class="mh">
+  <div class="mh-in">
+    <nav class="mh-crumb" aria-label="Breadcrumb"><a href="/registry/">Registry</a> / <a href={`/registry/${m.namespace}/`}>{m.namespace}</a> / {crumb ? <><a href={base}>{m.name}</a> / {crumb}</> : m.name}</nav>
+    <div class="mh-top">
+      {lk.logo
+        ? <img class="mh-tile" src={lk.logo} alt="" width="64" height="64" />
+        : <div class="mh-tile" style={`background:${lk.tile ?? "#3A2448"}`} aria-hidden="true">{display(m)[0]}</div>}
+      <div class="mh-name">
+        <div class="mh-row">
+          <h1>{display(m)}</h1>
+          <span class="mh-badge mh-official"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z" /></svg>Official</span>
+          <span class="mh-badge mh-signed"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>Signed</span>
+        </div>
+        <p>{m.meta.tagline}</p>
+        <code>{m.namespace}/{m.name}</code>
+      </div>
+      <div class="mh-add">
+        <div class="mh-cmd"><code><span>$</span> {add}</code><button type="button" data-copy={add}>Copy</button></div>
+        {newest && newest.doze && (
+          <span class="mh-warn" data-needs={newest.doze} hidden data-doze-when="set">
+            {newest.version} needs doze {newest.doze}; check the <a href={`${base}versions/`}>releases that run on yours</a>.
+          </span>
+        )}
+      </div>
+    </div>
+    <dl class="mh-facts">
+      <div><dt>Newest</dt><dd>{newest ? `${newest.version} · ${fmtDate(newest.date)}` : "none"}</dd></div>
+      <div><dt>Needs</dt><dd>{newest ? needs(newest) : "—"}</dd></div>
+      <div><dt>Runs</dt><dd>{engineRange(m)}</dd></div>
+      <div><dt>Platforms</dt><dd>{newest?.platforms.map((p) => platformLabel[p.triple] ?? p.triple).join(" · ")}</dd></div>
+      <div><dt>Licence</dt><dd>Apache-2.0</dd></div>
+      <div><dt>Source</dt><dd><a href={m.meta.homepage ?? "https://github.com/doze-dev/doze-modules"}>{(m.meta.homepage ?? "").includes("doze-modules") ? "doze-modules" : "on GitHub"}</a></dd></div>
+    </dl>
+    <nav class="mh-tabs" aria-label="Module">
+      {tabs.map(([id, label, href, count]) => <a href={href} aria-current={id === tab ? "page" : undefined}>{label}{count && <small>{count}</small>}</a>)}
+    </nav>
+  </div>
+</div>
+
+<style>
+  .mh { font-family: var(--font-text); background: #fffaf4; border-bottom: 1px solid #eadfd3; color: #140c1b; }
+  .mh-in { box-sizing: content-box; max-width: 1240px; margin: 0 auto; padding: 28px 32px 0; display: flex; flex-direction: column; gap: 20px; }
+  .mh a { color: #a85a0c; text-decoration: none; }
+  .mh-crumb { font-size: 13px; color: #6e5f79; }
+  .mh-top { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+  .mh-tile { width: 64px; height: 64px; border-radius: 16px; color: #fff; display: flex; align-items: center; justify-content: center; font: 800 30px var(--font-display); flex: none; }
+  .mh-name { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 260px; }
+  .mh-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .mh h1 { margin: 0; font: 800 46px/1 var(--font-display); letter-spacing: -0.03em; }
+  .mh-name p { margin: 0; font-size: 18px; color: #4a3d55; }
+  .mh-name code { font: 13px var(--font-mono); color: #6e5f79; }
+  .mh-badge { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; font: 600 12.5px var(--font-text); white-space: nowrap; }
+  .mh-official { background: #fde6cb; color: #6b3a06; }
+  .mh-signed { background: #e6f4ea; color: #1d7a45; }
+  .mh-add { display: flex; flex-direction: column; gap: 8px; min-width: 260px; }
+  .mh-cmd { display: flex; align-items: center; gap: 8px; background: #1e1328; border-radius: 10px; height: 44px; padding: 0 6px 0 14px; }
+  .mh-cmd code { font: 14px var(--font-mono); color: #f4ece4; flex: 1; white-space: nowrap; }
+  .mh-cmd code span { color: #9c8aab; }
+  .mh-cmd button { height: 32px; padding: 0 12px; border-radius: 7px; border: 1px solid #4a3458; background: #2a1c36; color: #f4ece4; font: 600 12.5px var(--font-text); cursor: pointer; }
+  .mh-warn { font-size: 13px; color: #8a5300; background: #fff1d6; border-radius: 8px; padding: 7px 10px; }
+  .mh-warn:not(.dz-too-old) { display: none; }
+  .mh-facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; padding: 16px 0; border-top: 1px solid #eadfd3; border-bottom: 1px solid #eadfd3; }
+  .mh-facts div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .mh-facts dt { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #6e5f79; }
+  .mh-facts dd { margin: 0; font-size: 15px; font-weight: 600; }
+  .mh-tabs { display: flex; gap: 28px; flex-wrap: wrap; margin-top: -8px; }
+  .mh-tabs a { font-size: 15px; color: #4a3d55; padding: 12px 2px; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .mh-tabs a:hover { color: #140c1b; }
+  .mh-tabs a[aria-current="page"] { color: #140c1b; font-weight: 600; border-bottom-color: var(--amber); }
+  .mh-tabs small { font-size: 12px; color: #6e5f79; margin-left: 4px; font-weight: 500; }
+  .mh a:focus-visible, .mh button:focus-visible { outline: 2px solid #a85a0c; outline-offset: 2px; border-radius: 6px; }
+  @media (max-width: 760px) {
+    .mh h1 { font-size: 34px; }
+    .mh-tabs { gap: 0 18px; }
+    .mh-tabs a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; }
+    .mh-cmd button { height: 44px; }
+  }
+</style>

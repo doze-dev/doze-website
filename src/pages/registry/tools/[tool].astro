@@ -1,0 +1,142 @@
+---
+// One bring-your-own tool (design: RegistryTool, drawn for mongo). Facts and the
+// blocks doze add writes come from src/data/tools.ts (copied from doze's detect table).
+import "../../../components/registry/FindBase.css";
+import "../../../components/registry/FindTools.css";
+import RegistryBar from "../../../components/RegistryBar.astro";
+import FindHcl from "../../../components/registry/FindHcl.astro";
+import FindToolTable from "../../../components/registry/FindToolTable.astro";
+import { containerBlock, downloadBlock, installedBlock, type Tool, tools } from "../../../data/tools";
+import Page from "../../../layouts/Page.astro";
+import { look } from "../../../lib/registry";
+
+export function getStaticPaths() {
+  return tools.map((t) => ({ params: { tool: t.name }, props: { t } }));
+}
+interface Props {
+  t: Tool;
+}
+const { t } = Astro.props;
+const installed = installedBlock(t);
+const others = tools.filter((o) => o.name !== t.name);
+const env = `${t.name.toUpperCase().replace(/-/g, "_")}_ADDR`;
+const who = t.run ? t.binary : t.title;
+const altLook = t.alt ? look[t.alt.module] : undefined;
+const notOnPath = `${t.binary} is not on your PATH: install it, or use --as container or --as download`;
+---
+<Page title={`${t.title}: bring your own`} description={`${t.what} doze runs your ${t.title}: installed, as a container, or a pinned download.`} theme="light" current="registry">
+  <RegistryBar section="tools" />
+  <div class="rg rt">
+    <div class="rg-wrap rt-main">
+      <section class="rt-sec">
+        <nav aria-label="Breadcrumb" class="rg-small"><a href="/registry/">Registry</a> / <a href="/registry/tools/">Bring your own</a> / {t.name}</nav>
+        <div class="rt-head">
+          <div class="rg-tile rt-tile-lg" style={`background:${t.tile}`} aria-hidden="true">{t.title[0]}</div>
+          <div class="rt-head-main">
+            <div class="rt-title">
+              <h1 class="rg-h1">{t.title}</h1>
+              <span class="rg-chip line">Bring your own</span><span class="rg-chip dim">Not signed by doze</span>
+            </div>
+            <p class="rg-lead">
+              {t.what} doze runs your {t.title}:{" "}
+              {t.run && <>the {t.binary} you installed,{" "}</>}
+              the <code class="rg-mono rt-lead-code">{t.image}</code> container, or an archive you pin.
+            </p>
+            <code class="rg-small rg-mono">doze add {t.name} · port {t.port}</code>
+          </div>
+        </div>
+        <div class="rg-note rt-note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A85A0C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+          <span><b>Not a module: doze runs your {t.title}.</b> There is no doze/{t.name} in the registry. <code class="rg-mono">doze add {t.name}</code> writes a <code class="rg-mono">service</code> block, takes the first way that works on your machine, and names the other two.</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="ways" class="rt-sec tight">
+        <h2 class="rg-h2" id="ways">{t.run ? "Three ways to run it, and the block each writes" : "Two ways to run it, and the block each writes"}</h2>
+        <div class="rt-ways">
+          {installed && (
+            <article class="rg-panel rt-way">
+              <div class="rt-way-top"><h3>Installed</h3><span class="rg-chip ok">first choice</span></div>
+              <div class="rg-snip"><code><i>$</i> doze add {t.name} --as installed</code><button class="rg-copy" type="button" data-copy={`doze add ${t.name} --as installed`} aria-label={`Copy doze add ${t.name} --as installed`}>Copy</button></div>
+              <p class="rg-small">Runs the {t.binary} on your PATH. If there is none: <span class="rg-mono">{notOnPath}</span></p>
+              <div class="rg-code"><div class="rg-code-top"><span>doze.hcl</span><button class="rg-copy" type="button" data-copy={installed} aria-label="Copy the installed block">Copy</button></div><FindHcl code={installed} /></div>
+            </article>
+          )}
+          <article class="rg-panel rt-way">
+            <div class="rt-way-top"><h3>Container</h3>{t.run ? <span class="rg-chip line">if {t.binary} isn't installed</span> : <span class="rg-chip ok">first choice</span>}</div>
+            <div class="rg-snip"><code><i>$</i> doze add {t.name} --as container</code><button class="rg-copy" type="button" data-copy={`doze add ${t.name} --as container`} aria-label={`Copy doze add ${t.name} --as container`}>Copy</button></div>
+            <p class="rg-small">
+              A container is just a command that stays in the foreground. Needs Docker or a compatible runtime.
+              {!t.run && <> doze knows no run line for an installed {t.name}, so this is the block it writes.</>}
+            </p>
+            <div class="rg-code"><div class="rg-code-top"><span>doze.hcl</span><button class="rg-copy" type="button" data-copy={containerBlock(t)} aria-label="Copy the container block">Copy</button></div><FindHcl code={containerBlock(t)} /></div>
+          </article>
+          <article class="rg-panel rt-way">
+            <div class="rt-way-top"><h3>Download</h3><span class="rg-chip line">pinned by sha256</span></div>
+            <div class="rg-snip"><code><i>$</i> doze add {t.name} --as download</code><button class="rg-copy" type="button" data-copy={`doze add ${t.name} --as download`} aria-label={`Copy doze add ${t.name} --as download`}>Copy</button></div>
+            <p class="rg-small">You fill in the archive URL and the real run line; doze fetches it once and pins its checksum in doze.lock.</p>
+            <div class="rg-code"><div class="rg-code-top"><span>doze.hcl: fill in download and run</span></div><FindHcl code={downloadBlock(t)} /></div>
+          </article>
+        </div>
+        <div class="rg-code">
+          <div class="rg-code-top"><span>terminal: plain doze add, on a machine without {t.binary}</span><button class="rg-copy" type="button" data-copy={`doze add ${t.name}`} aria-label={`Copy doze add ${t.name}`}>Copy</button></div>
+          <pre><span class="p">$</span> doze add {t.name}
+<span class="c">→ {t.name} is not a doze module — adding it as a service
+  {t.binary} is not installed — the block runs it as a container
+  other ways: --as installed · --as container · --as download</span>
+
+<span class="c">  use it from an app:</span>  {env} = service.{t.name}.address</pre>
+        </div>
+        <p class="rg-small rt-m0">
+          {t.name === "mongo" && <>doze init writes the full URL when it finds a Mongo driver: <code class="rg-mono">MONGO_URL = "mongodb://$&#123;service.mongo.address&#125;"</code>.{" "}</>}
+          $HOST, $PORT and $DATA are filled in at run time.
+        </p>
+      </section>
+
+      <section class="rt-two" aria-label="What doze does and doesn't do for it">
+        <div class="rg-panel">
+          <h2 class="rg-h3">What doze still gives it</h2>
+          <ul class="rt-list">
+            <li><span class="rt-ico ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span><span><b>A name:</b> <code class="rg-mono">{t.name}.&lt;stack&gt;.doze</code>, and your own domain over https if you set one.</span></li>
+            <li><span class="rt-ico ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span><span><b>A port,</b> held by doze while {who} is asleep.</span></li>
+            <li><span class="rt-ico ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span><span><b>Sleep and wake:</b> it wakes when a client connects and sleeps when nothing has for a while. Data stays in $DATA.</span></li>
+            <li><span class="rt-ico ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg></span><span><b>Logs</b> in <code class="rg-mono">doze logs {t.name}</code> and in the app, next to everything else.</span></li>
+          </ul>
+        </div>
+        <div class="rg-panel">
+          <h2 class="rg-h3">What it doesn't</h2>
+          <ul class="rt-list">
+            <li><span class="rt-ico bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></span><span><b>No signature.</b> doze didn't build {t.run ? `${t.binary} or the image` : "the image"}, so it doesn't sign {t.run ? "them" : "it"}. A download is pinned by sha256 in doze.lock: a changed file is refused, but nobody vouched for the first one.</span></li>
+            <li><span class="rt-ico bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></span>{t.run
+              ? <span><b>No pinned version for installed or container.</b> You get whatever {t.binary} is on the PATH, or whatever <code class="rg-mono">{t.image}</code> points at today.</span>
+              : <span><b>No pinned version for the container.</b> You get whatever <code class="rg-mono">{t.image}</code> points at today.</span>}</li>
+            <li><span class="rt-ico bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></span><span><b>No declared databases or users.</b> A module converges those from doze.hcl; a service is just a process.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      {t.alt && (
+        <section class="rg-panel rt-alt" aria-labelledby="alt">
+          {altLook?.logo
+            ? <div class="rg-tile" aria-hidden="true"><img src={altLook.logo} alt="" width="44" height="44" /></div>
+            : <div class="rg-tile" style={`background:${t.alt.tile}`} aria-hidden="true">{t.alt.initial}</div>}
+          <div class="rt-alt-main">
+            <h2 class="rg-h3" id="alt">{t.alt.heading}</h2>
+            <p class="rg-p">{t.alt.text}</p>
+          </div>
+          <div class="rt-alt-side">
+            <div class="rg-snip"><code><i>$</i> doze add {t.alt.module}</code><button class="rg-copy" type="button" data-copy={`doze add ${t.alt.module}`} aria-label={`Copy doze add ${t.alt.module}`}>Copy</button></div>
+            <a href={`/registry/doze/${t.alt.module}/`}>{t.alt.label} →</a>
+          </div>
+        </section>
+      )}
+
+      <section aria-labelledby="others" class="rt-sec tighter">
+        <h2 class="rg-h2" id="others">The other tools doze add knows</h2>
+        <p class="rg-p">Each gets the same three ways where it can. rabbitmq, opensearch and clickhouse have no known run line, so installed falls back to the container.</p>
+        <FindToolTable list={others} />
+        <p class="rg-small rt-m0">Anything else: <code class="rg-mono">doze add &lt;name&gt;</code> writes a download block to fill in. <a href="/registry/search/?q=cassandra">What that looks like</a></p>
+      </section>
+    </div>
+  </div>
+</Page>

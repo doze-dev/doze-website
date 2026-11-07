@@ -1,0 +1,6 @@
+---
+// Starlight PageSidebar override: "On this page" on wide screens only. The
+// boards drop it below 1180px rather than folding it into a bar.
+import TableOfContents from "@astrojs/starlight/components/TableOfContents.astro";
+---
+{Astro.locals.starlightRoute.toc && <TableOfContents />}

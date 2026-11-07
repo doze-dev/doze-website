@@ -1,0 +1,37 @@
+---
+// Starlight Sidebar override: the current product's pages (the topics plugin
+// has already narrowed starlightRoute.sidebar to them). The product switcher
+// is the topics list, drawn in PageFrame with each product's logo.
+import SidebarGroup from "./SidebarGroup.astro";
+
+const { sidebar } = Astro.locals.starlightRoute;
+type Entry = (typeof sidebar)[number];
+const hasCurrent = (e: Entry): boolean => (e.type === "link" ? e.isCurrent : e.entries.some(hasCurrent));
+// Loose top-level links (doze AWS and doze Kafka list their pages flat) form
+// one untitled group. A group the sidebar marks collapsed folds under its
+// heading unless the reader is on one of its pages.
+const blocks: { label?: string; folded: boolean; entries: Entry[] }[] = [];
+for (const e of sidebar) {
+  if (e.type === "group") blocks.push({ label: e.label, folded: e.collapsed && !hasCurrent(e), entries: e.entries });
+  else if (blocks.length && blocks[blocks.length - 1].label === undefined) blocks[blocks.length - 1].entries.push(e);
+  else blocks.push({ folded: false, entries: [e] });
+}
+---
+<div class="dz-grps">
+  {blocks.map((b) =>
+    b.folded ? (
+      <details class="dz-grp dz-grp-fold">
+        <summary class="dz-grp-h">
+          {b.label}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+        </summary>
+        <SidebarGroup entries={b.entries} />
+      </details>
+    ) : (
+      <div class="dz-grp">
+        {b.label && <span class="dz-grp-h">{b.label}</span>}
+        <SidebarGroup entries={b.entries} />
+      </div>
+    ),
+  )}
+</div>

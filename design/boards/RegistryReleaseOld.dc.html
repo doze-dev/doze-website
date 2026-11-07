@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>postgres 0.2.1 · Registry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.ro-pg{font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:#FFFAF4;color:#140C1B;font-size:15px;line-height:1.5}
+.ro-pg a{color:#A85A0C;text-decoration:none}
+.ro-pg a:hover{text-decoration:underline}
+.ro-wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+.ro-sec{padding:40px 0 0}
+.ro-h2{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;line-height:1.1;letter-spacing:-0.025em}
+.ro-h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-0.015em}
+.ro-lead{margin:0;font-size:16px;line-height:1.55;color:#4A3D55;max-width:72ch}
+.ro-small{font-size:13px;color:#6E5F79;line-height:1.5}
+.ro-eyebrow{font:600 12px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6E5F79}
+.ro-mono{font-family:'JetBrains Mono',monospace;font-variant-ligatures:none}
+.ro-code,.ro-code pre{font-variant-ligatures:none}
+.ro-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font:600 12.5px Geist,sans-serif;white-space:nowrap;line-height:1}
+.ro-c-good{background:#E6F4EA;color:#1D7A45}
+.ro-c-warn{background:#FFF1D6;color:#8A5300}
+.ro-c-bad{background:#FCE8EC;color:#B4233C}
+.ro-c-info{background:#E8EEFC;color:#2F62D9}
+.ro-c-dim{background:#F1EAE2;color:#5E5068}
+.ro-c-line{background:#FFFFFF;color:#4A3D55;border:1px solid #DCCFC2}
+.ro-eng{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:22px;padding:0 4px;border-radius:6px;border:1px solid #DCCFC2;background:#FFFFFF;font:600 12px 'JetBrains Mono',monospace;color:#4A3D55;box-sizing:border-box}
+.ro-eng.ro-off{border-style:dashed;color:#6E5F79;background:transparent}
+.ro-engs{display:inline-flex;gap:4px}
+.ro-pm{display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 6px;border-radius:6px;background:#F1EAE2;color:#4A3D55;font:600 11px 'JetBrains Mono',monospace}
+.ro-pms{display:inline-flex;gap:4px}
+.ro-panel{background:#FFFFFF;border:1px solid #EADFD3;border-radius:16px}
+.ro-sunk{background:#FFF4E8;border:1px solid #EADFD3;border-radius:16px}
+.ro-tbox{position:relative;overflow-x:auto;border:1px solid #EADFD3;border-radius:14px;background:#FFFFFF;-webkit-overflow-scrolling:touch}
+.ro-t{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}
+.ro-t th{text-align:left;font:600 11.5px Geist,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#6E5F79;padding:12px 14px;border-bottom:1px solid #EADFD3;background:#FFF4E8;white-space:nowrap}
+.ro-t td{padding:13px 14px;border-bottom:1px solid #F1E8DE;vertical-align:middle;white-space:nowrap;background:#FFFFFF}
+.ro-t tr:last-child td{border-bottom:0}
+.ro-t .ro-stick{position:sticky;left:0;z-index:1;box-shadow:inset -1px 0 0 #EADFD3}
+.ro-t .ro-grp th,.ro-t .ro-grp td{background:#FFFAF4;padding:10px 14px;font:600 13px Geist,sans-serif;letter-spacing:0;text-transform:none;color:#140C1B;border-bottom:1px solid #EADFD3;border-top:1px solid #EADFD3}
+.ro-code{background:#1E1328;border-radius:12px;color:#F4ECE4;font:13px/1.75 'JetBrains Mono',monospace;margin:0;overflow-x:auto}
+.ro-code-bar{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-bottom:1px solid #34233F}
+.ro-code-bar span{font:500 12px Geist,sans-serif;color:#C9BAD3;flex:1}
+.ro-code pre{margin:0;padding:14px 18px;white-space:pre;font:inherit}
+.ro-code .ro-p{color:#9C8AAB}
+.ro-code .ro-c{color:#9C8AAB}
+.ro-code .ro-add{color:#8BE39B}
+.ro-code .ro-del{color:#FF9AA8}
+.ro-code .ro-k{color:#F0A24B}
+.ro-copy{height:30px;padding:0 12px;border-radius:7px;border:1px solid #4A3458;background:#2A1C36;color:#F4ECE4;font:600 12.5px Geist,sans-serif;cursor:pointer}
+.ro-lcopy{height:28px;padding:0 10px;border-radius:7px;border:1px solid #DCCFC2;background:#FFFFFF;color:#4A3D55;font:600 12px Geist,sans-serif;cursor:pointer;white-space:nowrap}
+.ro-designed{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#2F62D9;background:#E8EEFC;border-radius:8px;padding:6px 10px}
+.ro-new{display:inline-block;font:700 10.5px Geist,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#2F62D9;border:1px solid #9DB5F0;border-radius:5px;padding:1px 5px;vertical-align:2px}
+.ro-dx{outline:2px dashed #B4233C;outline-offset:-2px;border-radius:14px}
+.ro-dxtag{display:inline-flex;align-items:center;gap:6px;font:700 12px Geist,sans-serif;color:#B4233C;background:#FFFFFF;border:1px solid #F3B7C2;border-radius:6px;padding:3px 8px}
+.ro-btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:10px;font:600 14px Geist,sans-serif;white-space:nowrap;box-sizing:border-box}
+.ro-btn-a{background:#F0A24B;color:#2A1534 !important}
+.ro-btn-l{background:#FFFFFF;border:1px solid #DCCFC2;color:#140C1B !important}
+.ro-sel{display:inline-flex;align-items:center;gap:8px}
+.ro-sel label{font-size:14px;color:#4A3D55;white-space:nowrap}
+.ro-sel select{height:44px;padding:0 34px 0 12px;border-radius:10px;border:1px solid #DCCFC2;background:#FFFFFF;font:500 14px Geist,sans-serif;color:#140C1B;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#4A3D55 50%),linear-gradient(135deg,#4A3D55 50%,transparent 50%);background-position:calc(100% - 17px) 19px,calc(100% - 12px) 19px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.ro-t td.ro-end,.ro-t th.ro-end{padding-right:20px}
+@media (max-width:760px){.ro-h2{font-size:26px}.ro-sec{padding-top:32px}}
+@media (max-width:600px){
+.ro-copy,.ro-lcopy,.ro-btn{min-height:44px}
+.ro-tbox{border:0;background:transparent;overflow:visible;border-radius:0}
+.ro-t,.ro-t tbody,.ro-t tr,.ro-t td,.ro-t tbody th{display:block}
+.ro-t{min-width:0 !important}
+.ro-t thead{display:none}
+.ro-t tr{background:#FFFFFF;border:1px solid #EADFD3;border-radius:12px;margin-bottom:10px;padding:4px 16px}
+.ro-t tr.ro-dim{background:#FCF8F3}
+.ro-t td,.ro-t tbody th{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:7px 0 !important;border-bottom:1px solid #F1E8DE;white-space:normal;min-width:0 !important;width:auto !important;text-align:right;position:static;box-shadow:none !important;background:transparent !important}
+.ro-t td:last-child,.ro-t tbody th:last-child{border-bottom:0}
+.ro-t td[data-label]::before,.ro-t tbody th[data-label]::before{content:attr(data-label);font:600 11.5px Geist,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#6E5F79;text-align:left;flex:none}
+.ro-t td.ro-wide,.ro-t th.ro-wide{flex-direction:column;align-items:flex-start;text-align:left;gap:6px}
+.ro-t td:empty{display:none}
+.ro-t td.ro-stick{justify-content:flex-start;font-size:17px;padding:12px 0 8px !important}
+.ro-t td.ro-stick::before,.ro-t tbody th.ro-stick::before{content:none !important}
+.ro-t tbody th.ro-stick{justify-content:flex-start;font-size:16px;padding:12px 0 8px !important}
+.ro-t td.ro-end{justify-content:flex-end;padding:0 !important}
+.ro-t td.ro-end::before{content:none !important}
+.ro-t tr.ro-grp{background:transparent;border:0;padding:6px 0 0;margin:14px 0 6px}
+.ro-t tr.ro-grp th,.ro-t tr.ro-grp td{display:inline;border:0;padding:0 8px 0 0 !important;background:transparent !important}
+.ro-t tr.ro-grp th::before,.ro-t tr.ro-grp td::before{content:none !important}
+}
+.ro-fact{padding:14px 18px;border-right:1px solid #F1E8DE;border-bottom:1px solid #F1E8DE;margin-bottom:-1px;margin-right:-1px}
+.ro-fact dt{font:600 11.5px Geist,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#6E5F79;margin:0 0 4px}
+.ro-fact dd{margin:0;font-weight:600;font-size:15.5px;white-space:nowrap}
+.ro-orow{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;min-height:40px;border-bottom:1px solid #EADFD3}
+.ro-orow:last-child{border-bottom:0}
+.ro-orow a{font-weight:600}
+.ro-orow span:nth-child(2){color:#4A3D55}
+.ro-hash{display:flex;align-items:center;gap:10px}
+.ro-hash code{font:12px/1.45 'JetBrains Mono',monospace;color:#140C1B;width:33ch;white-space:normal;word-break:break-all}
+.ro-hash code.ro-sig{width:auto;white-space:nowrap;color:#4A3D55}
+.ro-kv{margin:0;display:flex;flex-direction:column;border-top:1px solid #F1E8DE}
+.ro-kv div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #F1E8DE;font-size:14px}
+.ro-kv dt{color:#6E5F79}
+.ro-kv dd{margin:0;color:#140C1B}
+@media (max-width:760px){.ro-kv div{grid-template-columns:1fr;gap:2px}}
+.ro-t.ro-tight td{padding:12px 11px}
+.ro-t.ro-tight th{padding:12px 11px}
+.ro-kv.ro-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));column-gap:36px}
+.ro-chg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.ro-chg li{display:grid;grid-template-columns:56px 52px 1fr;gap:12px;align-items:baseline;padding:11px 0;border-bottom:1px solid #F1E8DE}
+.ro-chg li:last-child{border-bottom:0}
+.ro-chg li>.ro-mono{font-weight:600}
+@media (max-width:760px){.ro-chg li{grid-template-columns:56px 1fr}.ro-chg li>div{grid-column:1/-1}}
+</style>
+</helmet>
+<div class="ro-pg">
+<dc-import name="SiteHeader" theme="light" current="registry" hint-size="100%,72px"></dc-import>
+<dc-import name="RegistryBar" section="modules" hint-size="100%,120px"></dc-import>
+<dc-import name="RegistryModuleHead" tab="versions" newest="0.2.5" hint-size="100%,330px"></dc-import>
+
+<main>
+  <!-- not the newest -->
+  <section class="ro-wrap" style="padding-top: 32px">
+    <div role="note" aria-label="Not the newest release" style="display: flex; gap: 16px 24px; align-items: center; flex-wrap: wrap; padding: 18px 22px; border-radius: 14px; background: #FFF1D6; border: 1px solid #F2D29B">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A5300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 2px">
+        <b style="font-size: 16.5px; color: #140C1B">Not the newest: 0.2.5 is current. It needs doze 0.2.0.</b>
+        <span style="font-size: 14px; color: #5C3A00">You are looking at 0.2.1 from 2 Jul 2026. <a href="#changed" style="color: #6B3A06; font-weight: 600; text-decoration: underline">What changed since</a></span>
+      </div>
+      <a class="ro-btn ro-btn-a" href="RegistryVersions.dc.html">Go to 0.2.5
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </section>
+
+  <!-- release header -->
+  <section class="ro-wrap" style="padding-top: 28px">
+    <div style="display: flex; gap: 14px 24px; align-items: center; flex-wrap: wrap; justify-content: space-between">
+      <div style="display: flex; gap: 12px 16px; align-items: center; flex-wrap: wrap">
+        <h2 class="ro-h2" style="font-size: 36px">postgres <span class="ro-mono" style="font-family: 'JetBrains Mono', monospace; font-weight: 600; letter-spacing: -0.02em">0.2.1</span></h2>
+        <span class="ro-chip ro-c-line" style="height: 28px; font-size: 13px">Superseded</span>
+      </div>
+      <div class="ro-sel"><label for="rel-pick">Release</label>
+        <select id="rel-pick"><option>0.2.1 · 2 Jul 2026</option><option>0.2.5 · Current</option><option>0.2.4 · 2 Nov 2026</option><option>0.2.3 · 3 Jul 2026</option><option>0.2.2 · 3 Jul 2026</option></select></div>
+    </div>
+    <dl style="margin: 20px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0; border: 1px solid #EADFD3; border-radius: 14px; background: #FFFFFF; overflow: hidden">
+      <div class="ro-fact"><dt>Released</dt><dd>2 Jul 2026</dd></div>
+      <div class="ro-fact"><dt>Needs</dt><dd>any doze</dd></div>
+      <div class="ro-fact"><dt>Plugin protocol</dt><dd>1</dd></div>
+      <div class="ro-fact"><dt>Engines</dt><dd>Postgres 14–18</dd></div>
+      <div class="ro-fact"><dt>Platforms</dt><dd>3 of 3</dd></div>
+      <div class="ro-fact"><dt>Advisories</dt><dd style="color: #1D7A45">None known</dd></div>
+    </dl>
+    <p style="margin: 12px 0 0"><span class="ro-small" style="display: flex; gap: 8px; align-items: flex-start; color: #4A3D55"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span>0.2.1 sets no oldest doze, so it runs on every doze (0.1.0 and up).</span></span></p>
+  </section>
+
+  <!-- what changed + aside -->
+  <section class="ro-wrap ro-sec">
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start">
+      <div style="flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+        <article id="changed" class="ro-panel" style="padding: 24px 26px; display: flex; flex-direction: column; gap: 14px" aria-labelledby="chg-h">
+          <div style="display: flex; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; justify-content: space-between">
+            <h3 id="chg-h" class="ro-h3">What changed between 0.2.1 and 0.2.5</h3>
+            <span class="ro-small">From the GitHub release notes</span>
+          </div>
+          <ol class="ro-chg">
+            <li><span class="ro-mono">0.2.5</span><span class="ro-small">[date]</span><div><b style="color: #8A5300">Needs doze 0.2.0 or newer.</b> <span style="color: #4A3D55">[notes]</span></div></li>
+            <li><span class="ro-mono">0.2.4</span><span class="ro-small">2 Nov</span><div style="color: #4A3D55">A console: an Activity tab (sessions, their queries, Cancel or Terminate) and a databases table.</div></li>
+            <li><span class="ro-mono">0.2.3</span><span class="ro-small">3 Jul</span><div style="color: #4A3D55">[notes]</div></li>
+            <li><span class="ro-mono">0.2.2</span><span class="ro-small">3 Jul</span><div style="color: #4A3D55">The readiness check connects as <code class="ro-mono" style="font-size: 13px; white-space: nowrap">-U postgres</code>, not your OS user.</div></li>
+          </ol>
+          <p class="ro-small" style="margin: 0; padding-top: 12px; border-top: 1px solid #F1E8DE">Same plugin protocol (1) and the same engines (Postgres 14–18) throughout, so the upgrade needs no change to doze.hcl. 0.2.4 is the last release that runs on any doze; 0.2.5 needs doze 0.2.0.</p>
+        </article>
+
+        <div class="ro-sunk" style="padding: 20px 22px; display: flex; gap: 14px; align-items: flex-start">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3D55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0; flex: 1">
+            <p style="margin: 0; color: #140C1B"><b>Projects pinned to 0.2.1 keep using it</b> until someone runs <code class="ro-mono" style="font-size: 14px">doze modules upgrade</code>. Nothing moves on its own: not <code class="ro-mono" style="font-size: 14px">doze up</code>, not time, not a new release.</p>
+            <div class="ro-code" style="max-width: 560px">
+              <div class="ro-code-bar"><span>From doze 0.2: the newest release your doze can run</span><button class="ro-copy" type="button" aria-label="Copy doze modules upgrade postgres">Copy</button></div>
+<pre><span class="ro-p">$</span> doze modules upgrade postgres</pre>
+            </div>
+          </div>
+        </div>
+
+        <article class="ro-panel" style="padding: 22px 26px; display: flex; flex-direction: column; gap: 10px" aria-labelledby="notes-h">
+          <div style="display: flex; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; justify-content: space-between">
+            <h3 id="notes-h" class="ro-h3" style="font-size: 18px">Release notes for 0.2.1</h3>
+            <span class="ro-small">From the GitHub release notes · <a href="https://github.com/doze-dev/doze-modules/releases/tag/postgres">view on GitHub</a></span>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; color: #4A3D55">
+            <li>The first postgres release in the signed index (protocol 1).</li>
+            <li>[notes: next change, one line]</li>
+          </ul>
+        </article>
+      </div>
+      <aside style="flex: 1 1 280px; max-width: 100%; display: flex; flex-direction: column; gap: 16px">
+        <div class="ro-sunk" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
+          <h3 class="ro-eyebrow" style="margin: 0">Other releases</h3>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font-size: 14px">
+            <li class="ro-orow"><a class="ro-mono" href="RegistryVersions.dc.html">0.2.5</a><span>[0.2 release date]</span><span class="ro-chip ro-c-good" style="height: 20px; font-size: 12px">Current</span></li>
+            <li class="ro-orow"><a class="ro-mono" href="RegistryRelease.dc.html">0.2.4</a><span>2 Nov 2026</span><span class="ro-small">any doze</span></li>
+            <li class="ro-orow"><a class="ro-mono" href="RegistryReleaseOld.dc.html">0.2.3</a><span>3 Jul 2026</span><span class="ro-small">any doze</span></li>
+            <li class="ro-orow"><a class="ro-mono" href="RegistryReleaseOld.dc.html">0.2.2</a><span>3 Jul 2026</span><span class="ro-small">any doze</span></li>
+            <li class="ro-orow" style="background: #FFFFFF; margin: 0 -10px; padding: 0 10px; border-radius: 8px" aria-current="page"><b class="ro-mono">0.2.1</b><span>2 Jul 2026</span><span class="ro-small">viewing</span></li>
+          </ul>
+          <a href="RegistryVersions.dc.html" style="font-size: 14px; font-weight: 600; min-height: 32px; display: inline-flex; align-items: center">All versions, with what each needs</a>
+        </div>
+        <div class="ro-panel" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
+          <h3 class="ro-eyebrow" style="margin: 0">Security</h3>
+          <p style="margin: 0; display: flex; gap: 8px; align-items: center; font-size: 14px; color: #1D7A45; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>No known advisories</p>
+          <p class="ro-small" style="margin: 0">Advisories would be listed here and on every affected release. <a href="Security.dc.html">Report a problem</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- artifacts -->
+  <section class="ro-wrap ro-sec" aria-labelledby="art-h">
+    <div style="display: flex; gap: 8px 20px; align-items: baseline; flex-wrap: wrap; justify-content: space-between; margin-bottom: 14px">
+      <h3 id="art-h" class="ro-h3">Artifacts</h3>
+      <span class="ro-small">One signed archive per platform. Files live on GitHub; the registry lists them and signs their checksums.</span>
+    </div>
+    <div class="ro-tbox" role="region" aria-label="Artifacts for postgres 0.2.1" tabindex="0">
+      <table class="ro-t ro-tight" style="min-width: 1100px">
+        <thead><tr>
+          <th class="ro-stick" scope="col">Platform</th>
+          <th scope="col">File (downloads from GitHub)</th>
+          <th scope="col">Size</th>
+          <th scope="col">SHA-256</th>
+          <th scope="col">Signature (ed25519)</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td data-label="Platform" class="ro-stick"><b>macOS arm64</b><br><span class="ro-mono ro-small">aarch64-apple-darwin</span></td>
+            <td data-label="File (downloads from GitHub)" class="ro-wide"><a class="ro-mono" style="font-size: 12px" href="https://github.com/doze-dev/doze-modules/releases/download/postgres/postgres-plugin-0.2.1-aarch64-apple-darwin.tar.gz">postgres-plugin-0.2.1-aarch64-apple-darwin.tar.gz</a></td>
+            <td data-label="Size">11.8 MB</td>
+            <td data-label="SHA-256" class="ro-wide"><div class="ro-hash"><code>58e2a5bf4cf90e9b919581cb254f5445c698e7adff3ad0c1c85a007fc37df305</code><button class="ro-lcopy" type="button" aria-label="Copy SHA-256 for macOS arm64">Copy</button></div></td>
+            <td data-label="Signature (ed25519)" class="ro-wide"><div class="ro-hash"><code class="ro-sig">CUay+yn0…E1ADQ==</code><button class="ro-lcopy" type="button" aria-label="Copy signature for macOS arm64">Copy</button></div></td>
+          </tr>
+          <tr>
+            <td data-label="Platform" class="ro-stick"><b>Linux arm64</b><br><span class="ro-mono ro-small">aarch64-unknown-linux-gnu</span></td>
+            <td data-label="File (downloads from GitHub)" class="ro-wide"><a class="ro-mono" style="font-size: 12px" href="https://github.com/doze-dev/doze-modules/releases/download/postgres/postgres-plugin-0.2.1-aarch64-unknown-linux-gnu.tar.gz">postgres-plugin-0.2.1-aarch64-unknown-linux-gnu.tar.gz</a></td>
+            <td data-label="Size">11.1 MB</td>
+            <td data-label="SHA-256" class="ro-wide"><div class="ro-hash"><code>787bd6d42c6777aa2610d1784b70000c92b4a48304ab33f2c364af3e32d7b9bf</code><button class="ro-lcopy" type="button" aria-label="Copy SHA-256 for Linux arm64">Copy</button></div></td>
+            <td data-label="Signature (ed25519)" class="ro-wide"><div class="ro-hash"><code class="ro-sig">ZN/PzzWX…IxRBw==</code><button class="ro-lcopy" type="button" aria-label="Copy signature for Linux arm64">Copy</button></div></td>
+          </tr>
+          <tr>
+            <td data-label="Platform" class="ro-stick"><b>Linux x86_64</b><br><span class="ro-mono ro-small">x86_64-unknown-linux-gnu</span></td>
+            <td data-label="File (downloads from GitHub)" class="ro-wide"><a class="ro-mono" style="font-size: 12px" href="https://github.com/doze-dev/doze-modules/releases/download/postgres/postgres-plugin-0.2.1-x86_64-unknown-linux-gnu.tar.gz">postgres-plugin-0.2.1-x86_64-unknown-linux-gnu.tar.gz</a></td>
+            <td data-label="Size">12.1 MB</td>
+            <td data-label="SHA-256" class="ro-wide"><div class="ro-hash"><code>56a50ca979d03c1ca63915be2f81cd0d49a77c8dc84116c2584e48a4abbaf1e2</code><button class="ro-lcopy" type="button" aria-label="Copy SHA-256 for Linux x86_64">Copy</button></div></td>
+            <td data-label="Signature (ed25519)" class="ro-wide"><div class="ro-hash"><code class="ro-sig">HjDho0Ko…8+YsDA==</code><button class="ro-lcopy" type="button" aria-label="Copy signature for Linux x86_64">Copy</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ro-small" style="margin: 10px 0 0">Every file is under <span class="ro-mono" style="word-break: break-all">https://github.com/doze-dev/doze-modules/releases/download/postgres/</span>. Intel Macs and Windows have no build; WSL2 uses the Linux x86_64 file.</p>
+  </section>
+
+  <!-- signing -->
+  <section class="ro-wrap ro-sec" aria-labelledby="sign-h">
+    <div style="display: flex; flex-direction: column; gap: 28px">
+      <div class="ro-panel" style="padding: 22px 24px; display: flex; flex-direction: column; gap: 14px">
+        <h3 id="sign-h" class="ro-h3">Signing</h3>
+        <p style="margin: 0; color: #4A3D55">The index is signed as a whole, and each archive is signed. doze checks both before anything runs, and refuses a module whose checksum or signature doesn't match.</p>
+        <dl class="ro-kv ro-two">
+          <div><dt>Key</dt><dd><code class="ro-mono" title="Nu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw=">Nu5y8mbj…Wjw=</code> <button class="ro-lcopy" type="button" aria-label="Copy the doze signing key">Copy</button></dd></div>
+          <div><dt>Where the key lives</dt><dd>Compiled into doze. doze never fetches or trusts a key on first use.</dd></div>
+          <div><dt>Namespace</dt><dd class="ro-mono">doze</dd></div>
+          <div><dt>Publisher</dt><dd>doze-dev <span class="ro-chip" style="height: 20px; font-size: 11.5px; background: #FDE6CB; color: #6B3A06">Official</span></dd></div>
+          <div><dt>Index signature</dt><dd><code class="ro-mono">8aqfwb3Y…EshRPCw==</code></dd></div>
+          <div><dt>What is signed</dt><dd>Each archive: its lowercase-hex SHA-256. The index: module, namespace, releases and channels as canonical JSON.</dd></div>
+          <div><dt>Not yet signed</dt><dd>The <code class="ro-mono">doze</code> (oldest doze) field sits beside the signed part today. <span class="ro-new">new</span> The design moves it inside.</dd></div>
+        </dl>
+        <a href="RegistryTrust.dc.html" style="font-weight: 600; font-size: 14px; min-height: 32px; display: inline-flex; align-items: center">How signing works</a>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h3 class="ro-h3">Verify it yourself</h3>
+          <p class="ro-small" style="margin: 0; font-size: 14px; color: #4A3D55">[planned: <code class="ro-mono">doze modules verify</code>] Today doze runs these checks itself on every download. The same checks by hand, for macOS arm64. Needs OpenSSL 3: the <code class="ro-mono">openssl</code> that ships with macOS has no ed25519 (<code class="ro-mono">brew install openssl@3</code>).</p>
+        </div>
+        <div class="ro-code">
+          <div class="ro-code-bar"><span>Checksum, then signature</span><button class="ro-copy" type="button" aria-label="Copy the verification commands">Copy</button></div>
+<pre><span class="ro-c"># 1. download and hash; compare with the table above</span>
+<span class="ro-p">$</span> curl -LO https://github.com/doze-dev/doze-modules/releases/download/postgres/postgres-plugin-0.2.1-aarch64-apple-darwin.tar.gz
+<span class="ro-p">$</span> shasum -a 256 postgres-plugin-0.2.1-aarch64-apple-darwin.tar.gz
+58e2a5bf4cf90e9b919581cb254f5445c698e7adff3ad0c1c85a007fc37df305  postgres-plugin-0.2.1-aarch64-apple-darwin.tar.gz
+
+<span class="ro-c"># 2. the signature is over that hex string, with doze's public key</span>
+<span class="ro-p">$</span> printf %s 58e2a5bf4cf90e9b919581cb254f5445c698e7adff3ad0c1c85a007fc37df305 &gt; digest.txt
+<span class="ro-p">$</span> echo 'CUay+yn0/9HHmYNEpYs+y4RcO6hupRo/0eBiuYs/yQXkx8huBZHUa3z+Od9Gnk8PhurIX14wqpOAVNd17E1ADQ==' | base64 -d &gt; sig.bin
+<span class="ro-p">$</span> (printf '\x30\x2a\x30\x05\x06\x03\x2b\x65\x70\x03\x21\x00'; echo 'Nu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw=' | base64 -d) &gt; doze-key.der
+<span class="ro-p">$</span> openssl pkeyutl -verify -pubin -keyform DER -inkey doze-key.der -rawin -in digest.txt -sigfile sig.bin
+<span class="ro-add">Signature Verified Successfully</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- lock entry -->
+  <section class="ro-wrap ro-sec" aria-labelledby="lock-h" style="padding-bottom: 72px">
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <h3 id="lock-h" class="ro-h3">What doze.lock records for 0.2.1</h3>
+        <p style="margin: 0; color: #4A3D55">A project pinned to 0.2.1 carries this entry. <code class="ro-mono" style="font-size: 14px">doze modules upgrade</code> replaces it whole: release, engines and checksums move together in one reviewable diff. Every platform's checksum goes in, so a teammate on Linux verifies against the same pin you made on a Mac. Pinned and cached means no network at all.</p>
+        <p class="ro-small" style="margin: 0">The engine itself is pinned separately, under <code class="ro-mono">engines:</code>. <a href="RegistryEngines.dc.html">Engine versions</a></p>
+      </div>
+      <div class="ro-code" style="min-width: 0">
+        <div class="ro-code-bar"><span>doze.lock</span><button class="ro-copy" type="button" aria-label="Copy the doze.lock entry">Copy</button></div>
+<pre>modules:
+    doze/postgres:
+        version: 0.2.1
+        protocol: 1
+        engines:
+            - "14"
+            - "15"
+            - "16"
+            - "17"
+            - "18"
+        hashes:
+            aarch64-apple-darwin: sha256:58e2a5bf4cf90e9b919581cb254f5445c698e7adff3ad0c1c85a007fc37df305
+            aarch64-unknown-linux-gnu: sha256:787bd6d42c6777aa2610d1784b70000c92b4a48304ab33f2c364af3e32d7b9bf
+            x86_64-unknown-linux-gnu: sha256:56a50ca979d03c1ca63915be2f81cd0d49a77c8dc84116c2584e48a4abbaf1e2</pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dc-import name="SiteFooter" theme="light" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
