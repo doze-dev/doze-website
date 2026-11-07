@@ -50,6 +50,8 @@ jobs:
           DOCS_SOURCE: git
           # release dates for the registry pages come from GitHub's API
           GITHUB_TOKEN: ${{ github.token }}
+      # content types (.astro/, not committed) for the pulled docs
+      - run: bunx astro sync
       - run: bun run check
       - run: bunx astro build
       - run: bun run links

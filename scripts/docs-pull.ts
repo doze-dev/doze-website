@@ -44,7 +44,8 @@ const fromGit = process.env.DOCS_SOURCE === "git" || process.env.CI === "true";
 async function checkout(s: Source): Promise<{ dir: string; via: string }> {
   const override = process.env[`DOCS_LOCAL_${s.name.toUpperCase()}`];
   if (override) {
-    if (!existsSync(join(override, s.path))) throw new Error(`DOCS_LOCAL_${s.name.toUpperCase()}: no ${s.path} in ${override}`);
+    if (!existsSync(join(override, s.path)))
+      throw new Error(`DOCS_LOCAL_${s.name.toUpperCase()}: no ${s.path} in ${override}`);
     return { dir: resolve(override), via: `override ${override}` };
   }
   const sibling = resolve(root, "..", s.repo.split("/")[1]);
