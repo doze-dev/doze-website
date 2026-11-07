@@ -1,0 +1,99 @@
+---
+// A product's docs home: a task launcher (boards Docs2Home, Docs2Aws). Start
+// here (three steps beside a screenshot or a terminal), I want to… cards,
+// Look something up, and New in 0.2 (doze) or In a doze stack (doze AWS,
+// doze Kafka). The words and links are in src/data/docs-homes.ts.
+import { homes, icons, page } from "../../data/docs-homes";
+import { docsProducts } from "./products";
+
+interface Props {
+  product: "doze" | "aws" | "kafka";
+}
+const h = homes[Astro.props.product];
+const p = h.product;
+const accent = { doze: "#F0A24B", aws: "#5BB8E8", kafka: "#FFD60A" }[p];
+const doze = docsProducts[0];
+---
+<div class="dz-home not-content" style={`--dz-accent: ${accent}`}>
+  <section aria-labelledby="dz-h-start">
+    <h2 id="dz-h-start">Start here</h2>
+    <div class:list={["dz-h-start", { "dz-h-start-code": !h.shot }]}>
+      <ol class="dz-h-steps">
+        {h.start.map((s, i) => (
+          <li>
+            <a href={page(p, s.key).href}>
+              <span class="dz-h-num">{i + 1}</span>
+              <span><b>{s.title}</b><span set:html={s.text} /></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      {h.shot && (
+        <figure class="dz-h-shot">
+          <img src={h.shot.src} alt={h.shot.alt} loading="lazy" />
+          <figcaption>{h.shot.caption}</figcaption>
+        </figure>
+      )}
+      {h.code && (
+        <div class="dz-h-cb">
+          <div class="dz-h-cb-bar"><span>Terminal</span><button type="button" class="dz-h-copy" data-copy={h.code.join("\n")}>Copy</button></div>
+          <pre>{h.code.map((l, i) => <>{i > 0 && "\n"}<span class="dz-h-pr">$</span> {l}</>)}</pre>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section aria-labelledby="dz-h-want">
+    <h2 id="dz-h-want">I want to…</h2>
+    <div class="dz-h-cards">
+      {h.want.map((c) => {
+        const to = page(p, c.key);
+        return (
+          <a href={to.href}>
+            {c.icon && <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icons[c.icon]} />}
+            <b>{c.title}</b>
+            <span set:html={c.text} />
+            <em>{to.where}</em>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <div class="dz-h-two">
+    <section aria-labelledby="dz-h-look">
+      <h2 id="dz-h-look">Look something up</h2>
+      <div class="dz-h-look">
+        {h.look.map((l) => <a href={page(p, l.key).href}>{l.label} <span set:html={l.text} /></a>)}
+      </div>
+    </section>
+    {h.news && (
+      <section aria-labelledby="dz-h-new">
+        <h2 id="dz-h-new">New in {doze.version}</h2>
+        <ul class="dz-h-new">{h.news.items.map((n) => <li><span set:html={n} /></li>)}</ul>
+        <p class="dz-h-note" set:html={h.news.note} />
+      </section>
+    )}
+    {h.inStack && (
+      <section aria-labelledby="dz-h-with">
+        <h2 id="dz-h-with">In a doze stack</h2>
+        <div class="dz-h-with">
+          <img src={doze.logo} alt="" width="36" height="36" />
+          <p set:html={h.inStack.text} />
+          <a href={page("doze", h.inStack.key).href}>{h.inStack.label}</a>
+        </div>
+      </section>
+    )}
+  </div>
+</div>
+
+<script>
+  for (const b of document.querySelectorAll<HTMLButtonElement>(".dz-h-copy"))
+    b.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(b.dataset.copy ?? "");
+      b.textContent = "Copied";
+      setTimeout(() => {
+        b.textContent = "Copy";
+      }, 1500);
+    });
+</script>

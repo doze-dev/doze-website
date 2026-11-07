@@ -1,0 +1,26 @@
+---
+// The two-column key table (board Docs2AppPage): each row is the keys, then
+// what they do. Keys are written as text: spaces separate keys ("↑ ↓ j k"),
+// and "1–4" (an en dash between two keys) is a range.
+//
+//   <Keys keys={[["1–4", "Tiles, List, Map, Grid"], ["space", "wake or sleep the selected one"]]} />
+interface Props {
+  keys: [string, string][];
+  /** Name the table for screen readers, e.g. "Keys on the Map". */
+  label?: string;
+}
+const { keys, label = "Keys" } = Astro.props;
+const parts = (k: string) =>
+  k
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((t) => (/^.+–.+$/.test(t) && t.length > 1 ? t.split("–") : [t]));
+---
+<dl class="dz-keys not-content" aria-label={label}>
+  {keys.map(([k, does]) => (
+    <div>
+      <dt>{parts(k).map((range, i) => <>{i > 0 && " "}{range.map((key, j) => <>{j > 0 && "–"}<kbd>{key}</kbd></>)}</>)}</dt>
+      <dd>{does}</dd>
+    </div>
+  ))}
+</dl>

@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets";
+// A screenshot of the app (board Docs2AppPage): the image in a light frame,
+// an optional caption, and optional numbered callouts drawn over it, with a
+// legend underneath when they carry words. The docs are daylight only, so
+// there is one image per shot (the light capture).
+//
+//   import map from "../../assets/app/view-map-light.webp";
+//   <Shot src={map} alt="The larder stack on the Map" caption="larder on the Map."
+//     callouts={[{ n: 1, x: 65, y: 3.6, title: "The view switch.", text: "Tiles, List, Map, Grid." }]} />
+//
+// x and y are percentages of the image's width and height (the callout's centre).
+import type { ImageMetadata } from "astro";
+
+type Callout = { n: number; x: number; y: number; title?: string; text?: string };
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  caption?: string;
+  callouts?: Callout[];
+  /** Show only the top of a tall capture (the boards' 2560:800 crop). */
+  crop?: boolean;
+}
+const { src, alt, caption, callouts = [], crop = false } = Astro.props;
+const legend = callouts.filter((c) => c.title || c.text);
+---
+<figure class:list={["dz-shot not-content", { "dz-shot-crop": crop }]}>
+  <div class="dz-shot-img">
+    {typeof src === "string" ? <img src={src} alt={alt} loading="lazy" /> : <Image src={src} alt={alt} widths={[800, 1600]} sizes="(max-width: 900px) 100vw, 740px" />}
+    {callouts.map((c) => <span class="dz-co" style={`left: ${c.x}%; top: ${c.y}%`} aria-hidden={legend.length ? "true" : undefined}>{c.n}</span>)}
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+  {legend.length > 0 && (
+    <ol class="dz-legend">
+      {legend.map((c) => <li><span class="dz-co-n" aria-hidden="true">{c.n}</span><span>{c.title && <b>{c.title}</b>} {c.text}</span></li>)}
+    </ol>
+  )}
+</figure>

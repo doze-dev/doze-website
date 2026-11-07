@@ -2,5 +2,11 @@
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", ".cache", "node_modules"],
-  "compilerOptions": { "types": ["bun"] }
+  "compilerOptions": {
+    "types": ["bun"],
+    "baseUrl": ".",
+    "paths": {
+      "@docs/*": ["src/components/docs/mdx/*"]
+    }
+  }
 }

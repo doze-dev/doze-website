@@ -1,0 +1,17 @@
+---
+// One step, two ways (board Docs2Task): "In the app" first, "In a terminal"
+// second. Starlight's synced tabs: the reader's choice is kept in
+// localStorage under the key "how" and applied on every page that has one.
+//
+//   <HowTo>
+//   <Fragment slot="app"> …numbered steps, a <Shot>… </Fragment>
+//   <Fragment slot="terminal"> …a code block… </Fragment>
+//   </HowTo>
+import { TabItem, Tabs } from "@astrojs/starlight/components";
+---
+<div class="dz-howto">
+  <Tabs syncKey="how">
+    <TabItem label="In the app"><slot name="app" /></TabItem>
+    <TabItem label="In a terminal"><slot name="terminal" /></TabItem>
+  </Tabs>
+</div>

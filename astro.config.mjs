@@ -15,14 +15,15 @@ export default defineConfig({
       disable404Route: true,
       title: "doze docs",
       description: "Docs for doze, doze AWS and doze Kafka.",
-      logo: { src: "./public/brand/doze.svg", alt: "doze" },
       favicon: "/favicon-32.png",
       customCss: ["./src/styles/tokens.css", "./src/styles/docs.css"],
       social: [{ icon: "github", label: "GitHub", href: "https://github.com/doze-dev" }],
       lastUpdated: false,
-      // The boards' docs frame (design/boards/DozeDocs.dc.html and friends):
-      // the site header, a product switcher and search in the sidebar,
-      // breadcrumbs, previous/next cards. Each override is in src/components/docs/.
+      // The docs frame of the boards (Docs2Header, Docs2Side, Docs2Task, …):
+      // the site header, a docs bar (product, search, version), the sidebar,
+      // breadcrumbs, the right rail, previous/next cards. No logo: the site
+      // header (SiteHeader) carries the family mark. Each override is in
+      // src/components/docs/; the product homes come from src/routeData.ts.
       components: {
         Header: "./src/components/docs/Header.astro",
         PageFrame: "./src/components/docs/PageFrame.astro",
@@ -31,6 +32,7 @@ export default defineConfig({
         PageSidebar: "./src/components/docs/PageSidebar.astro",
         ContentPanel: "./src/components/docs/ContentPanel.astro",
         PageTitle: "./src/components/docs/PageTitle.astro",
+        MarkdownContent: "./src/components/docs/MarkdownContent.astro",
         Footer: "./src/components/docs/Footer.astro",
         Pagination: "./src/components/docs/Pagination.astro",
         EditLink: "./src/components/docs/EditLink.astro",
@@ -81,6 +83,16 @@ export default defineConfig({
       },
       // Pages a sidebar leaves out still belong to their product.
       plugins: [
+        // The product homes (src/routeData.ts) must turn a splash index into a
+        // page with a sidebar before the topics plugin picks the sidebar.
+        {
+          name: "doze-docs-homes",
+          hooks: {
+            "config:setup"({ addRouteMiddleware }) {
+              addRouteMiddleware({ entrypoint: "./src/routeData.ts", order: "pre" });
+            },
+          },
+        },
         starlightSidebarTopics(topics, {
           topics: { doze: ["/docs/doze/**/*"], aws: ["/docs/aws/**/*"], kafka: ["/docs/kafka/**/*"] },
           exclude: ["/404"],

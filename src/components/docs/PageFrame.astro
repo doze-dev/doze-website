@@ -1,92 +1,137 @@
 ---
-// Starlight PageFrame override: the boards' docs frame (DozeDocs, AwsDocs,
-// KafkaDocs). The site header on top, then one 1240px column: the docs
-// sidebar (product switcher, search, the section's pages) beside the page,
-// and the site footer below. Under 900px the switcher, search and pages
-// fold into one bar (a splash page, which has no page list, still gets the
-// switcher and search); "Pages" opens the page list as a popover, as
-// Starlight's own mobile menu does.
+// Starlight PageFrame override: the docs frame of the boards (Docs2Header,
+// Docs2Side, Docs2Task, Docs2Phone). The site header, then one slim sticky
+// docs bar (the product pill, search, the version pill), then one 1240px
+// column: the section's pages beside the page, and the site footer below.
+//
+// Under 900px the bar holds the product pill, a search button and "Menu";
+// Menu opens the pages as a bottom sheet (a popover: Escape and a tap
+// outside close it, and focus goes back to Menu).
 import Search from "@astrojs/starlight/components/Search.astro";
 import SiteFooter from "../SiteFooter.astro";
 import { docsProducts, productFor } from "./products";
 
 const { hasSidebar } = Astro.locals.starlightRoute;
 const current = productFor(Astro.url.pathname) ?? docsProducts[0];
-const chevron = "m6 9 6 6 6-6";
+const down = "m6 9 6 6 6-6";
+const isExternal = (href: string) => /^https?:/.test(href);
 ---
 <div class="dz-page">
   <slot name="header" />
+  <div class="dz-bar print:hidden" data-pagefind-ignore>
+    <div class="dz-bar-in">
+      <details class="dz-menu dz-prod" data-dz-menu>
+        <summary class="dz-pill" aria-label={`${current.name} docs: switch product`}>
+          <img src={current.logo} alt="" width="24" height="24" />
+          <span>{current.name}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" aria-hidden="true"><path d={down} /></svg>
+        </summary>
+        <div class="dz-menu-panel">
+          {docsProducts.map((p) => (
+            <a href={p.href} aria-current={p === current ? "true" : undefined}>
+              <img src={p.logo} alt="" width="28" height="28" />
+              <span><b>{p.name}</b><span>{p.name} {p.version}</span></span>
+            </a>
+          ))}
+        </div>
+      </details>
+      <div class="dz-srch">
+        <Search />
+        <span class="dz-srch-ph" aria-hidden="true">Search the {current.name} docs</span>
+      </div>
+      <span class="dz-grow"></span>
+      <details class="dz-menu dz-vers" data-dz-menu>
+        <summary class="dz-pill dz-ver" aria-label={`Docs version: ${current.name} ${current.version}`}>{current.version} <span aria-hidden="true">▾</span></summary>
+        <div class="dz-menu-panel dz-menu-right">
+          <p>These are the docs for <b>{current.name} {current.version}</b>.</p>
+          <a href={current.releases} rel={isExternal(current.releases) ? "noopener" : undefined}>{current.id === "doze" ? "What changed in each release" : "Every release on GitHub"} →</a>
+        </div>
+      </details>
+      {hasSidebar && (
+        <button type="button" class="dz-pill dz-menu-btn" popovertarget="starlight__sidebar" aria-controls="starlight__sidebar">
+          Menu
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={down} /></svg>
+        </button>
+      )}
+    </div>
+  </div>
   <div class="dz-wrap">
-    <nav class="dz-side print:hidden" aria-label={`${current.name} docs`}>
-      <div class="dz-sw-box" role="group" aria-label="Choose a product's docs">
-        <span class="dz-sw-h">Docs for</span>
-        {docsProducts.map((p) => (
-          <a class:list={["dz-sw", { "dz-sw-on": p === current }]} href={p.href} aria-current={p === current ? "true" : undefined}>
-            <img src={p.logo} alt="" width="28" height="28" />
-            <span class="dz-sw-t"><b>{p.name}</b><span class="dz-sw-path">{p.href.replace(/\/$/, "")}</span></span>
-          </a>
-        ))}
-      </div>
-      <div class="dz-bar">
-        <details class="dz-sw-m">
-          <summary aria-label={`${current.name} docs: switch product`}>
-            <img src={current.logo} alt="" width="22" height="22" />
-            <span>{current.name}</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={chevron} /></svg>
-          </summary>
-          <div class="dz-sw-m-list">
-            {docsProducts.map((p) => (
-              <a class:list={["dz-sw", { "dz-sw-on": p === current }]} href={p.href} aria-current={p === current ? "true" : undefined}>
-                <img src={p.logo} alt="" width="28" height="28" />
-                <span class="dz-sw-t"><b>{p.name}</b><span class="dz-sw-path">{p.href.replace(/\/$/, "")}</span></span>
-              </a>
-            ))}
+    {hasSidebar && (
+      <nav class="dz-side print:hidden" aria-label={`${current.name} docs`}>
+        <dz-sidebar-pane popover="auto" id="starlight__sidebar" class="dz-pane" aria-label={`${current.name} docs pages`}>
+          <div class="dz-grab" aria-hidden="true"></div>
+          <div class="dz-pane-head">
+            <b>{current.name} docs</b>
+            <button type="button" class="dz-pill dz-pane-close" popovertarget="starlight__sidebar" popovertargetaction="hide" aria-label="Close the menu">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+            </button>
           </div>
-        </details>
-        <div class="dz-srch">
-          <Search />
-          <span class="dz-srch-ph" aria-hidden="true">Search the docs</span>
-        </div>
-        {hasSidebar && (
-          <button type="button" class="dz-pages" popovertarget="starlight__sidebar">
-            Pages
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={chevron} /></svg>
-          </button>
-        )}
-      </div>
-      {hasSidebar && <dz-sidebar-pane popover="auto" id="starlight__sidebar" class="dz-pane">
-        <div class="dz-pane-head">
-          <b>{current.name} pages</b>
-          <button type="button" class="dz-pane-close" popovertarget="starlight__sidebar" popovertargetaction="hide">Close</button>
-        </div>
-        <slot name="sidebar" />
-      </dz-sidebar-pane>}
-    </nav>
+          <div class="dz-pane-body"><slot name="sidebar" /></div>
+          <div class="dz-pane-foot">
+            {docsProducts.filter((p) => p !== current).map((p) => (
+              <a class="dz-pill" href={p.href}><img src={p.logo} alt="" width="22" height="22" />{p.name}</a>
+            ))}
+            <a class="dz-pill" href={current.releases}>Version {current.version}</a>
+          </div>
+        </dz-sidebar-pane>
+      </nav>
+    )}
     <div class="dz-frame"><slot /></div>
   </div>
   <SiteFooter theme="light" />
 </div>
 
 <script>
-  // The page list is a popover only on phones; on wide screens it is just the
-  // sidebar. Same idea as Starlight's sl-sidebar-pane, at the boards' 900px.
+  // The pages are a bottom sheet only on phones; on wide screens they are just
+  // the sidebar. Same idea as Starlight's sl-sidebar-pane, at the boards' 900px.
   class DzSidebarPane extends HTMLElement {
     connectedCallback() {
       const wide = matchMedia("(min-width: 900.02px)");
       const sync = () => {
         if (wide.matches && this.matches(":popover-open")) this.hidePopover();
         this.popover = wide.matches ? null : "auto";
+        if (wide.matches) this.removeAttribute("role");
+        else this.setAttribute("role", "dialog");
       };
       sync();
       wide.addEventListener("change", sync);
+      const menu = document.querySelector<HTMLButtonElement>(".dz-menu-btn");
       this.addEventListener("toggle", (e) => {
         const open = (e as ToggleEvent).newState === "open";
         document.body.classList.toggle("dz-pane-open", open);
-        if (open) this.querySelector<HTMLElement>('[aria-current="page"]')?.scrollIntoView({ block: "center" });
+        menu?.setAttribute("aria-expanded", String(open));
+        if (!open) {
+          // WebKit leaves focus on the body after Escape; give it back to Menu.
+          const at = document.activeElement;
+          if (!at || at === document.body || this.contains(at)) menu?.focus({ preventScroll: true });
+          return;
+        }
+        const here = this.querySelector<HTMLElement>('[aria-current="page"]');
+        here?.scrollIntoView({ block: "center" });
+        (here ?? this.querySelector<HTMLElement>(".dz-pane-close"))?.focus({ preventScroll: true });
       });
     }
   }
   customElements.define("dz-sidebar-pane", DzSidebarPane);
+
+  // The bar's menus (product, version) are <details>: Escape and a click
+  // outside close them, and opening one closes the other.
+  const menus = [...document.querySelectorAll<HTMLDetailsElement>("[data-dz-menu]")];
+  for (const m of menus)
+    m.addEventListener("toggle", () => {
+      if (m.open) for (const o of menus) if (o !== m) o.open = false;
+    });
+  document.addEventListener("click", (e) => {
+    for (const m of menus) if (m.open && !m.contains(e.target as Node)) m.open = false;
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    for (const m of menus)
+      if (m.open) {
+        m.open = false;
+        m.querySelector("summary")?.focus();
+      }
+  });
 
   // Phone tables become stacked cards (docs.css); each cell is labelled with
   // its column heading. Tables without a header row stay as they are.

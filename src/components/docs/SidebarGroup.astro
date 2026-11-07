@@ -1,5 +1,6 @@
 ---
-// One sidebar group's links; a nested group (doze's Recipes) folds.
+// One sidebar group's links; a nested group (a sub-heading's pages) folds,
+// open when it holds the current page.
 import type { StarlightRouteData } from "@astrojs/starlight/route-data";
 
 type Entry = StarlightRouteData["sidebar"][number];
@@ -16,7 +17,7 @@ const hasCurrent = (e: Entry): boolean => (e.type === "link" ? e.isCurrent : e.e
     <details class="dz-sub" open={hasCurrent(e) || !e.collapsed}>
       <summary>
         {e.label}
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
       </summary>
       <div class="dz-sub-list"><Astro.self entries={e.entries} /></div>
     </details>

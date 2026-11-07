@@ -1,13 +1,14 @@
 ---
-// Starlight PageTitle override: breadcrumbs from Docs down, the version chip
-// with a link to older docs, the page's path, the title, and the page's
-// description as its lede (boards: DozeDocs, AwsDocs, KafkaDocs).
+// Starlight PageTitle override (boards Docs2Task, Docs2Home): a small
+// breadcrumb (Docs › product › group), the title, and the page's description
+// as its lede. The version is in the docs bar. Under 1180px, where the right
+// rail is gone, a long page gets its "On this page" list here (Docs2Phone).
 import { docsProducts, productFor } from "./products";
 
 // Starlight links "Overview" in the contents to this id.
 const PAGE_TITLE_ID = "_top";
 
-const { entry, sidebar } = Astro.locals.starlightRoute;
+const { entry, sidebar, toc } = Astro.locals.starlightRoute;
 const path = Astro.url.pathname;
 const product = productFor(path) ?? docsProducts[0];
 const isIndex = path === product.href;
@@ -26,30 +27,28 @@ const trail = (entries: Entry[]): string[] | undefined => {
   return undefined;
 };
 const groups = isIndex ? [] : (trail(sidebar) ?? []);
-const shownPath = path.replace(/\/$/, "");
+type TocItem = NonNullable<typeof toc>["items"][number];
+const flat = (items: TocItem[]): TocItem[] => items.flatMap((i) => [i, ...flat(i.children)]);
+const headings = toc ? flat(toc.items).filter((i) => i.slug !== PAGE_TITLE_ID && i.depth === 2) : [];
 ---
 <div class="dz-head">
-  <div class="dz-head-row" data-pagefind-ignore>
-    <nav class="dz-crumbs" aria-label="Breadcrumb">
-      <a href="/docs/">Docs</a>
-      <span aria-hidden="true">›</span>
-      {isIndex ? <span aria-current="page" class="dz-crumb-now">{product.name}</span> : <a href={product.href}>{product.name}</a>}
-      {groups.map((g) => (
-        <>
-          <span aria-hidden="true">›</span>
-          <span>{g}</span>
-        </>
-      ))}
-      {!isIndex && (
-        <>
-          <span aria-hidden="true">›</span>
-          <span aria-current="page" class="dz-crumb-now">{entry.data.title}</span>
-        </>
-      )}
-    </nav>
-    <span class="dz-ver"><span class="dz-vchip">{product.version}</span><a href={product.older.href}>{product.older.label}</a></span>
-  </div>
-  <span class="dz-urlpath" data-pagefind-ignore>{shownPath}</span>
+  <nav class="dz-crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+    <a href="/docs/">Docs</a>
+    <span aria-hidden="true">›</span>
+    {isIndex ? <span aria-current="page" class="dz-crumb-now">{product.name}</span> : <a href={product.href}>{product.name}</a>}
+    {groups.map((g) => (
+      <>
+        <span aria-hidden="true">›</span>
+        <span>{g}</span>
+      </>
+    ))}
+  </nav>
   <h1 id={PAGE_TITLE_ID}>{entry.data.title}</h1>
   {entry.data.description && <p class="dz-lede">{entry.data.description}</p>}
+  {headings.length >= 3 && (
+    <details class="dz-otp print:hidden" data-pagefind-ignore>
+      <summary>On this page <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></summary>
+      <ul>{headings.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
+    </details>
+  )}
 </div>

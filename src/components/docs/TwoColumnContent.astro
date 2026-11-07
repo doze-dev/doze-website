@@ -1,9 +1,9 @@
 ---
-// Starlight TwoColumnContent override: the article, then "On this page"
-// beside it (boards: 760px article, 200px contents, hidden under 1180px).
-const { toc } = Astro.locals.starlightRoute;
+// Starlight TwoColumnContent override: the article, then the right rail
+// beside it (boards: 740px article, 200px rail, hidden under 1180px).
+const { toc, editUrl } = Astro.locals.starlightRoute;
 ---
 <div class="dz-cols">
   <div class="dz-main"><slot /></div>
-  {toc && <div class="dz-toc print:hidden"><slot name="right-sidebar" /></div>}
+  {(toc || editUrl) && <div class="dz-toc print:hidden"><slot name="right-sidebar" /></div>}
 </div>

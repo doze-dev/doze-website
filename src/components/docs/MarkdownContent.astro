@@ -1,0 +1,11 @@
+---
+// Starlight MarkdownContent override: a product's docs home draws the task
+// launcher (DocsHome; see src/routeData.ts) instead of the pulled index page.
+import Default from "@astrojs/starlight/components/MarkdownContent.astro";
+import DocsHome from "./DocsHome.astro";
+import { productFor } from "./products";
+
+const product = productFor(Astro.url.pathname);
+const home = product && Astro.url.pathname === product.href;
+---
+{home ? <DocsHome product={product.id} /> : <Default><slot /></Default>}

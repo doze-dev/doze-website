@@ -1,6 +1,10 @@
 ---
-// Starlight PageSidebar override: "On this page" on wide screens only. The
-// boards drop it below 1180px rather than folding it into a bar.
+// Starlight PageSidebar override: the right rail (Docs2Task): "On this page",
+// then "Edit this page". Hidden under 1180px (PageTitle and Footer carry both).
 import TableOfContents from "@astrojs/starlight/components/TableOfContents.astro";
+import EditLink from "./EditLink.astro";
+
+const { toc, editUrl } = Astro.locals.starlightRoute;
 ---
-{Astro.locals.starlightRoute.toc && <TableOfContents />}
+{toc && <TableOfContents />}
+{editUrl && <div class="dz-rail-edit"><EditLink /></div>}

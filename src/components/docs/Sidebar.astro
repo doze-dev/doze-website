@@ -1,37 +1,41 @@
 ---
-// Starlight Sidebar override: the current product's pages (the topics plugin
-// has already narrowed starlightRoute.sidebar to them). The product switcher
-// is the topics list, drawn in PageFrame with each product's logo.
+// Starlight Sidebar override (board Docs2Side): the current product's pages
+// (the topics plugin has already narrowed starlightRoute.sidebar to them),
+// one collapsible group per heading with its page count. Only the group that
+// holds the current page starts open (the first, on a product's home); the
+// reader can open the others.
 import SidebarGroup from "./SidebarGroup.astro";
 
 const { sidebar } = Astro.locals.starlightRoute;
 type Entry = (typeof sidebar)[number];
 const hasCurrent = (e: Entry): boolean => (e.type === "link" ? e.isCurrent : e.entries.some(hasCurrent));
-// Loose top-level links (doze AWS and doze Kafka list their pages flat) form
-// one untitled group. A group the sidebar marks collapsed folds under its
-// heading unless the reader is on one of its pages.
-const blocks: { label?: string; folded: boolean; entries: Entry[] }[] = [];
+const count = (es: Entry[]): number => es.reduce((n, e) => n + (e.type === "link" ? 1 : count(e.entries)), 0);
+
+// Loose top-level links form one untitled group.
+const blocks: { label?: string; entries: Entry[] }[] = [];
 for (const e of sidebar) {
-  if (e.type === "group") blocks.push({ label: e.label, folded: e.collapsed && !hasCurrent(e), entries: e.entries });
+  if (e.type === "group") blocks.push({ label: e.label, entries: e.entries });
   else if (blocks.length && blocks[blocks.length - 1].label === undefined) blocks[blocks.length - 1].entries.push(e);
-  else blocks.push({ folded: false, entries: [e] });
+  else blocks.push({ entries: [e] });
 }
+const openAt = Math.max(
+  0,
+  blocks.findIndex((b) => b.entries.some(hasCurrent)),
+);
 ---
 <div class="dz-grps">
-  {blocks.map((b) =>
-    b.folded ? (
-      <details class="dz-grp dz-grp-fold">
+  {blocks.map((b, i) =>
+    b.label ? (
+      <details class="dz-grp" open={i === openAt}>
         <summary class="dz-grp-h">
-          {b.label}
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+          <span>{b.label}</span>
+          <span class="dz-grp-n" aria-label={`${count(b.entries)} pages`}>{count(b.entries)}</span>
         </summary>
-        <SidebarGroup entries={b.entries} />
+        <div class="dz-grp-items"><SidebarGroup entries={b.entries} /></div>
       </details>
     ) : (
-      <div class="dz-grp">
-        {b.label && <span class="dz-grp-h">{b.label}</span>}
-        <SidebarGroup entries={b.entries} />
-      </div>
+      <div class="dz-grp-items dz-grp-loose"><SidebarGroup entries={b.entries} /></div>
     ),
   )}
 </div>
