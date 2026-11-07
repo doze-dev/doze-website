@@ -139,8 +139,8 @@ ready on <u>http://localhost:3000</u>
   db:     &#123; image: postgres:16 &#125;
   queue:  &#123; image: redis:7 &#125;
   api:    &#123; build: ./api, ports: ["8080:8080"] &#125;
-  worker: &#123; build: ./worker &#125;
-  web:    &#123; build: ./web, volumes: ["./web:/app"] &#125;</pre>
+<span class="lw-xs">  worker: &#123; build: ./worker &#125;
+</span>  web:    &#123; build: ./web, volumes: ["./web:/app"] &#125;</pre>
     </div>
     <div class="lw-card lw-r lw-sec" data-in={on("c-a")}>
       <div class="lw-ct">Terminal</div>
@@ -190,20 +190,20 @@ api-7c9d…     0/1     <b>ContainerCreating</b>
 db-0          0/1     <b>Pending</b></pre>
     </div>
     <div class="lw-card lw-w" data-in={on("k-out")}>
-      <div class="lw-ct">Terminal · moving day</div>
+      <div class="lw-ct">Terminal · moving day, to somebody else's computer</div>
 <pre class="lw-cb"><i>$</i> vpn connect
 <i>$</i> kubectl config use-context dev-shared
 <i>$</i> helm upgrade --install shop ./chart -n dev-you
-<u>Release "shop" has been upgraded.</u>   <i># on somebody else's computer</i></pre>
+<u>Release "shop" has been upgraded.</u></pre>
     </div>
     <div class="lw-card lw-w" data-in={on("k-b")}>
       <div class="lw-ct">Terminal · four tabs of these</div>
-<pre class="lw-cb"><i>$</i> kubectl -n dev-you port-forward svc/api 8080:80
-Forwarding from 127.0.0.1:8080 -&gt; 80
-<i>$</i> kubectl -n dev-you port-forward svc/postgres 5432:5432
+<pre class="lw-cb"><i>$</i> kubectl port-forward svc/api 8080:80
+<span class="lw-xs">Forwarding from 127.0.0.1:8080 -&gt; 80
+</span><i>$</i> kubectl port-forward svc/postgres 5432:5432
 <b>Unable to listen on port 5432: bind: address already in use</b>
-<i>$</i> # save → sync → rebuild, somewhere else
-syncing 214 files → dev-you … done · rebuilding api (remote) …</pre>
+<span class="lw-xs"><i>$</i> # save → sync → rebuild, somewhere else
+</span>syncing 214 files → dev-you … rebuilding api …</pre>
     </div>
     <div class="lw-card lw-l" data-in={on("k-c")}>
       <div class="lw-ct">Debug · attach to api (in the cluster)</div>
@@ -302,11 +302,11 @@ memory=2Gi, used: memory=7Gi, limited: memory=8Gi</b></pre>
     <!-- home -->
     <div class="lw-card lw-l" data-in={on("h-a")}>
       <div class="lw-ct">doze.hcl · Larder, our made-up example</div>
-<pre class="lw-cb">stack = "larder"
+<pre class="lw-cb"><span class="lw-xs">stack = "larder"
 module postgres "postgres" &#123;
   version = 18   <i>…</i>
 &#125;
-app "catalog" &#123;
+</span>app "catalog" &#123;
   run   = "go run ./services/catalog"
   port  = 8002
   ready = http("/healthz")   <i>…</i>
