@@ -127,8 +127,17 @@ const family = [
   const p = products.find((x) => x.id === f.id);
   return p ? [{ ...f, ...p }] : [];
 });
+const oss = [
+  { repo: "doze", what: "The app, the CLI and the daemon" },
+  { repo: "doze-aws", what: "S3, SQS, DynamoDB, Lambda and more, in one Go binary" },
+  { repo: "doze-kafka", what: "A Kafka broker without the JVM" },
+  { repo: "doze-modules", what: "Postgres, Valkey and the other engines" },
+  { repo: "doze-registry", what: "The signed index modules install from" },
+  { repo: "doze-sdk", what: "Write a module of your own" },
+];
+const clone = "git clone https://github.com/doze-dev/doze && cd doze && make build";
 ---
-<Page current="home" description="doze runs your whole stack natively on your laptop. It wakes when your code calls and goes to sleep when you stop. No VM humming all evening. Free, open source, no account.">
+<Page current="home" description="Your whole development stack on your laptop: local, repeatable from one file and a lock, painless to start, asleep when you stop. Free and open source, Apache-2.0, no account.">
 <div class="hm">
 
   <!-- The sky: dusk over the hero, night below. -->
@@ -141,9 +150,9 @@ const family = [
   <!-- 1. Hero: the evening, then the app -->
   <section class="hm-hero" aria-labelledby="hm-title">
     <div class="hm-wrap hm-hero-copy">
-      <p class="hm-eyebrow"><span class="hm-breath" aria-hidden="true"></span>doze · the dev stack that sleeps when you do</p>
+      <a class="hm-eyebrow" href="#hm-oss"><span class="hm-breath" aria-hidden="true"></span>Free and open source · Apache-2.0</a>
       <h1 class="hm-title" id="hm-title">Work hard.<br /><span>Then close the lid.</span></h1>
-      <p class="hm-lede">Your whole stack runs natively on your laptop, wakes when your code calls and goes to sleep when you stop. No VM humming all evening.</p>
+      <p class="hm-lede">Your whole development stack, local and repeatable: one file in the repo, the same stack on every laptop, painless to start from the app, and asleep the moment you stop. No VM humming all evening.</p>
       <div class="hm-cta">
         <a class="hm-btn" href="/download/">Get doze</a>
         <div class="hm-brew">
@@ -151,7 +160,7 @@ const family = [
           <button type="button" data-copy={brew} aria-label="Copy the install command">Copy</button>
         </div>
       </div>
-      <p class="hm-fine">Free and open source · macOS on Apple silicon, and Linux · no account</p>
+      <p class="hm-fine">Apache-2.0 · no account · no telemetry · macOS on Apple silicon, and Linux</p>
     </div>
 
     <div class="hm-stage">
@@ -223,6 +232,29 @@ const family = [
         <li><b>Your schedule.</b> Nobody else’s outage stops you working.</li>
       </ul>
       <a class="hm-link" href="/the-long-way-round/">Take the long way round <span class="hm-arr" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- 3c. Free and open source, all of it; repeatable on every laptop -->
+  <section class="hm-sec hm-oss" id="hm-oss" aria-labelledby="hm-oss-h">
+    <div class="hm-wrap" data-reveal>
+      <p class="hm-kicker">Free and open source</p>
+      <h2 class="hm-h2" id="hm-oss-h">All of it. Apache-2.0.</h2>
+      <div class="hm-oss-grid">
+        <div class="hm-oss-say">
+          <p>Not a free tier of something paid, and not an open core with the good parts kept back. The app, the CLI, doze AWS, doze Kafka, every module and the registry they install from are on GitHub under Apache-2.0. Read it, build it, fork it, keep it.</p>
+          <p><b>Repeatable, on every laptop.</b> <code>doze.hcl</code> says what runs. <code>doze.lock</code> pins every module to a version and a sha256 for each platform, checked against the registry's signature. Commit both, and a teammate's first <code>doze up</code> runs the stack you run.</p>
+          <div class="hm-cmd hm-oss-cmd">
+            <code><span class="hm-dim">$</span> {clone}</code>
+            <button type="button" data-copy={clone} aria-label="Copy the build command">Copy</button>
+          </div>
+        </div>
+        <ul class="hm-oss-repos">
+          {oss.map((r) => (
+            <li><a href={`https://github.com/doze-dev/${r.repo}`}><span class="hm-oss-name">doze-dev/{r.repo}</span><span class="hm-oss-what">{r.what}</span><span class="hm-oss-lic">Apache-2.0</span></a></li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -574,6 +606,23 @@ const family = [
   .hm-todo { font: 600 clamp(26px, 3vw, 34px)/1.1 var(--font-mono) !important; letter-spacing: 0 !important; color: var(--amber) !important; }
 
   /* ---- Values ---- */
+  .hm-oss-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; margin-top: 36px; align-items: start; }
+  .hm-oss-say p { margin: 0 0 18px; font-size: 17px; line-height: 1.65; color: var(--text-2); text-wrap: pretty; }
+  .hm-oss-say b { color: var(--text); }
+  .hm-oss-say code { font-size: 0.88em; padding: 1px 6px; border-radius: 6px; background: rgba(244, 236, 228, 0.07); color: var(--text); }
+  .hm-oss-cmd { margin-top: 8px; height: auto; min-height: 52px; padding-top: 4px; padding-bottom: 4px; }
+  .hm-oss-cmd code { white-space: normal; overflow-wrap: anywhere; line-height: 1.5; }
+  .hm-oss-repos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .hm-oss-repos a { display: flex; flex-direction: column; gap: 6px; height: 100%; padding: 16px 18px; border-radius: 16px; border: 1px solid var(--line); background: #1a1023; color: var(--text); text-decoration: none; transition: border-color var(--t-fast), transform var(--t-mid) var(--ease-out); }
+  .hm-oss-repos a:hover { border-color: rgba(240, 162, 75, 0.5); transform: translateY(-2px); }
+  .hm-oss-repos a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+  .hm-oss-name { font: 600 14.5px var(--font-mono); }
+  .hm-oss-what { font-size: 14.5px; line-height: 1.45; color: var(--text-2); }
+  .hm-oss-lic { margin-top: auto; padding-top: 6px; font: 500 12px var(--font-mono); color: var(--amber); }
+  @media (max-width: 900px) { .hm-oss-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 520px) { .hm-oss-repos { grid-template-columns: minmax(0, 1fr); } }
+  a.hm-eyebrow { text-decoration: none; transition: border-color var(--t-fast); }
+  a.hm-eyebrow:hover { border-color: rgba(240, 162, 75, 0.5); color: var(--text); }
   .hm-values-in { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px 72px; align-items: center; padding: clamp(36px, 6vw, 72px); border-radius: 28px; background: radial-gradient(70% 120% at 0% 0%, rgba(240, 162, 75, 0.12), transparent 60%), #1a1023; border: 1px solid var(--line); }
   .hm-vals { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px; }
   .hm-vals li { display: flex; flex-direction: column; gap: 6px; padding-top: 16px; border-top: 1px solid var(--line); }
