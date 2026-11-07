@@ -202,6 +202,20 @@ const family = [
     </div>
   </section>
 
+  <!-- 3b. The beast on your desk -->
+  <section class="hm-sec hm-beast" aria-labelledby="hm-beast-h">
+    <div class="hm-wrap hm-beast-in" data-reveal>
+      <p class="hm-beast-k">Your laptop is a beast</p>
+      <h2 class="hm-beast-h" id="hm-beast-h">The most powerful computer you’ve ever owned is on your desk.</h2>
+      <p class="hm-beast-p">And somehow your dev environment runs in someone else’s cluster, behind a tunnel, a ticket and a platform team. You don’t need Kubernetes to run your own code. You need a stack that runs where you are, and goes to sleep when you stop.</p>
+      <ul class="hm-beast-list">
+        <li><b>Your machine.</b> Every service a native process on the laptop you already own.</li>
+        <li><b>Your debugger.</b> Attach to a local process. The breakpoint just hits.</li>
+        <li><b>Your schedule.</b> Nobody else’s outage stops you working.</li>
+      </ul>
+    </div>
+  </section>
+
   <!-- 4. The doze app -->
   <section class="hm-sec" aria-labelledby="hm-app-h">
     <div class="hm-wrap">
@@ -609,4 +623,12 @@ const family = [
     .hm-tile:not(.hm-tile-big) .hm-tile-media video { transform: none; }
     .hm-vc :global(.vc-dot) { min-height: 44px; }
   }
+  .hm-beast { position: relative; }
+  .hm-beast-in { display: flex; flex-direction: column; gap: 22px; padding: 24px 0; }
+  .hm-beast-k { margin: 0; font: 600 13px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); }
+  .hm-beast-h { margin: 0; font: 800 clamp(40px, 6.4vw, 84px)/0.98 var(--font-display); letter-spacing: -0.035em; max-width: 16ch; text-wrap: balance; color: #f4ece4; }
+  .hm-beast-p { margin: 0; font-size: clamp(18px, 2vw, 21px); line-height: 1.6; color: #d6c8df; max-width: 44rem; }
+  .hm-beast-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px; }
+  .hm-beast-list li { padding: 18px 20px; border-radius: 16px; background: rgba(30, 19, 40, 0.72); border: 1px solid #34233f; color: #c9bad3; font-size: 15.5px; line-height: 1.5; }
+  .hm-beast-list b { display: block; margin-bottom: 4px; color: #f4ece4; font: 700 19px var(--font-display); letter-spacing: -0.01em; }
 </style>

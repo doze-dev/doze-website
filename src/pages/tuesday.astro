@@ -1,417 +1,615 @@
 ---
-// A Tuesday, honestly (design: Story). Seven moments, each "How it is" and
-// "With doze", all rendered here; src/scripts/story-tuesday.ts flips them.
+// A Tuesday, honestly: the scroll-story version. One pinned stage (the
+// laptop) and short beats that scroll beside it; each beat sets the stage to a
+// complete state (see components/tuesday/steps.ts). The old click-through
+// stays at /tuesday/ for comparison.
+import Stage from "../components/tuesday/Stage.astro";
+import { chapters, step } from "../components/tuesday/steps";
 import Page from "../layouts/Page.astro";
----
-<Page title="A Tuesday, honestly" current="none">
-<div class="st st-s1" data-story>
 
-  <section class="st-s2">
-    <span class="st-eyebrow">A story you already know</span>
-    <h1 class="st-h st-hero st-s3">A Tuesday, honestly.</h1>
-    <p class="st-s4">You don't call it a mess. It's just how the day goes: the tabs, the ports, the fan, the setup doc nobody trusts. Step through it, then flip each moment to see it with doze.</p>
+// A beat's facts, as attributes the script reads: the stage it sets.
+const b = (id: string) => {
+  const s = step(id);
+  return {
+    id: `t-${id}`,
+    "data-step": id,
+    "data-ch": s.ch,
+    "data-clock": s.clock,
+    "data-light": s.light,
+    "data-fan": String(s.fan),
+    "data-heat": String(s.heat),
+    "data-lid": s.lid ?? "open",
+  };
+};
+---
+<Page title="A Tuesday, honestly" theme="dark" current="none" description="One developer, one Tuesday, told twice: the way it goes, and the same day with doze.">
+<div class="tn" data-tn data-light="dawn">
+
+  <!-- the sky: the light of the day, behind everything -->
+  <div class="tn-skyw" aria-hidden="true"><div class="tn-sky">
+    <i data-l="dawn"></i><i data-l="morning"></i><i data-l="noon"></i><i data-l="afternoon"></i><i data-l="late"></i><i data-l="evening"></i><i data-l="dark"></i><i data-l="rewind"></i><i data-l="calm"></i><i data-l="calm-evening"></i><i data-l="night"></i>
+  </div></div>
+
+  <!-- the rail: the day's clock -->
+  <nav class="tn-rail" aria-label="The day, by the clock">
+    <span class="tn-rail-t">A Tuesday, honestly</span>
+    <ol>
+      {chapters.map((c) => (
+        <li><a href={`#t-${c.id}`} data-rail={c.id} aria-label={`${c.label === "↺" ? "" : `${c.label}, `}${c.name}`}><span>{c.label}</span></a></li>
+      ))}
+    </ol>
+    <button type="button" class="tn-snd" data-sound aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" /></svg>
+      <span class="tn-snd-l">Sound</span><span class="sr-only"> of the fan</span>
+    </button>
+    <i class="tn-prog" aria-hidden="true"></i>
+  </nav>
+
+  <!-- cold open -->
+  <section class="tn-cold" id="t-0857" data-step="cold" data-ch="0857" data-clock="8:57" data-light="dawn" data-fan="1" data-heat="0.15" data-lid="open" aria-labelledby="tn-title">
+    <p class="tn-cold-l" style="--d:0"><span class="tn-time">8:57</span></p>
+    <p class="tn-cold-l" style="--d:1">The laptop opens.</p>
+    <p class="tn-cold-l" style="--d:2">The fan is already spinning. <svg class="tn-cold-fan" viewBox="0 0 40 40" aria-hidden="true"><g><path d="M20 20 C 18 12, 20 5, 26 5 C 30 6, 27 14, 20 20Z" /><path d="M20 20 C 28 18, 35 20, 35 26 C 34 30, 26 27, 20 20Z" /><path d="M20 20 C 22 28, 20 35, 14 35 C 10 34, 13 26, 20 20Z" /><path d="M20 20 C 12 22, 5 20, 5 14 C 6 10, 14 13, 20 20Z" /></g></svg></p>
+    <p class="tn-cold-l" style="--d:3">It never stopped. Not since yesterday.</p>
+    <h1 class="tn-cold-h" id="tn-title" style="--d:4">A Tuesday, honestly.</h1>
+    <p class="tn-cold-s" style="--d:5">One developer, a few projects, one ordinary day. Told twice.</p>
+    <span class="tn-cue" aria-hidden="true" style="--d:6">Scroll</span>
   </section>
 
-  <section class="st-s5" aria-label="The day">
-    <nav class="st-clock" aria-label="Moments in the day">
-        <button type="button" class="st-stop on" aria-pressed="true" data-stop="0"><b>9:02</b>Which terminal?</button>
-        <button type="button" class="st-stop" aria-pressed="false" data-stop="1"><b>9:20</b>Port roulette</button>
-        <button type="button" class="st-stop" aria-pressed="false" data-stop="2"><b>10:05</b>The fan</button>
-        <button type="button" class="st-stop" aria-pressed="false" data-stop="3"><b>11:30</b>Ask the AI</button>
-        <button type="button" class="st-stop" aria-pressed="false" data-stop="4"><b>14:00</b>Back after months</button>
-        <button type="button" class="st-stop" aria-pressed="false" data-stop="5"><b>18:40</b>Close the lid</button>
-        <button type="button" class="st-stop" aria-pressed="false" data-stop="6"><b>19:00</b>The same day, twice</button>
-    </nav>
+  <div class="tn-film">
+    <Stage />
 
-    <div class="st-w" data-day>
-      <div class="st-s6">
-        <div class="st-seg" role="group" aria-label="How it is, or with doze">
-          <button type="button" class="on" aria-pressed="true" data-act="before">How it is</button>
-          <button type="button" class="d" aria-pressed="false" data-act="doze">With doze</button>
+    <div class="tn-beats">
+
+      <!-- ACT 1 -->
+      <section class="tn-act" aria-labelledby="tn-a1">
+        <div class="tn-ch" id="t-0902" tabindex="-1">
+          <article class="tn-beat" {...b("0902a")}>
+            <h2 class="tn-act-h" id="tn-a1"><span>Act one</span>Morning</h2>
+            <p class="tn-time">9:02</p>
+            <p>Coffee. Lid up.</p>
+            <p>The tabs come back, one at a time.</p>
+          </article>
+          <article class="tn-beat" {...b("0902b")}>
+            <p class="tn-list"><code>web · pnpm dev</code> <code>api · poetry run…</code> <code>worker · go run</code> <code>docker compose</code> <code>kafka.sh</code> <code>zsh (??)</code></p>
+            <p>Six of them. You know what five are doing.</p>
+            <p>Nobody knows what <code>zsh (??)</code> is doing. You leave it alone.</p>
+          </article>
         </div>
-        <div class="st-nav">
-          <button type="button" data-act="prev" aria-label="Earlier in the day">← Earlier</button>
-          <button type="button" class="go" data-act="next">Now with doze →</button>
+        <div class="tn-ch" id="t-0920" tabindex="-1">
+          <article class="tn-beat" {...b("0920a")}>
+            <p class="tn-time">9:20</p>
+            <p>You start the database. The first error of the day:</p>
+            <p class="tn-line">Address already in use.</p>
+          </article>
+          <article class="tn-beat" {...b("0920b")}>
+            <p>Whose address? You ask the machine.</p>
+            <p>It's last week's client project. Its Postgres is still up, holding 5432, with the wrong data in it.</p>
+          </article>
+          <article class="tn-beat" {...b("0920c")}>
+            <p>You open the README to see how this one is meant to start.</p>
+            <p>It says <em>Getting started (2023)</em>. It was right, once.</p>
+          </article>
+          <article class="tn-beat" {...b("0920d")}>
+            <p>You start writing ports down where you can see them.</p>
+            <p>3000? 3001? 8000 or 8001? Your head is full, so the bezel gets the rest.</p>
+          </article>
         </div>
-      </div>
+      </section>
 
-      <div class="st-w" data-scene="0">
-        <div class="st-scene">
-          <div class="st-tell">
-            <span class="st-time">9:02</span>
-            <div class="st-w" data-mode="before">
-              <h2>Which terminal was that?</h2>
-              <p>Coffee. Laptop open. Seven tabs from yesterday, and you don't know which ones are still running.</p><p>The web app starts from package.json. The API from pyproject.toml. The worker is a go run. The database is docker compose. Kafka is a script that needs a different Java. The README explains four of these.</p>
-              <p class="st-jab">You didn't design this. It grew.</p>
-            </div>
-            <div class="st-w" data-mode="doze" hidden>
-              <h2 class="st-calm">One file. One command.</h2>
-              <p>The commands didn't go anywhere. They live in doze.hcl, the way you already type them, and doze starts them in the right order with the right addresses.</p>
-            </div>
-          </div>
-          <div class="st-show">
-            <div class="st-w" data-mode="before"><div class="st-mess">
-<div class="st-tabs"><span class="st-tab">web · pnpm dev</span><span class="st-tab on">api · poetry run…</span><span class="st-tab">worker · go run</span><span class="st-tab">docker compose</span><span class="st-tab">kafka.sh</span><span class="st-tab">zsh</span><span class="st-tab">zsh (??)</span></div>
-
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>api — zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> poetry run uvicorn app.main:app --reload --port 8000
-<span class="st-bad">ERROR:    [Errno 48] Address already in use</span>
-<span class="st-dim">$</span> # was it 8000 or 8001 for this one</pre></div>
-<div class="st-files"><div class="st-file"><b>package.json</b><span>"dev": "vite --port 3001"</span></div><div class="st-file"><b>pyproject.toml</b><span>[tool.poetry.scripts]</span></div><div class="st-file"><b>Makefile</b><span>dev: ## TODO</span></div><div class="st-file"><b>docker-compose.yml</b><span>postgres, redis</span></div><div class="st-file"><b>docker-compose.override.yml</b><span>yours, not committed</span></div><div class="st-file"><b>Procfile.dev</b><span>nobody uses this</span></div><div class="st-file"><b>.env</b><span>DATABASE_URL=…5432</span></div><div class="st-file"><b>.env.local</b><span>DATABASE_URL=…5433</span></div><div class="st-file"><b>README.md</b><span>Getting started (2023)</span></div></div></div></div>
-            <div class="st-w" data-mode="doze" hidden><div class="st-calmbox">
-
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>larder — zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> doze up
-<span class="st-ok">✓</span> postgres     <span class="st-dim">asleep · wakes on the first connection</span>
-<span class="st-ok">✓</span> kafka        <span class="st-dim">asleep · wakes on the first connection</span>
-<span class="st-ok">✓</span> migrate-orders <span class="st-dim">done · 2 files</span>
-<span class="st-ok">✓</span> gateway      <span class="st-amb">http://gateway.larder.doze</span>
-<span class="st-ok">✓</span> storefront   <span class="st-amb">http://storefront.larder.doze</span>
-<span class="st-ok">✓</span> fulfilment   <span class="st-dim">awake · uv run python -m fulfilment</span>
-<span class="st-dim">  9 apps, 4 modules, 1 service from doze.hcl</span></pre></div>
-<pre class="st-code"><span class="st-k">app</span> <span class="st-s">"storefront"</span> &#123; run = <span class="st-s">"bun run dev"</span> &#125;
-<span class="st-k">app</span> <span class="st-s">"recommendations"</span> &#123; run = <span class="st-s">"uv run python -m recommendations"</span> &#125;
-<span class="st-k">app</span> <span class="st-s">"orders"</span> &#123; run = <span class="st-s">"go run ./services/orders"</span> &#125;</pre></div></div>
-          </div>
+      <!-- ACT 2 -->
+      <section class="tn-act" aria-labelledby="tn-a2">
+        <div class="tn-ch" id="t-1130" tabindex="-1">
+          <article class="tn-beat" {...b("1130a")}>
+            <h2 class="tn-act-h" id="tn-a2"><span>Act two</span>Noon</h2>
+            <p class="tn-time">11:30</p>
+            <p>Orders can't reach its database. You ask the AI.</p>
+          </article>
+          <article class="tn-beat" {...b("1130b")}>
+            <p>It answers before you've finished asking. Quick. Confident.</p>
+          </article>
+          <article class="tn-beat" {...b("1130c")}>
+            <p>Wrong.</p>
+            <p>“Apologies for the confusion! Try 5433.”</p>
+          </article>
+          <article class="tn-beat" {...b("1130d")}>
+            <p>That's the other other one.</p>
+            <p class="tn-line">It read every file. It can't see your machine.</p>
+          </article>
         </div>
-      </div>
-      <div class="st-w" data-scene="1" hidden>
-        <div class="st-scene">
-          <div class="st-tell">
-            <span class="st-time">9:20</span>
-            <div class="st-w" data-mode="before">
-              <h2>Port roulette.</h2>
-              <p>Address already in use. Something has 8000. You check: it's Python. Which Python?</p><p>And 5432 is a Postgres, but not this project's. It's the one from the client thing last week, still up, holding the port with the wrong data in it.</p>
-              <p class="st-jab">You keep the ports in your head. Your head is full.</p>
-            </div>
-            <div class="st-w" data-mode="doze" hidden>
-              <h2 class="st-calm">Names, not numbers. And it tells you who's in the way.</h2>
-              <p>Every service gets a name of its own, so two projects can both use 5432 without a clash. When a port is taken, doze says who holds it and offers to move them.</p>
-            </div>
-          </div>
-          <div class="st-show">
-            <div class="st-w" data-mode="before"><div class="st-mess">
+      </section>
 
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> lsof -i :5432
-COMMAND   PID USER  NAME
-postgres 4121 you   localhost:postgresql (LISTEN)
-<span class="st-dim">$</span> # …which project is that
-<span class="st-dim">$</span> lsof -i :8000
-python3  5387 you   *:irdmi (LISTEN)</pre></div>
-<div class="st-ports"><div class="st-port"><b>:3000</b><span>web?</span></div><div class="st-port"><b>:3001</b><span>the other web</span></div><div class="st-port"><b>:5173</b><span>vite, somewhere</span></div><div class="st-port"><b>:8000</b><span>api (or billing)</span></div><div class="st-port"><b>:8080</b><span>???</span></div><div class="st-port"><b>:5432</b><span>db (which?)</span></div><div class="st-port"><b>:5433</b><span>db, project 2</span></div><div class="st-port"><b>:6379</b><span>redis, shared?</span></div></div></div></div>
-            <div class="st-w" data-mode="doze" hidden><div class="st-calmbox">
-<div class="st-names"><div class="st-name"><i></i><b>storefront</b><code>http://storefront.larder.doze</code></div><div class="st-name"><i></i><b>gateway</b><code>http://gateway.larder.doze</code></div><div class="st-name"><i></i><b>postgres</b><code>postgres.larder.doze:5432</code></div><div class="st-name"><i></i><b>postgres</b><code>postgres.billing.doze:5432</code></div></div>
-
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>larder — zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> doze up
-<span class="st-bad">✗</span> gateway  port 8000 is taken
-    held by python3 (pid 5387) on 127.0.0.1:8000
-    <span class="st-dim">from ~/code/billing · stop it, or give gateway another port</span></pre></div></div></div>
-          </div>
+      <!-- ACT 3 -->
+      <section class="tn-act" aria-labelledby="tn-a3">
+        <div class="tn-ch" id="t-1400" tabindex="-1">
+          <article class="tn-beat" {...b("1400a")}>
+            <h2 class="tn-act-h" id="tn-a3"><span>Act three</span>Afternoon</h2>
+            <p class="tn-time">14:00</p>
+            <p>A message. <em>can you look at billing?</em></p>
+          </article>
+          <article class="tn-beat" {...b("1400b")}>
+            <p>A repo you haven't opened since spring. You wrote half of it.</p>
+            <p><code>make dev</code>. No rule to make target.</p>
+          </article>
+          <article class="tn-beat" {...b("1400c")}>
+            <p>There's a TypeScript service you've never seen. And a commit that says billing runs on the dev cluster now.</p>
+            <p class="tn-line">Nothing is wrong, exactly. It just isn't familiar any more.</p>
+          </article>
         </div>
-      </div>
-      <div class="st-w" data-scene="2" hidden>
-        <div class="st-scene">
-          <div class="st-tell">
-            <span class="st-time">10:05</span>
-            <div class="st-w" data-mode="before">
-              <h2>The fan.</h2>
-              <p>You're reading code. Nothing is running a test. The fan is.</p><p>A VM is holding every database you've ever started, all day, whether anything talks to it or not. Your battery knows. Your lap knows.</p>
-              <p class="st-jab">Open Activity Monitor. We'll wait. We won't make up your numbers for you.</p>
-            </div>
-            <div class="st-w" data-mode="doze" hidden>
-              <h2 class="st-calm">Asleep means asleep.</h2>
-              <p>No VM. Real processes, started when something connects and stopped two minutes after nothing does. The data stays on disk. Go and look: there's nothing there.</p>
-            </div>
-          </div>
-          <div class="st-show">
-            <div class="st-w" data-mode="before"><div class="st-mess">
-<div class="st-am">
-  <div class="st-am-h"><b>Activity Monitor</b><span>Memory</span></div>
-  <div class="st-am-r hot"><span>Docker Desktop · VM</span><b>[your GB]</b></div><div class="st-am-r"><span>com.docker.backend</span><b>[your MB]</b></div><div class="st-am-r"><span>postgres (container)</span><b>[running since Friday]</b></div><div class="st-am-r"><span>redis (container)</span><b>[running since Friday]</b></div><div class="st-am-r"><span>kafka (container, JVM)</span><b>[your GB]</b></div><div class="st-am-r"><span>node · vite</span><b>[yours]</b></div>
-</div>
-<div class="st-heat"><span>Fan</span><div><i class="st-s11"></i></div><span>Battery</span><div><i class="st-s12"></i></div></div></div></div>
-            <div class="st-w" data-mode="doze" hidden><div class="st-calmbox">
-
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>larder — zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> doze status
-  <span class="st-dim">○</span> postgres   asleep <span class="st-dim">· wakes on a connection</span>
-  <span class="st-dim">○</span> redis      asleep <span class="st-dim">· wakes on a connection</span>
-  <span class="st-dim">○</span> kafka      asleep <span class="st-dim">· wakes on a connection</span>
-  <span class="st-ok">●</span> gateway    awake  <span class="st-dim">· sleeps in 1:40</span>
-<span class="st-dim">$</span> pgrep -l postgres
-<span class="st-dim"># nothing. it's asleep.</span></pre></div></div></div>
-          </div>
+        <div class="tn-ch" id="t-1530" tabindex="-1">
+          <article class="tn-beat" {...b("1530a")}>
+            <h3 class="tn-sub-h">How we got here</h3>
+            <p class="tn-time">15:30</p>
+            <p>Last year local development got too hard, so it moved. Every team got a dev environment in the cloud, run by the platform team.</p>
+            <p>Which means tunnels. One port-forward per thing you need, and 5432 is still taken on this side.</p>
+          </article>
+          <article class="tn-beat" {...b("1530b")}>
+            <p>Every save is a sync and a rebuild, somewhere else.</p>
+            <p>The debugger waits for the tunnel. The tunnel waits for the debugger. Timed out.</p>
+            <p>The logs are in another tool, in another tab.</p>
+          </article>
+          <article class="tn-beat" {...b("1530c")}>
+            <p>Then <code>#platform</code>: <em>Dev environments degraded. Investigating. No ETA.</em></p>
+            <p>Nobody on your team can run anything.</p>
+          </article>
+          <article class="tn-beat" {...b("1530d")}>
+            <p>The platform team is on a production incident first, as they should be. Half of them are asleep in another timezone.</p>
+            <p>You sit, and wait.</p>
+            <p class="tn-line">You needed a platform team just to write code.</p>
+            <p>And on your desk, the most powerful computer you've ever owned sits there, waiting for a cluster to come back.</p>
+            <p>Local development didn't get fixed. It got moved.</p>
+          </article>
         </div>
-      </div>
-      <div class="st-w" data-scene="3" hidden>
-        <div class="st-scene">
-          <div class="st-tell">
-            <span class="st-time">11:30</span>
-            <div class="st-w" data-mode="before">
-              <h2>Ask the AI.</h2>
-              <p>Orders can't reach the database. You ask your agent. It's quick, confident, and wrong.</p><p>It read every file in the repo. It still can't see your machine: which compose file is up, what's on which port, what you started yesterday and forgot.</p>
-              <p class="st-jab">It isn't stupid. Nobody told it what's running.</p>
-            </div>
-            <div class="st-w" data-mode="doze" hidden>
-              <h2 class="st-calm">Give it the truth, not a guess.</h2>
-              <p>doze knows what's running, where, and why it stopped. Your agent asks doze instead of guessing from files: doze status --json is the same answer, for machines.</p>
-            </div>
-          </div>
-          <div class="st-show">
-            <div class="st-w" data-mode="before"><div class="st-mess">
-<div class="st-chat">
-  <div class="st-me">orders can't reach the database. fix it?</div>
-  <div class="st-ai">Make sure Postgres is running on <code>localhost:5432</code> and that <code>DATABASE_URL</code> is set in your .env file.</div>
-  <div class="st-me">it is. it's… a different project's postgres</div>
-  <div class="st-ai">Apologies for the confusion! Try port <code>5433</code>.</div>
-  <div class="st-me">that's the other other one</div>
-</div></div></div>
-            <div class="st-w" data-mode="doze" hidden><div class="st-calmbox">
+      </section>
 
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>agent — zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> doze status
-  <span class="st-ok">●</span> postgres  awake  <span class="st-dim">postgres.larder.doze:5432</span>
-  <span class="st-bad">●</span> orders    crashing <span class="st-dim">· try 2 of 5</span>
-      <span class="st-bad">password authentication failed for user "orders"</span></pre></div>
-<div class="st-chat">
-  <div class="st-ai">orders is crashing on a password: <code>.env.local</code> overrides the <code>DATABASE_URL</code> doze gives it. Remove that line?</div>
-</div></div></div>
-          </div>
+      <!-- ACT 4 -->
+      <section class="tn-act" aria-labelledby="tn-a4">
+        <div class="tn-ch" id="t-1840" tabindex="-1">
+          <article class="tn-beat" {...b("1840a")}>
+            <h2 class="tn-act-h" id="tn-a4"><span>Act four</span>Evening</h2>
+            <p class="tn-time">18:40</p>
+            <p>Done. Before you go, you look.</p>
+            <p>23 containers still up. Two node processes since yesterday.</p>
+          </article>
+          <article class="tn-beat" {...b("1840b")}>
+            <p>You close the lid.</p>
+            <p>None of it stops. Nothing stops on its own, so nothing stops.</p>
+            <p>The bag is warm by the time you're home.</p>
+          </article>
+          <article class="tn-beat tn-silence" {...b("1840c")}>
+            <p class="tn-line">You didn't design this.<br />It grew.</p>
+          </article>
         </div>
-      </div>
-      <div class="st-w" data-scene="4" hidden>
-        <div class="st-scene">
-          <div class="st-tell">
-            <span class="st-time">14:00</span>
-            <div class="st-w" data-mode="before">
-              <h2>Back after six months.</h2>
-              <p>Someone needs a fix in a repo you haven't opened since spring. You know this one. You wrote half of it.</p><p>make dev is gone. There's a TypeScript service you've never seen. .env.example is three variables short. Nothing is wrong, exactly. It just isn't familiar any more.</p>
-              <p class="st-jab">The setup doc rots the day after someone writes it.</p>
-            </div>
-            <div class="st-w" data-mode="doze" hidden>
-              <h2 class="st-calm">The file that runs the stack can't go stale.</h2>
-              <p>If doze.hcl is wrong, nothing starts, so it never drifts from the truth. Pull, doze up, and the new service is simply there, wired to what it needs.</p>
-            </div>
-          </div>
-          <div class="st-show">
-            <div class="st-w" data-mode="before"><div class="st-mess">
+      </section>
 
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>billing — zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> make dev
-<span class="st-bad">make: *** No rule to make target 'dev'.  Stop.</span>
-<span class="st-dim">$</span> git log --oneline -3 -- services/
-a41c9e0 add notifications service (TypeScript)
-7be20d1 move worker to Python
-19ff3a2 bump node to 22</pre></div>
-<div class="st-readme"><b>README.md</b><s>1. make dev</s><s>2. open localhost:3000</s><span>3. ask Priya</span></div></div></div>
-            <div class="st-w" data-mode="doze" hidden><div class="st-calmbox">
+      <!-- THE TURN -->
+      <section class="tn-act" aria-labelledby="tn-rw">
+        <div class="tn-ch" id="t-rewind" tabindex="-1">
+          <article class="tn-beat tn-turn" {...b("rewind")}>
+            <h2 class="tn-turn-h" id="tn-rw">Rewind.</h2>
+            <p class="tn-line">Same Tuesday. One file.</p>
+          </article>
+        </div>
+      </section>
 
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>billing — zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> git pull && doze up
-<span class="st-ok">✓</span> install-notifications <span class="st-dim">done · bun install (lockfile changed)</span>
-<span class="st-ok">✓</span> notifications         awake</pre></div>
-<pre class="st-code"><span class="st-add">+ app "notifications" &#123;
-+   dir = "services/notifications"
-+   run = "bun src/index.ts"
-+   env = &#123; KAFKA_BROKERS = module.kafka.address &#125;
-+ &#125;</span></pre></div></div>
-          </div>
+      <!-- ACT 5 -->
+      <section class="tn-act tn-replay" aria-labelledby="tn-a5">
+        <div class="tn-ch" id="t-doze" tabindex="-1">
+          <article class="tn-beat" {...b("d0902")}>
+            <h2 class="tn-act-h" id="tn-a5"><span>Act five</span>The same day, with doze</h2>
+            <p class="tn-time">9:02</p>
+            <p>Lid up. The fan is off. It was off all night.</p>
+            <p><code>doze up</code>. The stack is Larder, our made-up grocery example: nine apps, four modules and a mail catcher, from one <code>doze.hcl</code>.</p>
+          </article>
+          <article class="tn-beat" {...b("d0920")}>
+            <p class="tn-time">9:20</p>
+            <p>Something holds 8000. You don't hunt for it; doze names it.</p>
+            <p>Stop it, or give every service an address of its own, once, and stop counting ports.</p>
+          </article>
+          <article class="tn-beat" {...b("d1130")}>
+            <p class="tn-time">11:30</p>
+            <p>Orders is unhappy. Your agent asks doze what's running instead of guessing from the files.</p>
+            <p>It's right the first time. It can see your machine now.</p>
+          </article>
+          <article class="tn-beat" {...b("d1400")}>
+            <p class="tn-time">14:00</p>
+            <p><em>can you look at billing?</em> <code>git pull && doze up</code>.</p>
+            <p>The new TypeScript service is just there: whoever added it added it to <code>doze.hcl</code>. If that file were wrong, nothing would start, so it can't go stale.</p>
+          </article>
+          <article class="tn-beat" {...b("d1530")}>
+            <p class="tn-time">15:30</p>
+            <p>Billing runs here, on your laptop, as plain processes. A breakpoint just hits.</p>
+            <p><code>#platform</code> has an outage. You keep working. Nobody's pager is involved.</p>
+            <p>The platform team gets to build the platform, not babysit dev boxes.</p>
+          </article>
+          <article class="tn-beat" {...b("d1840")}>
+            <p class="tn-time">18:40</p>
+            <p>The menu bar. Billing went to sleep on its own, two minutes after you stopped calling it.</p>
+            <p>Larder's workers read Kafka all day, so they never sleep. You stop the stack: one click.</p>
+          </article>
+          <article class="tn-beat tn-home" {...b("d1900")}>
+            <p>You close the lid. Nothing is awake.</p>
+            <p>The laptop is cool. You go home.</p>
+          </article>
         </div>
-      </div>
-      <div class="st-w" data-scene="5" hidden>
-        <div class="st-scene">
-          <div class="st-tell">
-            <span class="st-time">18:40</span>
-            <div class="st-w" data-mode="before">
-              <h2>Close the lid.</h2>
-              <p>Done for the day. Lid shut, bag zipped.</p><p>Twenty-three containers from three projects are still up. Two node processes have been running since yesterday. The bag is warm by the time you're home.</p>
-              <p class="st-jab">Nothing stops on its own. So nothing stops.</p>
-            </div>
-            <div class="st-w" data-mode="doze" hidden>
-              <h2 class="st-calm">It goes to sleep. So can you.</h2>
-              <p>Every stack, in the menu bar. Idle services are already asleep; quit the app and your stacks keep running, asleep, until something calls them in the morning.</p>
-            </div>
-          </div>
-          <div class="st-show">
-            <div class="st-w" data-mode="before"><div class="st-mess">
-
-<div class="st-win"><div class="st-bar"><i class="st-s7"></i><i class="st-s8"></i><i class="st-s9"></i><span>zsh</span></div><pre class="st-pre st-s10"><span class="st-dim">$</span> docker ps --format '&#123;&#123;.Names&#125;&#125;' | wc -l
-      23
-<span class="st-dim">$</span> ps -eo etime,comm | grep node
- 1-02:14:09 node
- 1-01:58:40 node</pre></div></div></div>
-            <div class="st-w" data-mode="doze" hidden><div class="st-calmbox">
-<div class="st-menu">
-  <div class="st-menu-h">Stacks</div>
-  <div class="st-menu-r on"><span><i class="st-s13"></i>larder</span><b>all asleep</b></div>
-  <div class="st-menu-r"><span><i class="st-s13"></i>billing</span><b>all asleep</b></div>
-  <div class="st-menu-r"><span><i class="st-s14"></i>acme</span><b>down</b></div>
-  <div class="st-menu-sep"></div>
-  <div class="st-menu-r"><span>Quit doze</span><b>stacks keep running</b></div>
-</div></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="st-s15">
-        <span class="st-eyebrow st-s16" data-meter-title>The mess meter, so far today</span>
-        <div class="st-meter" role="status" aria-live="polite">
-            <div class="st-m"><b class="st-m-bad">7</b><span>commands to remember</span><small></small></div>
-            <div class="st-m"><b class="st-m-zero">0</b><span>ports to keep in your head</span><small></small></div>
-            <div class="st-m"><b class="st-m-bad">9</b><span>files to read before you start</span><small></small></div>
-            <div class="st-m"><b class="st-m-zero">0</b><span>still running when you close the lid</span><small></small></div>
-        </div>
-      </div>
+      </section>
     </div>
+  </div>
 
-    <div class="st-w" data-end hidden>
-      <div class="st-s17">
-        <h2 class="st-h st-s18" tabindex="-1" data-end-title>The same Tuesday, twice.</h2>
-        <div class="st-sum">
-          <div class="st-col st-s19">
-            <b class="st-s20">How it is</b>
-            <div class="st-row"><span class="st-s21">commands to remember</span><b class="st-s22">7</b></div>
-            <div class="st-row"><span class="st-s21">ports to keep in your head</span><b class="st-s22">8</b></div>
-            <div class="st-row"><span class="st-s21">files to read before you start</span><b class="st-s22">9</b></div>
-            <div class="st-row"><span class="st-s21">still running when you close the lid</span><b class="st-s22">23</b></div>
-          </div>
-          <div class="st-col st-s23">
-            <b class="st-s24">With doze</b>
-            <div class="st-row"><span class="st-s25">commands to remember <small class="st-s26">· doze up</small></span><b class="st-s27">1</b></div>
-            <div class="st-row"><span class="st-s25">ports to keep in your head <small class="st-s26">· every service has a name</small></span><b class="st-s27">0</b></div>
-            <div class="st-row"><span class="st-s25">files to read before you start <small class="st-s26">· doze.hcl</small></span><b class="st-s27">1</b></div>
-            <div class="st-row"><span class="st-s25">still running when you close the lid <small class="st-s26">· everything idle is asleep</small></span><b class="st-s27">0</b></div>
-          </div>
-        </div>
-        <p class="st-s28">This Tuesday is a story, and its counts are the story's. The stack in it is Larder, a made-up grocery service we built as an example. Yours will differ. That's rather the point: count yours.</p>
-        <div class="st-s29">
-          <a class="st-s30" href="/download/">Get doze</a>
-          <a class="st-s31" href="/examples/">Run our example project, Larder: a whole stack, one command</a>
-          <button class="st-s32" type="button" data-act="restart">Start the day again</button>
-        </div>
-      </div>
+  <!-- ending -->
+  <section class="tn-end" id="t-end" data-step="end" data-ch="doze" data-clock="18:41" data-light="night" data-fan="0" data-heat="0" data-lid="closed" aria-labelledby="tn-end-h">
+    <img class="tn-end-moon" src="/brand/family-moon.svg" alt="" width="56" height="56" />
+    <h2 class="tn-end-h" id="tn-end-h">The same Tuesday, twice.</h2>
+    <div class="tn-tally">
+      <div class="tn-tally-h" aria-hidden="true"><span></span><b>How it is</b><b>With doze</b></div>
+      <dl>
+        <div><dt>Commands to remember</dt><dd class="was">7</dd><dd class="now">1 <small>doze up</small></dd></div>
+        <div><dt>Ports in your head</dt><dd class="was">8</dd><dd class="now">0 <small>every service has a name</small></dd></div>
+        <div><dt>Files to read before you start</dt><dd class="was">9</dd><dd class="now">1 <small>doze.hcl</small></dd></div>
+        <div><dt>Teams you wait on to run your code</dt><dd class="was">1</dd><dd class="now">0 <small>it runs on your laptop</small></dd></div>
+        <div><dt>Still running when you close the lid</dt><dd class="was">23</dd><dd class="now">0 <small>asleep, or stopped</small></dd></div>
+      </dl>
+      <p class="tn-tally-n">These are the story's own numbers, not a benchmark. Yours will differ. Count yours.</p>
     </div>
+    <p class="tn-family">Work hard. Then close the lid.</p>
+    <div class="tn-cta">
+      <a class="tn-btn" href="/download/">Get doze</a>
+      <a class="tn-btn2" href="/examples/">Run the example <small>Larder: made up, real code</small></a>
+    </div>
+    <a class="tn-again" href="#t-0857">Start the day again</a>
   </section>
 </div>
 </Page>
 
-<script>import "../scripts/story-tuesday.ts";</script>
+<script>import "../scripts/tuesday.ts";</script>
 
-<style>
-.st a{color:#F0A24B;text-decoration:none}
-.st-eyebrow{font:13px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:#F0A24B}
-.st-h{margin:0;font-family:var(--font-display);font-weight:800;letter-spacing:-0.035em;line-height:.98;text-wrap:balance}
-.st-clock{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;position:relative}
-.st-stop{display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;padding:14px 14px 12px;border-radius:14px;border:1px solid #34233F;background:#1A1022;color:#C9BAD3;font:500 14px var(--font-text);cursor:pointer;min-height:76px}
-.st-stop b{font:600 20px var(--font-mono);color:#F4ECE4}
-.st-stop:hover{border-color:#7A5E8C}
-.st-stop.on{border-color:#F0A24B;background:#2A1A34;box-shadow:0 0 0 1px #F0A24B}
-.st-stop.done b{color:#9C8AAB}
-.st-stop:focus-visible,.st-seg button:focus-visible,.st-nav button:focus-visible{outline:2px solid #F0A24B;outline-offset:2px}
-.st-seg{display:inline-flex;padding:4px;border-radius:12px;background:#1A1022;border:1px solid #34233F}
-.st-seg button{height:44px;padding:0 18px;border-radius:9px;border:0;background:transparent;color:#C9BAD3;font:600 15px var(--font-text);cursor:pointer}
-.st-seg button.on{background:#F4ECE4;color:#140C1B}
-.st-seg button.on.d{background:#F0A24B;color:#2A1534}
-.st-scene{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:start}
-.st-tell{display:flex;flex-direction:column;gap:14px}
-.st-tell h2{margin:0;font:800 52px/1 var(--font-display);letter-spacing:-0.03em}
-.st-tell h2.st-calm{color:#F0A24B}
-.st-tell p{margin:0;font-size:19px;line-height:1.6;color:#D6C8DF}
-.st-tell .st-jab{font:600 18px var(--font-text);color:#FF9AA8}
-.st-time{font:600 15px var(--font-mono);color:#9C8AAB}
-.st-show{display:flex;flex-direction:column;gap:14px}
-.st-mess{display:flex;flex-direction:column;gap:12px;transform:rotate(-0.6deg)}
-.st-calmbox{display:flex;flex-direction:column;gap:12px}
-.st-win{border-radius:14px;overflow:hidden;border:1px solid #4A3458;box-shadow:0 30px 70px rgba(0,0,0,.45)}
-.st-bar{height:30px;background:#0E0912;display:flex;align-items:center;gap:7px;padding:0 12px}
-.st-bar i{width:10px;height:10px;border-radius:5px;display:block}
-.st-bar span{margin:0 auto;font:12px var(--font-mono);color:#8A85A8}
-.st pre,.st code{font-variant-ligatures:none}
-.st-pre{margin:0;padding:16px 18px;font:14px/1.75 var(--font-mono);color:#E9DEEF;white-space:pre-wrap;overflow-wrap:anywhere}
-.st-dim{color:#9C8AAB}.st-bad{color:#FF9AA8}.st-ok{color:#8BE39B}.st-amb{color:#F0A24B}
-.st-tabs{display:flex;gap:4px;flex-wrap:wrap}
-.st-tab{font:12.5px var(--font-mono);color:#C9BAD3;background:#1E1328;border:1px solid #34233F;border-radius:8px;padding:6px 10px;white-space:nowrap}
-.st-tab.on{border-color:#FF9AA8;color:#FFE0E5}
-.st-files{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.st-file{display:flex;flex-direction:column;gap:2px;background:#1E1328;border:1px solid #34233F;border-radius:10px;padding:9px 11px;min-width:0}
-.st-file b{font:600 13px var(--font-mono);color:#F4ECE4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.st-file span{font-size:12.5px;color:#9C8AAB;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.st-ports{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.st-port{background:#2A1520;border:1px solid #4A2230;border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:2px}
-.st-port b{font:600 15px var(--font-mono);color:#FFE0E5}
-.st-port span{font-size:12.5px;color:#D6A9B3}
-.st-names{display:flex;flex-direction:column;gap:8px}
-.st-name{display:flex;align-items:center;gap:12px;background:#1E1328;border:1px solid #34233F;border-radius:12px;padding:12px 14px}
-.st-name i{width:9px;height:9px;border-radius:5px;background:#8BE39B;flex:none}
-.st-name b{font-size:15px;width:96px;flex:none}
-.st-name code{font:14px var(--font-mono);color:#F0A24B;overflow-wrap:anywhere}
-.st-am{background:#F3EEF6;color:#2B2232;border-radius:12px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45)}
-.st-am-h{display:flex;justify-content:space-between;padding:10px 14px;background:#E2D9E8;font-size:13px}
-.st-am-r{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:14px;border-top:1px solid #DDD3E3}
-.st-am-r b{font:600 13px var(--font-mono);color:#6B2E3C}
-.st-am-r.hot{background:#FCE8EC}
-.st-heat{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;font-size:13px;color:#C9BAD3}
-.st-heat div{height:10px;border-radius:5px;background:#2E1F3A;overflow:hidden}
-.st-heat i{display:block;height:100%;background:#F0A24B}
-.st-chat{display:flex;flex-direction:column;gap:10px}
-.st-me,.st-ai{max-width:84%;padding:12px 15px;border-radius:16px;font-size:15.5px;line-height:1.5}
-.st-me{align-self:flex-end;background:#3A2448;color:#F4ECE4;border-bottom-right-radius:4px}
-.st-ai{align-self:flex-start;background:#1E1328;border:1px solid #34233F;color:#D6C8DF;border-bottom-left-radius:4px}
-.st-chat code{font:13.5px var(--font-mono);color:#F4ECE4}
-.st-readme{display:flex;flex-direction:column;gap:6px;background:#F3EEF6;color:#2B2232;border-radius:12px;padding:14px 16px;font-size:15px;transform:rotate(1.2deg);align-self:flex-start;min-width:260px}
-.st-readme s{color:#8A7A92}
-.st-readme span{font-weight:600;color:#B4233C}
-.st-code{margin:0;padding:16px 18px;border-radius:14px;background:#120A18;border:1px solid #2E1F3A;font:14px/1.7 var(--font-mono);color:#E9DEEF;white-space:pre-wrap;overflow-wrap:anywhere}
-.st-k{color:#C792EA}.st-s{color:#F0A24B}.st-add{color:#8BE39B}
-.st-menu{align-self:flex-start;width:min(360px,100%);background:#F3EEF6;color:#2B2232;border-radius:12px;padding:6px;box-shadow:0 30px 70px rgba(0,0,0,.45);font-size:15px}
-.st-menu-h{padding:6px 12px 4px;font-size:12px;font-weight:600;color:#7A6E86}
-.st-menu-r{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:7px}
-.st-menu-r span{display:flex;align-items:center;gap:8px}
-.st-menu-r i{width:8px;height:8px;border-radius:4px;display:block}
-.st-menu-r b{font-weight:500;color:#6A5E76}
-.st-menu-r.on{background:#E9DFF0}
-.st-menu-sep{height:1px;background:#DDD3E3;margin:6px 8px}
-.st-meter{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.st-m{background:#1A1022;border:1px solid #34233F;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:6px}
-.st-m b{font:800 46px/1 var(--font-display);letter-spacing:-0.03em}
-.st-m span{font-size:14px;color:#C9BAD3;line-height:1.4}
-.st-m small{font:12.5px var(--font-mono);color:#8BE39B}
-.st-nav{display:flex;gap:10px;align-items:center}
-.st-nav button{height:46px;padding:0 18px;border-radius:12px;border:1px solid #4A3458;background:transparent;color:#F4ECE4;font:600 15px var(--font-text);cursor:pointer}
-.st-nav button.go{background:#F0A24B;border-color:#F0A24B;color:#2A1534}
-.st-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.st-col{border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:14px}
-.st-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px;font-size:16px}
-.st-row b{font:800 30px var(--font-display)}
-@media (max-width:900px){.st-scene{grid-template-columns:1fr !important;gap:28px}.st-clock{grid-template-columns:repeat(4,minmax(0,1fr)) !important}.st-meter{grid-template-columns:repeat(2,minmax(0,1fr)) !important}.st-tell h2{font-size:38px}.st-sum{grid-template-columns:1fr !important}.st-files{grid-template-columns:repeat(2,minmax(0,1fr))}.st-ports{grid-template-columns:repeat(2,minmax(0,1fr))}.st-hero{font-size:52px !important}.st-mess{transform:none}}
-/* one-off layout from the board's inline styles */
-.st-s1.st-s1.st-s1{font-family: var(--font-text);color: #F4ECE4;background: #140C1B}
-.st-s2.st-s2.st-s2{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 96px 32px 40px;display: flex;flex-direction: column;gap: 22px}
-.st-s3.st-s3.st-s3{font-size: 96px;max-width: 12ch}
-.st-s4.st-s4.st-s4{margin: 0;font-size: 22px;line-height: 1.5;color: #D6C8DF;max-width: 40rem}
-.st-s5.st-s5.st-s5{box-sizing: content-box;max-width: 1240px;margin: 0 auto;padding: 0 32px 72px;display: flex;flex-direction: column;gap: 28px}
-.st-s6.st-s6.st-s6{display: flex;justify-content: space-between;align-items: center;gap: 16px;flex-wrap: wrap}
-.st-s7.st-s7.st-s7{background:#FF5F57}
-.st-s8.st-s8.st-s8{background:#FEBC2E}
-.st-s9.st-s9.st-s9{background:#28C840}
-.st-s10.st-s10.st-s10{background:#120A18}
-.st-s11.st-s11.st-s11{width:86%}
-.st-s12.st-s12.st-s12{width:31%;background:#FF9AA8}
-.st-s13.st-s13.st-s13{background:#8BE39B}
-.st-s14.st-s14.st-s14{background:#5A4168}
-.st-s15.st-s15.st-s15{display: flex;flex-direction: column;gap: 12px;margin-top: 12px}
-.st-s16.st-s16.st-s16{color: #9C8AAB}
-.st-s17.st-s17.st-s17{display: flex;flex-direction: column;gap: 28px}
-.st-s18.st-s18.st-s18{font-size: 64px;max-width: 16ch}
-.st-s19.st-s19.st-s19{background: #2A1520;border: 1px solid #4A2230}
-.st-s20.st-s20.st-s20{font: 700 22px var(--font-display);color: #FFB3BF}
-.st-s21.st-s21.st-s21{color: #E7C9CF}
-.st-s22.st-s22.st-s22{color: #FFE0E5}
-.st-s23.st-s23.st-s23{background: #241A0E;border: 1px solid #5A4220}
-.st-s24.st-s24.st-s24{font: 700 22px var(--font-display);color: #F0A24B}
-.st-s25.st-s25.st-s25{color: #E9D6BE}
-.st-s26.st-s26.st-s26{font: 12px var(--font-mono);color: #B8A07E}
-.st-s27.st-s27.st-s27{color: #FFE6C4}
-.st-s28.st-s28.st-s28{margin: 0;font-size: 15px;color: #9C8AAB;max-width: 44rem}
-.st-s29.st-s29.st-s29{display: flex;gap: 12px;flex-wrap: wrap}
-.st-s30.st-s30.st-s30{display: inline-flex;align-items: center;height: 52px;padding: 0 24px;border-radius: 12px;background: #F0A24B;color: #2A1534;font-weight: 600;font-size: 16px}
-.st-s31.st-s31.st-s31{display: inline-flex;align-items: center;height: 52px;padding: 0 24px;border-radius: 12px;border: 1px solid #4A3458;color: #F4ECE4;font-weight: 600;font-size: 16px}
-.st-s32.st-s32.st-s32{height: 52px;padding: 0 20px;border-radius: 12px;border: 0;background: transparent;color: #C9BAD3;font: 600 16px var(--font-text);cursor: pointer}
-/* the states, toggled by the script */
-.st-w{display:contents}
-.st-m-bad{color:#FF9AA8}.st-m-zero{color:#8F7FA0}.st-m-doze{color:#F0A24B}
-.st-nav button[aria-disabled="true"]{opacity:.5;cursor:default}
+<style is:global>
+/* ── Skin: every colour, face and size the story uses. Re-skin here. ── */
+.tn {
+  --tn-ground: #140c1b;
+  --tn-raised: #1e1328;
+  --tn-line: #34233f;
+  --tn-text: #f4ece4;
+  --tn-text-2: #d6c8df;
+  --tn-dim: #b3a3c0;
+  --tn-amber: #f0a24b;
+  --tn-amber-ink: #2a1534;
+  --tn-good: #8be39b;
+  --tn-bad: #ff9aa8;
+  --tn-heat: #ff6a2b;
+  --tn-paper: #f3e3a0;
+  --tn-paper-ink: #3a2448;
+  --tn-term: #120b18;
+  --tn-term-text: #e9dff0;
+  --tn-term-dim: #9c8aab;
+  --tn-display: var(--font-display);
+  --tn-body: var(--font-text);
+  --tn-mono: var(--font-mono);
+  /* the light of the day */
+  --sky-dawn: linear-gradient(180deg, #1d2431 0%, #161420 60%, #140c1b 100%);
+  --sky-morning: radial-gradient(120% 70% at 80% 0%, #2a3a4c 0%, transparent 60%), linear-gradient(180deg, #1c2733 0%, #151621 70%);
+  --sky-noon: radial-gradient(70% 45% at 50% -5%, #4a4752 0%, transparent 70%), linear-gradient(180deg, #2f2d37 0%, #1b1822 80%);
+  --sky-afternoon: radial-gradient(90% 60% at 100% 10%, #3a2c2a 0%, transparent 65%), linear-gradient(180deg, #2a2129 0%, #181320 80%);
+  --sky-late: radial-gradient(90% 70% at 100% 30%, #4a2e22 0%, transparent 65%), linear-gradient(180deg, #2a1d25 0%, #170f1c 85%);
+  --sky-evening: radial-gradient(100% 80% at 0% 100%, #6b2e14 0%, transparent 60%), linear-gradient(180deg, #2a1622 0%, #1d0f1c 100%);
+  --sky-dark: #050307;
+  --sky-rewind: radial-gradient(60% 50% at 50% 50%, #1a1224 0%, #08060b 100%);
+  --sky-calm: linear-gradient(180deg, #1d1428 0%, #170f21 100%);
+  --sky-calm-evening: radial-gradient(90% 70% at 0% 100%, #3a2030 0%, transparent 65%), linear-gradient(180deg, #1e1428 0%, #170f21 100%);
+  --sky-night: radial-gradient(60% 50% at 85% 10%, #2a1e3a 0%, transparent 70%), linear-gradient(180deg, #100a18 0%, #0b0711 100%);
+  --rail-h: 60px;
+  --stage-h: calc(100svh - var(--rail-h));
+}
+
+/* ── Frame ── */
+.tn { position: relative; isolation: isolate; color: var(--tn-text); font-family: var(--tn-body); }
+.tn code, .tn pre { font-family: var(--tn-mono); font-variant-ligatures: none; }
+.tn-skyw { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.tn-sky { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.tn-sky i { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; }
+.tn-sky i[data-l="dawn"] { background: var(--sky-dawn); }
+.tn-sky i[data-l="morning"] { background: var(--sky-morning); }
+.tn-sky i[data-l="noon"] { background: var(--sky-noon); }
+.tn-sky i[data-l="afternoon"] { background: var(--sky-afternoon); }
+.tn-sky i[data-l="late"] { background: var(--sky-late); }
+.tn-sky i[data-l="evening"] { background: var(--sky-evening); }
+.tn-sky i[data-l="dark"] { background: var(--sky-dark); }
+.tn-sky i[data-l="rewind"] { background: var(--sky-rewind); }
+.tn-sky i[data-l="calm"] { background: var(--sky-calm); }
+.tn-sky i[data-l="calm-evening"] { background: var(--sky-calm-evening); }
+.tn-sky i[data-l="night"] { background: var(--sky-night); }
+.tn[data-light="dawn"] .tn-sky i[data-l="dawn"], .tn[data-light="morning"] .tn-sky i[data-l="morning"], .tn[data-light="noon"] .tn-sky i[data-l="noon"], .tn[data-light="afternoon"] .tn-sky i[data-l="afternoon"], .tn[data-light="late"] .tn-sky i[data-l="late"], .tn[data-light="evening"] .tn-sky i[data-l="evening"], .tn[data-light="dark"] .tn-sky i[data-l="dark"], .tn[data-light="rewind"] .tn-sky i[data-l="rewind"], .tn[data-light="calm"] .tn-sky i[data-l="calm"], .tn[data-light="calm-evening"] .tn-sky i[data-l="calm-evening"], .tn[data-light="night"] .tn-sky i[data-l="night"] { opacity: 1; }
+
+/* ── Rail ── */
+.tn-rail { position: sticky; top: 0; z-index: 20; height: var(--rail-h); display: flex; align-items: center; gap: 16px; padding: 0 24px; background: rgba(12, 8, 16, 0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+.tn-rail-t { font: 700 15px/1 var(--tn-display); letter-spacing: -0.01em; color: var(--tn-text-2); white-space: nowrap; flex: 0 0 auto; }
+.tn-rail ol { list-style: none; margin: 0 auto; padding: 0; display: flex; align-items: center; gap: 2px; position: relative; }
+.tn-rail a { display: flex; align-items: center; justify-content: center; min-width: 52px; height: 44px; padding: 0 8px; border-radius: 10px; text-decoration: none; color: var(--tn-dim); font: 500 13px/1 var(--tn-mono); position: relative; transition: color 0.3s; }
+.tn-rail a::before { content: ""; position: absolute; left: 50%; bottom: 5px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: currentColor; opacity: 0.45; transition: transform 0.3s, opacity 0.3s, background 0.3s; }
+.tn-rail a:hover { color: var(--tn-text); }
+.tn-rail a:focus-visible, .tn-snd:focus-visible, .tn-end a:focus-visible { outline: 2px solid var(--tn-amber); outline-offset: 2px; }
+.tn-rail a.past { color: var(--tn-text-2); }
+.tn-rail a[aria-current] { color: var(--tn-amber); }
+.tn-rail a[aria-current]::before { opacity: 1; transform: scale(1.5); }
+.tn-rail a[data-rail="doze"] span { font-family: var(--tn-display); font-weight: 700; font-size: 15px; }
+.tn-snd { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.14); background: transparent; color: var(--tn-text-2); font: 500 13px/1 var(--tn-body); cursor: pointer; }
+.tn-snd svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+.tn-snd .w { opacity: 0.25; }
+.tn-snd[aria-pressed="true"] { color: var(--tn-amber); border-color: rgba(240, 162, 75, 0.5); }
+.tn-snd[aria-pressed="true"] .w { opacity: 1; }
+.tn-prog { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--tn-amber); transform-origin: 0 50%; transform: scaleX(0); opacity: 0.8; }
+
+/* ── Cold open ── */
+.tn-cold { min-height: calc(100svh - var(--rail-h)); display: flex; flex-direction: column; justify-content: center; max-width: 1100px; margin: 0 auto; padding: 72px 40px 96px; position: relative; scroll-margin-top: var(--rail-h); }
+.tn-cold-l { margin: 0 0 10px; font: 500 clamp(22px, 2.6vw, 30px)/1.35 var(--tn-body); color: var(--tn-text-2); }
+.tn-cold-l .tn-time { font-size: inherit; }
+.tn-cold-h { margin: 40px 0 18px; font: 800 clamp(52px, 8vw, 112px)/0.95 var(--tn-display); letter-spacing: -0.035em; color: var(--tn-text); }
+.tn-cold-s { margin: 0; font-size: 19px; color: var(--tn-text-2); max-width: 34ch; }
+.tn-cold-fan { width: 0.9em; height: 0.9em; vertical-align: -0.12em; margin-left: 6px; fill: var(--tn-dim); }
+.tn-cold-fan g { transform-origin: 20px 20px; animation: tn-spin 1.1s linear infinite; }
+.tn-cue { position: absolute; left: 40px; bottom: 32px; font: 500 12px/1 var(--tn-mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--tn-dim); }
+.tn-cue::after { content: ""; display: block; width: 1px; height: 36px; margin: 12px 0 0 4px; background: linear-gradient(var(--tn-dim), transparent); }
+.tn-js .tn-cold [style*="--d"] { animation: tn-rise 0.9s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d) * 0.55s + 0.15s); }
+
+/* ── Film: beats beside (desktop) or under (phone) the pinned stage ── */
+.tn-film { display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); column-gap: clamp(32px, 5vw, 80px); max-width: 1440px; margin: 0 auto; padding: 0 clamp(24px, 4vw, 56px); }
+.tn-beats { grid-column: 1; grid-row: 1; }
+.tn-stage { grid-column: 2; grid-row: 1; position: sticky; top: var(--rail-h); align-self: start; height: var(--stage-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+.tn:not(.tn-js) .tn-stage { display: none; }
+.tn:not(.tn-js) .tn-film { grid-template-columns: minmax(0, 640px); justify-content: center; }
+
+.tn-ch { scroll-margin-top: var(--rail-h); outline: none; }
+.tn-beat { min-height: 88svh; display: flex; flex-direction: column; justify-content: center; padding: 8vh 0; opacity: 0.4; transition: opacity 0.6s ease; }
+.tn-beat.on, .tn:not(.tn-js) .tn-beat, .tn-rm .tn-beat { opacity: 1; }
+.tn-replay .tn-beat { min-height: 70svh; }
+.tn-beat p { margin: 0 0 14px; font-size: 20px; line-height: 1.5; color: var(--tn-text-2); max-width: 34ch; text-wrap: pretty; }
+.tn-beat p:first-of-type:not(.tn-time) { color: var(--tn-text); }
+.tn-beat p code, .tn-end code { font-size: 0.86em; padding: 1px 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); color: var(--tn-text); white-space: nowrap; }
+.tn-beat em { font-style: normal; color: var(--tn-text); background: rgba(240, 162, 75, 0.14); padding: 0 4px; border-radius: 4px; }
+.tn-time { font: 600 15px/1 var(--tn-mono) !important; letter-spacing: 0.04em; color: var(--tn-amber) !important; margin: 0 0 18px !important; }
+.tn-line { font: 700 clamp(28px, 2.6vw, 36px)/1.15 var(--tn-display) !important; letter-spacing: -0.02em; color: var(--tn-text) !important; margin-top: 10px !important; max-width: 18ch !important; text-wrap: balance; }
+.tn-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.tn-list code { white-space: nowrap; }
+.tn-act-h { margin: 0 0 36px; font: 800 clamp(40px, 4vw, 52px)/1 var(--tn-display); letter-spacing: -0.03em; color: var(--tn-text); }
+.tn-act-h span, .tn-sub-h { display: block; margin-bottom: 10px; font: 600 13px/1 var(--tn-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--tn-dim); }
+.tn-sub-h { margin: 0 0 22px; }
+.tn-silence { min-height: 120svh; }
+.tn-silence .tn-line { font-size: clamp(34px, 3.6vw, 52px) !important; color: var(--tn-text-2) !important; }
+.tn-turn { min-height: 110svh; }
+.tn-turn-h { margin: 0 0 18px; font: 800 clamp(64px, 8vw, 120px)/0.9 var(--tn-display); letter-spacing: -0.04em; }
+.tn-replay .tn-act-h span { color: var(--tn-amber); }
+.tn-home { min-height: 90svh; }
+.tn-home p:last-child { font: 700 30px/1.2 var(--tn-display); color: var(--tn-text); letter-spacing: -0.015em; }
+
+/* ── Stage ── */
+.tn-laptop { width: min(92%, 860px, calc((var(--stage-h) - 150px) * 1.5)); container-type: inline-size; position: relative; }
+.tn-glow { position: absolute; left: 50%; top: 50%; width: 90%; aspect-ratio: 1.6; translate: -50% -42%; border-radius: 50%; background: radial-gradient(closest-side, var(--tn-heat), transparent); opacity: calc(var(--heat, 0) * 0.42); filter: blur(30px); transition: opacity 1.2s ease; pointer-events: none; }
+.tn-lid { position: relative; aspect-ratio: 16 / 10.4; padding: 2.1cqi 2.1cqi 2.6cqi; border-radius: 2.4cqi 2.4cqi 0.8cqi 0.8cqi; background: linear-gradient(180deg, #19141d, #0c090e); box-shadow: inset 0 0 0 0.18cqi #3a3140, 0 3cqi 7cqi rgba(0, 0, 0, 0.45); transform-origin: 50% 100%; transition: transform 0.9s cubic-bezier(.6, 0, .2, 1); }
+.tn-stage[data-lid="closed"] .tn-lid { transform: scaleY(0.035); }
+.tn-screen { position: relative; height: 100%; overflow: hidden; border-radius: 0.6cqi; background: #0b0810; transition: opacity 0.6s ease; }
+.tn-stage[data-lid="closed"] .tn-screen { opacity: 0; }
+.tn-wall { position: absolute; inset: 0; background: linear-gradient(160deg, #2c2140 0%, #1c1328 55%, #15101d 100%); transition: opacity 1s; }
+.tn-wall::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, #3d5370 0%, #1d2534 70%); opacity: 0; transition: opacity 1.2s; }
+.tn-stage[data-light="noon"] .tn-wall::after { opacity: 0.55; }
+.tn-stage[data-light="morning"] .tn-wall::after { opacity: 0.35; }
+.tn-base { position: relative; width: 108%; margin-left: -4%; height: 2.3cqi; border-radius: 0.2cqi 0.2cqi 2.2cqi 2.2cqi; background: linear-gradient(180deg, #4a4150 0%, #2a2430 40%, #17131b 100%); box-shadow: 0 2.4cqi 4cqi rgba(0, 0, 0, 0.5); }
+.tn-base i { position: absolute; left: 50%; top: 0; width: 15%; height: 0.9cqi; translate: -50% 0; border-radius: 0 0 1cqi 1cqi; background: #1b161f; }
+
+.tn-mb { position: absolute; inset: 0 0 auto; z-index: 6; height: 3.4cqi; display: flex; align-items: center; gap: 1.6cqi; padding: 0 1.6cqi; font: 500 1.35cqi/1 var(--tn-body); color: rgba(255, 255, 255, 0.82); background: rgba(10, 6, 14, 0.5); backdrop-filter: blur(8px); }
+.tn-mb b { font-weight: 700; }
+.tn-mb-sp { flex: 1; }
+.tn-mb-moon { width: 1.8cqi; height: 1.8cqi; }
+.tn-mb-clock { font-variant-numeric: tabular-nums; min-width: 4cqi; text-align: right; }
+
+/* Stage layers: shown when the step is theirs. Crossfade (opacity) only. */
+.tn-stage [data-in] { opacity: 0; transition: opacity 0.45s ease, transform 0.6s cubic-bezier(.2, .7, .2, 1); }
+.tn-stage [data-in].on { opacity: 1; }
+.tn-tabs span[data-in] { transition-delay: calc(var(--i, 0) * 0.14s); }
+
+.tn-win { position: absolute; border-radius: 1cqi; overflow: hidden; background: var(--tn-term); box-shadow: 0 0 0 0.12cqi rgba(255, 255, 255, 0.09), 0 2cqi 5cqi rgba(0, 0, 0, 0.5); }
+.tn-wt { height: 3.2cqi; display: flex; align-items: center; padding: 0 1.4cqi 0 7cqi; font: 600 1.3cqi/1 var(--tn-body); color: #cbbfd4; background: #241a2d; position: relative; }
+.tn-wt::before { content: ""; position: absolute; left: 1.4cqi; top: 50%; width: 1cqi; height: 1cqi; translate: 0 -50%; border-radius: 50%; background: #ff6b5f; box-shadow: 1.6cqi 0 #f6bd3b, 3.2cqi 0 #3fc950; }
+.tn-term { left: 4%; top: 9.5%; width: 66%; height: 80%; }
+.tn-tabs { height: 3.4cqi; display: flex; align-items: stretch; gap: 0.3cqi; padding: 0.5cqi 0.6cqi 0 6.4cqi; background: #241a2d; position: relative; overflow: hidden; }
+.tn-tabs::before { content: ""; position: absolute; left: 1.4cqi; top: 50%; width: 1cqi; height: 1cqi; translate: 0 -40%; border-radius: 50%; background: #ff6b5f; box-shadow: 1.6cqi 0 #f6bd3b, 3.2cqi 0 #3fc950; }
+.tn-tabs span { flex: 0 1 auto; min-width: 0; text-overflow: ellipsis; display: block; line-height: 2.9cqi; padding: 0 1.1cqi; border-radius: 0.7cqi 0.7cqi 0 0; font: 500 1.02cqi/2.9cqi var(--tn-mono); color: #a796b5; white-space: nowrap; background: rgba(255, 255, 255, 0.03); max-width: 0; padding-inline: 0; overflow: hidden; }
+.tn-tabs span.on { max-width: 30cqi; padding-inline: 1.1cqi; }
+.tn-tabs span.hi { background: var(--tn-term); color: #f4ece4; }
+.tn-tb { position: relative; height: calc(100% - 3.4cqi); }
+.tn-pg { position: absolute; inset: 0; margin: 0; padding: 1.8cqi 2cqi; font-size: 1.32cqi; line-height: 1.6; color: var(--tn-term-text); white-space: pre; overflow: hidden; }
+.tn-pg i { font-style: normal; color: var(--tn-term-dim); }
+.tn-pg b { font-weight: 500; color: var(--tn-bad); }
+.tn-pg u { text-decoration: none; color: var(--tn-good); }
+.tn-cur { display: inline-block; width: 0.6em; height: 1.1em; vertical-align: -0.2em; background: var(--tn-term-text); animation: tn-blink 1.1s steps(2) infinite; }
+
+.tn-readme { right: 3%; top: 22%; width: 36%; height: 46%; background: #fbf6ee; transform: translateY(2cqi); }
+.tn-readme.on { transform: none; }
+.tn-readme .tn-wt { background: #ebe2d6; color: #3a2d44; }
+.tn-rb { display: flex; flex-direction: column; gap: 1.1cqi; padding: 2cqi; font: 500 1.4cqi/1.3 var(--tn-mono); color: #3a2d44; }
+.tn-rb b { font-weight: 700; color: #1a1020; }
+.tn-rb s { color: #8a7c94; }
+
+.tn-chat { right: 3%; top: 12%; width: 44%; height: 80%; background: #1b1424; transform: translateY(2cqi); }
+.tn-chat.on, .tn-chan.on, .tn-diff.on, .tn-ed.on { transform: none; }
+.tn-cb { display: flex; flex-direction: column; gap: 1.2cqi; padding: 1.8cqi; }
+.tn-cb p { margin: 0; max-width: 88%; padding: 1.1cqi 1.5cqi; border-radius: 1.4cqi; font: 400 1.4cqi/1.4 var(--tn-body); transform: translateY(1cqi); }
+.tn-cb p.on { transform: none; }
+.tn-cb .me { align-self: flex-end; background: #5b3b7a; color: #fff; border-bottom-right-radius: 0.4cqi; }
+.tn-cb .ai { align-self: flex-start; background: #2d2338; color: #eee4f3; border-bottom-left-radius: 0.4cqi; }
+.tn-cb code { font-size: 0.92em; padding: 0 0.4cqi; border-radius: 0.4cqi; background: rgba(255, 255, 255, 0.1); }
+.tn-cb .tool { align-self: flex-start; background: transparent; padding: 0 0.4cqi; color: #a796b5; font-size: 1.2cqi; }
+.tn-typing { display: flex; gap: 0.6cqi; }
+.tn-typing i { width: 0.8cqi; height: 0.8cqi; border-radius: 50%; background: #a796b5; animation: tn-blink 1s infinite; }
+.tn-typing i:nth-child(2) { animation-delay: 0.2s; }
+.tn-typing i:nth-child(3) { animation-delay: 0.4s; }
+.tn-agent .ai { border: 0.12cqi solid rgba(139, 227, 155, 0.5); }
+
+.tn-toast { position: absolute; right: 2.4%; top: 6.5%; z-index: 5; display: flex; gap: 1.2cqi; align-items: center; width: 32%; padding: 1.3cqi 1.5cqi; border-radius: 1.4cqi; background: rgba(48, 38, 58, 0.94); box-shadow: 0 1.6cqi 4cqi rgba(0, 0, 0, 0.5); transform: translateX(4cqi); }
+.tn-toast.on { transform: none; }
+.tn-toast div { display: flex; flex-direction: column; gap: 0.4cqi; font: 400 1.35cqi/1.2 var(--tn-body); color: #eee4f3; }
+.tn-toast b { font-weight: 700; }
+.tn-av { flex: 0 0 auto; width: 3.6cqi; height: 3.6cqi; border-radius: 50%; display: grid; place-items: center; background: #3fa78a; color: #fff; font: 700 1.6cqi/1 var(--tn-body); }
+
+.tn-chan { right: 3%; top: 14%; width: 48%; height: 70%; background: #1b1424; transform: translateY(2cqi); }
+.tn-chan .bot { align-self: flex-start; background: #3a1f28; color: #ffdfe4; }
+.tn-chan .bot b { display: block; margin-bottom: 0.3cqi; font-size: 1.15cqi; color: var(--tn-bad); text-transform: uppercase; letter-spacing: 0.08em; }
+.tn-stage[data-step="d1530"] .tn-chan { opacity: 0.38; filter: saturate(0.4); top: 46%; height: 42%; right: 2%; width: 40%; }
+.tn-wait { position: absolute; left: 4%; bottom: 6%; z-index: 4; display: flex; align-items: center; gap: 1.2cqi; padding: 1.2cqi 2cqi; border-radius: 99px; background: rgba(0, 0, 0, 0.6); font: 500 1.4cqi/1 var(--tn-body); color: #eee4f3; }
+.tn-wait span { width: 1.8cqi; height: 1.8cqi; border-radius: 50%; border: 0.3cqi solid rgba(255, 255, 255, 0.2); border-top-color: #eee4f3; animation: tn-spin 0.9s linear infinite; }
+
+.tn-diff { right: 3%; top: 40%; width: 50%; height: 44%; transform: translateY(2cqi); }
+.tn-db { margin: 0; padding: 1.6cqi 2cqi; font-size: 1.28cqi; line-height: 1.6; white-space: pre; }
+.tn-db ins { text-decoration: none; color: var(--tn-good); }
+.tn-ed { right: 3%; top: 12%; width: 54%; height: 36%; background: #17111f; transform: translateY(2cqi); z-index: 3; }
+.tn-eb { margin: 0; padding: 1.6cqi 0; font-size: 1.3cqi; line-height: 1.75; white-space: pre; color: #ddd2e6; }
+.tn-eb i { display: inline-block; width: 5cqi; padding-right: 1.4cqi; text-align: right; font-style: normal; color: #7d6d8b; }
+.tn-eb em { display: block; font-style: normal; background: rgba(240, 162, 75, 0.18); box-shadow: inset 0.4cqi 0 var(--tn-amber); }
+.tn-eb em i { color: var(--tn-amber); }
+.tn-paused { position: absolute; left: 0; right: 0; bottom: 0; padding: 0.9cqi 2cqi; font: 600 1.2cqi/1 var(--tn-body); color: var(--tn-amber-ink); background: var(--tn-amber); }
+
+.tn-menu { position: absolute; right: 9%; top: 3.8%; z-index: 7; width: 38%; padding: 0.8cqi; border-radius: 1.2cqi; background: rgba(40, 32, 48, 0.96); box-shadow: 0 0 0 0.12cqi rgba(255, 255, 255, 0.12), 0 2cqi 5cqi rgba(0, 0, 0, 0.55); font: 400 1.4cqi/1 var(--tn-body); color: #eee4f3; transform: translateY(-1cqi); }
+.tn-menu.on { transform: none; }
+.tn-menu-h { padding: 1cqi 1.2cqi 0.6cqi; font-weight: 700; font-size: 1.15cqi; color: #a796b5; }
+.tn-menu-r { display: flex; justify-content: space-between; gap: 1cqi; padding: 1cqi 1.2cqi; border-radius: 0.6cqi; }
+.tn-menu-r:nth-child(2) { background: rgba(255, 255, 255, 0.06); }
+.tn-menu-r span { display: flex; align-items: center; gap: 1cqi; }
+.tn-menu-r i { width: 1cqi; height: 1cqi; border-radius: 50%; background: #6d5d7b; }
+.tn-menu-r i.g { background: transparent; box-shadow: inset 0 0 0 0.2cqi #a796b5; }
+.tn-menu-r em { font-style: normal; color: #a796b5; }
+.tn-menu hr { border: 0; height: 0.12cqi; background: rgba(255, 255, 255, 0.1); margin: 0.6cqi 0.4cqi; }
+
+.tn-rw { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 2cqi; background: #08060b; }
+.tn-rw svg { width: 26cqi; height: 26cqi; fill: none; stroke: var(--tn-text); stroke-linecap: round; }
+.tn-rw circle { stroke-width: 1.2; opacity: 0.35; }
+.tn-rw line { stroke-width: 2.6; transform-origin: 50px 50px; }
+.tn-rw .h { transform: rotate(268.5deg); }
+.tn-rw .m { transform: rotate(342deg); }
+.tn-rw .m { stroke: var(--tn-amber); stroke-width: 1.8; }
+.tn-rw.on .h { animation: tn-back-h 2.2s cubic-bezier(.5, 0, .2, 1) both; }
+.tn-rw.on .m { animation: tn-back-m 2.2s cubic-bezier(.5, 0, .2, 1) both; }
+.tn-rw span { font: 600 2.4cqi/1 var(--tn-mono); color: var(--tn-text-2); }
+
+.tn-note { position: absolute; z-index: 8; left: var(--x); top: var(--y); max-width: 13cqi; padding: 0.8cqi 1cqi 1.1cqi; font: 600 1.35cqi/1.15 var(--tn-body); color: var(--tn-paper-ink); background: var(--tn-paper); box-shadow: 0 0.6cqi 1.4cqi rgba(0, 0, 0, 0.35); transform: rotate(var(--r)) translateY(-1.5cqi) scale(1.08); }
+.tn-note.on { transform: rotate(var(--r)); }
+.tn-stage[data-lid="closed"] .tn-note.on { opacity: 0; }
+.tn-note:nth-of-type(odd) { background: #f6c9a8; }
+
+.tn-moon { position: absolute; right: 4%; top: 8%; width: clamp(40px, 7%, 64px); height: auto; transform: translateY(60px); transition: opacity 1.6s ease, transform 2.4s cubic-bezier(.2, .7, .2, 1) !important; filter: drop-shadow(0 0 22px rgba(240, 162, 75, 0.45)); }
+.tn-moon.on { transform: none; }
+
+.tn-strip { display: flex; gap: clamp(16px, 3vw, 40px); align-items: center; padding: 10px 22px; border-radius: 999px; background: rgba(10, 6, 14, 0.5); border: 1px solid rgba(255, 255, 255, 0.07); }
+.tn-st { display: flex; align-items: center; gap: 10px; }
+.tn-st > span:last-child { display: flex; flex-direction: column; gap: 3px; }
+.tn-st small { font: 500 11px/1 var(--tn-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--tn-dim); }
+.tn-st b { font: 600 14px/1 var(--tn-mono); color: var(--tn-text); font-variant-numeric: tabular-nums; min-width: 6ch; }
+.tn-fan { width: 30px; height: 30px; fill: var(--tn-text-2); }
+.tn-fan circle { fill: #2a2030; }
+.tn-fan g { transform-origin: 20px 20px; animation: tn-spin linear infinite paused; }
+.tn-fan .a { animation-duration: 2.4s; }
+.tn-fan .b { animation-duration: 1.1s; }
+.tn-fan .c { animation-duration: 0.5s; }
+.tn-stage[data-fan="1"] .tn-fan .a, .tn-stage[data-fan="2"] .tn-fan .a, .tn-stage[data-fan="2"] .tn-fan .b, .tn-stage[data-fan="3"] .tn-fan g { animation-play-state: running; }
+.tn-stage[data-fan="3"] .tn-fan { fill: #ffb08a; }
+.tn-stage[data-fan="0"] .tn-fan { fill: var(--tn-dim); }
+.tn-clk { width: 30px; height: 30px; fill: none; stroke: var(--tn-text-2); stroke-linecap: round; }
+.tn-clk circle { stroke-width: 1.6; opacity: 0.5; }
+.tn-clk line { stroke-width: 2.4; transform-origin: 20px 20px; transition: transform 1.6s cubic-bezier(.5, 0, .2, 1); }
+.tn-clk .h { transform: rotate(var(--ha, 0deg)); }
+.tn-clk .m { transform: rotate(var(--ma, 0deg)); stroke: var(--tn-amber); stroke-width: 1.8; }
+.tn-therm { width: 10px; height: 30px; border-radius: 6px; background: rgba(255, 255, 255, 0.1); position: relative; overflow: hidden; }
+.tn-therm i { position: absolute; inset: 0; transform-origin: 50% 100%; transform: scaleY(calc(0.12 + var(--heat, 0) * 0.88)); background: linear-gradient(0deg, #f0a24b, var(--tn-heat)); transition: transform 1.2s ease; }
+
+/* ── Ending ── */
+.tn-end { position: relative; max-width: 980px; margin: 0 auto; padding: 18vh 40px 120px; text-align: center; scroll-margin-top: var(--rail-h); }
+.tn-end-moon { width: 56px; height: 56px; margin-bottom: 26px; filter: drop-shadow(0 0 24px rgba(240, 162, 75, 0.45)); }
+.tn-end-h { margin: 0 0 48px; font: 800 clamp(44px, 6vw, 80px)/1 var(--tn-display); letter-spacing: -0.035em; text-wrap: balance; }
+.tn-tally { text-align: left; padding: 8px 28px 24px; border-radius: 22px; background: rgba(30, 19, 40, 0.75); border: 1px solid var(--tn-line); }
+.tn-tally-h, .tn-tally dl > div { display: grid; grid-template-columns: minmax(0, 1fr) 120px 220px; gap: 16px; align-items: baseline; }
+.tn-tally-h { padding: 18px 0 10px; font: 600 12px/1 var(--tn-body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--tn-dim); }
+.tn-tally-h b:last-child { color: var(--tn-amber); }
+.tn-tally dl { margin: 0; }
+.tn-tally dl > div { padding: 16px 0; border-top: 1px solid var(--tn-line); }
+.tn-tally dt { font-size: 18px; color: var(--tn-text); }
+.tn-tally dd { margin: 0; font: 800 34px/1 var(--tn-display); letter-spacing: -0.02em; }
+.tn-tally .was { color: var(--tn-bad); }
+.tn-tally .now { color: var(--tn-good); display: flex; align-items: baseline; gap: 12px; }
+.tn-tally .now small { font: 500 13px/1.3 var(--tn-body); letter-spacing: 0; color: var(--tn-text-2); }
+.tn-tally-n { margin: 16px 0 0; font-size: 15px; color: var(--tn-text-2); }
+.tn-family { margin: 64px 0 28px; font: 700 26px/1.2 var(--tn-display); letter-spacing: -0.015em; color: var(--tn-text); }
+.tn-cta { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.tn-btn, .tn-btn2 { display: inline-flex; flex-direction: column; justify-content: center; min-height: 56px; padding: 0 26px; border-radius: 14px; text-decoration: none; font: 600 17px/1.15 var(--tn-body); }
+.tn-btn { background: var(--tn-amber); color: var(--tn-amber-ink); }
+.tn-btn2 { border: 1px solid rgba(255, 255, 255, 0.2); color: var(--tn-text); }
+.tn-btn2 small { font-weight: 400; font-size: 13px; color: var(--tn-text-2); }
+.tn-again { display: inline-flex; align-items: center; min-height: 44px; margin-top: 28px; color: var(--tn-text-2); font-size: 15px; }
+
+/* ── Keyframes ── */
+@keyframes tn-spin { to { transform: rotate(360deg); } }
+@keyframes tn-blink { 50% { opacity: 0.2; } }
+@keyframes tn-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes tn-back-h { from { transform: rotate(585deg); } to { transform: rotate(268.5deg); } }
+@keyframes tn-back-m { from { transform: rotate(7020deg); } to { transform: rotate(3222deg); } }
+@keyframes tn-prog { to { transform: scaleX(1); } }
+
+/* Continuous bits tied to the scroll, where the browser can. */
+@supports (animation-timeline: scroll()) {
+  .tn-prog { animation: tn-prog linear both; animation-timeline: scroll(root block); }
+  .tn-act-h, .tn-turn-h, .tn-end-h, .tn-tally { animation: tn-rise linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+}
+
+/* ── Phone: the stage pinned on top, the beats beneath ── */
+@media (max-width: 900px) {
+  .tn { --rail-h: 52px; --stage-h: 46svh; }
+  .tn-rail { padding: 0 6px; gap: 0; }
+  .tn-rail-t { display: none; }
+  .tn-rail ol { flex: 1; justify-content: space-between; gap: 0; margin: 0; }
+  .tn-rail li { flex: 1 1 0; min-width: 0; }
+  .tn-rail a { min-width: 0; width: 100%; padding: 0; font-size: 11px; }
+  .tn-rail a[data-rail="doze"] span { font-size: 12px; }
+  .tn-snd { width: 40px; height: 40px; padding: 0; justify-content: center; }
+  .tn-snd-l { display: none; }
+  .tn-cold { padding: 48px 28px 96px; }
+  .tn-cue { left: 28px; }
+  .tn-film { grid-template-columns: minmax(0, 1fr); padding: 0 24px; }
+  .tn-stage { grid-column: 1; grid-row: 1; z-index: 5; height: var(--stage-h); gap: 10px; margin: 0 -24px; padding: 10px 24px 12px; background: rgba(14, 9, 19, 0.78); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+  .tn-laptop { width: min(100%, calc((var(--stage-h) - 82px) * 1.48)); }
+  .tn-strip { padding: 6px 14px; gap: 18px; }
+  .tn-st { gap: 7px; }
+  .tn-fan, .tn-clk { width: 22px; height: 22px; }
+  .tn-therm { height: 22px; width: 8px; }
+  .tn-st small { font-size: 10px; }
+  .tn-st b { font-size: 12px; }
+  .tn-beats { grid-row: 2; }
+  .tn-ch { scroll-margin-top: calc(var(--rail-h) + var(--stage-h)); }
+  .tn-beat { min-height: 62svh; justify-content: flex-start; padding: 7vh 0 12vh; }
+  .tn-replay .tn-beat { min-height: 52svh; }
+  .tn-silence, .tn-turn { min-height: 70svh; }
+  .tn-beat p { font-size: 18px; }
+  .tn-act-h { margin-bottom: 24px; }
+  .tn-end { padding: 14vh 24px 96px; }
+  .tn-tally { padding: 4px 18px 20px; }
+  .tn-tally-h { display: none; }
+  .tn-tally dl > div { grid-template-columns: 1fr auto; row-gap: 8px; }
+  .tn-tally dt { grid-column: 1 / -1; font-size: 16px; }
+  .tn-tally .was::before { content: "How it is  "; font: 500 12px/1 var(--tn-body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--tn-dim); white-space: pre; }
+  .tn-tally .now::before { content: "With doze"; font: 500 12px/1 var(--tn-body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--tn-dim); }
+  .tn-tally dd { font-size: 28px; }
+  .tn-tally .now { justify-content: flex-end; flex-wrap: wrap; }
+  .tn-tally .now small { flex-basis: 100%; text-align: right; }
+}
+
+/* ── Reduced motion: no pinning, no spin; each beat carries its own still ── */
+.tn-still { display: none; }
+.tn-rm .tn-stage:not(.tn-still) { display: none; }
+.tn-rm .tn-film { grid-template-columns: minmax(0, 760px); justify-content: center; }
+.tn-rm .tn-beats { grid-column: 1; grid-row: 1; }
+.tn-rm .tn-beat { min-height: 0; padding: 56px 0; }
+.tn-rm .tn-still { display: flex; position: static; height: auto; margin: 22px 0 0; gap: 16px; background: none; border: 0; padding: 0; backdrop-filter: none; }
+.tn-rm .tn-still .tn-laptop { width: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .tn *, .tn *::before, .tn *::after { animation: none !important; transition-property: opacity !important; transition-duration: 0.3s !important; transition-delay: 0s !important; }
+  .tn-stage [data-in], .tn-note, .tn-note.on { transform: rotate(var(--r, 0deg)) !important; }
+  .tn-stage[data-lid="closed"] .tn-lid { transform: scaleY(0.035) !important; }
+  .tn-moon { transform: none !important; }
+}
 </style>
