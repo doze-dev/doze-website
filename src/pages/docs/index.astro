@@ -1,292 +1,159 @@
 ---
-// The docs home (design: DocsHome). One search for all three products, each
-// product's top pages, three start-here paths, and the llms.txt strip.
-// Every docs link is looked up in the pulled docs, so a page a product repo
-// drops falls out of this page (with a warning) instead of becoming a 404.
-import { getEntry } from "astro:content";
+// The docs landing (board Docs2Landing): search first, with a few examples;
+// a door per product with four pages each; pages picked by hand; and the line
+// that each product works alone. Links go through src/data/docs-homes.ts.
+//
+// The search box hands off to Starlight's: submitting opens the product's docs
+// with the search dialog open and the words typed (PageFrame reads ?q=).
 import { docsProducts } from "../../components/docs/products";
+import { landing, page } from "../../data/docs-homes";
 import Page from "../../layouts/Page.astro";
 
-type Link = { href: string; label: string; slug: string };
-async function page(id: string, label?: string): Promise<Link[]> {
-  const entry = await getEntry("docs", `docs/${id}`);
-  if (!entry) {
-    console.warn(`docs home: no page docs/${id}; left out`);
-    return [];
-  }
-  return [{ href: `/docs/${id}/`, label: label ?? entry.data.title, slug: id.split("/").pop() as string }];
-}
-const pages = async (list: [string, string?][]) => (await Promise.all(list.map(([id, l]) => page(id, l)))).flat();
-
-const blurbs: Record<string, { stripe: string; text: string; top: [string, string?][] }> = {
-  doze: {
-    stripe: "#F0A24B",
-    text: "doze.hcl from first line to team setup: installing, running your own services next to their databases, names and https, the registry and its modules, and the CLI.",
-    top: [
-      ["doze/start/install"],
-      ["doze/start/getting-started"],
-      ["doze/start/from-docker-compose", "Coming from Docker Compose"],
-      ["doze/reference/configuration"],
-      ["doze/reference/cli"],
-    ],
-  },
-  aws: {
-    stripe: "#5BB8E8",
-    text: "Pointing a stock SDK at it, each service and what it answers, Lambda as real processes, IAM that evaluates, the console, and what is not built and why.",
-    top: [
-      ["aws/getting-started"],
-      ["aws/lambda"],
-      ["aws/endpoints", "Endpoints"],
-      ["aws/cli"],
-      ["aws/not-built", "What is not built, and why"],
-    ],
-  },
-  kafka: {
-    stripe: "#FFD60A",
-    text: "Connecting any Kafka client, consumer groups (classic and KIP-848), transactions, SASL and TLS, the built-in schema registry and the console.",
-    top: [
-      ["kafka/getting-started"],
-      ["kafka/clients"],
-      ["kafka/consumer-groups"],
-      ["kafka/schema-registry"],
-      ["kafka/console"],
-    ],
-  },
+const line = {
+  doze: "Wakes your stack when you start. Sleeps it when you stop.",
+  aws: "Wakes AWS on your laptop. No account, no bill.",
+  kafka: "Wakes a Kafka broker. No JVM to put to bed.",
 };
-const cards = await Promise.all(
-  docsProducts.map(async (p) => ({ ...p, ...blurbs[p.id], links: await pages(blurbs[p.id].top) })),
-);
-
-const paths = [
-  {
-    kick: "New to doze",
-    title: "From nothing to a running stack.",
-    links: await pages([
-      ["doze/start/install"],
-      ["doze/start/getting-started"],
-      ["doze/start/concepts"],
-      ["doze/guides/microservices"],
-    ]),
-  },
-  {
-    kick: "Coming from Docker Compose",
-    title: "Your compose file, read as doze.hcl.",
-    links: await pages([
-      ["doze/start/from-docker-compose"],
-      ["doze/why/not-containers", "Native processes vs containers"],
-      ["doze/guides/recipes/microservices-stack", "A microservices stack"],
-      ["doze/guides/teams-ci", "Teams and CI"],
-    ]),
-  },
-  {
-    kick: "Writing a module",
-    title: "Teach doze a new engine.",
-    links: await pages([
-      ["doze/modules/overview"],
-      ["doze/modules/first-module"],
-      ["doze/modules/testing", "Testing"],
-      ["doze/modules/releasing", "Releasing"],
-    ]),
-    note: true,
-  },
-];
+const doors = docsProducts.map((p) => ({
+  ...p,
+  sub: landing.doors[p.id].sub,
+  line: line[p.id],
+  links: landing.doors[p.id].keys.map((k) => {
+    const [key, label] = typeof k === "string" ? [k] : k;
+    const to = page(p.id, key);
+    return { ...to, title: label ?? to.title };
+  }),
+}));
+const logo = Object.fromEntries(docsProducts.map((p) => [p.id, p]));
+const picked = landing.picked.map((x) => {
+  const to = page(x.product, x.key);
+  const name = logo[x.product].name;
+  const group = to.where.split(" › ")[0];
+  return { ...x, href: to.href, logo: logo[x.product].logo, where: `${name} › ${group}` };
+});
 ---
-<Page title="Docs" description="Docs for doze, doze AWS and doze Kafka: one search, every page beside the code it describes." theme="light" current="docs">
-<div class="dh-pg">
-  <section class="dh-hero">
-    <div class="dh-wrap dh-hero-in">
-      <span class="dh-eyebrow">Docs</span>
-      <h1 class="dh-h1">You have a question. Here is the page.</h1>
-      <p class="dh-lede">Three products, one search. Every page lives in the same repo as the code it describes, and changes in the same commit.</p>
-      <form class="dh-form" role="search" action="/docs/doze/" method="get" data-dh-search>
+<Page title="Docs" description="Docs for doze, doze AWS and doze Kafka. Search first, or pick a product." theme="light" current="docs">
+<div class="ld">
+  <div class="ld-in">
+    <div class="ld-top">
+      <h1>Docs</h1>
+      <p class="ld-lede">For doze, doze AWS and doze Kafka. Search first, or pick a product.</p>
+      <form class="ld-form" role="search" action="/docs/doze/" method="get">
         <label for="docs-q" class="sr-only">Search the docs for doze, doze AWS and doze Kafka</label>
-        <div class="dh-search">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-          <input id="docs-q" type="search" name="q" placeholder="Search all docs" autocomplete="off" required />
-          <span class="dh-kbd dh-hide-sm" aria-hidden="true">/</span>
-          <button class="dh-go" type="submit">Search</button>
+        <div class="ld-search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <input id="docs-q" type="search" name="q" placeholder="Search all docs" autocomplete="off" required aria-keyshortcuts="Meta+K Control+K" />
+          <kbd aria-hidden="true">⌘K</kbd>
         </div>
-        <p class="dh-hint">Searches doze, doze AWS and doze Kafka together; results open in the docs.</p>
       </form>
+      <div class="ld-try"><span>Try:</span>{landing.tries.map((t) => <a href={`/docs/${t.product}/?q=${encodeURIComponent(t.q)}`}>{t.q}</a>)}</div>
     </div>
-  </section>
 
-  <section class="dh-wrap dh-sec dh-col">
-    <div class="dh-head">
-      <h2 class="dh-h2">Choose a product</h2>
-      <p class="dh-p">Each has its own docs, its own reference and its own release notes.</p>
-    </div>
-    <div class="dh-grid">
-      {cards.map((c) => (
-        <div class="dh-panel dh-prod">
-          <div class="dh-stripe" style={`background: ${c.stripe}`}></div>
-          <div class="dh-prod-top">
-            <div class="dh-brand"><img src={c.logo} alt="" width="44" height="44" /><b>{c.name}</b></div>
-            <p class="dh-p">{c.text}</p>
-          </div>
+    <div class="ld-doors">
+      {doors.map((d) => (
+        <section class={`door door-${d.id}`} aria-label={`${d.name} docs`}>
+          <div class="door-h"><img src={d.logo} alt="" width="52" height="52" /><div><b>{d.name}</b><span>{d.sub}</span></div></div>
+          <p>{d.line}</p>
           <ul>
-            {c.links.map((l) => <li><a href={l.href}>{l.label} <span>{l.slug}</span></a></li>)}
+            {d.links.map((l) => <li><a href={l.href}>{l.title} <span aria-hidden="true">→</span></a></li>)}
           </ul>
-          <a class="dh-prod-foot" href={c.href}>All {c.name} docs →</a>
-        </div>
+          <a class="door-go" href={d.href}>{d.name} docs</a>
+        </section>
       ))}
     </div>
-  </section>
 
-  <section class="dh-band">
-    <div class="dh-wrap dh-sec dh-col">
-      <div class="dh-head">
-        <h2 class="dh-h2">Start here</h2>
-        <p class="dh-p">Three paths for three different first days. Each is a few pages, in order.</p>
-      </div>
-      <div class="dh-grid">
-        {paths.map((p) => (
-          <div class="dh-panel dh-path">
-            <span class="dh-eyebrow">{p.kick}</span>
-            <h3 class="dh-h3">{p.title}</h3>
-            <ol>
-              {p.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
-            </ol>
-            {p.note && <p class="dh-p dh-dim dh-small">Publishing to the registry is open to doze-dev only for now. <a href="/registry/publish/">How it will open up</a></p>}
-          </div>
+    <section class="ld-pop-s" aria-labelledby="pop">
+      <h2 id="pop">Pages to start with</h2>
+      <p class="ld-sub">Picked by hand: doze collects no analytics, so there is no “most read” list.</p>
+      <div class="ld-pop">
+        {picked.map((x) => (
+          <a href={x.href}><img src={x.logo} alt="" width="28" height="28" /><span><b>{x.title}</b><span>{x.where}</span></span></a>
         ))}
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="dh-wrap dh-sec-tight">
-    <div class="dh-llm">
-      <div class="dh-col dh-col-12">
-        <span class="dh-eyebrow dh-eyebrow-amber">Docs for your coding agent</span>
-        <h2 class="dh-h2 dh-on-dark">Your agent guesses flags. Give it the docs instead.</h2>
-        <p class="dh-p dh-on-dark-2">A plain-text map of the docs and the facts an agent gets wrong most: engine version against module version, the install lines, the core commands.</p>
-      </div>
-      <div class="dh-col dh-col-12">
-        <div class="dh-cmd">
-          <code><span class="dh-pr">$</span> curl https://doze-dev.com/llms.txt</code>
-        </div>
-        <ul class="dh-llm-list">
-          <li><a class="dh-mono" href="/llms.txt">/llms.txt</a><span>doze: what it is, the key facts, and every docs page</span></li>
-          <li><span class="dh-mono">/docs/aws/llms.txt</span><span>[not built yet]</span></li>
-          <li><span class="dh-mono">/docs/kafka/llms.txt</span><span>[not built yet]</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="dh-wrap dh-sec-tight">
-    <div class="dh-missing">
-      <p class="dh-p dh-big"><b>Didn't find it?</b> A missing answer is a docs bug. Tell us what you searched for.</p>
-      <div class="dh-btns">
-        <a class="dh-btn" href="https://github.com/doze-dev/doze/issues/new">Open an issue</a>
-        <a class="dh-btn" href="/changelog/">What changed lately</a>
-      </div>
-    </div>
-  </section>
+    <div class="ld-alone"><img src="/brand/family-ink.svg" alt="" width="30" height="30" /><span>Each product works alone. doze AWS and doze Kafka also run inside a doze stack: <code>doze add aws</code>, <code>doze add kafka</code>.</span></div>
+  </div>
 </div>
 </Page>
 
 <script>
-  // "/" jumps to the search box, as the board's hint says. Submitting lands on
-  // the docs with Starlight's search open and the words typed (PageFrame).
+  // ⌘K (or Ctrl+K) and "/" go to the search box, as the hint says.
   const input = document.querySelector<HTMLInputElement>("#docs-q");
   document.addEventListener("keydown", (e) => {
     const t = e.target as HTMLElement;
-    if (e.key !== "/" || !input || t.closest("input, textarea, [contenteditable]")) return;
+    const cmdK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k";
+    if (!input || !(cmdK || (e.key === "/" && !t.closest("input, textarea, [contenteditable]")))) return;
     e.preventDefault();
     input.focus();
   });
+  // Off a Mac the shortcut is Ctrl+K.
+  if (!/(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+    const kbd = document.querySelector(".ld-search kbd");
+    if (kbd) kbd.textContent = "Ctrl K";
+  }
 </script>
 
 <style>
-  .dh-pg { font-family: var(--font-text); color: #140c1b; background: #fffaf4; }
-  .dh-pg a { color: #a85a0c; text-decoration: none; }
-  .dh-pg a:hover { color: #7a3f05; text-decoration: underline; }
-  .dh-pg :focus-visible { outline: 2px solid #a85a0c; outline-offset: 2px; }
-  .dh-pg code, .dh-pg pre { font-variant-ligatures: none; }
-  .dh-wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; box-sizing: content-box; }
-  .dh-col { display: flex; flex-direction: column; gap: 28px; }
-  .dh-col-12 { gap: 12px; }
-  .dh-head { display: flex; flex-direction: column; gap: 8px; }
-  .dh-eyebrow { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #a85a0c; }
-  .dh-eyebrow-amber { color: #f0a24b; }
-  .dh-h1 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 46px; line-height: 1.05; letter-spacing: -0.04em; text-wrap: balance; max-width: 16ch; }
-  .dh-h2 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 30px; line-height: 1.05; letter-spacing: -0.03em; text-wrap: balance; }
-  .dh-h3 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 20px; line-height: 1.2; letter-spacing: -0.01em; }
-  .dh-lede { margin: 0; font-size: 19px; line-height: 1.55; color: #4a3d55; max-width: 42rem; }
-  .dh-p { margin: 0; font-size: 16px; line-height: 1.6; color: #4a3d55; }
-  .dh-dim { color: #6e5f79; }
-  .dh-small { font-size: 15px; }
-  .dh-big { font-size: 17px; }
-  .dh-big b { color: #140c1b; }
-  .dh-mono { font-family: var(--font-mono); }
-  .dh-panel { background: #ffffff; border: 1px solid #eadfd3; border-radius: 20px; box-sizing: border-box; }
-  .dh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 20px; }
-  .dh-sec { padding-top: 80px; padding-bottom: 80px; }
-  .dh-sec-tight { padding-bottom: 88px; }
+  .ld { font-family: var(--font-text); color: #140c1b; background: #fffaf4; }
+  .ld a { color: #a85a0c; text-decoration: none; }
+  .ld :focus-visible { outline: 2px solid #a85a0c; outline-offset: 2px; }
+  .ld-in { box-sizing: content-box; max-width: 1240px; margin: 0 auto; padding: 0 32px 72px; }
+  .ld-top { padding: 56px 0 40px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+  .ld h1 { margin: 0; font: 800 52px/1.05 var(--font-display); letter-spacing: -0.03em; }
+  .ld-lede { margin: 0; font-size: 19px; line-height: 1.5; color: #4a3d55; }
+  .ld-form { margin-top: 14px; width: 100%; max-width: 680px; }
+  .ld-search { display: flex; align-items: center; gap: 12px; height: 60px; padding: 0 14px 0 20px; border-radius: 16px; border: 1px solid #dccfc2; background: #ffffff; box-shadow: 0 12px 30px rgba(20, 12, 27, 0.08); box-sizing: border-box; }
+  .ld-search:focus-within { border-color: #a85a0c; box-shadow: 0 0 0 3px #ffe2b8, 0 12px 30px rgba(20, 12, 27, 0.08); }
+  .ld-search svg { flex: none; }
+  .ld-search input { flex: 1; min-width: 0; height: 56px; border: 0; outline: 0; background: transparent; font: 17px var(--font-text); color: #140c1b; }
+  .ld-search input::placeholder { color: #6e5f79; }
+  .ld-search kbd { flex: none; font: 13px var(--font-mono); color: #4a3d55; background: #fff4e8; border: 1px solid #eadfd3; border-radius: 6px; padding: 3px 8px; }
+  .ld-try { font-size: 14px; color: #6e5f79; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .ld .ld-try a { background: #ffffff; border: 1px solid #eadfd3; border-radius: 999px; padding: 4px 12px; color: #4a3d55; min-height: 32px; box-sizing: border-box; display: inline-flex; align-items: center; }
+  .ld .ld-try a:hover { border-color: #f0a24b; color: #140c1b; }
 
-  .dh-hero { border-bottom: 1px solid #eadfd3; background: #fff4e8; }
-  .dh-hero-in { padding-top: 72px; padding-bottom: 64px; display: flex; flex-direction: column; gap: 22px; align-items: center; text-align: center; }
-  .dh-form { width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 14px; }
-  .dh-search { display: flex; align-items: center; gap: 12px; background: #ffffff; border: 1px solid #dccfc2; border-radius: 16px; min-height: 60px; padding: 0 8px 0 18px; box-shadow: 0 1px 0 #eadfd3, 0 12px 32px rgba(20, 12, 27, 0.06); box-sizing: border-box; }
-  .dh-search:focus-within { border-color: #a85a0c; box-shadow: 0 0 0 3px #ffe2b8; }
-  .dh-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 18px var(--font-text); color: #140c1b; height: 56px; }
-  .dh-search input::placeholder { color: #6e5f79; }
-  .dh-kbd { font: 13px var(--font-mono); color: #4a3d55; border: 1px solid #dccfc2; border-bottom-width: 2px; border-radius: 6px; padding: 2px 7px; background: #fff4e8; }
-  .dh-go { height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: #f0a24b; color: #2a1534; font: 600 15px var(--font-text); cursor: pointer; }
-  .dh-go:hover { background: #ffb866; }
-  .dh-hint { margin: 0; font-size: 14px; color: #6e5f79; }
+  .ld-doors { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .door { background: #ffffff; border: 1px solid #eadfd3; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .door-h { display: flex; align-items: center; gap: 14px; }
+  .door-h img { width: 52px; height: 52px; border-radius: 13px; }
+  .door-h b { display: block; font: 700 24px var(--font-display); letter-spacing: -0.015em; }
+  .door-h span { font-size: 12.5px; color: #6e5f79; }
+  .door p { margin: 0; font-size: 15.5px; line-height: 1.5; color: #4a3d55; }
+  .door ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid #f0e6db; }
+  .ld .door li a { display: flex; justify-content: space-between; align-items: center; min-height: 44px; box-sizing: border-box; padding: 10px 0; border-bottom: 1px solid #f0e6db; color: #140c1b; font-size: 15px; }
+  .ld .door li a:hover { color: #a85a0c; }
+  .door li a span { color: #a85a0c; }
+  .ld .door-go { display: inline-flex; align-items: center; justify-content: center; height: 44px; border-radius: 10px; font-weight: 600; font-size: 14px; margin-top: auto; }
+  .ld .door-doze .door-go { background: #f0a24b; color: #2a1534; }
+  .ld .door-aws .door-go { background: #e3f2fb; color: #0c3a57; border: 1px solid #bfe0f3; }
+  .ld .door-kafka .door-go { background: #fff6c7; color: #4a3d05; border: 1px solid #f1e39a; }
+  .door-doze { border-top: 4px solid #f0a24b; }
+  .door-aws { border-top: 4px solid #5bb8e8; }
+  .door-kafka { border-top: 4px solid #ffd60a; }
 
-  .dh-prod { display: flex; flex-direction: column; overflow: hidden; }
-  .dh-stripe { height: 6px; }
-  .dh-prod-top { padding: 28px 28px 22px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid #eadfd3; }
-  .dh-brand { display: flex; align-items: center; gap: 12px; }
-  .dh-brand img { width: 44px; height: 44px; }
-  .dh-brand b { font-family: var(--font-display); font-weight: 700; font-size: 24px; letter-spacing: -0.01em; }
-  .dh-prod ul { list-style: none; margin: 0; padding: 8px 0; }
-  .dh-pg .dh-prod li a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 46px; padding: 0 28px; font-size: 16px; color: #140c1b; }
-  .dh-pg .dh-prod li a:hover { background: #fff4e8; text-decoration: none; color: #140c1b; }
-  .dh-prod li a span { white-space: nowrap; font: 13px var(--font-mono); color: #6e5f79; }
-  .dh-pg .dh-prod-foot { margin-top: auto; padding: 16px 28px 22px; border-top: 1px solid #eadfd3; font-weight: 600; min-height: 44px; }
+  .ld-pop-s { margin-top: 48px; }
+  .ld h2 { margin: 0 0 6px; font: 700 26px var(--font-display); letter-spacing: -0.015em; }
+  .ld-sub { margin: 0 0 16px; font-size: 15px; color: #6e5f79; }
+  .ld-pop { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .ld .ld-pop a { display: flex; gap: 12px; align-items: center; background: #ffffff; border: 1px solid #eadfd3; border-radius: 14px; padding: 14px 16px; color: #140c1b; }
+  .ld .ld-pop a:hover { border-color: #f0a24b; }
+  .ld-pop img { width: 28px; height: 28px; border-radius: 7px; flex: none; }
+  .ld-pop b { display: block; font-weight: 600; font-size: 15px; }
+  .ld-pop a > span > span { font-size: 13px; color: #6e5f79; }
+  .ld-alone { margin: 40px 0 0; padding: 18px 22px; border-radius: 14px; background: #fff4e8; border: 1px solid #eadfd3; font-size: 15px; line-height: 1.5; color: #4a3d55; display: flex; gap: 14px; align-items: center; }
+  .ld-alone img { flex: none; }
+  .ld-alone code { font: 13px var(--font-mono); font-variant-ligatures: none; }
 
-  .dh-band { background: #fff4e8; border-top: 1px solid #eadfd3; border-bottom: 1px solid #eadfd3; margin-bottom: 80px; }
-  .dh-path { display: flex; flex-direction: column; gap: 16px; padding: 28px; }
-  .dh-path ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; counter-reset: s; }
-  .dh-path li { counter-increment: s; }
-  .dh-pg .dh-path li a { display: flex; gap: 12px; align-items: center; min-height: 44px; color: #140c1b; font-size: 16px; }
-  .dh-path li a::before { content: counter(s); flex: none; width: 26px; height: 26px; border-radius: 50%; background: #fff4e8; border: 1px solid #dccfc2; font: 600 13px var(--font-mono); color: #a85a0c; display: flex; align-items: center; justify-content: center; }
-
-  .dh-llm { background: #140c1b; color: #f4ece4; border-radius: 24px; padding: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px; align-items: center; }
-  .dh-on-dark { color: #f4ece4; }
-  .dh-on-dark-2 { color: #c9bad3; }
-  .dh-cmd { display: flex; align-items: center; gap: 8px; background: #1e1328; border: 1px solid #4a3458; border-radius: 12px; min-height: 52px; padding: 0 16px; }
-  .dh-cmd code { font: 15px var(--font-mono); color: #f4ece4; flex: 1; overflow-x: auto; white-space: pre; }
-  .dh-pr { color: #9c8aab; }
-  .dh-llm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 15px; }
-  .dh-llm-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2e1f3a; color: #9c8aab; }
-  .dh-llm-list li:last-child { border-bottom: 0; }
-  .dh-llm-list li > span:first-child { color: #d6c8df; }
-  .dh-llm-list li > span:last-child { text-align: right; }
-
-  .dh-missing { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; border-top: 1px solid #eadfd3; padding-top: 32px; }
-  .dh-btns { display: flex; gap: 12px; flex-wrap: wrap; }
-  .dh-pg .dh-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid #dccfc2; border-radius: 10px; background: #ffffff; font-weight: 600; }
-
-  @media (max-width: 760px) {
-    .dh-h1 { font-size: 38px; }
-    .dh-h2 { font-size: 28px; }
-    .dh-lede { font-size: 17px; }
-    .dh-sec { padding-top: 56px; padding-bottom: 56px; }
-    .dh-band { margin-bottom: 56px; }
-    .dh-hide-sm { display: none; }
-    .dh-search { padding-left: 14px; }
-    .dh-pg .dh-prod li a { padding: 0 20px; }
-    .dh-prod li a span { display: none; }
-    .dh-prod-top { padding: 22px 20px 18px; }
-    .dh-pg .dh-prod-foot { padding: 14px 20px 18px; }
-    .dh-path { padding: 22px; }
-    .dh-missing, .dh-btns { flex-direction: column; align-items: stretch; }
-    .dh-llm-list li { flex-direction: column; gap: 2px; }
-    .dh-llm-list li > span:last-child { text-align: left; }
+  @media (max-width: 1000px) {
+    .ld-doors, .ld-pop { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .ld-top { padding: 36px 0 28px; }
+    .ld h1 { font-size: 40px; }
+    .ld-lede { font-size: 17px; }
+    .ld-search { padding: 0 12px 0 14px; }
+    .ld-search kbd { display: none; }
+    .ld-alone { align-items: flex-start; }
   }
 </style>
