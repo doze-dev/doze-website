@@ -131,7 +131,7 @@ const n = modules.length;
         <div class="rt-code-bar"><span>What step 6 writes · doze.lock</span></div>
         <pre set:html={lock} />
       </div>
-      <p class="rt-foot">The registry's key itself is not in the lock: for the <span class="rt-mono">doze</span> namespace it is compiled into doze. Pinning a publisher's key on first use is how <a href={hrefFor("RegistryPublish.dc.html#outside")}>outside publishers will work</a> <span class="rt-chip rt-c-info">planned</span></p>
+      <p class="rt-foot">The registry's key itself is not in the lock: for the <span class="rt-mono">doze</span> namespace it is compiled into doze, so there is nothing to pin and no key is ever trusted on first use. Every module is signed with that one key: modules arrive as <a href={hrefFor("RegistryPublish.dc.html")}>pull requests to doze-modules</a>.</p>
     </section>
 
     <section class="rt-wrap rt-sec" aria-labelledby="stops">

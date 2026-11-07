@@ -15,7 +15,8 @@ export function getStaticPaths() {
 const { ns } = Astro.params as { ns: string };
 const mine = modules.filter((m) => m.namespace === ns);
 
-// Who publishes each namespace. Only doze exists; outside publishers are planned.
+// Who publishes each namespace. Only doze exists, and only doze will: new modules
+// are contributed to doze-modules (see /registry/publish/).
 const publishers: Record<string, { lede: string; keySince: string; licence: string }> = {
   doze: {
     lede: "The doze maintainers. Every module in the registry today is published and signed here, built in public CI from source on GitHub.",
