@@ -10,7 +10,7 @@
     "preview": "wrangler pages dev dist",
     "check": "astro-check && biome check .",
     "format": "biome check --write .",
-    "links": "bun scripts/check-links.ts",
+    "links": "bun scripts/check-links.ts && bun scripts/check-slugs.ts",
     "deploy": "wrangler pages deploy dist",
     "data": "bun scripts/docs-pull.ts && bun scripts/registry-pull.ts"
   },

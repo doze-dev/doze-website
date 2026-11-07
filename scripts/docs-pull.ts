@@ -10,9 +10,13 @@
 //   - turns README.md into the section's index page
 //   - rewrites links so they work under /docs/<name>/
 //   - points links at code (not docs) to the file on GitHub
+//   - copies the images pages point at into the section's _assets/ folder
+//   - turns each page's `redirect_from` (its old addresses) into 301s in the
+//     generated block of public/_redirects
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { Glob } from "bun";
+import { parse as parseYaml } from "yaml";
 
 type Source = {
   name: string;
@@ -120,14 +124,17 @@ function withEditUrl(s: Source, file: string, text: string): string {
   return `---\neditUrl: ${JSON.stringify(url)}${text.slice(3)}`;
 }
 
-// Images a page points at with a relative path (in frontmatter or markdown)
-// are copied into the section's _assets/ folder, which Starlight does not
-// treat as pages, and the path is rewritten to match.
-function images(srcFile: string, destFile: string, section: string, text: string): string {
+// Images a page points at with a relative path (in frontmatter, markdown or
+// an MDX import) are copied into the section's _assets/ folder, which
+// Starlight does not treat as pages, and the path is rewritten to match. Each
+// keeps its path inside the source repo (_assets/website/src/assets/app/x.webp),
+// so two images with the same file name never overwrite each other.
+function images(repo: string, srcFile: string, destFile: string, section: string, text: string): string {
   return text.replace(/(\.{1,2}\/[^\s)"'`]+\.(?:png|jpe?g|svg|webp|gif|avif))/g, (ref) => {
     const from = resolve(dirname(srcFile), ref);
     if (!existsSync(from)) return ref;
-    const to = join(section, "_assets", from.split("/").pop() as string);
+    const inRepo = relative(repo, from);
+    const to = join(section, "_assets", inRepo.startsWith("..") ? (from.split("/").pop() as string) : inRepo);
     mkdirSync(dirname(to), { recursive: true });
     cpSync(from, to);
     const rel = relative(dirname(destFile), to);
@@ -135,8 +142,83 @@ function images(srcFile: string, destFile: string, section: string, text: string
   });
 }
 
+// A page's old addresses, from `redirect_from` in its frontmatter. They are
+// written like the page's own links in that source: from the section's root
+// ("/start/getting-started/") when links are absolute, from the page's own
+// folder ("old-name.md") when they are relative.
+const redirects: { from: string; to: string; page: string }[] = [];
+function redirectsOf(s: Source, file: string, url: string, text: string) {
+  if (!text.startsWith("---")) return;
+  const end = text.indexOf("\n---", 3);
+  let list: unknown;
+  try {
+    list = (parseYaml(text.slice(3, end)) as Record<string, unknown> | null)?.redirect_from;
+  } catch {
+    return;
+  }
+  if (list === undefined) return;
+  if (!Array.isArray(list)) {
+    dead.push(`${s.name}/${file}: redirect_from must be a list`);
+    return;
+  }
+  for (const raw of list.map(String)) {
+    const path =
+      raw.startsWith("/") || s.links === "absolute"
+        ? raw
+        : `/${join(dirname(file), raw)
+            .replace(/\.mdx?$/, "")
+            .replace(/(^|\/)(readme|index)$/i, "")}`;
+    if (!path.startsWith("/") || path.includes("..")) {
+      dead.push(`${s.name}/${file}: redirect_from ${raw} is outside the section`);
+      continue;
+    }
+    const from = `/docs/${s.name}${path.toLowerCase()}/`.replace(/\/+/g, "/");
+    redirects.push({ from, to: url, page: `${s.name}/${file}` });
+  }
+}
+
+// The generated block in public/_redirects, between these two lines; the
+// hand-written rules outside it are left alone.
+const BEGIN = "# BEGIN docs-pull redirects";
+const END = "# END docs-pull redirects";
+function writeRedirects(pages: Set<string>) {
+  const file = join(root, "public/_redirects");
+  const text = existsSync(file) ? readFileSync(file, "utf8") : "";
+  const seen = new Map<string, string>();
+  const lines: string[] = [];
+  for (const r of redirects) {
+    if (pages.has(r.from)) {
+      console.warn(`redirects: ${r.page} claims ${r.from}, which is a page; skipped`);
+      continue;
+    }
+    const other = seen.get(r.from);
+    if (other && other !== r.to) {
+      console.warn(`redirects: ${r.from} is claimed by ${other} and ${r.to}; kept the first`);
+      continue;
+    }
+    if (other) continue;
+    seen.set(r.from, r.to);
+    lines.push(`${r.from}  ${r.to}  301`);
+  }
+  const block = [
+    BEGIN,
+    "# Written by scripts/docs-pull.ts from each page's redirect_from. Do not edit by hand.",
+    ...lines.sort(),
+    END,
+  ].join("\n");
+  const at = text.indexOf(BEGIN);
+  const stop = text.indexOf(END);
+  const next =
+    at >= 0 && stop > at
+      ? text.slice(0, at) + block + text.slice(stop + END.length)
+      : `${text.replace(/\n*$/, "\n\n")}${block}\n`;
+  if (next !== text) writeFileSync(file, next);
+  return lines.length;
+}
+
 rmSync(out, { recursive: true, force: true });
 const summary: string[] = [];
+const pageUrls = new Set<string>();
 for (const s of sources) {
   const { dir, via } = await checkout(s);
   const base = join(dir, s.path);
@@ -155,7 +237,14 @@ for (const s of sources) {
     text = withEditUrl(s, file, text);
     const target = join(out, s.name, dest.toLowerCase());
     mkdirSync(dirname(target), { recursive: true });
-    text = images(join(base, file), target, join(out, s.name), text);
+    text = images(dir, join(base, file), target, join(out, s.name), text);
+    const slug = dest
+      .toLowerCase()
+      .replace(/\.mdx?$/, "")
+      .replace(/(^|\/)index$/, "");
+    const url = `/docs/${s.name}/${slug ? `${slug}/` : ""}`;
+    pageUrls.add(url);
+    redirectsOf(s, file, url, text);
     writeFileSync(target, rewrite(s, base, file, isIndex, text));
     n++;
   }
@@ -174,7 +263,8 @@ for (const s of sources) {
   }
   summary.push(`${s.name.padEnd(6)} ${String(n).padStart(3)} pages  from ${via}`);
 }
-console.log(`docs-pull\n  ${summary.join("\n  ")}`);
+const nRedirects = writeRedirects(pageUrls);
+console.log(`docs-pull\n  ${summary.join("\n  ")}\n  ${nRedirects} redirects from redirect_from`);
 if (dead.length)
   console.warn(
     `\nLinks broken in the source repos (sent to GitHub, or left for check-links to catch):\n  ${dead.join("\n  ")}`,

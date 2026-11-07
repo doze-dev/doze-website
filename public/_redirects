@@ -11,3 +11,7 @@
 # Postgres extensions live in the postgres module (its Extensions tab).
 /registry/extensions   /registry/doze/postgres/extensions/  301
 /registry/extensions/  /registry/doze/postgres/extensions/  301
+
+# BEGIN docs-pull redirects
+# Written by scripts/docs-pull.ts from each page's redirect_from. Do not edit by hand.
+# END docs-pull redirects
