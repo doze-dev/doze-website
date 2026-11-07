@@ -3,6 +3,7 @@
 // here (three steps beside a screenshot or a terminal), I want to… cards,
 // Look something up, and New in 0.2 (doze) or In a doze stack (doze AWS,
 // doze Kafka). The words and links are in src/data/docs-homes.ts.
+import { Image } from "astro:assets";
 import { homes, icons, page } from "../../data/docs-homes";
 import { docsProducts } from "./products";
 
@@ -30,7 +31,7 @@ const doze = docsProducts[0];
       </ol>
       {h.shot && (
         <figure class="dz-h-shot">
-          <img src={h.shot.src} alt={h.shot.alt} loading="lazy" />
+          {typeof h.shot.src === "string" ? <img src={h.shot.src} alt={h.shot.alt} loading="lazy" /> : <Image src={h.shot.src} alt={h.shot.alt} widths={[800, 1600, 2560]} quality={90} sizes="(max-width: 900px) 100vw, 640px" />}
           <figcaption>{h.shot.caption}</figcaption>
         </figure>
       )}

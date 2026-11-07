@@ -3,7 +3,9 @@ import { Image } from "astro:assets";
 // A screenshot of the app (board Docs2AppPage): the image in a light frame,
 // an optional caption, and optional numbered callouts drawn over it, with a
 // legend underneath when they carry words. The docs are daylight only, so
-// there is one image per shot (the light capture).
+// there is one image per shot (the light capture). Captures are 2560 px wide
+// (1280 at 2x); the browser picks 800, 1600 or the full 2560 for its screen,
+// at quality 90 so the app's small text stays sharp on Retina displays.
 //
 //   import map from "../../assets/app/view-map-light.webp";
 //   <Shot src={map} alt="The larder stack on the Map" caption="larder on the Map."
@@ -26,7 +28,7 @@ const legend = callouts.filter((c) => c.title || c.text);
 ---
 <figure class:list={["dz-shot not-content", { "dz-shot-crop": crop }]}>
   <div class="dz-shot-img">
-    {typeof src === "string" ? <img src={src} alt={alt} loading="lazy" /> : <Image src={src} alt={alt} widths={[800, 1600]} sizes="(max-width: 900px) 100vw, 740px" />}
+    {typeof src === "string" ? <img src={src} alt={alt} loading="lazy" /> : <Image src={src} alt={alt} widths={[800, 1600, 2560]} quality={90} sizes="(max-width: 900px) 100vw, 740px" />}
     {callouts.map((c) => <span class="dz-co" style={`left: ${c.x}%; top: ${c.y}%`} aria-hidden={legend.length ? "true" : undefined}>{c.n}</span>)}
   </div>
   {caption && <figcaption>{caption}</figcaption>}

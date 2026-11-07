@@ -1,3 +1,5 @@
+// The Larder Map, from the doze repo's `make docs-shots` (website/src/assets/app/view-map.webp).
+
 // What the docs homes (/docs/doze/, /docs/aws/, /docs/kafka/) and the /docs
 // landing say and link to (boards Docs2Home, Docs2Aws, Docs2Landing).
 //
@@ -8,7 +10,9 @@
 // the new slugs still missing. Change a destination here, nowhere else.
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import type { ImageMetadata } from "astro";
 import ia from "../../design/docs-ia.json";
+import viewMap from "../assets/docs/view-map.webp";
 
 type Product = "doze" | "aws" | "kafka";
 type PageRef = { slug: string; today?: string; label?: string };
@@ -93,7 +97,7 @@ export type Home = {
   lede: string;
   start: { key: string; title: string; text: string }[];
   /** Beside the steps: a screenshot or a terminal. */
-  shot?: { src: string; alt: string; caption: string };
+  shot?: { src: string | ImageMetadata; alt: string; caption: string };
   code?: string[];
   want: { key: string; title: string; text: string; icon?: string }[];
   look: { key: string; label: string; text: string }[];
@@ -125,7 +129,7 @@ export const homes: Record<Product, Home> = {
       },
     ],
     shot: {
-      src: "/media/app-map.webp",
+      src: viewMap,
       alt: "The doze app showing the larder stack on the Map: storefront calls gateway, gateway calls the other services, and the shared postgres, redis, kafka, aws and mailpit along the bottom",
       caption:
         "A stack on the Map: who calls whom, what each uses, and its memory. Larder is a made-up grocery app we use in examples.",
