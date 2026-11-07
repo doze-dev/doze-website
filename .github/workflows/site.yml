@@ -43,12 +43,15 @@ jobs:
           auto-install: true
 
       - run: bun install --frozen-lockfile
-      - run: bun run check
-      - run: bun run build
+      # The docs and the registry data first: check type-checks pages that
+      # import them (src/data/registry.json is generated, not committed).
+      - run: bun run data
         env:
           DOCS_SOURCE: git
           # release dates for the registry pages come from GitHub's API
           GITHUB_TOKEN: ${{ github.token }}
+      - run: bun run check
+      - run: bunx astro build
       - run: bun run links
 
       - name: Deploy to Cloudflare Pages
