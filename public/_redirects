@@ -14,4 +14,43 @@
 
 # BEGIN docs-pull redirects
 # Written by scripts/docs-pull.ts from each page's redirect_from. Do not edit by hand.
+/docs/doze/cli/app/  /docs/doze/app/library/  301
+/docs/doze/cli/dashboard/  /docs/doze/app/library/  301
+/docs/doze/cli/domains/  /docs/doze/app/domains/  301
+/docs/doze/cli/tour/  /docs/doze/guides/workflows/  301
+/docs/doze/engines/aws/  /docs/doze/services/aws/  301
+/docs/doze/engines/ferret/  /docs/doze/services/ferretdb/  301
+/docs/doze/engines/kafka/  /docs/doze/services/kafka/  301
+/docs/doze/engines/kvrocks/  /docs/doze/services/kvrocks/  301
+/docs/doze/engines/mariadb/  /docs/doze/services/mariadb/  301
+/docs/doze/engines/postgres/  /docs/doze/services/postgres/  301
+/docs/doze/engines/temporal/  /docs/doze/services/temporal/  301
+/docs/doze/engines/valkey/  /docs/doze/services/valkey/  301
+/docs/doze/guides/engines/  /docs/doze/hcl/shared-services/  301
+/docs/doze/guides/modules/  /docs/doze/hcl/shared-services/  301
+/docs/doze/guides/recipes/aws/  /docs/doze/services/aws/  301
+/docs/doze/guides/recipes/config-layout/  /docs/doze/hcl/splitting-files/  301
+/docs/doze/guides/recipes/documentdb/  /docs/doze/services/ferretdb/  301
+/docs/doze/guides/recipes/kafka/  /docs/doze/services/kafka/  301
+/docs/doze/guides/recipes/microservices-stack/  /docs/doze/guides/microservices/  301
+/docs/doze/guides/recipes/postgres/  /docs/doze/services/postgres/  301
+/docs/doze/guides/recipes/stacks/  /docs/doze/guides/microservices/  301
+/docs/doze/guides/recipes/valkey-kvrocks/  /docs/doze/services/valkey/  301
+/docs/doze/guides/resource-footprint/  /docs/doze/guides/memory/  301
+/docs/doze/guides/teams-ci/  /docs/doze/hcl/teams-and-ci/  301
+/docs/doze/modules/describe/  /docs/doze/contribute/write/  301
+/docs/doze/modules/first-module/  /docs/doze/contribute/write/  301
+/docs/doze/modules/overview/  /docs/doze/contribute/write/  301
+/docs/doze/modules/publishing/  /docs/doze/contribute/submit/  301
+/docs/doze/modules/real-engines/  /docs/doze/contribute/write/  301
+/docs/doze/modules/releasing/  /docs/doze/contribute/submit/  301
+/docs/doze/modules/testing/  /docs/doze/contribute/test/  301
+/docs/doze/operate/mirror-binaries/  /docs/doze/reference/binaries/  301
+/docs/doze/operate/operations/  /docs/doze/contribute/registry/  301
+/docs/doze/operate/trust-architecture/  /docs/doze/contribute/registry/  301
+/docs/doze/reference/configuration/  /docs/doze/reference/doze-hcl/  301
+/docs/doze/reference/module-index/  /docs/doze/contribute/registry/  301
+/docs/doze/start/concepts/  /docs/doze/start/how-doze-thinks/  301
+/docs/doze/start/from-docker-compose/  /docs/doze/start/your-repo/  301
+/docs/doze/start/getting-started/  /docs/doze/start/first-stack/  301
 # END docs-pull redirects
