@@ -301,19 +301,29 @@
 .pp-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 22px;
 }
+/* The product's icon, big enough to be noticed: it is the product's face. */
 .pp-lockup img {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  width: 112px;
+  height: 112px;
+  border-radius: 26px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+  transition: transform var(--t-mid) var(--ease-out);
+}
+.pp-lockup:hover img {
+  transform: rotate(-4deg) scale(1.03);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pp-lockup:hover img {
+    transform: none;
+  }
 }
 .pp-lockup b {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 30px;
-  letter-spacing: -0.02em;
+  font-size: 40px;
+  letter-spacing: -0.025em;
 }
 .pp-h1 {
   margin: 0;
@@ -656,12 +666,12 @@
     padding: 56px 0 40px;
   }
   .pp-lockup img {
-    width: 52px;
-    height: 52px;
-    border-radius: 13px;
+    width: 84px;
+    height: 84px;
+    border-radius: 20px;
   }
   .pp-lockup b {
-    font-size: 26px;
+    font-size: 32px;
   }
   .pp-lede {
     font-size: 17px;
