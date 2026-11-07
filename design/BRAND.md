@@ -8,7 +8,7 @@ a number or a thing you can check (OrbStack's rule): asleep means no process.
 
 Headline (home): **Local development that just works.** Chosen 2026-11-07 by the owner: the old headline read as work-life-balance advice, not a reason to use a dev tool.
 
-Sign-off, not the pitch: **Work hard. Then close the lid.** Used only as a closing line (footer, the end of On rest and Tuesday), after the product has been explained.
+Sign-off, not the pitch: **Work hard. Then close the lid.** Used only as a closing line at the end of On rest and Tuesday, after the product has been explained. The footer carries the headline (owner, 2026-11-07).
 Product line (doze): Run your whole stack. Feel none of it.
 
 ## Architecture: a family of three independent products
