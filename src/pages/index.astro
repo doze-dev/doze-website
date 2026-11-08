@@ -5,7 +5,6 @@
 // equals; numbers with their method; the registry; the values; the moon.
 // The sky goes from dusk to night as the page scrolls (scroll-driven CSS where
 // the browser has it, a still dusk over the hero where it doesn't).
-import { existsSync } from "node:fs";
 import DomainsTeaser from "../components/domains/Teaser.astro";
 import FirstStack from "../components/doze/FirstStack.astro";
 import Popular from "../components/home/Popular.astro";
@@ -13,14 +12,11 @@ import VCarousel from "../components/motion/VCarousel.astro";
 import Page from "../layouts/Page.astro";
 import { products } from "../site";
 
-// The Larder captures replace the demo-stack ones as soon as they land in public/media.
-const has = (f: string) => existsSync(`public${f}`);
-const larder = has("/media/app-overview-map.webp");
-const heroLoop = has("/media/app-rec-cascade.webm") ? "/media/app-rec-cascade.webm" : "/media/tour-cascade.webm";
-const heroPoster = larder ? "/media/app-overview-map.webp" : "/media/app-stack.webp";
-const heroCaption = larder
-  ? "The doze app running Larder, our made-up example project: switch a database off and the services that need it follow it to sleep."
-  : "The doze app on a small demo stack: switch a database off and the services that need it follow it to sleep.";
+// Captures of the real app running Larder, from the doze repo (make site-media).
+const heroLoop = "/media/app-rec-cascade.webm";
+const heroPoster = "/media/app-overview-tiles.webp";
+const heroCaption =
+  "The doze app running Larder, our made-up example project: switch Postgres off and the five services that need it follow it to sleep. Memory drops from 536 MB to 282 MB.";
 
 const brew = "brew install --cask doze-dev/tap/doze";
 
@@ -72,31 +68,31 @@ const pains = [
 
 const screens = [
   {
-    video: "/media/tour-views.webm",
+    video: "/media/app-rec-views.webm",
     title: "One stack, three ways.",
-    line: "Tiles to flip, a list to scan, a map that draws who needs whom.",
-    alt: "The doze app switching one stack between the tiles, list and map views",
+    line: "Tiles to flip, a list to scan, a map of who calls whom, a grid of who needs what.",
+    alt: "The doze app switching Larder between the tiles, list, map and grid views",
     big: true,
   },
   {
-    video: "/media/tour-wake.webm",
+    video: "/media/app-rec-wake.webm",
     title: "A switch per service.",
     line: "Flip it: asleep, waking, awake.",
-    alt: "Flipping a service's switch in the doze app: it goes from asleep to waking to awake",
-    focus: "0% 38%",
+    alt: "Flipping switches in the doze app: redis, then identity, each going from asleep to waking to awake, and what identity needs waking first",
+    focus: "100% 75%",
   },
   {
-    video: "/media/tour-palette.webm",
+    video: "/media/app-rec-palette.webm",
     title: "⌘K. A verb and a name.",
     line: "Type “wake”, a name, return.",
-    alt: "Typing wake and a service name into the doze app's command palette",
-    focus: "50% 0%",
+    alt: "Typing wake orders into the doze app's command palette: orders and what it needs wake",
+    focus: "100% 0%",
   },
   {
-    video: "/media/tour-needs-you.webm",
+    video: "/media/app-rec-needs-you.webm",
     title: "Needs you.",
     line: "What’s broken or worth doing, each with its fix one click away.",
-    alt: "The doze app's Needs you panel listing two items, each with a button that fixes it",
+    alt: "The doze app's Needs you panel: orders keeps crashing; Restart, and it comes back and the item leaves",
     focus: "100% 0%",
   },
 ];
@@ -105,8 +101,8 @@ const family = [
   {
     id: "doze",
     sentence: "Wakes your stack when you start. Sleeps it when you stop.",
-    shot: larder ? "/media/app-overview-map.webp" : "/media/app-map.webp",
-    alt: "The doze app's map of a stack: which service needs which, and who is awake",
+    shot: "/media/app-overview-map.webp",
+    alt: "The doze app's map of Larder: who calls whom, and what each service uses",
     tone: "amber",
   },
   {
@@ -168,14 +164,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
         <div class="hm-win">
           <div class="hm-bar" aria-hidden="true"><i></i><i></i><i></i><span>doze</span></div>
           <video class="hm-win-media" data-home-play src={heroLoop} poster={heroPoster} muted loop playsinline autoplay preload="auto" width="1440" height="900" aria-label={heroCaption}></video>
-        </div>
-        <div class="hm-float hm-float-a" aria-hidden="true">
-          <div class="hm-crop hm-crop-wake"></div>
-          <span><b class="hm-waking">waking</b> on the first call</span>
-        </div>
-        <div class="hm-float hm-float-b" aria-hidden="true">
-          <div class="hm-crop hm-crop-count"></div>
-          <span>the whole stack, at a glance</span>
         </div>
         <figcaption class="hm-cap">{heroCaption}</figcaption>
       </figure>
@@ -523,20 +511,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
   }
   @keyframes hm-settle { from { transform: rotateX(16deg) scale(0.94); } to { transform: none; } }
 
-  .hm-float { position: absolute; display: flex; flex-direction: column; gap: 10px; padding: 10px 10px 12px; border-radius: 14px; background: rgba(30, 19, 40, 0.86); border: 1px solid rgba(244, 236, 228, 0.14); box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px); font-size: 13px; color: var(--text-2); }
-  .hm-float span { padding: 0 4px; }
-  .hm-waking { color: #7aa7ff; font-weight: 600; }
-  .hm-float-a { left: -36px; bottom: 16%; }
-  .hm-float-b { right: -44px; top: 44%; }
-  .hm-crop { --s: 0.42; width: calc(var(--w) * var(--s) * 1px); height: calc(var(--h) * var(--s) * 1px); border-radius: 9px; background: #131019 url(/media/app-stack.webp) no-repeat; background-size: calc(2880px * var(--s)) auto; background-position: calc(var(--x) * var(--s) * -1px) calc(var(--y) * var(--s) * -1px); }
-  .hm-crop-wake { --x: 1440; --y: 748; --w: 700; --h: 250; }
-  .hm-crop-count { --x: 2090; --y: 372; --w: 760; --h: 136; }
-  @media (prefers-reduced-motion: no-preference) {
-    .hm-float { animation: hm-float-in var(--t-settle) var(--ease-out) both; }
-    .hm-float-a { animation-delay: 500ms; }
-    .hm-float-b { animation-delay: 700ms; }
-  }
-  @keyframes hm-float-in { from { opacity: 0; transform: translateY(12px); } }
   .hm-cap { margin: 22px auto 0; max-width: 680px; text-align: center; font-size: 14px; color: var(--text-3); }
 
   /* ---- Pains ---- */
@@ -646,9 +620,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
 
   /* ---- Narrower ---- */
   @media (max-width: 1100px) {
-    .hm-float-a { left: -12px; }
-    .hm-float-b { right: -12px; }
-    .hm-crop { --s: 0.34; }
   }
   @media (max-width: 900px) {
     .hm-head-split, .hm-cli, .hm-nums, .hm-values-in { grid-template-columns: 1fr; }
@@ -662,9 +633,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
     .hm-bar { height: 26px; padding: 0 10px; gap: 6px; }
     .hm-bar i { width: 9px; height: 9px; }
     .hm-bar span { font-size: 11px; }
-    .hm-float { position: static; flex: 1 1 100%; flex-direction: row; align-items: center; margin-top: 4px; }
-    .hm-float-b { display: none; }
-    .hm-crop { --s: 0.24; flex: none; }
     .hm-cap { flex: 1 1 100%; margin-top: 10px; }
     .hm-brew { width: 100%; }
     .hm-btn { width: 100%; justify-content: center; }

@@ -21,66 +21,35 @@ import Page from "../layouts/Page.astro";
 // Each entry: what we want first, then stand-ins, as [file in public/media, alt].
 // The first file that exists is shown, so a new capture replaces its stand-in
 // by being dropped into public/media; reorder or edit a line here to change one.
+// A stand-in is named as one while its capture is pending.
 const demo = "from the demo stack";
 const media = {
-  hero: pick(
-    [
-      "app-rec-request-wakes.webm",
-      "A request reaches Larder's gateway in the doze app, and the services it needs wake one after another",
-    ],
-    [
-      "app-overview-map.webp",
-      "The doze app's map of the Larder stack: who needs whom, and what is awake, dozing or asleep",
-    ],
-    ["app-map.webp", `The doze app's map of a stack, ${demo}: who needs whom, and what is awake, dozing or asleep`],
-  ),
-  library: pick(
-    ["app-library.webp", "The doze app's Library: every stack on this Mac, each with its switch"],
-    ["app-stack.webp", `The doze app's tiles for one stack, ${demo}`],
-  ),
-  tiles: pick(
-    ["app-overview-tiles.webp", "Larder as tiles: every service with its state, memory and address"],
-    ["app-stack.webp", `A stack as tiles, ${demo}: every service with its state, memory and address`],
-  ),
-  list: pick(
-    ["app-overview-list.webp", "Larder as a list: one row per service"],
-    ["app-rec-views.webm", "Switching a stack between tiles, list and map"],
-    ["tour-views.webm", `Switching a stack between tiles, list and map, ${demo}`],
-  ),
-  map: pick(
-    ["app-overview-map.webp", "Larder as a map: who needs whom"],
-    ["app-map.webp", `A stack as a map, ${demo}: who needs whom`],
-  ),
-  sleep: pick(
-    [
-      "app-rec-cascade.webm",
-      "Switching Postgres off in Larder; doze offers to sleep the services that need it, and memory comes back",
-    ],
-    [
-      "tour-cascade.webm",
-      `Switching a database off; doze offers to sleep the service that needs it, and memory drops, ${demo}`,
-    ],
-  ),
-  inside: pick(
-    ["app-service-gateway.webp", "Inside Larder's gateway: its state, its address and its logs by run"],
-    ["app-logs.webp", "A service's logs in the doze app, grouped by run"],
-    ["app-module-postgres.webp", "Larder's Postgres inside the doze app, with its console"],
-    ["app-stack.webp", `The doze app's tiles for one stack, ${demo}`],
-  ),
-  palette: pick(
-    ["app-rec-palette.webm", "Typing wake and a service name in the doze command palette, then return"],
-    ["app-palette.webp", "The doze command palette with a verb and a name typed"],
-    ["tour-palette.webm", `Typing wake and a service name in the command palette, ${demo}`],
-  ),
-  needs: pick(
-    ["app-needs-you.webp", "Needs you: what went wrong in Larder, each with its fix"],
-    ["tour-needs-you.webm", `The Needs you panel with two items and their fixes, ${demo}`],
-  ),
+  hero: pick([
+    "app-rec-request-wakes.webm",
+    "Waking Larder's storefront from ⌘K on the map: what it needs wakes first, one after another, then the storefront",
+  ]),
+  library: pick(["app-library.webp", "The doze app's Library: every stack on this Mac, each with its switch"]),
+  tiles: pick(["app-overview-tiles.webp", "Larder as tiles: every service with its state, memory and address"]),
+  list: pick(["app-overview-list.webp", "Larder as a list: one row per service"]),
+  map: pick(["app-overview-map.webp", "Larder as a map: who calls whom, and what each service uses"]),
+  sleep: pick([
+    "app-rec-cascade.webm",
+    "Switching Postgres off in Larder; doze offers to sleep the five services that need it, and memory drops from 536 MB to 282 MB",
+  ]),
+  inside: pick(["app-service-gateway.webp", "Inside Larder's gateway: its state, its address and its logs by run"]),
+  palette: pick([
+    "app-rec-palette.webm",
+    "Typing wake orders in the doze command palette, then return: what orders needs wakes, then orders",
+  ]),
+  needs: pick([
+    "app-rec-needs-you.webm",
+    "Needs you: orders keeps crashing in Larder; Restart, it comes back, and the item leaves by itself",
+  ]),
   menubar: maybe([
     "app-menubar.webp",
     "The doze menu in the macOS menu bar: every stack, and Quit doze, stacks keep running",
   ]),
-  themes: maybe(["app-light.webp", "The doze app in a light theme"]),
+  themes: maybe(["app-light.webp", "The doze app in the light theme: Larder's map"]),
 };
 
 const tour = [
@@ -94,7 +63,7 @@ const tour = [
   {
     label: "Tiles, list, map",
     title: "One stack, three ways.",
-    say: "Tiles for how each service is doing, a list when there are many, and a map that draws who needs whom. Awake, waking, dozing, asleep: the same four words everywhere.",
+    say: "Tiles for how each service is doing, a list when there are many, and a map that draws who calls whom. Awake, waking, dozing, asleep: the same four words everywhere.",
     cli: ["doze status"],
     views: true,
   },
@@ -115,8 +84,8 @@ const tour = [
   {
     label: "⌘K",
     title: "⌘K. A verb and a name.",
-    say: "Type “wake cat”, press return. Sleep, wake, restart, pin, logs, copy, open, up, down: every action is a few keys away, across every stack.",
-    cli: ["doze wake catalog"],
+    say: "Type “wake orders”, press return: what orders needs wakes first, then orders. Sleep, wake, restart, pin, logs, copy, open, up, down: every action is a few keys away, across every stack.",
+    cli: ["doze wake orders"],
     m: media.palette,
   },
   {
