@@ -1,7 +1,7 @@
 ---
 // The doze AWS console, service by service, as a vertical carousel: each
-// slide a real screen of the console with what it shows. Captures are from
-// the console's demo stack until they are re-taken with Larder.
+// slide a real screen of the console with what it shows, captured from a
+// real doze-aws running Larder (doze-aws: go tool task site-media).
 import VCarousel from "../motion/VCarousel.astro";
 import Shot from "./Shot.astro";
 
@@ -9,58 +9,58 @@ const list = [
   {
     name: "The map",
     title: "See how your stack is wired.",
-    line: "A topic feeding a queue, its dead-letter queue, a rule targeting a function: every resource wired to another, and the wire between.",
+    line: "A rule feeding a queue, the queue's dead-letter queue, a bucket notifying a function: every resource wired to another, and the wire between.",
     img: "/media/aws-map.webp",
     path: "map",
-    alt: "The doze AWS map: order-events feeds jobs, which redrives to jobs-dlq; the receipts rule targets the resize function",
+    alt: "The doze AWS map for Larder: the payment-settled rule targets pick-lists, which redrives to pick-lists-dlq; uploads to product-images notify the resize-product-image function",
   },
   {
     name: "Lambda",
     title: "Functions are real host processes.",
-    line: "Invoke one and see the response and its log tail: here a Node function in 2.32 ms. No Docker. Warm, and it sleeps after 10 idle minutes.",
+    line: "Invoke one and see the response and its log tail: here a Node function that answers uploads to a bucket. No Docker. Warm, and it sleeps after 10 idle minutes.",
     img: "/media/aws-lambda.webp",
-    path: "lambda/resize",
-    alt: "The resize Lambda: triggers, warm state, a successful invoke with its response and log tail",
+    path: "lambda/resize-product-image",
+    alt: "The resize-product-image Lambda: triggered by the product-images bucket, warm, and a test invoke of an S3 upload event with its response and log tail",
   },
   {
     name: "DynamoDB",
     title: "Browse and query tables.",
     line: "Scan, query, get and PartiQL, the way you would on AWS. GSIs, transactions and TTL underneath.",
     img: "/media/aws-dynamodb.webp",
-    path: "ddb/orders",
-    alt: "The orders table: six items with scan, query, get and PartiQL",
+    path: "ddb/deliveries",
+    alt: "Larder's deliveries table: ten orders with their delivery slot and status, with scan, query, get and PartiQL",
   },
   {
     name: "S3",
     title: "Buckets on your disk.",
     line: "Browse and upload, with event notifications to SQS, SNS and Lambda, as on AWS.",
     img: "/media/aws-s3.webp",
-    path: "s3/uploads",
-    alt: "The uploads bucket with three receipts",
+    path: "s3/product-images",
+    alt: "The product-images bucket: six product pictures under products/, and the resize-product-image function it notifies",
   },
   {
     name: "SQS",
     title: "Peek at a queue without consuming it.",
     line: "What feeds it, where its dead letters go, and every message. FIFO, DLQ redrive and long polling.",
     img: "/media/aws-sqs.webp",
-    path: "sqs/jobs",
-    alt: "The jobs queue: five messages, fed by order-events, dead letters to jobs-dlq",
+    path: "sqs/pick-lists",
+    alt: "The pick-lists queue: three pick lists waiting, fed by the payment-settled rule, dead letters to pick-lists-dlq after five receives",
   },
   {
     name: "EventBridge",
     title: "A rule, its pattern, its targets.",
     line: "The full pattern language, cron and rate schedules, input transformers, and what each rule drains to.",
     img: "/media/aws-eventbridge.webp",
-    path: "eb/default/rule/receipts",
-    alt: "The receipts rule with its event pattern and its Lambda target",
+    path: "eb/default/rule/payment-settled",
+    alt: "The payment-settled rule: its event pattern and the pick-lists queue it targets",
   },
   {
     name: "Step Functions",
     title: "Follow a state machine.",
     line: "Standard and Express, JSONata, task tokens and Map runs, with every execution, succeeded and failed.",
     img: "/media/aws-stepfunctions.webp",
-    path: "sfn",
-    alt: "The checkout state machine with a succeeded and a failed execution",
+    path: "sfn/fulfil-order",
+    alt: "The fulfil-order state machine: eleven executions, one failed on a declined card",
   },
   {
     name: "IAM",
@@ -68,7 +68,7 @@ const list = [
     line: "Real policy evaluation, on by default in soft mode: evaluated and logged, never blocked. Run your tests, then generate the least-privilege policy they used.",
     img: "/media/aws-iam.webp",
     path: "iam",
-    alt: "The IAM access log: every action recorded, a policy generator and a simulator",
+    alt: "The IAM access log, denials first: the fulfilment service's dynamodb:UpdateItem its policy does not allow, and the policy its calls actually needed, generated",
   },
 ];
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -83,7 +83,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
         </div>
         <div class="pp-slide-say">
           <p>{s.line}</p>
-          <span class="pp-also"><span class="pp-pending">the real console, from its demo stack · re-capture with Larder</span></span>
+          <span class="pp-also">the real console, running Larder</span>
         </div>
       </div>
       <div class="pp-slide-media">

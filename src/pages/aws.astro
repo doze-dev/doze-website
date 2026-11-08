@@ -78,18 +78,18 @@ const services: [string, string][] = [
         <p class="pp-lede">Every call your app makes, newest first, with what it was on, how AWS would have answered, and how long it took. Real AWS cannot show you this, because it is not sitting between your code and the answer.</p>
       </div>
       <div class="aw-wire-shot" data-reveal>
-        <Shot src="/media/aws-wire.webp" alt="The doze AWS console's wire: every AWS call the app made, newest first, with one PutItem refused" title="doze AWS · /_console" glow />
+        <Shot src="/media/aws-wire.webp" alt="The doze AWS console's wire for Larder: every AWS call Larder made, newest first, with Step Functions' own calls nested under it and one receipt PutObject refused" title="doze AWS · /_console" glow />
         <div class="pp-float aw-float"><b>1 call was refused</b>The same request would fail on AWS. You found out on your laptop.</div>
       </div>
-      <p class="pp-cap aw-cap">The real console, from its demo stack: your traffic, not a diagram. <span class="pp-pending">re-capture with Larder</span></p>
+      <p class="pp-cap aw-cap">The real console, running Larder: its traffic, not a diagram.</p>
 
       <div class="aw-pair">
         <figure class="aw-fig" data-reveal>
-          <Shot src="/media/aws-live.webm" alt="AWS CLI calls streaming into the doze AWS console, then a refused PutItem opened" title="doze AWS · /_console" />
-          <figcaption><b>Watch it fill up.</b> Real AWS CLI calls (S3 uploads, SQS jobs, DynamoDB writes) land on the wire as they happen.</figcaption>
+          <Shot src="/media/aws-live.webm" alt="Larder's AWS calls streaming into the doze AWS console, then the refused receipt PutObject opened" title="doze AWS · /_console" />
+          <figcaption><b>Watch it fill up.</b> Real AWS CLI calls (product pictures into S3, pick lists off SQS, orders through Step Functions) land on the wire as they happen.</figcaption>
         </figure>
         <figure class="aw-fig" data-reveal>
-          <Shot src="/media/aws-call.webp" alt="A refused PutItem opened: its request, and the ledger entry for the operation" title="doze AWS · /_console" />
+          <Shot src="/media/aws-call.webp" alt="A refused PutObject opened: a receipt written twice with If-None-Match, S3's PreconditionFailed, the receipt it sent, and the ledger entry for the operation" title="doze AWS · /_console" />
           <figcaption><b>Open the refused one.</b> What you sent, why it was refused, a request id you can quote, and copy as curl.</figcaption>
         </figure>
       </div>
