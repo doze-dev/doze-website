@@ -96,7 +96,7 @@ const fan = [
 <pre class="lw-cb"><b>## Getting started</b>
 brew install postgres redis node
 brew services start postgres
-createdb shop
+createdb larder
 npm run dev   <i># → localhost:3000</i></pre>
     </div>
     <div class="lw-card lw-r lw-sec" data-in={on("cold", "r1a")}>
@@ -107,7 +107,7 @@ ready on <u>http://localhost:3000</u>
     </div>
     <div class="lw-card lw-r" data-in={on("r1b")}>
       <div class="lw-ct">Terminal · the new hire's laptop</div>
-<pre class="lw-cb"><i>$</i> createdb shop
+<pre class="lw-cb"><i>$</i> createdb larder
 <b>createdb: error: connection to server on socket
 "/tmp/.s.PGSQL.5432" failed: No such file or directory</b>
 <i>$ # “works on my machine” — the README's author</i></pre>
@@ -125,7 +125,7 @@ ready on <u>http://localhost:3000</u>
     <div class="lw-card lw-r lw-sec" data-in={on("vm-b")}>
       <div class="lw-ct">Activity · memory</div>
       <div class="lw-mem">
-        <p><span>shop VM</span><i style="--w:.62"></i><em>reserved</em></p>
+        <p><span>larder VM</span><i style="--w:.62"></i><em>reserved</em></p>
         <p><span>billing VM</span><i style="--w:.62"></i><em>reserved</em></p>
         <p><span>client VM</span><i style="--w:.62"></i><em>reserved</em></p>
         <p><span>you</span><i style="--w:.14"></i><em>what's left</em></p>
@@ -145,11 +145,11 @@ ready on <u>http://localhost:3000</u>
     <div class="lw-card lw-r lw-sec" data-in={on("c-a")}>
       <div class="lw-ct">Terminal</div>
 <pre class="lw-cb"><i>$</i> docker compose up -d
-<u> ✔</u> Container shop-db-1      Started
-<u> ✔</u> Container shop-queue-1   Started
-<u> ✔</u> Container shop-api-1     Started
-<u> ✔</u> Container shop-worker-1  Started
-<u> ✔</u> Container shop-web-1     Started</pre>
+<u> ✔</u> Container larder-db-1      Started
+<u> ✔</u> Container larder-queue-1   Started
+<u> ✔</u> Container larder-api-1     Started
+<u> ✔</u> Container larder-worker-1  Started
+<u> ✔</u> Container larder-web-1     Started</pre>
     </div>
     <div class="lw-card lw-l" data-in={on("c-b")}>
       <div class="lw-ct">Terminal · web</div>
@@ -168,7 +168,7 @@ ready on <u>http://localhost:3000</u>
     <div class="lw-card lw-w" data-in={on("c-c")}>
       <div class="lw-ct">Debug · attach to api (in a container)</div>
 <pre class="lw-cb">host: 0.0.0.0   port: 9229
-pathMap: <i>/app</i> → <i>~/code/shop/api</i>
+pathMap: <i>/app</i> → <i>~/code/larder/api</i>
 <b>● Breakpoint set but not yet bound</b>   orders.ts:42
 <i>— is the debug port published? is the path right? —</i></pre>
     </div>
@@ -193,8 +193,8 @@ db-0          0/1     <b>Pending</b></pre>
       <div class="lw-ct">Terminal · moving day, to somebody else's computer</div>
 <pre class="lw-cb"><i>$</i> vpn connect
 <i>$</i> kubectl config use-context dev-shared
-<i>$</i> helm upgrade --install shop ./chart -n dev-you
-<u>Release "shop" has been upgraded.</u></pre>
+<i>$</i> helm upgrade --install larder ./chart -n dev-you
+<u>Release "larder" has been upgraded.</u></pre>
     </div>
     <div class="lw-card lw-w" data-in={on("k-b")}>
       <div class="lw-ct">Terminal · four tabs of these</div>
