@@ -67,10 +67,10 @@ const step = (i: number) => `${pad(i + 1)} / ${pad(slides.length)} · ${slides[i
         <p class="pp-lede">Topics, the tape of records on disk, messages decoded, and underneath, the requests that touched them. On by default.</p>
       </div>
       <div class="kf-shot" data-reveal>
-        <Shot src="/media/kafka-orders.webp" alt="The doze Kafka console: the orders topic, its tape of 40 records on disk, the messages, and the requests underneath" title="doze Kafka · /_console" glow />
+        <Shot src="/media/kafka-orders.webp" alt="The doze Kafka console for Larder: the orders.placed topic, its tape of 38 records across three partitions, the messages, the newest order decoded as JSON, and the requests underneath" title="doze Kafka · /_console" glow />
         <div class="pp-float kf-float"><b>The tape</b>Each mark is one record on disk, taller is bigger, newest on the right.</div>
       </div>
-      <p class="pp-cap kf-cap">The real console, from its demo stack: 40 records produced with kcat. <span class="pp-pending">re-capture with Larder</span></p>
+      <p class="pp-cap kf-cap">The real console, with Larder's four topics, its events and its four consumer groups: payments answers every order placed, on payments.settled or payments.failed.</p>
     </div>
   </section>
 
@@ -102,10 +102,10 @@ const step = (i: number) => `${pad(i + 1)} / ${pad(slides.length)} · ${slides[i
         <div data-slide data-label={slides[1]} class="pp-slide">
           <div class="pp-slide-top">
             <div><span class="pp-step">{step(1)}</span><h3>A console that explains.</h3></div>
-            <div class="pp-slide-say"><p>Topics, messages, lag, and why a group keeps rebalancing, with the Kafka error names. Here kcat produces records: each request shows up in the traffic, then on the topic's tape.</p>
-              <span class="pp-also"><span class="pp-pending">the real console, from its demo stack · re-capture with Larder</span></span></div>
+            <div class="pp-slide-say"><p>Topics, messages, lag, and why a group keeps rebalancing, with the Kafka error names. Here Larder takes orders: each one shows up in the traffic, payments answers it, and it lands on the topic's tape.</p>
+              <span class="pp-also">the real console, with Larder's topics and events</span></div>
           </div>
-          <div class="pp-slide-media"><Shot src="/media/kafka-live.webm" alt="Records produced with kcat appear in doze Kafka's traffic and on the topic's tape" title="doze Kafka · /_console" /></div>
+          <div class="pp-slide-media"><Shot src="/media/kafka-live.webm" alt="Larder's orders arrive live: the Traffic page fills with the orders service producing, payments fetching and answering, and the consumer groups committing; then the orders.placed topic's tape grows mark by mark" title="doze Kafka · /_console" /></div>
         </div>
 
         <div data-slide data-label={slides[2]} class="pp-slide">
