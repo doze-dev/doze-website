@@ -9,6 +9,7 @@
 // outside close it, and focus goes back to Menu).
 import Search from "@astrojs/starlight/components/Search.astro";
 import SiteFooter from "../SiteFooter.astro";
+import DevNotice from "./DevNotice.astro";
 import { docsProducts, productFor } from "./products";
 
 const { hasSidebar } = Astro.locals.starlightRoute;
@@ -55,6 +56,7 @@ const isExternal = (href: string) => /^https?:/.test(href);
       )}
     </div>
   </div>
+  <DevNotice />
   <div class="dz-wrap">
     {hasSidebar && (
       <nav class="dz-side print:hidden" aria-label={`${current.name} docs`}>

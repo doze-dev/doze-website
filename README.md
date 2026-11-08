@@ -1,5 +1,8 @@
 # doze-website
 
+> [!WARNING]
+> **Still in active development.** This project is not cleared for use yet. Expect breaking changes, and do not rely on it for real work.
+
 The source of [doze-dev.com](https://doze-dev.com): the doze family's home page,
 the product pages for doze, doze AWS and doze Kafka, the registry, and the docs.
 

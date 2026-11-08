@@ -1,4 +1,5 @@
 ---
+import DevNotice from "../../components/docs/DevNotice.astro";
 // The docs landing (board Docs2Landing): search first, with a few examples;
 // a door per product with four pages each; pages picked by hand; and the line
 // that each product works alone. Links go through src/data/docs-homes.ts.
@@ -33,6 +34,7 @@ const picked = landing.picked.map((x) => {
 });
 ---
 <Page title="Docs" description="Docs for doze, doze AWS and doze Kafka. Search first, or pick a product." theme="light" current="docs">
+<DevNotice />
 <div class="ld">
   <div class="ld-in">
     <div class="ld-top">
