@@ -2,6 +2,7 @@
 // Every page outside the docs: head, header, footer, and the copy-button script.
 import "../styles/tokens.css";
 import "../styles/site.css";
+import DevNotice from "../components/docs/DevNotice.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader, { type Theme } from "../components/SiteHeader.astro";
 import { site } from "../site";
@@ -13,8 +14,18 @@ interface Props {
   current?: string;
   news?: string;
   newsHref?: string;
+  /** Show the "still in active development" strip under the header. */
+  notice?: boolean;
 }
-const { title, description = site.description, theme = "dark", current = "none", news, newsHref } = Astro.props;
+const {
+  title,
+  description = site.description,
+  theme = "dark",
+  current = "none",
+  news,
+  newsHref,
+  notice = false,
+} = Astro.props;
 const fullTitle = !title ? `doze · ${site.tagline}` : /\bdoze\b/.test(title) ? title : `${title} · doze`;
 const canonical = new URL(Astro.url.pathname, site.url);
 const ground = { dark: "#140C1B", aws: "#0C1320", kafka: "#16150F", light: "#FFFAF4" }[theme];
@@ -39,6 +50,7 @@ const ground = { dark: "#140C1B", aws: "#0C1320", kafka: "#16150F", light: "#FFF
   <body style={`background:${ground}`}>
     <a class="skip" href="#main">Skip to content</a>
     <SiteHeader theme={theme} current={current} news={news} newsHref={newsHref} />
+    {notice && <DevNotice tone={theme === "light" ? "light" : "dark"} />}
     <main id="main"><slot /></main>
     <SiteFooter theme={theme} />
     <script>import "../scripts/copy.ts";</script>

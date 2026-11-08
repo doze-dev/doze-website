@@ -27,7 +27,7 @@ const slides = ["Clients", "The console", "Schema registry", "Transactions", "Du
 const pad = (n: number) => String(n).padStart(2, "0");
 const step = (i: number) => `${pad(i + 1)} / ${pad(slides.length)} · ${slides[i]}`;
 ---
-<Page title="doze Kafka" description="doze Kafka wakes a Kafka broker. No JVM to put to bed. One Go binary on 127.0.0.1:9092, single node, disk-backed, with a console, a schema registry and transactions." theme="kafka" current="kafka">
+<Page notice title="doze Kafka" description="doze Kafka wakes a Kafka broker. No JVM to put to bed. One Go binary on 127.0.0.1:9092, single node, disk-backed, with a console, a schema registry and transactions." theme="kafka" current="kafka">
 <div class="pp pp-kafka kf">
   <SubNav name="doze Kafka" icon="/brand/doze-kafka.svg" links={[["The tape", "#console"], ["What it does", "#features"], ["Alone or in doze", "#run"], ["What it isn't", "#not"], ["Install", "#install"], ["Docs", "/docs/kafka/"], ["Changelog", "/changelog/"]]} />
 
