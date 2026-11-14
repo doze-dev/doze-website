@@ -54,8 +54,8 @@ import Page from "../layouts/Page.astro";
             <div class="dl-pkg"><b>App</b><span>.deb</span><span>.rpm</span></div>
             <div class="dl-pkg"><b>CLI</b><span>.tar.gz</span><span>Homebrew</span></div>
           </div>
-          <div class="dl-cmd dl-s14"><code><span class="dl-pr">$ </span>curl -fsSL https://doze-dev.com/install.sh | sh</code></div>
-          <span class="dl-bracket">[install.sh: placeholder, not built yet]</span>
+          <div class="dl-cmd"><code><span class="dl-pr">$ </span>curl -fsSL https://doze-dev.com/install.sh | sh</code><button data-copy="curl -fsSL https://doze-dev.com/install.sh | sh" class="dl-copy" type="button" aria-label="Copy: curl -fsSL https://doze-dev.com/install.sh | sh">Copy</button></div>
+          <span class="dl-small dl-dim">The CLI to <code class="dl-ic-code">~/.local/bin</code>, checked against the release's <code class="dl-ic-code">checksums.txt</code>. <a class="dl-inl" href="/install.sh">Read it first</a>.</span>
           <a class="dl-link" href="https://github.com/doze-dev/doze/releases/latest">Linux files on GitHub →</a>
         </div>
         <div class="dl-mini" aria-labelledby="dl-cli-title">
@@ -368,7 +368,6 @@ button,select,input[type=button],input[type=submit],input[type=reset],input[type
 .dl-s11.dl-s11.dl-s11{display:flex;flex-direction:column;gap:8px;position:relative}
 .dl-s12.dl-s12.dl-s12{position:relative}
 .dl-s13.dl-s13.dl-s13{font-size:15px}
-.dl-s14.dl-s14.dl-s14{border-style:dashed}
 .dl-s15.dl-s15.dl-s15{display:inline-block;min-height:44px;line-height:44px}
 .dl-s16.dl-s16.dl-s16{padding-top:24px;padding-bottom:40px}
 .dl-s17.dl-s17.dl-s17{margin-bottom:16px}
