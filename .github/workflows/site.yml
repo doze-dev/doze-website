@@ -5,7 +5,10 @@
 # every internal link, deploy a preview.
 # main: the same, deployed to production.
 # Product repos trigger a rebuild when their docs change by sending a
-# repository_dispatch of type "docs-changed"; a nightly run catches the rest.
+# repository_dispatch of type "docs-changed"; doze-registry sends
+# "registry-published" after each deploy of the signed registry, and the
+# build below pulls it fresh (registry-pull, inside `bun run data`). A nightly
+# run catches the rest.
 name: site
 
 on:
@@ -13,7 +16,7 @@ on:
     branches: [main]
   pull_request:
   repository_dispatch:
-    types: [docs-changed]
+    types: [docs-changed, registry-published]
   schedule:
     - cron: "17 3 * * *"
   workflow_dispatch:

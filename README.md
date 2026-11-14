@@ -47,8 +47,16 @@ bun run format     # biome, with fixes
 ```
 
 CI (`.github/workflows/site.yml`) runs all four on every PR and push, deploys
-each PR to a preview URL and `main` to production. It also runs nightly and
-when a product repo sends a `docs-changed` repository dispatch.
+each PR to a preview URL and `main` to production. It also runs nightly, when
+a product repo sends a `docs-changed` repository dispatch, and when
+doze-registry sends `registry-published` after deploying the signed registry.
+
+The registry pages (`/registry/`) are the only registry portal. They are built
+from `src/data/registry.json`, which `scripts/registry-pull.ts` writes from
+doze-registry's `registry/` (signed indexes and meta) and doze-binaries
+(`bun run data` runs it; the file is not committed). The registry host,
+`registry.doze-dev.com`, serves only the data the `doze` CLI reads and sends
+browsers here.
 
 ## Deploy
 
