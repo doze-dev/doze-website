@@ -2,6 +2,11 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: interest-cohort=()
+# curl -fsSL https://doze-dev.com/install.sh | sh: readable in a browser, and
+# never a stale copy from a cache.
+/install.sh
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: no-cache
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 # pagefind's entry files keep stable names while their shards rotate: never cache them
