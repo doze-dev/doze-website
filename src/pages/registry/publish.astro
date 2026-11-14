@@ -7,7 +7,8 @@ import RegistryBar from "../../components/RegistryBar.astro";
 import Page from "../../layouts/Page.astro";
 import { hrefFor } from "../../routes";
 
-const contributing = "https://github.com/doze-dev/doze-modules/blob/main/CONTRIBUTING.md";
+// doze-modules has no CONTRIBUTING.md; the submit guide is in the docs.
+const contributing = "/docs/doze/contribute/submit/";
 const unit = "go vet ./...\ngo test -race ./...";
 const accept =
   "scripts/backend-env.sh valkey aarch64-apple-darwin > /tmp/valkey.env\nset -a; . /tmp/valkey.env; set +a\ngo test -tags acceptance -v -timeout 20m ./modules/valkey/...";
@@ -224,7 +225,7 @@ modules/&lt;name&gt;/plugin/main.go    <span class="pb-c"># the plugin binary: d
         </ul>
       </div>
       <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px">
-        <a class="pb-btn pb-btn-p" href={contributing}>Read CONTRIBUTING.md</a>
+        <a class="pb-btn pb-btn-p" href={contributing}>Read the submit guide</a>
         <a class="pb-btn pb-btn-s" href={hrefFor("RegistryTrust.dc.html")}>How signing works</a>
         <a class="pb-btn pb-btn-s" href={hrefFor("DozeDocs.dc.html")}>Module docs</a>
       </div>
