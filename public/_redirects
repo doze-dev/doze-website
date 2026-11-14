@@ -12,6 +12,10 @@
 /registry/extensions   /registry/doze/postgres/extensions/  301
 /registry/extensions/  /registry/doze/postgres/extensions/  301
 
+# doze 0.1's docs linked the registry's trust page here.
+/registry/trust-architecture   /registry/trust/  301
+/registry/trust-architecture/  /registry/trust/  301
+
 # BEGIN docs-pull redirects
 # Written by scripts/docs-pull.ts from each page's redirect_from. Do not edit by hand.
 /docs/doze/cli/app/  /docs/doze/app/library/  301
