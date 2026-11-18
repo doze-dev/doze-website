@@ -58,7 +58,6 @@ import Page from "../layouts/Page.astro";
           <li><b class="sec-s14">Code execution through config</b>: a doze.hcl or a module that does more than it says.</li>
           <li><b class="sec-s14">The supply chain</b>: anything that gets an unsigned or altered engine or module past doze's checks.</li>
         </ul>
-        <p class="sec-p">doze AWS and doze Kafka are covered too: report them here and we route it.</p>
       </div>
       <div class="sec-s12">
         <span class="sec-eyebrow">Supported versions</span>
@@ -86,7 +85,7 @@ import Page from "../layouts/Page.astro";
     <div class="sec-grid sec-s19">
       <div class="sec-card sec-does">
         <div class="sec-top"><span class="sec-ico"><svg class="sec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><h3 class="sec-h3">One admin prompt, for .doze names</h3></div>
-        <p class="sec-p">So a name like <code class="sec-i">gateway.larder.doze</code> (from our example project, Larder) resolves, and on macOS two stacks can both use port 5432. Only doze sets this up: doze AWS and doze Kafka, run on their own, listen on 127.0.0.1 and need no names.</p>
+        <p class="sec-p">So a name like <code class="sec-i">gateway.larder.doze</code> (from our example project, Larder) resolves, and on macOS two stacks can both use port 5432.</p>
         <ul class="sec-files" aria-label="Files written on macOS">
           <li><span>macOS</span><span>/etc/resolver/doze</span></li>
           <li><span></span><span>/Library/LaunchDaemons/dev.doze.netd.plist</span></li>
@@ -111,7 +110,7 @@ import Page from "../layouts/Page.astro";
       </div>
       <div class="sec-card sec-does">
         <div class="sec-top"><span class="sec-ico"><svg class="sec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><h3 class="sec-h3">No telemetry</h3></div>
-        <p class="sec-p">No usage stats, no crash reports, no account. That is also why the registry shows no download counts: we don't have them. This website sets no cookies and runs no analytics.</p>
+        <p class="sec-p">No usage stats, no crash reports, no account. This website sets no cookies and runs no analytics.</p>
       </div>
       <div class="sec-card sec-does">
         <div class="sec-top"><span class="sec-ico"><svg class="sec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span><h3 class="sec-h3">The network, only for what you declared</h3></div>
@@ -133,7 +132,6 @@ import Page from "../layouts/Page.astro";
           <h2 class="sec-h2">From source to your laptop, checked at every hand-off.</h2>
           <p class="sec-p sec-s18">An engine you never built yourself still has a trail: who built it, who signed it, and the hash your project expects.</p>
         </div>
-        <a class="sec-btn sec-btn-ghost" href="/registry/trust/">How signing works →</a>
       </div>
       <ol class="sec-chain sec-s22" aria-label="How an engine reaches your machine">
         <li class="sec-node"><span class="sec-step">1 · BUILD</span><h3>doze-binaries</h3><p>Builds each engine from upstream source, per platform. Postgres 14.0 to 18.6, Valkey, MariaDB and the rest.</p><span class="sec-art">sha256 per platform</span></li>
@@ -145,7 +143,6 @@ import Page from "../layouts/Page.astro";
       <div class="sec-card sec-s23">
         <span class="sec-s24">The doze-dev signing key (ed25519), compiled into doze</span>
         <span class="sec-key">Nu5y8mbjYv7XEtNFBXwPVl+C8SBteVApIROefBwGWjw=</span>
-        <a class="sec-s25" href="/registry/trust/">Check it yourself →</a>
       </div>
     </div>
   </section>
@@ -161,7 +158,7 @@ import Page from "../layouts/Page.astro";
     </div>
     <div class="sec-card sec-s30">
       <span class="sec-chip sec-chip-good">None published</span>
-      <p class="sec-p sec-s31">No advisories for doze, doze AWS, doze Kafka or any module so far. When there is one, it is listed here with the affected releases, the fixed release and the command to move to it, and every affected module release in the registry carries a notice.</p>
+      <p class="sec-p sec-s31">No advisories for doze or any module so far. When there is one, it is listed here with the affected releases, the fixed release and the command to move to it, and every affected module release carries a notice.</p>
     </div>
   </section>
 </div>

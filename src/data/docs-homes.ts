@@ -1,7 +1,7 @@
 // The Larder Map, from the doze repo's `make docs-shots` (website/src/assets/app/view-map.webp).
 
-// What the docs homes (/docs/doze/, /docs/aws/, /docs/kafka/) and the /docs
-// landing say and link to (boards Docs2Home, Docs2Aws, Docs2Landing).
+// What the docs home (/docs/doze/) and the /docs landing say and link to
+// (boards Docs2Home, Docs2Landing).
 //
 // Every docs link goes through `pages` below: one map per product from a short
 // key to the page's slug in the new information architecture
@@ -14,7 +14,7 @@ import type { ImageMetadata } from "astro";
 import ia from "../../design/docs-ia.json";
 import viewMap from "../assets/docs/view-map.webp";
 
-type Product = "doze" | "aws" | "kafka";
+type Product = "doze";
 type PageRef = { slug: string; today?: string; label?: string };
 
 export const pages: Record<Product, Record<string, PageRef>> = {
@@ -25,41 +25,12 @@ export const pages: Record<Product, Record<string, PageRef>> = {
     views: { slug: "app/views", today: "cli/app" },
     breaks: { slug: "app/when-something-breaks", today: "guides/troubleshooting" },
     services: { slug: "services/postgres", today: "guides/engines", label: "Services" },
-    aws: { slug: "services/aws", today: "engines/aws" },
-    kafka: { slug: "services/kafka", today: "engines/kafka" },
     domains: { slug: "app/domains", today: "cli/domains" },
     keys: { slug: "app/keys", today: "cli/app" },
     cli: { slug: "reference/cli" },
     hcl: { slug: "reference/doze-hcl", today: "reference/configuration" },
     env: { slug: "reference/environment" },
     lock: { slug: "reference/lockfile" },
-  },
-  aws: {
-    start: { slug: "getting-started" },
-    endpoints: { slug: "endpoints" },
-    console: { slug: "console", today: "getting-started" },
-    lambda: { slug: "lambda" },
-    deploy: { slug: "cloudformation" },
-    embed: { slug: "embedding" },
-    cli: { slug: "cli" },
-    support: { slug: "support" },
-    promises: { slug: "compatibility" },
-    notBuilt: { slug: "not-built" },
-    perf: { slug: "performance" },
-  },
-  kafka: {
-    start: { slug: "getting-started" },
-    endpoints: { slug: "endpoints" },
-    console: { slug: "console" },
-    clients: { slug: "clients" },
-    groups: { slug: "consumer-groups" },
-    tx: { slug: "transactions" },
-    schemas: { slug: "schema-registry" },
-    auth: { slug: "auth-and-tls" },
-    limits: { slug: "limitations" },
-    config: { slug: "configuration" },
-    api: { slug: "api-support" },
-    storage: { slug: "storage-and-durability" },
   },
 };
 
@@ -103,8 +74,6 @@ export type Home = {
   look: { key: string; label: string; text: string }[];
   /** doze: what is new (HTML, this file's own strings). */
   news?: { items: string[]; note: string };
-  /** doze AWS and doze Kafka: how they run inside a doze stack (HTML). */
-  inStack?: { text: string; key: string; label: string };
 };
 
 export const homes: Record<Product, Home> = {
@@ -191,104 +160,6 @@ export const homes: Record<Product, Home> = {
       note: '0.2 is the next release; it is not out yet. <a href="/changelog/">The full changelog →</a>',
     },
   },
-  aws: {
-    product: "aws",
-    lede: "Wakes AWS on your laptop. No account, no bill. One small binary that answers the AWS SDKs: S3, DynamoDB, SQS, SNS, Lambda and more, with a console of its own.",
-    start: [
-      { key: "start", title: "Getting started", text: "Run it, point an SDK at it, configure it." },
-      { key: "endpoints", title: "Endpoints", text: "The addresses doze AWS answers on, and which are promised." },
-      {
-        key: "console",
-        title: "Open the console",
-        text: "Every call your app made, newest first, at <code>/_console/</code>.",
-      },
-    ],
-    code: [
-      "curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-aws/main/install.sh | sh",
-      "exec $SHELL",
-      "cd ~/code/harbour && doze-aws",
-    ],
-    want: [
-      {
-        key: "lambda",
-        title: "Run a Lambda locally",
-        text: "Host processes, no Docker: runtimes, logs, versions, layers and function URLs.",
-      },
-      { key: "deploy", title: "Deploy my template", text: "With the AWS CLI, SAM, CDK or Serverless." },
-      { key: "embed", title: "Use it from Go tests", text: "doze AWS as a Go library, with a complete example." },
-      {
-        key: "support",
-        title: "Check an API is there",
-        text: "Per-service operation tables: Functional, Cosmetic, Stub.",
-      },
-      {
-        key: "promises",
-        title: "Know what is promised",
-        text: "What 1.0.0 promises, surface by surface, and what it does not.",
-      },
-      { key: "notBuilt", title: "Know what it won't do", text: "What it declines and why, and what is only deferred." },
-    ],
-    look: [
-      { key: "cli", label: "CLI reference", text: "commands, flags, doze-aws.toml" },
-      { key: "support", label: "API support", text: "operation by operation" },
-      { key: "endpoints", label: "Endpoints", text: "where it answers" },
-      { key: "perf", label: "Performance", text: "measured costs" },
-    ],
-    inStack: {
-      text: "doze AWS works alone. In a doze stack it is one service: <code>doze add aws</code>, or a <code>module aws</code> block with buckets, queues, tables and functions inside.",
-      key: "aws",
-      label: "doze › Services › AWS →",
-    },
-  },
-  kafka: {
-    product: "kafka",
-    lede: "Wakes a Kafka broker. No JVM to put to bed. One small binary that speaks the Kafka protocol, keeps its data on disk, and comes with a web console and a schema registry.",
-    start: [
-      { key: "start", title: "Getting started", text: "Install it, run it, produce and consume your first message." },
-      {
-        key: "endpoints",
-        title: "Endpoints",
-        text: "The address it answers on, and how to reach it from a container.",
-      },
-      {
-        key: "console",
-        title: "Open the console",
-        text: "Topics, messages and consumer groups, at the console address it prints.",
-      },
-    ],
-    code: ["curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh", "doze-kafka"],
-    want: [
-      {
-        key: "clients",
-        title: "Connect my client",
-        text: "Any Kafka client: the address to give it, and which clients are tested in CI.",
-      },
-      {
-        key: "groups",
-        title: "Run consumer groups",
-        text: "Classic and KIP-848 groups, rebalances and committed offsets.",
-      },
-      { key: "tx", title: "Use transactions", text: "Exactly-once: idempotent producers and transactional reads." },
-      {
-        key: "schemas",
-        title: "Register a schema",
-        text: "The built-in Schema Registry: Avro, Protobuf and JSON Schema.",
-      },
-      { key: "auth", title: "Turn on SASL and TLS", text: "Test the auth your production cluster uses." },
-      { key: "limits", title: "Know what it won't do", text: "What it leaves out, and why." },
-    ],
-    look: [
-      { key: "config", label: "Configuration", text: "every flag and its default" },
-      { key: "api", label: "API support", text: "every Kafka API it answers" },
-      { key: "endpoints", label: "Endpoints", text: "where it answers" },
-      { key: "storage", label: "Storage and durability", text: "what survives a crash" },
-    ],
-    inStack: {
-      text: "doze Kafka works alone. In a doze stack it is one service: <code>doze add kafka</code>, or a <code>module kafka</code> block with its topics inside.",
-      key: "kafka",
-      label: "doze › Services › Kafka →",
-    },
-  },
 };
 
 // The /docs landing (Docs2Landing).
@@ -296,21 +167,17 @@ export const landing = {
   tries: [
     { q: "sleep", product: "doze" },
     { q: "DATABASE_URL", product: "doze" },
-    { q: "Lambda", product: "aws" },
-    { q: "consumer groups", product: "kafka" },
     { q: "doze.lock", product: "doze" },
   ] as { q: string; product: Product }[],
   doors: {
     doze: { sub: "the app and the CLI", keys: ["install", "firstStack", "yourRepo", ["hcl", "doze.hcl reference"]] },
-    aws: { sub: "a local AWS in one binary", keys: ["start", "lambda", "endpoints", "support"] },
-    kafka: { sub: "a Kafka broker in one binary", keys: ["start", "clients", "schemas", "console"] },
   } as Record<Product, { sub: string; keys: (string | [string, string])[] }>,
   picked: [
-    { product: "doze", key: "aws", title: "Add AWS to a stack" },
-    { product: "doze", key: "kafka", title: "Add Kafka to a stack" },
     { product: "doze", key: "breaks", title: "When something breaks" },
-    { product: "aws", key: "deploy", title: "CloudFormation, SAM, CDK and Serverless" },
-    { product: "kafka", key: "groups", title: "Consumer groups" },
-    { product: "kafka", key: "tx", title: "Transactions (exactly-once)" },
+    { product: "doze", key: "services", title: "Postgres, Valkey and the other services" },
+    { product: "doze", key: "domains", title: "Your own domain, over https" },
+    { product: "doze", key: "env", title: "Environment variables" },
+    { product: "doze", key: "lock", title: "doze.lock" },
+    { product: "doze", key: "keys", title: "⌘K and keys" },
   ] as { product: Product; key: string; title: string }[],
 };

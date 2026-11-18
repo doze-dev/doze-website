@@ -35,9 +35,7 @@
       { "slug": "services/kvrocks", "title": "Kvrocks" },
       { "slug": "services/ferretdb", "title": "FerretDB" },
       { "slug": "services/mariadb", "title": "MariaDB" },
-      { "slug": "services/temporal", "title": "Temporal" },
-      { "slug": "services/kafka", "title": "Kafka" },
-      { "slug": "services/aws", "title": "AWS" }
+      { "slug": "services/temporal", "title": "Temporal" }
     ],
     "Guides": [
       { "slug": "guides/microservices", "title": "Microservices" },
@@ -72,56 +70,6 @@
       { "slug": "why/hcl", "title": "Why HCL" },
       { "slug": "why/alternatives", "title": "Alternatives" },
       { "slug": "why/trust", "title": "The trust model" }
-    ]
-  },
-  "aws": {
-    "Start here": [
-      { "slug": "getting-started", "title": "Getting started" },
-      { "slug": "endpoints", "title": "Endpoints" }
-    ],
-    "Use it": [
-      { "slug": "console", "title": "The console" },
-      { "slug": "cloudformation", "title": "CloudFormation, SAM, CDK and Serverless" },
-      { "slug": "lambda", "title": "Lambda, locally" },
-      { "slug": "embedding", "title": "Embedding doze-aws" }
-    ],
-    "Reference": [
-      { "slug": "cli", "title": "CLI reference" },
-      { "slug": "support", "title": "API support" },
-      { "slug": "compatibility", "title": "What 1.0.0 promises" }
-    ],
-    "Why": [
-      { "slug": "not-built", "title": "What doze-aws does not build" },
-      { "slug": "performance", "title": "Performance" },
-      { "slug": "storage", "title": "Storage: why bbolt" }
-    ]
-  },
-  "kafka": {
-    "Start here": [
-      { "slug": "getting-started", "title": "Getting started" },
-      { "slug": "endpoints", "title": "Endpoints" }
-    ],
-    "Use it": [
-      { "slug": "console", "title": "The web console" },
-      { "slug": "clients", "title": "Clients" },
-      { "slug": "consumer-groups", "title": "Consumer groups" },
-      { "slug": "transactions", "title": "Transactions" },
-      { "slug": "schema-registry", "title": "Schema Registry" },
-      { "slug": "auth-and-tls", "title": "Auth and TLS" },
-      { "slug": "authorization", "title": "Authorization" },
-      { "slug": "observability", "title": "Observability" },
-      { "slug": "frameworks", "title": "Frameworks" },
-      { "slug": "embedding", "title": "Embedding" },
-      { "slug": "troubleshooting", "title": "Troubleshooting" }
-    ],
-    "Reference": [
-      { "slug": "configuration", "title": "Configuration" },
-      { "slug": "api-support", "title": "API support" },
-      { "slug": "storage-and-durability", "title": "Storage and durability" }
-    ],
-    "Why": [
-      { "slug": "limitations", "title": "Limitations" },
-      { "slug": "architecture", "title": "Architecture" }
     ]
   }
 }

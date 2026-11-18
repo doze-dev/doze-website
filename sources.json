@@ -7,7 +7,7 @@
       "ref": "main",
       "path": "website/src/content/docs",
       "links": "absolute",
-      "keep": ["/registry", "/schema"],
+      "keep": ["/schema"],
       "copy": {
         "website/public/schema": "schema"
       },
@@ -15,21 +15,6 @@
       "files": {
         "website/public/llms.txt": "llms.txt"
       }
-    },
-    {
-      "name": "aws",
-      "repo": "doze-dev/doze-aws",
-      "ref": "main",
-      "path": "docs",
-      "links": "relative"
-    },
-    {
-      "name": "kafka",
-      "repo": "doze-dev/doze-kafka",
-      "ref": "main",
-      "path": "docs",
-      "links": "relative",
-      "exclude": ["reports/**"]
     }
   ]
 }

@@ -1,18 +1,18 @@
 ---
-// A product's docs home: a task launcher (boards Docs2Home, Docs2Aws). Start
-// here (three steps beside a screenshot or a terminal), I want to… cards,
-// Look something up, and New in 0.2 (doze) or In a doze stack (doze AWS,
-// doze Kafka). The words and links are in src/data/docs-homes.ts.
+// A product's docs home: a task launcher (board Docs2Home). Start here
+// (three steps beside a screenshot or a terminal), I want to… cards, Look
+// something up, and New in 0.2. The words and links are in
+// src/data/docs-homes.ts.
 import { Image } from "astro:assets";
 import { homes, icons, page } from "../../data/docs-homes";
 import { docsProducts } from "./products";
 
 interface Props {
-  product: "doze" | "aws" | "kafka";
+  product: "doze";
 }
 const h = homes[Astro.props.product];
 const p = h.product;
-const accent = { doze: "#F0A24B", aws: "#5BB8E8", kafka: "#FFD60A" }[p];
+const accent = { doze: "#F0A24B" }[p];
 const doze = docsProducts[0];
 ---
 <div class="dz-home not-content" style={`--dz-accent: ${accent}`}>
@@ -73,16 +73,6 @@ const doze = docsProducts[0];
         <h2 id="dz-h-new">New in {doze.version}</h2>
         <ul class="dz-h-new">{h.news.items.map((n) => <li><span set:html={n} /></li>)}</ul>
         <p class="dz-h-note" set:html={h.news.note} />
-      </section>
-    )}
-    {h.inStack && (
-      <section aria-labelledby="dz-h-with">
-        <h2 id="dz-h-with">In a doze stack</h2>
-        <div class="dz-h-with">
-          <img src={doze.logo} alt="" width="36" height="36" />
-          <p set:html={h.inStack.text} />
-          <a href={page("doze", h.inStack.key).href}>{h.inStack.label}</a>
-        </div>
       </section>
     )}
   </div>

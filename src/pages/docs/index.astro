@@ -1,8 +1,8 @@
 ---
 import DevNotice from "../../components/docs/DevNotice.astro";
 // The docs landing (board Docs2Landing): search first, with a few examples;
-// a door per product with four pages each; pages picked by hand; and the line
-// that each product works alone. Links go through src/data/docs-homes.ts.
+// a door per product with four pages each; and pages picked by hand. Links go
+// through src/data/docs-homes.ts.
 //
 // The search box hands off to Starlight's: submitting opens the product's docs
 // with the search dialog open and the words typed (PageFrame reads ?q=).
@@ -12,8 +12,6 @@ import Page from "../../layouts/Page.astro";
 
 const line = {
   doze: "Wakes your stack when you start. Sleeps it when you stop.",
-  aws: "Wakes AWS on your laptop. No account, no bill.",
-  kafka: "Wakes a Kafka broker. No JVM to put to bed.",
 };
 const doors = docsProducts.map((p) => ({
   ...p,
@@ -33,15 +31,15 @@ const picked = landing.picked.map((x) => {
   return { ...x, href: to.href, logo: logo[x.product].logo, where: `${name} › ${group}` };
 });
 ---
-<Page title="Docs" description="Docs for doze, doze AWS and doze Kafka. Search first, or pick a product." theme="light" current="docs">
+<Page title="Docs" description="The doze docs. Search first, or start with a page below." theme="light" current="docs">
 <DevNotice />
 <div class="ld">
   <div class="ld-in">
     <div class="ld-top">
       <h1>Docs</h1>
-      <p class="ld-lede">For doze, doze AWS and doze Kafka. Search first, or pick a product.</p>
+      <p class="ld-lede">The doze docs. Search first, or start with a page below.</p>
       <form class="ld-form" role="search" action="/docs/doze/" method="get">
-        <label for="docs-q" class="sr-only">Search the docs for doze, doze AWS and doze Kafka</label>
+        <label for="docs-q" class="sr-only">Search the doze docs</label>
         <div class="ld-search">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E5F79" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
           <input id="docs-q" type="search" name="q" placeholder="Search all docs" autocomplete="off" required aria-keyshortcuts="Meta+K Control+K" />
@@ -74,7 +72,6 @@ const picked = landing.picked.map((x) => {
       </div>
     </section>
 
-    <div class="ld-alone"><img src="/brand/family-ink.svg" alt="" width="30" height="30" /><span>Each product works alone. doze AWS and doze Kafka also run inside a doze stack: <code>doze add aws</code>, <code>doze add kafka</code>.</span></div>
   </div>
 </div>
 </Page>
@@ -115,7 +112,7 @@ const picked = landing.picked.map((x) => {
   .ld .ld-try a { background: #ffffff; border: 1px solid #eadfd3; border-radius: 999px; padding: 4px 12px; color: #4a3d55; min-height: 32px; box-sizing: border-box; display: inline-flex; align-items: center; }
   .ld .ld-try a:hover { border-color: #f0a24b; color: #140c1b; }
 
-  .ld-doors { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .ld-doors { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .door { background: #ffffff; border: 1px solid #eadfd3; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
   .door-h { display: flex; align-items: center; gap: 14px; }
   .door-h img { width: 52px; height: 52px; border-radius: 13px; }
@@ -128,11 +125,7 @@ const picked = landing.picked.map((x) => {
   .door li a span { color: #a85a0c; }
   .ld .door-go { display: inline-flex; align-items: center; justify-content: center; height: 44px; border-radius: 10px; font-weight: 600; font-size: 14px; margin-top: auto; }
   .ld .door-doze .door-go { background: #f0a24b; color: #2a1534; }
-  .ld .door-aws .door-go { background: #e3f2fb; color: #0c3a57; border: 1px solid #bfe0f3; }
-  .ld .door-kafka .door-go { background: #fff6c7; color: #4a3d05; border: 1px solid #f1e39a; }
   .door-doze { border-top: 4px solid #f0a24b; }
-  .door-aws { border-top: 4px solid #5bb8e8; }
-  .door-kafka { border-top: 4px solid #ffd60a; }
 
   .ld-pop-s { margin-top: 48px; }
   .ld h2 { margin: 0 0 6px; font: 700 26px var(--font-display); letter-spacing: -0.015em; }
@@ -143,9 +136,6 @@ const picked = landing.picked.map((x) => {
   .ld-pop img { width: 28px; height: 28px; border-radius: 7px; flex: none; }
   .ld-pop b { display: block; font-weight: 600; font-size: 15px; }
   .ld-pop a > span > span { font-size: 13px; color: #6e5f79; }
-  .ld-alone { margin: 40px 0 0; padding: 18px 22px; border-radius: 14px; background: #fff4e8; border: 1px solid #eadfd3; font-size: 15px; line-height: 1.5; color: #4a3d55; display: flex; gap: 14px; align-items: center; }
-  .ld-alone img { flex: none; }
-  .ld-alone code { font: 13px var(--font-mono); font-variant-ligatures: none; }
 
   @media (max-width: 1000px) {
     .ld-doors, .ld-pop { grid-template-columns: minmax(0, 1fr); }
@@ -156,6 +146,5 @@ const picked = landing.picked.map((x) => {
     .ld-lede { font-size: 17px; }
     .ld-search { padding: 0 12px 0 14px; }
     .ld-search kbd { display: none; }
-    .ld-alone { align-items: flex-start; }
   }
 </style>

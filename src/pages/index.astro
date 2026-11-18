@@ -1,16 +1,13 @@
 ---
 // Home (direction B, "Rest is a feature": design/BRAND.md). It sells the
 // evening and shows the product: the headline, then the doze app, big and
-// alive; the pains, one at a time; the app's screens; the three products as
-// equals; numbers with their method; the registry; the values; the moon.
+// alive; the pains, one at a time; the app's screens; numbers with their method; the values; the moon.
 // The sky goes from dusk to night as the page scrolls (scroll-driven CSS where
 // the browser has it, a still dusk over the hero where it doesn't).
 import DomainsTeaser from "../components/domains/Teaser.astro";
 import FirstStack from "../components/doze/FirstStack.astro";
-import Popular from "../components/home/Popular.astro";
 import VCarousel from "../components/motion/VCarousel.astro";
 import Page from "../layouts/Page.astro";
-import { products } from "../site";
 
 // Captures of the real app running Larder, from the doze repo (make site-media).
 const heroLoop = "/media/app-rec-cascade.webm";
@@ -97,38 +94,9 @@ const screens = [
   },
 ];
 
-const family = [
-  {
-    id: "doze",
-    sentence: "Wakes your stack when you start. Sleeps it when you stop.",
-    shot: "/media/app-overview-map.webp",
-    alt: "The doze app's map of Larder: who calls whom, and what each service uses",
-    tone: "amber",
-  },
-  {
-    id: "aws",
-    sentence: "Wakes AWS on your laptop. No account, no bill.",
-    shot: "/media/aws-wire.webp",
-    alt: "The doze AWS console's wire for Larder: every AWS call it made, as it happened",
-    tone: "sky",
-  },
-  {
-    id: "kafka",
-    sentence: "Wakes a Kafka broker. No JVM to put to bed.",
-    shot: "/media/kafka-orders.webp",
-    alt: "The doze Kafka console: Larder's orders.placed topic, its messages, and one order decoded",
-    tone: "kafka",
-  },
-].flatMap((f) => {
-  const p = products.find((x) => x.id === f.id);
-  return p ? [{ ...f, ...p }] : [];
-});
 const oss = [
   { repo: "doze", what: "The app, the CLI and the daemon" },
-  { repo: "doze-aws", what: "S3, SQS, DynamoDB, Lambda and more, in one Go binary" },
-  { repo: "doze-kafka", what: "A Kafka broker without the JVM" },
   { repo: "doze-modules", what: "Postgres, Valkey and the other engines" },
-  { repo: "doze-registry", what: "The signed index modules install from" },
   { repo: "doze-sdk", what: "Write a module of your own" },
 ];
 const clone = "git clone https://github.com/doze-dev/doze && cd doze && make build";
@@ -230,7 +198,7 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
       <h2 class="hm-h2" id="hm-oss-h">All of it. Apache-2.0.</h2>
       <div class="hm-oss-grid">
         <div class="hm-oss-say">
-          <p>Not a free tier of something paid, and not an open core with the good parts kept back. The app, the CLI, doze AWS, doze Kafka, every module and the registry they install from are on GitHub under Apache-2.0. Read it, build it, fork it, keep it.</p>
+          <p>Not a free tier of something paid, and not an open core with the good parts kept back. The app, the CLI and every module are on GitHub under Apache-2.0. Read it, build it, fork it, keep it.</p>
           <p><b>Repeatable, on every laptop.</b> <code>doze.hcl</code> says what runs. <code>doze.lock</code> pins every module to a version and a sha256 for each platform, checked against the registry's signature. Commit both, and a teammate's first <code>doze up</code> runs the stack you run.</p>
           <div class="hm-cmd hm-oss-cmd">
             <code><span class="hm-dim">$</span> {clone}</code>
@@ -286,34 +254,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
     </div>
   </div>
 
-  <!-- 5. Three products, one family -->
-  <section class="hm-sec" aria-labelledby="hm-fam-h">
-    <div class="hm-wrap">
-      <div class="hm-head" data-reveal>
-        <p class="hm-kicker">The doze family</p>
-        <h2 class="hm-h2" id="hm-fam-h">Three products. One bedtime.</h2>
-        <p class="hm-sub">Each one wakes when called and sleeps when you stop. Use one, or all three together.</p>
-      </div>
-      <div class="hm-fam">
-        {family.map((f, i) => (
-          <article class={`hm-prod hm-tone-${f.tone}`} data-reveal data-reveal-delay={String(i + 1)}>
-            <div class="hm-prod-top">
-              <img src={f.logo} alt="" width="48" height="48" />
-              <h3><a href={f.href}>{f.name}</a></h3>
-            </div>
-            <p class="hm-prod-line">{f.sentence}</p>
-            <div class="hm-prod-shot"><img src={f.shot} alt={f.alt} loading="lazy" width="2880" height="1800" /></div>
-            <p class="hm-endorse">Part of the doze family. Works alone.</p>
-            <div class="hm-prod-links">
-              <a href={f.href}>Meet {f.name} <span class="hm-arr" aria-hidden="true">→</span></a>
-              <a href={f.docs}>Docs</a>
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <!-- 6. Numbers, with the method -->
   <section class="hm-sec" aria-labelledby="hm-num-h">
     <div class="hm-wrap hm-nums">
@@ -354,21 +294,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
           <dd class="hm-src">We’ll publish it with the machine, the versions, the date and the script. Until then, <code>make bench</code> on yours.</dd>
         </div>
       </dl>
-    </div>
-  </section>
-
-  <!-- 7. The registry -->
-  <section class="hm-sec" aria-labelledby="hm-reg-h">
-    <div class="hm-wrap">
-      <div class="hm-head hm-head-split" data-reveal>
-        <div>
-          <p class="hm-kicker">The registry</p>
-          <h2 class="hm-h2" id="hm-reg-h">Everything your stack uses. One line each.</h2>
-        </div>
-        <p class="hm-sub"><code>doze add</code> writes the block. It sleeps until something calls it. No Dockerfile, no compose YAML, no setup doc.</p>
-      </div>
-      <Popular />
-      <a class="hm-link" href="/registry/">Browse the registry <span class="hm-arr" aria-hidden="true">→</span></a>
     </div>
   </section>
 
@@ -468,7 +393,7 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
   .hm-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 18px; font-weight: 600; color: var(--amber); text-decoration: none; }
   .hm-link .hm-arr { transition: transform var(--t-mid) var(--ease-out); }
   .hm-link:hover .hm-arr { transform: translateX(4px); }
-  .hm-link:focus-visible, .hm-btn:focus-visible, .hm-brew button:focus-visible, .hm-cmd button:focus-visible, .hm-prod a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 8px; }
+  .hm-link:focus-visible, .hm-btn:focus-visible, .hm-brew button:focus-visible, .hm-cmd button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 8px; }
   .hm-sec { padding: clamp(88px, 12vw, 160px) 0 0; }
   .hm-head { margin-bottom: clamp(36px, 5vw, 56px); }
   .hm-head-split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px 64px; align-items: end; }
@@ -544,25 +469,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
   .hm-term { margin: 0; padding: 22px 24px; border-radius: 16px; background: #0d0811; border: 1px solid var(--line); font-size: 14px; line-height: 1.9; overflow-x: auto; color: var(--text); }
 
   /* ---- Family ---- */
-  .hm-fam { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-  .hm-prod { --c: var(--amber); position: relative; display: flex; flex-direction: column; padding: 26px 24px 20px; border-radius: 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 9%, #1e1328), #1a1023 60%); border: 1px solid var(--line); }
-  .hm-prod::before { content: ""; position: absolute; inset: 0 24px auto; height: 2px; border-radius: 2px; background: var(--c); opacity: 0.8; }
-  .hm-tone-sky { --c: var(--sky); }
-  .hm-tone-kafka { --c: var(--kafka); }
-  .hm-prod-top { display: flex; align-items: center; gap: 14px; }
-  .hm-prod-top img { width: 48px; height: 48px; border-radius: 12px; }
-  .hm-prod h3 { margin: 0; font: 700 26px/1 var(--font-display); letter-spacing: -0.025em; }
-  .hm-prod h3 a { text-decoration: none; }
-  .hm-prod h3 a::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
-  .hm-prod-line { margin: 18px 0 20px; min-height: 3em; font-size: 17px; line-height: 1.45; color: var(--text); text-wrap: balance; }
-  .hm-prod-shot { border-radius: 12px; overflow: hidden; border: 1px solid rgba(244, 236, 228, 0.1); aspect-ratio: 16 / 10; background: #131019; }
-  .hm-prod-shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; transition: transform var(--t-slow) var(--ease-out); }
-  .hm-prod:hover .hm-prod-shot img { transform: scale(1.025); }
-  .hm-prod:hover { border-color: color-mix(in srgb, var(--c) 40%, var(--line)); }
-  .hm-endorse { margin: 18px 0 0; font-size: 13px; color: var(--text-3); }
-  .hm-prod-links { display: flex; gap: 18px; margin-top: 6px; }
-  .hm-prod-links a { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; font-size: 15px; color: var(--c); text-decoration: none; }
-  .hm-prod-links a + a { color: var(--text-2); min-width: 44px; justify-content: center; }
 
   /* ---- Numbers ---- */
   .hm-nums { display: grid; grid-template-columns: 0.9fr 1.3fr; gap: 48px 72px; align-items: start; }
@@ -586,7 +492,7 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
   .hm-oss-say code { font-size: 0.88em; padding: 1px 6px; border-radius: 6px; background: rgba(244, 236, 228, 0.07); color: var(--text); }
   .hm-oss-cmd { margin-top: 8px; height: auto; min-height: 52px; padding-top: 4px; padding-bottom: 4px; }
   .hm-oss-cmd code { white-space: normal; overflow-wrap: anywhere; line-height: 1.5; }
-  .hm-oss-repos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .hm-oss-repos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .hm-oss-repos a { display: flex; flex-direction: column; gap: 6px; height: 100%; padding: 16px 18px; border-radius: 16px; border: 1px solid var(--line); background: #1a1023; color: var(--text); text-decoration: none; transition: border-color var(--t-fast), transform var(--t-mid) var(--ease-out); }
   .hm-oss-repos a:hover { border-color: rgba(240, 162, 75, 0.5); transform: translateY(-2px); }
   .hm-oss-repos a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
@@ -594,7 +500,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
   .hm-oss-what { font-size: 14.5px; line-height: 1.45; color: var(--text-2); }
   .hm-oss-lic { margin-top: auto; padding-top: 6px; font: 500 12px var(--font-mono); color: var(--amber); }
   @media (max-width: 900px) { .hm-oss-grid { grid-template-columns: minmax(0, 1fr); } }
-  @media (max-width: 520px) { .hm-oss-repos { grid-template-columns: minmax(0, 1fr); } }
   a.hm-eyebrow { text-decoration: none; transition: border-color var(--t-fast); }
   a.hm-eyebrow:hover { border-color: rgba(240, 162, 75, 0.5); color: var(--text); }
   .hm-values-in { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px 72px; align-items: center; padding: clamp(36px, 6vw, 72px); border-radius: 28px; background: radial-gradient(70% 120% at 0% 0%, rgba(240, 162, 75, 0.12), transparent 60%), #1a1023; border: 1px solid var(--line); }
@@ -623,7 +528,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
   }
   @media (max-width: 900px) {
     .hm-head-split, .hm-cli, .hm-nums, .hm-values-in { grid-template-columns: 1fr; }
-    .hm-fam { grid-template-columns: 1fr; max-width: 560px; }
     .hm-bento { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 700px) {

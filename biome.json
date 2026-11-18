@@ -11,8 +11,7 @@
       "!public/schema",
       "!brand/gallery.html",
       "!**/*.svg",
-      "!design",
-      "!src/data/registry.json"
+      "!design"
     ]
   },
   "formatter": {

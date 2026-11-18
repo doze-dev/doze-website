@@ -4,7 +4,7 @@
 > **Still in active development.** This project is not cleared for use yet. Expect breaking changes, and do not rely on it for real work.
 
 The source of [doze-dev.com](https://doze-dev.com): the doze family's home page,
-the product pages for doze, doze AWS and doze Kafka, the registry, and the docs.
+the doze product pages, and the docs.
 
 ## Run it
 
@@ -17,17 +17,15 @@ bun run dev        # http://localhost:4321, docs pulled from the sibling repos
 
 ## How it fits together
 
-| Path                                        | What             | Where it comes from                       |
-| ------------------------------------------- | ---------------- | ----------------------------------------- |
-| `/`, `/doze/`, `/aws/`, `/kafka/`           | marketing pages  | `src/pages/*.astro`                       |
-| `/registry/`                                | the registry     | `src/pages/registry/`                     |
-| `/docs/doze/`, `/docs/aws/`, `/docs/kafka/` | docs (Starlight) | each product's repo, pulled at build time |
+| Path          | What             | Where it comes from                 |
+| ------------- | ---------------- | ----------------------------------- |
+| `/`, `/doze/` | marketing pages  | `src/pages/*.astro`                 |
+| `/docs/doze/` | docs (Starlight) | the doze repo, pulled at build time |
 
 Docs live beside the code they describe, so a change and its docs land in one
 PR. `scripts/docs-pull.ts` copies them in according to `sources.json`:
 
-- Locally it reads the sibling checkouts (`../doze`, `../doze-aws`,
-  `../doze-kafka`), so editing a doc there shows up on the next reload.
+- Locally it reads the sibling checkout (`../doze`), so editing a doc there shows up on the next reload.
 - In CI (or with `DOCS_SOURCE=git`) it shallow-clones each repo at the `ref`
   in `sources.json`.
 - On the way in it adds titles to pages without frontmatter, turns `README.md`
@@ -47,16 +45,8 @@ bun run format     # biome, with fixes
 ```
 
 CI (`.github/workflows/site.yml`) runs all four on every PR and push, deploys
-each PR to a preview URL and `main` to production. It also runs nightly, when
-a product repo sends a `docs-changed` repository dispatch, and when
-doze-registry sends `registry-published` after deploying the signed registry.
-
-The registry pages (`/registry/`) are the only registry portal. They are built
-from `src/data/registry.json`, which `scripts/registry-pull.ts` writes from
-doze-registry's `registry/` (signed indexes and meta) and doze-binaries
-(`bun run data` runs it; the file is not committed). The registry host,
-`registry.doze-dev.com`, serves only the data the `doze` CLI reads and sends
-browsers here.
+each PR to a preview URL and `main` to production. It also runs nightly, and when
+a product repo sends a `docs-changed` repository dispatch.
 
 ## Deploy
 

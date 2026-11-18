@@ -1,11 +1,5 @@
 ---
 import Page from "../layouts/Page.astro";
-import { fmtDate, getModule } from "../lib/registry";
-
-// Module release dates come from the registry index, not the board.
-const relDate = (mod: string, v: string) => getModule(mod)?.releases.find((r) => r.version === v)?.date ?? null;
-const pg024 = relDate("postgres", "0.2.4");
-const fe023 = relDate("ferret", "0.2.3");
 ---
 <Page title="Changelog" theme="dark" current="changelog">
 <div class="cl-pg cl-root">
@@ -13,13 +7,11 @@ const fe023 = relDate("ferret", "0.2.3");
   <section class="cl-wrap cl-s1">
     <span class="cl-eyebrow">Changelog</span>
     <h1 class="cl-h1 cl-s2">What changed, and when.</h1>
-    <p class="cl-lede">Every release of doze, doze AWS and doze Kafka, and the notable module releases, newest first. Every module release is on that module's Versions tab. Upgrading doze never changes what a project runs: engines and modules stay pinned in its <code class="cl-s3">doze.lock</code> until you move them.</p>
+    <p class="cl-lede">Every release of doze, and the notable module releases, newest first. Upgrading doze never changes what a project runs: engines and modules stay pinned in its <code class="cl-s3">doze.lock</code> until you move them.</p>
     <div class="cl-stack-sm cl-s4">
       <div class="cl-filters" role="group" aria-label="Show releases of">
         <button class="cl-fchip" type="button" aria-pressed="true" data-cl-filter="all">All</button>
         <button class="cl-fchip" type="button" aria-pressed="false" data-cl-filter="doze"><span class="cl-sw cl-s5"></span>doze</button>
-        <button class="cl-fchip" type="button" aria-pressed="false" data-cl-filter="aws"><span class="cl-sw cl-s6"></span>doze AWS</button>
-        <button class="cl-fchip" type="button" aria-pressed="false" data-cl-filter="kafka"><span class="cl-sw cl-s7"></span>doze Kafka</button>
         <button class="cl-fchip" type="button" aria-pressed="false" data-cl-filter="modules"><span class="cl-sw cl-s8"></span>Modules</button>
       </div>
       <a class="cl-s9" href="/changelog.xml" type="application/atom+xml">
@@ -76,13 +68,13 @@ const fe023 = relDate("ferret", "0.2.3");
             <div class="cl-grp">
               <h3 class="cl-g-new">Module releases that need doze 0.2.0</h3>
               <ul>
-                <li>postgres 0.2.5, valkey 0.2.2, ferret 0.2.4, temporal 0.2.3, mariadb 0.2.2 and kvrocks 0.2.2 download their engines through doze (doze-sdk v0.10.0). An older doze skips them and keeps the release it has. <a href="/registry/">In the registry</a></li>
+                <li>postgres 0.2.5, valkey 0.2.2, ferret 0.2.4, temporal 0.2.3, mariadb 0.2.2 and kvrocks 0.2.2 download their engines through doze (doze-sdk v0.10.0). An older doze skips them and keeps the release it has.</li>
               </ul>
             </div>
             <div class="cl-grp">
               <h3 class="cl-g-soon">Coming with postgres 0.3</h3>
               <ul>
-                <li>Postgres extensions by name: <code>extensions = ["vector", "pg_cron"]</code>, pinned in doze.lock. <a href="/registry/doze/postgres/extensions/">See the catalog</a></li>
+                <li>Postgres extensions by name: <code>extensions = ["vector", "pg_cron"]</code>, pinned in doze.lock.</li>
               </ul>
             </div>
           </div>
@@ -97,7 +89,7 @@ const fe023 = relDate("ferret", "0.2.3");
       <div class="cl-meta">
         <span class="cl-badge cl-b-mod"><span class="cl-ini cl-s14">P</span>Module · postgres</span>
         <span class="cl-ver" id="e-pg024">0.2.4</span>
-        <span class="cl-when"><time datetime={pg024 ?? undefined}>{fmtDate(pg024)}</time></span>
+        <span class="cl-when"><time datetime="2026-11-02">2 Nov 2026</time></span>
       </div>
       <div class="cl-s15">
         <p class="cl-sum">A console for Postgres: who is connected, what they are running, and a way to stop it.</p>
@@ -109,7 +101,6 @@ const fe023 = relDate("ferret", "0.2.3");
           </ul>
         </div>
         <div class="cl-upg"><span>Upgrade a project's pin:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> doze modules upgrade postgres</code><button data-copy="doze modules upgrade postgres" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div></div>
-        <div class="cl-upg"><a href="/registry/doze/postgres/0.2.4/">postgres 0.2.4 in the registry</a><a href="/registry/doze/postgres/versions/">All postgres releases</a></div>
       </div>
     </article>
 
@@ -118,7 +109,7 @@ const fe023 = relDate("ferret", "0.2.3");
       <div class="cl-meta">
         <span class="cl-badge cl-b-mod"><span class="cl-ini cl-s16">F</span>Module · ferret</span>
         <span class="cl-ver" id="e-fe023">0.2.3</span>
-        <span class="cl-when"><time datetime={fe023 ?? undefined}>{fmtDate(fe023)}</time></span>
+        <span class="cl-when"><time datetime="2026-11-02">2 Nov 2026</time></span>
       </div>
       <div class="cl-s15">
         <p class="cl-sum">FerretDB starts on Linux when the data folder has a capital letter in it.</p>
@@ -128,103 +119,7 @@ const fe023 = relDate("ferret", "0.2.3");
             <li>The Mongo driver read the socket path as a host name and lowercased it, so on a case-sensitive filesystem start-up waited for a socket that did not exist. The module now dials the socket directly. macOS hid it: its filesystem ignores case.</li>
           </ul>
         </div>
-        <div class="cl-upg"><span>Upgrade a project's pin:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> doze modules upgrade ferret</code><button data-copy="doze modules upgrade ferret" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div><a href="/registry/">ferret in the registry</a></div>
-      </div>
-    </article>
-
-    <!-- doze AWS 0.3.0 -->
-    <article class="cl-entry" aria-labelledby="e-aws030" data-cl-product="aws">
-      <div class="cl-meta">
-        <span class="cl-badge cl-b-aws"><img src="/brand/doze-aws.svg" alt="">doze AWS</span>
-        <span class="cl-ver" id="e-aws030">0.3.0</span>
-        <span class="cl-when"><time datetime="2026-07-18">18 Jul 2026</time></span>
-      </div>
-      <div class="cl-s15">
-        <p class="cl-sum">The console gets a glance view for doze, and queue URLs survive a path prefix.</p>
-        <div class="cl-grp">
-          <h3 class="cl-g-new">New</h3>
-          <ul><li>A glance API the doze app reads to show what each AWS service holds, without opening the console.</li></ul>
-        </div>
-        <div class="cl-grp">
-          <h3 class="cl-g-fix">Fixed</h3>
-          <ul><li>Queue URLs keep the path prefix when doze AWS is served behind one.</li></ul>
-        </div>
-        <div class="cl-upg"><span>Upgrade:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-aws/main/install.sh | sh</code><button data-copy="curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-aws/main/install.sh | sh" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div><span>Inside doze, <code>doze modules upgrade aws</code> moves you to module aws 0.1.1.</span><a href="https://github.com/doze-dev/doze-aws/releases/tag/v0.3.0">Release on GitHub</a></div>
-      </div>
-    </article>
-
-    <!-- doze Kafka 1.2.0 -->
-    <article class="cl-entry" aria-labelledby="e-k120" data-cl-product="kafka">
-      <div class="cl-meta">
-        <span class="cl-badge cl-b-kafka"><img src="/brand/doze-kafka.svg" alt="">doze Kafka</span>
-        <span class="cl-ver" id="e-k120">1.2.0</span>
-        <span class="cl-when"><time datetime="2026-07-18">18 Jul 2026</time></span>
-      </div>
-      <div class="cl-s15">
-        <p class="cl-sum">A web console for the broker. See the messages without installing a client.</p>
-        <div class="cl-grp">
-          <h3 class="cl-g-new">New</h3>
-          <ul><li>Topics, a live message tape, produce from the browser, and consumer groups with their lag.</li></ul>
-        </div>
-        <div class="cl-upg"><span>Upgrade:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh</code><button data-copy="curl -fsSL https://raw.githubusercontent.com/doze-dev/doze-kafka/main/install.sh | sh" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div><span>Inside doze, <code>doze modules upgrade kafka</code> moves you to module kafka 0.1.1.</span><a href="https://github.com/doze-dev/doze-kafka/releases/tag/v1.2.0">Release on GitHub</a></div>
-      </div>
-    </article>
-
-    <!-- doze AWS 0.2.0 -->
-    <article class="cl-entry" aria-labelledby="e-aws020" data-cl-product="aws">
-      <div class="cl-meta">
-        <span class="cl-badge cl-b-aws"><img src="/brand/doze-aws.svg" alt="">doze AWS</span>
-        <span class="cl-ver" id="e-aws020">0.2.0</span>
-        <span class="cl-when"><time datetime="2026-07-17">17 Jul 2026</time></span>
-      </div>
-      <div class="cl-s15">
-        <p class="cl-sum">Tidier inside, the same on the wire.</p>
-        <div class="cl-grp">
-          <h3 class="cl-g-chg">Changed</h3>
-          <ul><li>Large files split by service, duplicate protocol codecs merged, the stack file split per service. Nothing you call changes.</li></ul>
-        </div>
-        <div class="cl-upg"><a href="https://github.com/doze-dev/doze-aws/releases/tag/v0.2.0">Release on GitHub</a>
-        </div>
-      </div>
-    </article>
-
-    <!-- doze Kafka 1.1.0 -->
-    <article class="cl-entry" aria-labelledby="e-k110" data-cl-product="kafka">
-      <div class="cl-meta">
-        <span class="cl-badge cl-b-kafka"><img src="/brand/doze-kafka.svg" alt="">doze Kafka</span>
-        <span class="cl-ver" id="e-k110">1.1.0</span>
-        <span class="cl-when"><time datetime="2026-07-17">17 Jul 2026</time></span>
-      </div>
-      <div class="cl-s15">
-        <p class="cl-sum">Run the broker inside your own Go program.</p>
-        <div class="cl-grp"><h3 class="cl-g-new">New</h3><ul><li>An embeddable server package: start a broker in a test with no separate process.</li></ul></div>
-        <div class="cl-upg"><a href="https://github.com/doze-dev/doze-kafka/releases/tag/v1.1.0">Release on GitHub</a></div>
-      </div>
-    </article>
-
-    <!-- doze AWS 0.1.0 + doze Kafka 1.0.0 -->
-    <article class="cl-entry" aria-labelledby="e-aws010" data-cl-product="aws">
-      <div class="cl-meta">
-        <span class="cl-badge cl-b-aws"><img src="/brand/doze-aws.svg" alt="">doze AWS</span>
-        <span class="cl-ver" id="e-aws010">0.1.0</span>
-        <span class="cl-when"><time datetime="2026-07-10">10 Jul 2026</time></span>
-      </div>
-      <div class="cl-s15">
-        <p class="cl-sum">First release: a local AWS in one small Go binary.</p>
-        <div class="cl-upg"><a href="/aws/">What it covers</a><a href="https://github.com/doze-dev/doze-aws/releases/tag/v0.1.0">Release on GitHub</a></div>
-      </div>
-    </article>
-
-    <article class="cl-entry" aria-labelledby="e-k100" data-cl-product="kafka">
-      <div class="cl-meta">
-        <span class="cl-badge cl-b-kafka"><img src="/brand/doze-kafka.svg" alt="">doze Kafka</span>
-        <span class="cl-ver" id="e-k100">1.0.0</span>
-        <span class="cl-when"><time datetime="2026-07-10">10 Jul 2026</time></span>
-      </div>
-      <div class="cl-s15">
-        <p class="cl-sum">Kafka in one Go binary, with no JVM.</p>
-        <div class="cl-grp"><h3 class="cl-g-new">New</h3><ul><li>A config file in TOML. Flags win over the file, the file over the defaults.</li></ul></div>
-        <div class="cl-upg"><a href="https://github.com/doze-dev/doze-kafka/releases/tag/v1.0.0">Release on GitHub</a></div>
+        <div class="cl-upg"><span>Upgrade a project's pin:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> doze modules upgrade ferret</code><button data-copy="doze modules upgrade ferret" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div></div>
       </div>
     </article>
 
@@ -276,9 +171,7 @@ const fe023 = relDate("ferret", "0.2.3");
     </article>
 
     <div class="cl-s17">
-      <p class="cl-p cl-s13">Every module release, with what it needs and what it pins, is on that module's Versions tab.</p>
       <div class="cl-s18">
-        <a class="cl-s19" href="/registry/doze/postgres/versions/">postgres versions →</a>
         <a class="cl-s19" href="https://github.com/doze-dev/doze/releases">All doze releases on GitHub →</a>
       </div>
     </div>
@@ -345,8 +238,6 @@ pre.cl-code .cl-c{color:#9C8AAB}pre.cl-code .cl-k{color:#F0A24B}pre.cl-code .cl-
 .cl-badge{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;height:28px;padding:0 12px 0 6px;border-radius:999px;font-size:13px;font-weight:600}
 .cl-badge img{width:18px;height:18px;border-radius:5px;min-height:0 !important}
 .cl-b-doze{background:#2A1C10;color:#F0A24B;border:1px solid #5A3E1E}
-.cl-b-aws{background:#0C1320;color:#5BB8E8;border:1px solid #1F3A55}
-.cl-b-kafka{background:#16150F;color:#FFD60A;border:1px solid #4A4520}
 .cl-b-mod{background:#1E1328;color:#D6C8DF;border:1px solid #4A3458}
 .cl-b-mod .cl-ini{width:18px;height:18px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#140C1B}
 .cl-sum{margin:0;font-family:var(--font-display);font-weight:700;font-size:26px;line-height:1.25;letter-spacing:-0.015em;text-wrap:balance;max-width:40rem}
@@ -373,8 +264,6 @@ pre.cl-code .cl-c{color:#9C8AAB}pre.cl-code .cl-k{color:#F0A24B}pre.cl-code .cl-
 .cl-s3.cl-s3.cl-s3{font-family:var(--font-mono);color:#F4ECE4}
 .cl-s4.cl-s4.cl-s4{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:16px}
 .cl-s5.cl-s5.cl-s5{background:#F0A24B}
-.cl-s6.cl-s6.cl-s6{background:#5BB8E8}
-.cl-s7.cl-s7.cl-s7{background:#FFD60A}
 .cl-s8.cl-s8.cl-s8{background:#C9BAD3}
 .cl-s9.cl-s9.cl-s9{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px}
 .cl-s10.cl-s10.cl-s10{padding-bottom:96px}

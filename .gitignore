@@ -8,5 +8,4 @@ src/content/docs/docs/
 public/schema/
 .DS_Store
 brand/gallery.html
-src/data/registry.json
 public/llms.txt
