@@ -1,11 +1,5 @@
 ---
 import Page from "../layouts/Page.astro";
-import { fmtDate, getModule } from "../lib/registry";
-
-// Module release dates come from the registry index, not the board.
-const relDate = (mod: string, v: string) => getModule(mod)?.releases.find((r) => r.version === v)?.date ?? null;
-const pg024 = relDate("postgres", "0.2.4");
-const fe023 = relDate("ferret", "0.2.3");
 ---
 <Page title="Changelog" theme="dark" current="changelog">
 <div class="cl-pg cl-root">
@@ -13,7 +7,7 @@ const fe023 = relDate("ferret", "0.2.3");
   <section class="cl-wrap cl-s1">
     <span class="cl-eyebrow">Changelog</span>
     <h1 class="cl-h1 cl-s2">What changed, and when.</h1>
-    <p class="cl-lede">Every release of doze, doze AWS and doze Kafka, and the notable module releases, newest first. Every module release is on that module's Versions tab. Upgrading doze never changes what a project runs: engines and modules stay pinned in its <code class="cl-s3">doze.lock</code> until you move them.</p>
+    <p class="cl-lede">Every release of doze, doze AWS and doze Kafka, and the notable module releases, newest first. Upgrading doze never changes what a project runs: engines and modules stay pinned in its <code class="cl-s3">doze.lock</code> until you move them.</p>
     <div class="cl-stack-sm cl-s4">
       <div class="cl-filters" role="group" aria-label="Show releases of">
         <button class="cl-fchip" type="button" aria-pressed="true" data-cl-filter="all">All</button>
@@ -76,13 +70,13 @@ const fe023 = relDate("ferret", "0.2.3");
             <div class="cl-grp">
               <h3 class="cl-g-new">Module releases that need doze 0.2.0</h3>
               <ul>
-                <li>postgres 0.2.5, valkey 0.2.2, ferret 0.2.4, temporal 0.2.3, mariadb 0.2.2 and kvrocks 0.2.2 download their engines through doze (doze-sdk v0.10.0). An older doze skips them and keeps the release it has. <a href="/registry/">In the registry</a></li>
+                <li>postgres 0.2.5, valkey 0.2.2, ferret 0.2.4, temporal 0.2.3, mariadb 0.2.2 and kvrocks 0.2.2 download their engines through doze (doze-sdk v0.10.0). An older doze skips them and keeps the release it has.</li>
               </ul>
             </div>
             <div class="cl-grp">
               <h3 class="cl-g-soon">Coming with postgres 0.3</h3>
               <ul>
-                <li>Postgres extensions by name: <code>extensions = ["vector", "pg_cron"]</code>, pinned in doze.lock. <a href="/registry/doze/postgres/extensions/">See the catalog</a></li>
+                <li>Postgres extensions by name: <code>extensions = ["vector", "pg_cron"]</code>, pinned in doze.lock.</li>
               </ul>
             </div>
           </div>
@@ -97,7 +91,7 @@ const fe023 = relDate("ferret", "0.2.3");
       <div class="cl-meta">
         <span class="cl-badge cl-b-mod"><span class="cl-ini cl-s14">P</span>Module · postgres</span>
         <span class="cl-ver" id="e-pg024">0.2.4</span>
-        <span class="cl-when"><time datetime={pg024 ?? undefined}>{fmtDate(pg024)}</time></span>
+        <span class="cl-when"><time datetime="2026-11-02">2 Nov 2026</time></span>
       </div>
       <div class="cl-s15">
         <p class="cl-sum">A console for Postgres: who is connected, what they are running, and a way to stop it.</p>
@@ -109,7 +103,6 @@ const fe023 = relDate("ferret", "0.2.3");
           </ul>
         </div>
         <div class="cl-upg"><span>Upgrade a project's pin:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> doze modules upgrade postgres</code><button data-copy="doze modules upgrade postgres" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div></div>
-        <div class="cl-upg"><a href="/registry/doze/postgres/0.2.4/">postgres 0.2.4 in the registry</a><a href="/registry/doze/postgres/versions/">All postgres releases</a></div>
       </div>
     </article>
 
@@ -118,7 +111,7 @@ const fe023 = relDate("ferret", "0.2.3");
       <div class="cl-meta">
         <span class="cl-badge cl-b-mod"><span class="cl-ini cl-s16">F</span>Module · ferret</span>
         <span class="cl-ver" id="e-fe023">0.2.3</span>
-        <span class="cl-when"><time datetime={fe023 ?? undefined}>{fmtDate(fe023)}</time></span>
+        <span class="cl-when"><time datetime="2026-11-02">2 Nov 2026</time></span>
       </div>
       <div class="cl-s15">
         <p class="cl-sum">FerretDB starts on Linux when the data folder has a capital letter in it.</p>
@@ -128,7 +121,7 @@ const fe023 = relDate("ferret", "0.2.3");
             <li>The Mongo driver read the socket path as a host name and lowercased it, so on a case-sensitive filesystem start-up waited for a socket that did not exist. The module now dials the socket directly. macOS hid it: its filesystem ignores case.</li>
           </ul>
         </div>
-        <div class="cl-upg"><span>Upgrade a project's pin:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> doze modules upgrade ferret</code><button data-copy="doze modules upgrade ferret" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div><a href="/registry/">ferret in the registry</a></div>
+        <div class="cl-upg"><span>Upgrade a project's pin:</span><div class="cl-cmd"><code><span class="cl-pr">$</span> doze modules upgrade ferret</code><button data-copy="doze modules upgrade ferret" class="cl-copy" type="button" aria-label="Copy the upgrade command">Copy</button></div></div>
       </div>
     </article>
 
@@ -276,9 +269,7 @@ const fe023 = relDate("ferret", "0.2.3");
     </article>
 
     <div class="cl-s17">
-      <p class="cl-p cl-s13">Every module release, with what it needs and what it pins, is on that module's Versions tab.</p>
       <div class="cl-s18">
-        <a class="cl-s19" href="/registry/doze/postgres/versions/">postgres versions →</a>
         <a class="cl-s19" href="https://github.com/doze-dev/doze/releases">All doze releases on GitHub →</a>
       </div>
     </div>

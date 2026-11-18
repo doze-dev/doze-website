@@ -8,7 +8,7 @@ interface Props {
   news?: string;
   newsHref?: string;
 }
-const { theme = "dark", current = "none", news, newsHref = "/registry/doze/postgres/extensions/" } = Astro.props;
+const { theme = "dark", current = "none", news, newsHref = "/changelog/" } = Astro.props;
 const products = [
   {
     id: "doze",
@@ -37,7 +37,6 @@ const products = [
 ];
 const family = [
   ["story", "Story", "/tuesday/"],
-  ["registry", "Registry", "/registry/"],
   ["docs", "Docs", "/docs/"],
   ["changelog", "Changelog", "/changelog/"],
 ] as const;

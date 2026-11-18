@@ -4,7 +4,7 @@
 > **Still in active development.** This project is not cleared for use yet. Expect breaking changes, and do not rely on it for real work.
 
 The source of [doze-dev.com](https://doze-dev.com): the doze family's home page,
-the product pages for doze, doze AWS and doze Kafka, the registry, and the docs.
+the product pages for doze, doze AWS and doze Kafka, and the docs.
 
 ## Run it
 
@@ -20,7 +20,6 @@ bun run dev        # http://localhost:4321, docs pulled from the sibling repos
 | Path                                        | What             | Where it comes from                       |
 | ------------------------------------------- | ---------------- | ----------------------------------------- |
 | `/`, `/doze/`, `/aws/`, `/kafka/`           | marketing pages  | `src/pages/*.astro`                       |
-| `/registry/`                                | the registry     | `src/pages/registry/`                     |
 | `/docs/doze/`, `/docs/aws/`, `/docs/kafka/` | docs (Starlight) | each product's repo, pulled at build time |
 
 Docs live beside the code they describe, so a change and its docs land in one
@@ -47,16 +46,8 @@ bun run format     # biome, with fixes
 ```
 
 CI (`.github/workflows/site.yml`) runs all four on every PR and push, deploys
-each PR to a preview URL and `main` to production. It also runs nightly, when
-a product repo sends a `docs-changed` repository dispatch, and when
-doze-registry sends `registry-published` after deploying the signed registry.
-
-The registry pages (`/registry/`) are the only registry portal. They are built
-from `src/data/registry.json`, which `scripts/registry-pull.ts` writes from
-doze-registry's `registry/` (signed indexes and meta) and doze-binaries
-(`bun run data` runs it; the file is not committed). The registry host,
-`registry.doze-dev.com`, serves only the data the `doze` CLI reads and sends
-browsers here.
+each PR to a preview URL and `main` to production. It also runs nightly, and when
+a product repo sends a `docs-changed` repository dispatch.
 
 ## Deploy
 

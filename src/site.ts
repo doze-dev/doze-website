@@ -54,6 +54,5 @@ export const nav = [
   { label: "doze", href: "/doze/" },
   { label: "doze AWS", href: "/aws/" },
   { label: "doze Kafka", href: "/kafka/" },
-  { label: "Registry", href: "/registry/" },
   { label: "Docs", href: "/docs/doze/" },
 ];

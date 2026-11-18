@@ -1,8 +1,6 @@
-// /changelog.xml: an Atom feed of releases, from real sources only: every module
-// release in the signed registry index, plus doze, doze AWS and doze Kafka
-// releases from GitHub (best effort at build time; skipped if GitHub doesn't answer).
+// /changelog.xml: an Atom feed of releases, from real sources only: doze, doze AWS
+// and doze Kafka releases from GitHub (best effort at build time; skipped if GitHub doesn't answer).
 import type { APIRoute } from "astro";
-import { display, fmtDate, modules, needs } from "../lib/registry";
 import { site } from "../site";
 
 type Entry = { id: string; title: string; date: string; link: string; summary: string };
@@ -21,7 +19,6 @@ async function githubReleases(repo: string, product: string): Promise<Entry[]> {
       draft: boolean;
       prerelease: boolean;
     }[];
-    // module releases in doze-modules are covered by the registry below
     return rels
       .filter((r) => !r.draft && /^v?\d/.test(r.tag_name))
       .map((r) => ({
@@ -44,19 +41,6 @@ export const GET: APIRoute = async () => {
     ...(await githubReleases("doze-aws", "doze AWS")),
     ...(await githubReleases("doze-kafka", "doze Kafka")),
   ];
-  for (const m of modules) {
-    for (const r of m.releases) {
-      if (!r.date) continue;
-      const link = new URL(`/registry/${m.namespace}/${m.name}/${r.version}/`, site.url).href;
-      entries.push({
-        id: link,
-        title: `${display(m)} module ${r.version}`,
-        date: `${r.date}T00:00:00Z`,
-        link,
-        summary: `${display(m)} module ${r.version}, ${fmtDate(r.date)}. Needs ${needs(r)}.`,
-      });
-    }
-  }
   entries.sort((a, b) => b.date.localeCompare(a.date));
   const updated = entries[0]?.date ?? new Date().toISOString();
   const xml = `<?xml version="1.0" encoding="utf-8"?>

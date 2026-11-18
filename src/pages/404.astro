@@ -10,20 +10,9 @@ import Page from "../layouts/Page.astro";
         <h1 id="nf-title" class="nf-h1">This page is asleep.</h1>
         <p class="nf-lede">Nothing woke it, because it doesn't exist. The address may be mistyped, or the page moved when the site did.</p>
 
-        <form role="search" action="/registry/search/" method="get">
-          <label class="nf-sr" for="nf-q">Search doze-dev.com</label>
-          <div class="nf-search">
-            <svg class="nf-ic" viewBox="0 0 24 24" fill="none" stroke="#9C8AAB" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-            <input id="nf-q" name="q" type="search" placeholder="Search doze-dev.com">
-            <span class="nf-kbd" aria-hidden="true">/</span>
-            <button class="nf-go" type="submit">Search</button>
-          </div>
-        </form>
-
         <pre class="nf-term" aria-label="The same thing, the way doze would say it"><span class="pr">$</span> doze wake this-page
 <span class="e">no page named "this-page"</span>
-<span class="c">did you mean: download, docs,</span>
-<span class="c">  registry, examples?</span>
+<span class="c">did you mean: download, docs, examples?</span>
 <span class="c"># exit 4: nothing declares it</span></pre>
       </div>
 
@@ -52,7 +41,6 @@ import Page from "../layouts/Page.astro";
       <div class="nf-pop">
         <a class="nf-card" href="/download/"><b>Download <span class="nf-s3" aria-hidden="true">→</span></b><span>The app for Apple silicon, or the CLI for Mac and Linux.</span></a>
         <a class="nf-card" href="/docs/"><b>Docs <span class="nf-s3" aria-hidden="true">→</span></b><span>doze, doze AWS and doze Kafka, searchable in one place.</span></a>
-        <a class="nf-card" href="/registry/"><b>Registry <span class="nf-s3" aria-hidden="true">→</span></b><span>Signed modules: Postgres, Valkey, Kafka, AWS and more.</span></a>
         <a class="nf-card" href="/examples/"><b>Examples <span class="nf-s3" aria-hidden="true">→</span></b><span>Larder, a made-up grocery service we built as an example. One command runs it.</span></a>
       </div>
     </section>
@@ -62,7 +50,6 @@ import Page from "../layouts/Page.astro";
       <div>
         <b class="nf-s5">Followed a link from doze.nerdmenot.in?</b>
         <p class="nf-p nf-s6">The docs moved to <code>doze-dev.com/docs/doze</code>. Most old links are sent there for you; this one slipped through.</p>
-        <p class="nf-p nf-s6"><code>doze.nerdmenot.in/registry</code> keeps serving older doze, so a 0.1.1 install still finds its modules.</p>
         <a class="nf-link" href="/docs/doze/">Open the doze docs →</a>
       </div>
     </aside>
@@ -71,15 +58,6 @@ import Page from "../layouts/Page.astro";
   </div>
 </Page>
 
-<script>
-  // "/" focuses the search box, as the hint says.
-  document.addEventListener("keydown", (e) => {
-    const t = e.target as HTMLElement;
-    if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey || t.closest("input, textarea, select, [contenteditable]")) return;
-    e.preventDefault();
-    document.querySelector<HTMLInputElement>("#nf-q")?.focus();
-  });
-</script>
 
 <style>
 *{box-sizing:content-box}
@@ -101,17 +79,9 @@ button,select,input[type=button],input[type=submit],input[type=reset],input[type
 .nf-stage{position:relative;display:flex;justify-content:center}
 .nf-glow{position:absolute;inset:6% 4% 0;border-radius:50%;background:radial-gradient(closest-side,rgba(240,162,75,0.22),rgba(240,162,75,0));pointer-events:none}
 .nf-bat{position:relative;width:420px;max-width:100%;height:auto}
-.nf-search{display:flex;align-items:center;gap:10px;background:#1E1328;border:1px solid #4A3458;border-radius:14px;min-height:60px;padding:0 8px 0 16px;box-sizing:border-box;max-width:560px}
-.nf-search:focus-within{border-color:#F0A24B}
-.nf-search input{flex:1;min-width:0;background:transparent;border:0;color:#F4ECE4;font:17px var(--font-text);height:52px;outline:none}
-.nf-search input::placeholder{color:#9C8AAB}
-.nf-kbd{font:12px var(--font-mono);color:#C9BAD3;border:1px solid #4A3458;border-radius:6px;padding:3px 7px}
-.nf-go{flex:none;height:44px;padding:0 18px;border-radius:10px;border:0;background:#F0A24B;color:#2A1534;font:600 15px var(--font-text);cursor:pointer}
-.nf-go:hover{background:#FFB866}
-.nf-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .nf-term{margin:0;max-width:560px;box-sizing:border-box;font:13px/1.75 var(--font-mono);background:#120A18;border:1px solid #2E1F3A;border-radius:16px;padding:18px 20px;color:#D6C8DF;white-space:pre;overflow-x:auto}
 .nf-term .pr,.nf-term .c{color:#9C8AAB}.nf-term .e{color:#FF9AA8}
-.nf-pop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.nf-pop{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .nf a.nf-card{display:flex;flex-direction:column;gap:10px;background:#1E1328;border:1px solid #34233F;border-radius:18px;padding:22px;color:#F4ECE4;box-sizing:border-box}
 .nf a.nf-card:hover{border-color:#7A5E8C;color:#FFFFFF}
 .nf-card b{font-size:18px;display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -121,14 +91,11 @@ button,select,input[type=button],input[type=submit],input[type=reset],input[type
 .nf-moved code{font-family:var(--font-mono);font-size:14px;color:#F4ECE4;background:#120A18;border:1px solid #2E1F3A;border-radius:6px;padding:1px 6px;white-space:nowrap}
 .nf .nf-link{display:inline-flex;align-items:center;min-height:44px;font-weight:600}
 .nf-ic{width:20px;height:20px;flex:none}
-@media (max-width:1000px){.nf-pop{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){.nf-hero{grid-template-columns:minmax(0,1fr);gap:24px}.nf-stage{order:-1}.nf-bat{width:240px}}
 @media (max-width:600px){
   .nf-wrap{padding:40px 32px 72px;gap:56px}
   .nf-h1{font-size:48px}.nf-lede{font-size:18px}
   .nf-pop{grid-template-columns:minmax(0,1fr)}
-  .nf-kbd{display:none}
-  .nf-search input{font-size:16px}
   .nf-term{font-size:12px;padding:16px}
 }
 /* one-off layout from the board's inline styles */

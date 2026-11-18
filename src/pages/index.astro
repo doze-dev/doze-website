@@ -2,12 +2,11 @@
 // Home (direction B, "Rest is a feature": design/BRAND.md). It sells the
 // evening and shows the product: the headline, then the doze app, big and
 // alive; the pains, one at a time; the app's screens; the three products as
-// equals; numbers with their method; the registry; the values; the moon.
+// equals; numbers with their method; the values; the moon.
 // The sky goes from dusk to night as the page scrolls (scroll-driven CSS where
 // the browser has it, a still dusk over the hero where it doesn't).
 import DomainsTeaser from "../components/domains/Teaser.astro";
 import FirstStack from "../components/doze/FirstStack.astro";
-import Popular from "../components/home/Popular.astro";
 import VCarousel from "../components/motion/VCarousel.astro";
 import Page from "../layouts/Page.astro";
 import { products } from "../site";
@@ -354,21 +353,6 @@ const clone = "git clone https://github.com/doze-dev/doze && cd doze && make bui
           <dd class="hm-src">We’ll publish it with the machine, the versions, the date and the script. Until then, <code>make bench</code> on yours.</dd>
         </div>
       </dl>
-    </div>
-  </section>
-
-  <!-- 7. The registry -->
-  <section class="hm-sec" aria-labelledby="hm-reg-h">
-    <div class="hm-wrap">
-      <div class="hm-head hm-head-split" data-reveal>
-        <div>
-          <p class="hm-kicker">The registry</p>
-          <h2 class="hm-h2" id="hm-reg-h">Everything your stack uses. One line each.</h2>
-        </div>
-        <p class="hm-sub"><code>doze add</code> writes the block. It sleeps until something calls it. No Dockerfile, no compose YAML, no setup doc.</p>
-      </div>
-      <Popular />
-      <a class="hm-link" href="/registry/">Browse the registry <span class="hm-arr" aria-hidden="true">→</span></a>
     </div>
   </section>
 

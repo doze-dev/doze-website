@@ -1,5 +1,5 @@
 // Every board on the design canvas and the page it became. Boards link to
-// each other by file name (Registry.dc.html); pages link by these paths.
+// each other by file name (Doze.dc.html); pages link by these paths.
 export const routes: Record<string, string> = {
   Main: "/",
   Story: "/tuesday/",
@@ -16,26 +16,9 @@ export const routes: Record<string, string> = {
   DozeDocs: "/docs/doze/",
   AwsDocs: "/docs/aws/",
   KafkaDocs: "/docs/kafka/",
-  Registry: "/registry/",
-  RegistrySearch: "/registry/search/",
-  RegistryNoResults: "/registry/search/",
-  RegistryForYourDoze: "/registry/?doze=0.1.1",
-  RegistryExtensions: "/registry/doze/postgres/extensions/",
-  RegistryTool: "/registry/tools/mongo/",
-  RegistryModule: "/registry/doze/postgres/",
-  RegistryTooOld: "/registry/doze/postgres/?doze=0.1.1",
-  RegistryVersions: "/registry/doze/postgres/versions/",
-  RegistryRelease: "/registry/doze/postgres/0.2.4/",
-  RegistryReleaseOld: "/registry/doze/postgres/0.2.1/",
-  RegistryEngines: "/registry/doze/postgres/engines/",
-  RegistryReference: "/registry/doze/postgres/reference/",
-  RegistryExtension: "/registry/doze/postgres/extensions/vector/",
-  RegistryTrust: "/registry/trust/",
-  RegistryPublisher: "/registry/doze/",
-  RegistryPublish: "/registry/publish/",
 };
 
-/** The page a board link points at: "Registry.dc.html#x" → "/registry/#x". */
+/** The page a board link points at: "Doze.dc.html#x" → "/doze/#x". */
 export function hrefFor(board: string): string {
   const [file, hash] = board.split("#");
   const name = file.replace(/\.dc\.html$/, "");

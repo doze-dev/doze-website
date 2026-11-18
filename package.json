@@ -2,7 +2,7 @@
   "name": "doze-website",
   "type": "module",
   "private": true,
-  "description": "doze-dev.com: the doze family's home, product pages, docs and registry",
+  "description": "doze-dev.com: the doze family's home, product pages and docs",
   "scripts": {
     "docs": "bun scripts/docs-pull.ts",
     "dev": "bun run data && astro dev",
@@ -12,7 +12,7 @@
     "format": "biome check --write .",
     "links": "bun scripts/check-links.ts && bun scripts/check-slugs.ts",
     "deploy": "wrangler pages deploy dist",
-    "data": "bun scripts/docs-pull.ts && bun scripts/registry-pull.ts"
+    "data": "bun scripts/docs-pull.ts"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.10",
