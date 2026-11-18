@@ -4,8 +4,6 @@ export const routes: Record<string, string> = {
   Main: "/",
   Story: "/tuesday/",
   Doze: "/doze/",
-  Aws: "/aws/",
-  Kafka: "/kafka/",
   Download: "/download/",
   Examples: "/examples/",
   Changelog: "/changelog/",
@@ -14,8 +12,6 @@ export const routes: Record<string, string> = {
   NotFound: "/404/",
   DocsHome: "/docs/",
   DozeDocs: "/docs/doze/",
-  AwsDocs: "/docs/aws/",
-  KafkaDocs: "/docs/kafka/",
 };
 
 /** The page a board link points at: "Doze.dc.html#x" → "/doze/#x". */

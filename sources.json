@@ -15,21 +15,6 @@
       "files": {
         "website/public/llms.txt": "llms.txt"
       }
-    },
-    {
-      "name": "aws",
-      "repo": "doze-dev/doze-aws",
-      "ref": "main",
-      "path": "docs",
-      "links": "relative"
-    },
-    {
-      "name": "kafka",
-      "repo": "doze-dev/doze-kafka",
-      "ref": "main",
-      "path": "docs",
-      "links": "relative",
-      "exclude": ["reports/**"]
     }
   ]
 }

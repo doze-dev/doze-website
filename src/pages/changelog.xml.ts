@@ -1,5 +1,5 @@
-// /changelog.xml: an Atom feed of releases, from real sources only: doze, doze AWS
-// and doze Kafka releases from GitHub (best effort at build time; skipped if GitHub doesn't answer).
+// /changelog.xml: an Atom feed of releases, from real sources only: doze releases
+// from GitHub (best effort at build time; skipped if GitHub doesn't answer).
 import type { APIRoute } from "astro";
 import { site } from "../site";
 
@@ -36,11 +36,7 @@ async function githubReleases(repo: string, product: string): Promise<Entry[]> {
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 export const GET: APIRoute = async () => {
-  const entries: Entry[] = [
-    ...(await githubReleases("doze", "doze")),
-    ...(await githubReleases("doze-aws", "doze AWS")),
-    ...(await githubReleases("doze-kafka", "doze Kafka")),
-  ];
+  const entries: Entry[] = [...(await githubReleases("doze", "doze"))];
   entries.sort((a, b) => b.date.localeCompare(a.date));
   const updated = entries[0]?.date ?? new Date().toISOString();
   const xml = `<?xml version="1.0" encoding="utf-8"?>

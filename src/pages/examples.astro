@@ -291,7 +291,7 @@ ERROR:  permission denied for schema identity</pre><button data-copy="psql &quot
         <div class="lx-card lx-try">
           <span class="lx-t">04 · doze AWS</span>
           <h3 class="lx-h3">Find the receipt in S3.</h3>
-          <p class="lx-p">A packed order leaves a receipt in the <code class="lx-ic-code">receipts</code> bucket, after its pick list went through SQS. The <a href="/aws/">doze AWS</a> console at <a href="http://aws.larder.doze:4566/_console">aws.larder.doze:4566/_console</a> shows both, and every call that put them there.</p>
+          <p class="lx-p">A packed order leaves a receipt in the <code class="lx-ic-code">receipts</code> bucket, after its pick list went through SQS. The doze AWS console at <a href="http://aws.larder.doze:4566/_console">aws.larder.doze:4566/_console</a> shows both, and every call that put them there.</p>
           <div class="lx-mini"><pre><span class="lx-pr">$</span> aws --endpoint-url \
     http://aws.larder.doze:4566 \
     s3 ls s3://receipts/receipts/</pre><button data-copy="aws --endpoint-url \&#10;    http://aws.larder.doze:4566 \&#10;    s3 ls s3://receipts/receipts/" class="lx-copy" type="button" aria-label="Copy the aws s3 ls command">Copy</button></div>
@@ -299,7 +299,7 @@ ERROR:  permission denied for schema identity</pre><button data-copy="psql &quot
         <div class="lx-card lx-try">
           <span class="lx-t">05 · doze Kafka</span>
           <h3 class="lx-h3">Watch the events go by.</h3>
-          <p class="lx-p">The <a href="/kafka/">doze Kafka</a> console shows the four topics and each message as it lands. Any Kafka client works too.</p>
+          <p class="lx-p">The doze Kafka console shows the four topics and each message as it lands. Any Kafka client works too.</p>
           <div class="lx-mini"><pre><span class="lx-pr">$</span> kcat -b kafka.larder.doze:9092 \
     -C -t orders.placed -e</pre><button data-copy="kcat -b kafka.larder.doze:9092 \&#10;    -C -t orders.placed -e" class="lx-copy" type="button" aria-label="Copy the kcat command">Copy</button></div>
         </div>

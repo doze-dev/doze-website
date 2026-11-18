@@ -94,7 +94,7 @@ export default defineConfig({
           },
         },
         starlightSidebarTopics(topics, {
-          topics: { doze: ["/docs/doze/**/*"], aws: ["/docs/aws/**/*"], kafka: ["/docs/kafka/**/*"] },
+          topics: { doze: ["/docs/doze/**/*"] },
           exclude: ["/404"],
         }),
       ],

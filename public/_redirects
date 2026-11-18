@@ -14,9 +14,7 @@
 /docs/doze/cli/dashboard/  /docs/doze/app/library/  301
 /docs/doze/cli/domains/  /docs/doze/app/domains/  301
 /docs/doze/cli/tour/  /docs/doze/guides/workflows/  301
-/docs/doze/engines/aws/  /docs/doze/services/aws/  301
 /docs/doze/engines/ferret/  /docs/doze/services/ferretdb/  301
-/docs/doze/engines/kafka/  /docs/doze/services/kafka/  301
 /docs/doze/engines/kvrocks/  /docs/doze/services/kvrocks/  301
 /docs/doze/engines/mariadb/  /docs/doze/services/mariadb/  301
 /docs/doze/engines/postgres/  /docs/doze/services/postgres/  301
@@ -24,10 +22,8 @@
 /docs/doze/engines/valkey/  /docs/doze/services/valkey/  301
 /docs/doze/guides/engines/  /docs/doze/hcl/shared-services/  301
 /docs/doze/guides/modules/  /docs/doze/hcl/shared-services/  301
-/docs/doze/guides/recipes/aws/  /docs/doze/services/aws/  301
 /docs/doze/guides/recipes/config-layout/  /docs/doze/hcl/splitting-files/  301
 /docs/doze/guides/recipes/documentdb/  /docs/doze/services/ferretdb/  301
-/docs/doze/guides/recipes/kafka/  /docs/doze/services/kafka/  301
 /docs/doze/guides/recipes/microservices-stack/  /docs/doze/guides/microservices/  301
 /docs/doze/guides/recipes/postgres/  /docs/doze/services/postgres/  301
 /docs/doze/guides/recipes/stacks/  /docs/doze/guides/microservices/  301

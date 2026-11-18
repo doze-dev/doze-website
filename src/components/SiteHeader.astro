@@ -1,6 +1,6 @@
 ---
 // The family header: the bat across the moon (the doze family's mark, never a product's), then
-// the three products as equals under Products, then the family's own pages.
+// the products under Products, then the family's own pages.
 export type Theme = "dark" | "light" | "aws" | "kafka";
 interface Props {
   theme?: Theme;
@@ -17,22 +17,6 @@ const products = [
     line: "Wakes your stack when you start. Sleeps it when you stop.",
     href: "/doze/",
     docs: "/docs/doze/",
-  },
-  {
-    id: "aws",
-    name: "doze AWS",
-    icon: "/brand/doze-aws.svg",
-    line: "Wakes AWS on your laptop. No account, no bill.",
-    href: "/aws/",
-    docs: "/docs/aws/",
-  },
-  {
-    id: "kafka",
-    name: "doze Kafka",
-    icon: "/brand/doze-kafka.svg",
-    line: "Wakes a Kafka broker. No JVM to put to bed.",
-    href: "/kafka/",
-    docs: "/docs/kafka/",
   },
 ];
 const family = [
@@ -62,7 +46,6 @@ const moon = theme === "light" ? "/brand/family-ink.svg" : "/brand/family.svg";
               <a class="sh-card-docs" href={p.docs}>Docs</a>
             </div>
           ))}
-          <p class="sh-panel-foot">Three products. Each works alone; together they're the doze family.</p>
         </div>
       </details>
       {family.map(([id, label, href]) => <a href={href} aria-current={id === current ? "page" : undefined}>{label}</a>)}
@@ -126,7 +109,6 @@ const moon = theme === "light" ? "/brand/family-ink.svg" : "/brand/family.svg";
   .sh-card-main span span { font-size: 13.5px; line-height: 1.4; color: var(--i2); }
   .sh-card-docs { align-self: center; margin-right: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; color: var(--i2); border: 1px solid var(--l2); }
   .sh-card-docs:hover { color: var(--i); }
-  .sh-panel-foot { margin: 6px 12px 4px; font-size: 13px; color: var(--i2); }
   .sh-news { font-size: 13px; color: var(--i); border: 1px solid var(--l2); border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
   .sh-news span { color: var(--amber); font-weight: 600; }
   .sh-gh { font-size: 14px; color: var(--i2); white-space: nowrap; }

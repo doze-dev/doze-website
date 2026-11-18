@@ -11,8 +11,6 @@ import Themes from "../components/doze/Themes.astro";
 import Views from "../components/doze/Views.astro";
 import VCarousel from "../components/motion/VCarousel.astro";
 import Cmd from "../components/product/Cmd.astro";
-import Endorse from "../components/product/Endorse.astro";
-import Family from "../components/product/Family.astro";
 import Shot from "../components/product/Shot.astro";
 import SubNav from "../components/product/SubNav.astro";
 import Page from "../layouts/Page.astro";
@@ -180,7 +178,6 @@ const pains = [
         <div class="dz-cta-cmd"><Cmd cmd="brew install --cask doze-dev/tap/doze" label="Copy the Homebrew install command" /></div>
       </div>
       <span class="pp-small">Free and open source · macOS on Apple silicon · Linux x86_64 and arm64 · no account, no telemetry</span>
-      <Endorse />
     </div>
     <div class="dz-hero-win">
       <Shot src={media.hero.src} alt={media.hero.alt} title="doze" glow eager />
@@ -444,7 +441,6 @@ const pains = [
     </div>
   </section>
 
-  <Family current="doze" />
 </div>
 </Page>
 

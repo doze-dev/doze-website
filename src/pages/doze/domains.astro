@@ -18,7 +18,6 @@ import "../../components/product/product.css";
 import "../../components/doze/appdraw.css";
 import Browser from "../../components/domains/Browser.astro";
 import Cmd from "../../components/product/Cmd.astro";
-import Endorse from "../../components/product/Endorse.astro";
 import SubNav from "../../components/product/SubNav.astro";
 import Page from "../../layouts/Page.astro";
 
@@ -370,7 +369,6 @@ const edges = [
         <Cmd cmd="doze trust" label="Copy doze trust" />
       </div>
     </div>
-    <div class="pp-wrap dm-end"><Endorse /></div>
   </section>
 </div>
 </Page>
@@ -494,7 +492,6 @@ const edges = [
   .dm-try-cmd { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
   .dm-try-cmd .s { color: #e9deef; }
   .dm-try-cmd .n { color: #8fbdff; }
-  .dm-end { margin-top: 64px; padding-bottom: 32px; }
 
   @media (max-width: 1000px) {
     .dm-why, .dm-app { grid-template-columns: minmax(0, 1fr); max-width: 640px; }

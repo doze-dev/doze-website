@@ -142,7 +142,7 @@ import Page from "../layouts/Page.astro";
               <li><code class="dl-ic-code">/etc/resolver/doze</code>, which sends the .doze zone to doze's resolver and nothing else.</li>
               <li><code class="dl-ic-code">dev.doze.netd</code>, a small network daemon that gives each service a loopback address of its own.</li>
             </ul>
-            <span class="dl-p dl-s13">On Linux: the <code class="dl-ic-code">doze-netd</code> systemd unit and a drop-in for your DNS manager. Only doze uses it: doze AWS and doze Kafka, run on their own, listen on 127.0.0.1 and need none of this. Skip it and everything runs on 127.0.0.1.</span>
+            <span class="dl-p dl-s13">On Linux: the <code class="dl-ic-code">doze-netd</code> systemd unit and a drop-in for your DNS manager. Skip it and everything runs on 127.0.0.1.</span>
           </div></div>
           <div class="dl-does"><span class="dl-n">+</span><div><b class="dl-s26">Only if you declare your own domain</b><span class="dl-p dl-s13"><code class="dl-ic-code">doze trust</code> makes a certificate authority for this machine. Its key stays in <code class="dl-ic-code">~/.doze/ca</code>, readable by you alone.</span></div></div>
         </div>

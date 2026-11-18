@@ -49,7 +49,7 @@ const dozeToday: Group[] = [
     label: "Engines",
     items: [
       { slug: "guides/engines", label: "Overview" },
-      ...["postgres", "valkey", "kvrocks", "ferret", "mariadb", "temporal", "kafka", "aws"].map((e) => `engines/${e}`),
+      ...["postgres", "valkey", "kvrocks", "ferret", "mariadb", "temporal"].map((e) => `engines/${e}`),
     ],
   },
   {
@@ -59,16 +59,9 @@ const dozeToday: Group[] = [
       {
         label: "Recipes",
         collapsed: true,
-        items: [
-          "microservices-stack",
-          "postgres",
-          "valkey-kvrocks",
-          "documentdb",
-          "aws",
-          "kafka",
-          "stacks",
-          "config-layout",
-        ].map((r) => `guides/recipes/${r}`),
+        items: ["microservices-stack", "postgres", "valkey-kvrocks", "documentdb", "stacks", "config-layout"].map(
+          (r) => `guides/recipes/${r}`,
+        ),
       },
       "guides/workflows",
       "guides/modules",
@@ -117,19 +110,5 @@ export const topics = [
     link: "/docs/doze/",
     icon: "seti:config",
     items: under("docs/doze", dozeGroups as Item[], dozeGroups !== dozeToday),
-  },
-  {
-    id: "aws",
-    label: "doze AWS",
-    link: "/docs/aws/",
-    icon: "seti:json",
-    items: under("docs/aws", fromIA("aws") as Item[]),
-  },
-  {
-    id: "kafka",
-    label: "doze Kafka",
-    link: "/docs/kafka/",
-    icon: "seti:pipeline",
-    items: under("docs/kafka", fromIA("kafka") as Item[]),
   },
 ];

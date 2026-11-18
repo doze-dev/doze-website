@@ -1,11 +1,11 @@
 // docs-pull: copy each product's docs (see sources.json) into
 // src/content/docs/docs/<name>/, so Starlight serves them at /docs/<name>/.
 //
-// Locally it reads the sibling checkout (../doze, ../doze-aws, ...) when one
+// Locally it reads the sibling checkout (../doze) when one
 // exists, so a docs edit shows up on the next reload. In CI, or with
 // DOCS_SOURCE=git, it shallow-clones each repo at its ref instead.
 //
-// DOCS_LOCAL_<NAME>=/abs/path (e.g. DOCS_LOCAL_AWS, DOCS_LOCAL_KAFKA) reads
+// DOCS_LOCAL_<NAME>=/abs/path (e.g. DOCS_LOCAL_DOZE) reads
 // that one source from the given checkout instead, in any mode: use it to
 // preview docs from a worktree or branch before they land on the ref.
 //
